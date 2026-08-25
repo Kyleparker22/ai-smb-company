@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Property Management Console — Sample Realty Home &amp; Land</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+    --ok:#1D7A46; --amber:#B26A00;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 28px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  header{background:var(--ink);color:var(--on-dark);padding:34px 0 30px}
+  header .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .mark{font-family:Didot,Georgia,serif;font-size:22px}
+  .mark i{font-style:normal;color:var(--red)}
+  .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--on-dark-soft);margin-left:12px;vertical-align:2px}
+  header h1{font-family:Didot,Georgia,serif;font-size:clamp(24px,3vw,34px);font-weight:400;margin-top:10px}
+  header h1 em{font-style:italic}
+  .asof{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark-soft)}
+
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--line);background:#fff}
+  @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+  .st{padding:20px 24px;border-right:1px solid var(--line)}
+  .st:last-child{border-right:0}
+  .st b{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400;display:block}
+  .st b i{font-style:normal;color:var(--red)}
+  .st span{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+
+  section{padding:44px 0 8px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--red)}
+  h2{font-family:Didot,Georgia,serif;font-size:23px;font-weight:400;margin-top:6px}
+  h2 em{font-style:italic;color:var(--red)}
+  .note{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:4px}
+
+  table{width:100%;border-collapse:collapse;margin-top:16px;background:#fff;font-size:13px}
+  th{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark);background:var(--ink);text-align:left;padding:10px 14px}
+  td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.money{font-family:Didot,Georgia,serif;white-space:nowrap}
+  td .sub{font-family:Didot,Georgia,serif;font-size:11px;font-style:italic;color:var(--ink-soft)}
+  .chip{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:4px 11px;border-radius:9999px;white-space:nowrap}
+  .chip.wait{background:var(--warm);color:var(--amber);border:1px solid rgba(178,106,0,.35)}
+  .chip.ok{background:rgba(29,122,70,.1);color:var(--ok)}
+  .chip.flag{background:rgba(239,0,4,.08);color:var(--red)}
+  .chip.dark{background:var(--ink);color:var(--on-dark)}
+
+  .duo{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+  @media(max-width:960px){.duo{grid-template-columns:1fr}}
+
+  .watch{background:var(--ink);color:var(--on-dark);padding:26px 28px;margin-top:16px}
+  .watch .t{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--red)}
+  .w{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-dark);font-size:13px;align-items:baseline}
+  .w:last-child{border-bottom:0}
+  .w i{font-style:normal;color:var(--red);font-family:Didot,Georgia,serif}
+  .w .act{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-soft);display:block;margin-top:2px}
+
+  .cal{background:#fff;border:1px solid var(--line);margin-top:16px}
+  .c{display:flex;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
+  .c:last-child{border-bottom:0}
+  .c .d{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--red);min-width:70px}
+
+  footer{margin-top:52px;background:#0d0d11;color:var(--on-dark);padding:26px 0;text-align:center}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);max-width:90ch;margin:0 auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">v0 demo — seeded from the Jan–Jul 2026 trust-account journal · figures to confirm with Kimi before relying</div>
+
+<header>
+  <div class="wrap bar">
+    <div>
+      <div class="mark">P<i>·</i>R<span>Sample Realty Home &amp; Land · Property Management</span></div>
+      <h1>The morning view, <em>August 2026.</em></h1>
+    </div>
+    <div class="asof">As of Mon · Aug 4 · rent due day 1 · late after the 5th</div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="st"><b>8</b><span>Doors under management</span></div>
+  <div class="st"><b>6</b><span>Occupied · paying</span></div>
+  <div class="st"><b>$14,215</b><span>Monthly rents in place</span></div>
+  <div class="st"><b>$1,102</b><span>Monthly PM fees (≈8%)</span></div>
+  <div class="st"><b>3<i>+1</i></b><span>Flags open · 1 vacancy listed</span></div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="kicker">Rent Board — August</div>
+  <h2>Who's paid, who's due, who gets a <em>nudge.</em></h2>
+  <div class="note">Journal data runs through July — August statuses show what the watchdog tracks; reminders draft automatically on the 6th, Kimi approves every send.</div>
+  <table>
+    <tr><th>Property</th><th>Tenant</th><th>Expected</th><th>Status</th><th>History (Jan–Jul)</th></tr>
+    <tr><td>1010 Bexton</td><td>Charissa Ruffin<div class="sub">since April — turnover from D. Navarro handled in-year</div></td><td class="money">$2,500</td><td><span class="chip wait">Awaiting · due by the 5th</span></td><td class="sub">Apr–Jul on time, 1st–6th</td></tr>
+    <tr><td>1228 Whitby Moore</td><td>Kimberly Andrews</td><td class="money">$2,250</td><td><span class="chip wait">Awaiting · due by the 5th</span></td><td class="sub">7 for 7, never past the 6th</td></tr>
+    <tr><td>3625 Vallette Ct</td><td>Rachel Arnold</td><td class="money">$2,875</td><td><span class="chip wait">Awaiting · due by the 5th</span></td><td class="sub">steady $2,875 since April</td></tr>
+    <tr><td>3818 Kalispell</td><td>Jamal Giddens<div class="sub">lease started March</div></td><td class="money">$2,950</td><td><span class="chip wait">Awaiting · due by the 5th</span></td><td class="sub">Mar–Jul on time</td></tr>
+    <tr><td>1139 Doveridge</td><td>Tyler Bailey</td><td class="money">$2,050</td><td><span class="chip wait">Awaiting · due by the 5th</span></td><td class="sub">Mar–Jul on time, often early</td></tr>
+    <tr><td>15219 Barossa Valley</td><td>Tina Konstanova</td><td class="money">$1,590<div class="sub">confirm lease amount</div></td><td><span class="chip flag">Irregular amounts</span></td><td class="sub">$1,490–$1,800 across months — lease terms needed</td></tr>
+    <tr><td>15721 Capps</td><td class="sub">Shalita Threatt — pro-rated to Mar 19</td><td class="money">—</td><td><span class="chip flag">No rent since March — status?</span></td><td class="sub">Jan late + Feb catch-up, then silent</td></tr>
+    <tr><td>1138 Doveridge</td><td class="sub">Tonya Speller — partials in Feb</td><td class="money">—</td><td><span class="chip flag">Silent since February — status?</span></td><td class="sub">SD $300 moved to acct 4808 ✓</td></tr>
+    <tr><td>3524 Donovan Place</td><td class="sub">vacant — being marketed</td><td class="money">$2,600 ask</td><td><span class="chip dark">Listed · MLS #4395709</span></td><td class="sub">live on the site's For Lease section</td></tr>
+  </table>
+</section>
+
+<section class="duo-wrap"><div class="duo">
+  <div>
+    <div class="kicker">Owners &amp; Funds Held</div>
+    <h2>Five owners, to the <em>penny.</em></h2>
+    <table>
+      <tr><th>Owner</th><th>Doors</th><th>Held (end of July)</th><th>Statement</th></tr>
+      <tr><td>Raju Prasad</td><td class="sub">1010 Bexton · 1228 Whitby Moore</td><td class="money">−$1,830.51 · +$2,207.71</td><td><span class="chip ok">Drafted ✓</span></td></tr>
+      <tr><td>Bhavani</td><td class="sub">Barossa Valley · 1138 &amp; 1139 Doveridge</td><td class="money">+$542 <span class="sub">after Doveridge fix</span></td><td><span class="chip ok">Drafted ✓</span></td></tr>
+      <tr><td>Griffin Campbell</td><td class="sub">3625 Vallette Ct</td><td class="money">+$460.00</td><td><span class="chip ok">Drafted ✓</span></td></tr>
+      <tr><td>Chandra</td><td class="sub">3818 Kalispell</td><td class="money">+$472.00</td><td><span class="chip ok">Drafted ✓</span></td></tr>
+      <tr><td>Sanjeet Kumar</td><td class="sub">15721 Capps</td><td class="money">−$25.00 <span class="sub">the known overpayment</span></td><td><span class="chip ok">Drafted ✓</span></td></tr>
+    </table>
+
+    <div class="kicker" style="margin-top:36px">Maintenance — from the journal</div>
+    <h2>Every repair, on the right <em>ledger.</em></h2>
+    <table>
+      <tr><th>Date</th><th>Property</th><th>Item</th><th>Cost</th></tr>
+      <tr><td class="sub">Apr 7</td><td>1010 Bexton</td><td>Repairs (two invoices, Kristi)</td><td class="money">$4,331.51</td></tr>
+      <tr><td class="sub">May</td><td>1010 Bexton</td><td>Maintenance + lease set-up</td><td class="money">$525 + $1,850</td></tr>
+      <tr><td class="sub">Dec 10</td><td>1010 Bexton</td><td>Furnace repair</td><td class="money">$1,024.24</td></tr>
+      <tr><td class="sub">Jan 22</td><td>1228 Whitby Moore</td><td>Dishwasher</td><td class="money">$48.47</td></tr>
+    </table>
+    <div class="note">P3 adds the intake: tenant texts a photo → ticket drafted → Kimi approves dispatch → cost posts here and to the owner statement automatically.</div>
+  </div>
+
+  <div>
+    <div class="watch">
+      <div class="t">What the watchdog flags this morning</div>
+      <div class="w"><i>●</i><div>6 August rents awaiting — all inside the grace window<span class="act">reminder texts draft Aug 6 · Kimi approves each send</span></div></div>
+      <div class="w"><i>●</i><div>1010 Bexton running −$1,830.51 — owner top-up needed<span class="act">drafted note to Raju attached to his statement</span></div></div>
+      <div class="w"><i>●</i><div>Capps &amp; 1138 Doveridge silent — vacancy or missing deposits?<span class="act">one question for Kimi resolves both books</span></div></div>
+      <div class="w"><i>●</i><div>29 journal entries never cleared vs bank<span class="act">disappears when the statement feed lands (P2)</span></div></div>
+    </div>
+
+    <div class="kicker" style="margin-top:36px">Compliance Calendar</div>
+    <h2>Nothing sneaks <em>up.</em></h2>
+    <div class="cal">
+      <div class="c"><div class="d">Aug 6</div><div>Late-rent grace ends — reminders go out on approval</div></div>
+      <div class="c"><div class="d">Aug 31</div><div>NCREC monthly trust reconciliation + trial balance <span class="sub">generated, not typed</span></div></div>
+      <div class="c"><div class="d">Sep 1</div><div>Owner statements out to all five owners <span class="sub">drafted automatically</span></div></div>
+      <div class="c"><div class="d">Move-outs</div><div>NC 30-day security-deposit itemization clock <span class="sub">starts automatically on any move-out — Capps status needed</span></div></div>
+      <div class="c"><div class="d">Leases</div><div>Renewal radar 90/60/30 days out <span class="sub">needs lease dates — the one sit-down ask</span></div></div>
+      <div class="c"><div class="d">January</div><div>1099 totals per owner <span class="sub">already accumulating in the statements</span></div></div>
+    </div>
+  </div>
+</div></section>
+
+</div>
+
+<footer>
+  <div class="wrap"><div class="fine">Demo console — every figure seeded from the Jan–Jul 2026 trust-account journal and traceable to a transaction; items marked "confirm" need Kimi's eyes. The live version runs on the operated platform: bank feed in, books generated, drafts awaiting approval — money moves only by Kimi's hand.</div></div>
+</footer>
+
+<script>
+/* artifact telemetry (disclosed in the footer) — mirrors concierge.js */
+(function(){const T="http://localhost:8790/t";let s="";try{s=sessionStorage.pr_sid||(sessionStorage.pr_sid=Math.random().toString(36).slice(2,10))}catch(e){}
+const send=e=>{try{const p=JSON.stringify({p:location.pathname,e,s});if(navigator.sendBeacon)navigator.sendBeacon(T,new Blob([p],{type:"text/plain"}));else fetch(T,{method:"POST",body:p,keepalive:true}).catch(()=>{})}catch(x){}};
+send("view");setInterval(()=>{if(document.visibilityState==="visible")send("beat")},15000)})();
+</script>
+</body>
+</html>

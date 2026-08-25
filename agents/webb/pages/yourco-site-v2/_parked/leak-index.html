@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="The Industry Leak Index — yourco" />
+<meta property="og:description" content="How much revenue the average local business leaks every month to missed calls and slow follow-up — by industry. Built on 2025–2026 data, updated as yourco audits more businesses." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<title>The Industry Leak Index — yourco</title>
+<meta name="description" content="How much revenue the average local business leaks every month to missed calls and slow follow-up — by industry. Built on 2025–2026 data, updated as yourco audits more businesses." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--brass:#B8965A;--ink:#15192e;--muted:#5b617a;--line:#e7e1d4}
+  .ix{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:10px}
+  .row{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .row h3{margin:0 0 2px;font-size:17px;color:var(--indigo)}
+  .row .sub{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+  .row .big{font-size:34px;font-weight:800;color:var(--indigo);line-height:1}
+  .row .big span{font-size:14px;font-weight:600;color:var(--muted)}
+  .row .stat{font-size:13px;color:var(--ink);margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+  .row .stat .src{color:#a59a82;font-size:11px}
+  .row .meas{font-size:12px;color:var(--muted);margin-top:8px;background:#faf7f0;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+  .row .link{display:inline-block;margin-top:12px;color:var(--brass);font-weight:700;font-size:13.5px;text-decoration:none}
+  .method{background:#faf7f0;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--ink)}
+  @media(max-width:720px){.ix{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="verticals.html">Industries</a><a href="audit.html">The audit</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill sm">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="tile hero"><div class="wrap narrow">
+    <div class="eyebrow">the industry leak index</div>
+    <h1>What your industry leaks every month.</h1>
+    <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+    <p>Local businesses lose real money to missed calls and slow follow-up — and most never see the number. This is what it looks like by industry, built on 2025–2026 research and updated as yourco audits more businesses. Find yours, then see your own figure in the free Revenue Leak Snapshot.</p>
+  </div></section>
+
+  <section class="tile parchment"><div class="wrap">
+    <div class="eyebrow">by industry</div>
+    <h2 class="sec">The leak, ranked.</h2>
+    <div class="ix" id="ix"></div>
+  </div></section>
+
+  <section class="tile"><div class="wrap narrow prose">
+    <div class="eyebrow">how this is built (the honest part)</div>
+    <h2 class="sec">Where these numbers come from.</h2>
+    <div class="method" id="method">—</div>
+    <p style="margin-top:16px">The leak above is illustrative — it's modeled on a standard scenario, not your business. <strong>Your number is different.</strong> The free Revenue Leak Snapshot computes it from your own figures and shows the math.</p>
+    <div class="ctas"><a class="pill" href="verticals.html">Find your industry →</a><a class="pill ghost" href="missed-money-meter.html">Quick: the Missed-Money Meter</a></div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap">yourco · the industry leak index · figures modeled from cited 2025–2026 data; yourco-measured data accumulates post-launch · <a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a></div></footer>
+
+<script src="snapshot-config.js"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const money = n => "$" + Math.round(n).toLocaleString();
+  const V = window.YOURCO_VERTICALS || {};
+
+  fetch("leak-index-data.json").then(r=>r.json()).then(data=>{
+    const sc = data.scenario;
+    // compute illustrative monthly leak per vertical, sort desc
+    const rows = data.verticals.map(v=>{
+      const missed = Math.round(sc.leadsPerMonth * sc.missRate);
+      const leak = missed * sc.bookRate * v.avgJob;
+      const cfg = V[v.slug];
+      const stat = cfg && cfg.stats && cfg.stats[0] ? cfg.stats[0] : null;
+      const meas = (data.yourco && data.yourco.byVertical && data.yourco.byVertical[v.slug]) || null;
+      return { v, leak, missed, stat, meas };
+    }).sort((a,b)=>b.leak-a.leak);
+
+    $("ix").innerHTML = rows.map(r=>{
+      const statHtml = r.stat
+        ? `<div class="stat">${r.stat.n} ${r.stat.l}<br><span class="src">source: ${r.stat.url?`<a href="${r.stat.url}" target="_blank" rel="noopener" style="color:#a59a82">${r.stat.src}</a>`:r.stat.src}</span></div>` : "";
+      const measHtml = (r.meas && r.meas.count>0)
+        ? `<div class="meas"><b>yourco-measured:</b> avg ${money(r.meas.avgLeak)}/mo across ${r.meas.count} audited ${r.v.name.toLowerCase()} businesses.</div>`
+        : `<div class="meas"><b>yourco-measured:</b> accumulating — fills in as we audit ${r.v.name.toLowerCase()} businesses.</div>`;
+      return `<div class="row">
+        <h3>${r.v.name}</h3>
+        <div class="sub">illustrative monthly leak · standard scenario</div>
+        <div class="big">${money(r.leak)} <span>/mo</span></div>
+        ${statHtml}
+        ${measHtml}
+        <a class="link" href="snapshot.html?v=${r.v.slug}">See your real number → free Revenue Leak Snapshot</a>
+      </div>`;
+    }).join("");
+
+    const measuredCount = data.yourco ? data.yourco.count : 0;
+    $("method").innerHTML =
+      `<b>Two layers, kept honest and separate.</b><br>` +
+      `<b>1) Modeled from industry data (shown above):</b> a standard scenario — <code style="background:#efe9dc;padding:1px 5px;border-radius:4px">${sc.leadsPerMonth} leads/mo</code> × <code style="background:#efe9dc;padding:1px 5px;border-radius:4px">${Math.round(sc.missRate*100)}% missed/slow</code> (${sc.missRateSource ? `<a href="${sc.missRateUrl}" target="_blank" rel="noopener" style="color:#B8965A">${sc.missRateSource}</a>` : ""}) × <code style="background:#efe9dc;padding:1px 5px;border-radius:4px">~${Math.round(sc.bookRate*100)}% would've booked</code> × a representative average job value per trade. The avg-job values are representative placeholders, not measured — your real numbers will differ.<br>` +
+      `<b>2) yourco-measured:</b> the anonymized average from real completed Revenue Leak Snapshots. Currently <b>${measuredCount} audit${measuredCount===1?"":"s"}</b> in the index — this layer grows as yourco audits more businesses, and we'll never present modeled figures as measured.`;
+  }).catch(()=>{ $("ix").innerHTML = '<p style="color:#5b617a">Index loading… <a href="verticals.html" style="color:#B8965A;font-weight:600">find your industry →</a></p>'; });
+</script>
+</body>
+</html>

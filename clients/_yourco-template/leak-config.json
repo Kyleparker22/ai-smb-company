@@ -1,0 +1,60 @@
+{
+  "_what": "Leak Meter assumption schedule — offerings/leak-meter/SPEC.md. Every multiplier here must be client-approved (signed) before it prices anything. A category with signed:false renders COUNTS ONLY, unpriced, labeled 'no approved assumption'. Demo state: all unsigned, nothing invented.",
+  "client": "[[CLIENT NAME]]",
+  "currency": "USD",
+  "schedule_version": "v0-unsigned",
+  "assumptions_as_of": null,
+  "approved_by": null,
+  "approved_date": null,
+  "categories": [
+    {
+      "id": "missed_intake",
+      "label": "Missed & after-hours calls",
+      "event_source": "intake events (answered/missed, timestamp) — OS intake module stream",
+      "covered_by_os": false,
+      "signed": false,
+      "signed_by": null,
+      "signed_date": null,
+      "formula": "events × avg_job_value × close_rate",
+      "params": {
+        "avg_job_value": null,
+        "avg_job_value_source": "[[client books — never an industry average]]",
+        "close_rate": null,
+        "close_rate_source": "[[client-stated or measured; label which]]",
+        "after_hours_definition": "[[e.g. outside Mon–Fri 8–5 local]]"
+      }
+    },
+    {
+      "id": "slow_quotes",
+      "label": "Quotes sent slow",
+      "event_source": "quote lifecycle (requested → sent) — OS sales module stream",
+      "covered_by_os": false,
+      "signed": false,
+      "signed_by": null,
+      "signed_date": null,
+      "formula": "events × avg_job_value × close_rate × decay_fraction(days_late)",
+      "params": {
+        "avg_job_value": null,
+        "close_rate": null,
+        "decay_per_day": null,
+        "decay_source": "[[the close-rate decay the client agreed reflects their market]]",
+        "on_time_threshold_hours": null
+      }
+    },
+    {
+      "id": "aging_invoices",
+      "label": "Invoices aging past terms",
+      "event_source": "invoice ledger (issued → paid) — OS back-office stream",
+      "covered_by_os": false,
+      "signed": false,
+      "signed_by": null,
+      "signed_date": null,
+      "formula": "invoice_amount × collection_odds_lost(days_past_terms)",
+      "params": {
+        "terms_days": null,
+        "collection_decay_per_30d": null,
+        "decay_source": "[[client-approved collection-odds decay]]"
+      }
+    }
+  ]
+}

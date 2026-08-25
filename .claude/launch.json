@@ -1,0 +1,1027 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "yourco-prospect-demo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8809",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "playground/data/_prospects"
+      ],
+      "port": 8809,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-hq",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "dashboard/server.py"
+      ],
+      "port": 8791,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-crm",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "crm/server.py"
+      ],
+      "port": 8790,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-client-console",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8792",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/_yourco-template"
+      ],
+      "port": 8792,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-webb-pages",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8793",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "agents/webb/pages"
+      ],
+      "port": 8793,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-sample-client",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8794",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/sample-client/prototype"
+      ],
+      "port": 8794,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-demo-kit",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8795",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/_yourco-template/demo-kit"
+      ],
+      "port": 8795,
+      "autoPort": true
+    },
+    {
+      "name": "nick-storm-demo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8796",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/prospect-a/prototype"
+      ],
+      "port": 8796,
+      "autoPort": true
+    },
+    {
+      "name": "sample-realty-tour",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8801",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/sample-realty"
+      ],
+      "port": 8801,
+      "autoPort": true
+    },
+    {
+      "name": "nick-crew-app",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "clients/prospect-a/prototype/crew_server.py"
+      ],
+      "port": 8798,
+      "autoPort": false
+    },
+    {
+      "name": "Reed-salon-voice-demo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8797",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "agents/Reed/demos/salon-voice-agent"
+      ],
+      "port": 8797,
+      "autoPort": true
+    },
+    {
+      "name": "sample-client-design-studio",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8799",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/sample-client/prototype/design-studio"
+      ],
+      "port": 8799,
+      "autoPort": true
+    },
+    {
+      "name": "sample-client-platform",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "clients/sample-client/platform/server.py"
+      ],
+      "port": 8804,
+      "autoPort": true
+    },
+    {
+      "name": "sample-client-proposal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8800",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/sample-client"
+      ],
+      "port": 8800,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-trust-ledger",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8803",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "offerings/trust-ledger/prototype"
+      ],
+      "port": 8803,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-autonomy-standard",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8805",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "offerings/autonomy-standard/prototype"
+      ],
+      "port": 8805,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-connector-packet",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8806",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "processes/partnerships"
+      ],
+      "port": 8806
+    },
+    {
+      "name": "yourco-connector-console",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "processes/partnerships/connector-console/server.py",
+        "--serve",
+        "8807"
+      ],
+      "port": 8807,
+      "autoPort": false
+    },
+    {
+      "name": "yourco-playground-hq",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "dashboard/server.py"
+      ],
+      "port": 8891,
+      "autoPort": true,
+      "env": {
+        "YOURCO_DATA_ROOT": "playground/data"
+      }
+    },
+    {
+      "name": "yourco-playground-crm",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "crm/server.py"
+      ],
+      "port": 8890,
+      "autoPort": true,
+      "env": {
+        "YOURCO_DATA_ROOT": "playground/data"
+      }
+    },
+    {
+      "name": "yourco-playground-connector-console",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "processes/partnerships/connector-console/server.py",
+        "--serve",
+        "8892"
+      ],
+      "port": 8892,
+      "autoPort": false,
+      "env": {
+        "YOURCO_DATA_ROOT": "playground/data"
+      }
+    },
+    {
+      "name": "yourco-connector-console-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8808",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "processes/partnerships/connector-console/_out"
+      ],
+      "port": 8808,
+      "autoPort": false
+    },
+    {
+      "name": "prebuild-property-management",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/property-management/build/server.py"
+      ],
+      "port": 8813,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-dispatch-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/home-services/build/server.py"
+      ],
+      "port": 8821,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-consult-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/med-spa-aesthetics/build/server.py"
+      ],
+      "port": 8822,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-chair-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/dental-practices/build/server.py"
+      ],
+      "port": 8823,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-renewal-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/insurance-agencies/build/server.py"
+      ],
+      "port": 8824,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-close-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/accounting-firms/build/server.py"
+      ],
+      "port": 8825,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-case-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/law-firms/build/server.py"
+      ],
+      "port": 8826,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-carrier-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/freight-brokerage/build/server.py"
+      ],
+      "port": 8827,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-quote-desk-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/wholesale-distribution/build/server.py"
+      ],
+      "port": 8828,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-redeploy-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/staffing-recruiting/build/server.py"
+      ],
+      "port": 8829,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-shift-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/home-health-care/build/server.py"
+      ],
+      "port": 8830,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-change-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/commercial-subcontractors/build/server.py"
+      ],
+      "port": 8831,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-bay-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/auto-repair/build/server.py"
+      ],
+      "port": 8832,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-visit-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/veterinary/build/server.py"
+      ],
+      "port": 8833,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-queue-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/msp-it-services/build/server.py"
+      ],
+      "port": 8834,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-yard-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/equipment-rental/build/server.py"
+      ],
+      "port": 8835,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-unit-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/multi-unit-restaurants/build/server.py"
+      ],
+      "port": 8836,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-member-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/gyms-franchises/build/server.py"
+      ],
+      "port": 8837,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-route-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/pest-control/build/server.py"
+      ],
+      "port": 8838,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-haul-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/dumpster-waste/build/server.py"
+      ],
+      "port": 8839,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-closing-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/title-escrow/build/server.py"
+      ],
+      "port": 8840,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-crew-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/commercial-cleaning/build/server.py"
+      ],
+      "port": 8841,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-move-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/moving-storage/build/server.py"
+      ],
+      "port": 8842,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-gate-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/self-storage/build/server.py"
+      ],
+      "port": 8843,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-ratio-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/child-care/build/server.py"
+      ],
+      "port": 8844,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-arrangement-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/funeral-homes/build/server.py"
+      ],
+      "port": 8845,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-rehab-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/physical-therapy/build/server.py"
+      ],
+      "port": 8846,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-exam-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/optometry/build/server.py"
+      ],
+      "port": 8847,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-plate-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/catering-events/build/server.py"
+      ],
+      "port": 8848,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-traveler-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/machine-job-shops/build/server.py"
+      ],
+      "port": 8849,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-field-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/ag-services/build/server.py"
+      ],
+      "port": 8850,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-pool-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/pool-service/build/server.py"
+      ],
+      "port": 8851,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-canopy-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/tree-care/build/server.py"
+      ],
+      "port": 8852,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-pump-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/septic-services/build/server.py"
+      ],
+      "port": 8853,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-hook-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/towing-recovery/build/server.py"
+      ],
+      "port": 8854,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-code-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/fire-life-safety/build/server.py"
+      ],
+      "port": 8855,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-inspect-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/property-inspection/build/server.py"
+      ],
+      "port": 8856,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-claim-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/medical-billing/build/server.py"
+      ],
+      "port": 8857,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-shine-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/car-wash-detailing/build/server.py"
+      ],
+      "port": 8858,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-proof-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/print-signage/build/server.py"
+      ],
+      "port": 8859,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-cab-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/elevator-maintenance/build/server.py"
+      ],
+      "port": 8860,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-lot-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/used-car-dealers/build/server.py"
+      ],
+      "port": 8861,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-post-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/security-guard-services/build/server.py"
+      ],
+      "port": 8862,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-fuel-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/propane-delivery/build/server.py"
+      ],
+      "port": 8863,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-central-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/alarm-monitoring/build/server.py"
+      ],
+      "port": 8864,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-hours-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/trucking-fleet/build/server.py"
+      ],
+      "port": 8865,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-ride-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/nemt-transport/build/server.py"
+      ],
+      "port": 8866,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-rig-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/crane-rigging/build/server.py"
+      ],
+      "port": 8867,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-slip-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/marinas/build/server.py"
+      ],
+      "port": 8868,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-garment-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/dry-cleaners/build/server.py"
+      ],
+      "port": 8869,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-consign-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/resale-consignment/build/server.py"
+      ],
+      "port": 8870,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-well-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/well-water/build/server.py"
+      ],
+      "port": 8872,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-plat-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/land-surveyors/build/server.py"
+      ],
+      "port": 8873,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-key-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/locksmiths/build/server.py"
+      ],
+      "port": 8874,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-stone-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/monument-dealers/build/server.py"
+      ],
+      "port": 8871,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-marquee-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/party-tent-rental/build/server.py"
+      ],
+      "port": 8875,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-pane-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/glass-glazing/build/server.py"
+      ],
+      "port": 8879,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-flue-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/chimney-hearth/build/server.py"
+      ],
+      "port": 8876,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-serve-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/process-servers/build/server.py"
+      ],
+      "port": 8877,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-ember-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/pet-aftercare/build/server.py"
+      ],
+      "port": 8880,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-fix-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/appliance-repair/build/server.py"
+      ],
+      "port": 8878,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-deal-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/real-estate-investing/build/server.py"
+      ],
+      "port": 8881,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-exit-radar",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "agents/sadie/exit-radar/server.py"
+      ],
+      "port": 8814
+    },
+    {
+      "name": "prebuild-blackbox-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/house-blackbox/build/server.py"
+      ],
+      "port": 8882,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-reserve-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/hoa-management/build/server.py"
+      ],
+      "port": 8887,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-halflife-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/evidence-halflife/build/server.py"
+      ],
+      "port": 8884,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-delta-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/changeorder-camera/build/server.py"
+      ],
+      "port": 8883,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-rebid-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/graveyard-rebid/build/server.py"
+      ],
+      "port": 8888,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-receipt-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/title-receipts/build/server.py"
+      ],
+      "port": 8894,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-remit-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/pharmacy-remit/build/server.py"
+      ],
+      "port": 8886,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-counter-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/wholesale-no-meter/build/server.py"
+      ],
+      "port": 8893,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-lab-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/restaurant-lab/build/server.py"
+      ],
+      "port": 8889,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-rehearsal-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/claim-rehearsal/build/server.py"
+      ],
+      "port": 8885,
+      "autoPort": true
+    },
+    {
+      "name": "sample-realty-tools",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8810",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "clients/sample-realty/tools"
+      ],
+      "port": 8810,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-app",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "app/server.py"
+      ],
+      "port": 8820,
+      "autoPort": false
+    },
+    {
+      "name": "prebuild-assay-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/peptide-testing-labs/build/server.py"
+      ],
+      "port": 8895,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-provenance-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/peptide-compounders/build/server.py"
+      ],
+      "port": 8896,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-protocol-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/peptide-clinics/build/server.py"
+      ],
+      "port": 8897,
+      "autoPort": true
+    },
+    {
+      "name": "prebuild-encounter-os",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "Pre Build Ideas/telehealth-clinics/build/server.py"
+      ],
+      "port": 8898,
+      "autoPort": true
+    },
+    {
+      "name": "yourco-audit-report",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8811",
+        "--directory",
+        "clients/_yourco-template/audit-report"
+      ],
+      "port": 8811
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shine OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-claims"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never denies a damage
+claim, never slow-walks a cancellation, never charges after a recorded cancellation request, and
+never threatens in dunning.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'claims',label:'Claims & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,claims,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.locations} locations · ${fmt.num(d.config.members)} members`;
+  document.getElementById('v-board').innerHTML =
+    panel('The tunnels, counted', '',
+      `<div class="grid">
+        ${stat('Open damage claims', fmt.num(b.claims_open), 'footage pulled, manager calls, nothing denied by software', b.claims_open?'warn':'')}
+        ${stat('Failed payments', fmt.money(b.failed_value), `${b.failed_payments} card(s) in the ladder`, b.failed_payments?'alert':'')}
+        ${stat('Rained-out details', fmt.num(b.rained_out), 'honest reschedules draft, not voicemails')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.recovered_value)}`,
+               `${b.recovered.payments_recovered} payment(s) · ${b.recovered.claims_resolved} claim(s) resolved · ${b.recovered.details_kept} detail(s) kept`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A damage claim is logged verbatim, the footage is pulled, and a
+      manager calls — <b>software never argues physics.</b> A cancellation's clock starts at the
+      request; the save offer is a separate row that never delays it.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='damage_claim'?'bad':m.label==='cancellation'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function claims(){
+  const d = await API.get('/api/claims');
+  document.getElementById('v-claims').innerHTML =
+    `<div class="banner warn">Try it: charge the member who cancelled two days ago — refused by
+      construction.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="charge('mb_demo_cancelled')">Charge: cancelled member</button>
+      <button class="act primary" onclick="charge('mb_000')">Charge: active member</button>
+     </div><div id="clout"></div>` +
+    panel('Damage claims', '', table([{label:'Filed'},{label:'From'},{label:'Verbatim'},{label:'State'}],
+      d.rows, c=>`<td>${fmt.stamp(c.filed_at)}</td><td>${esc(c.from||'')}</td>
+        <td>${esc(c.text||'')}</td>
+        <td>${c.resolved_at?pill('resolved by a human','good'):pill('footage + callback','warn')}</td>`), true);
+}
+async function charge(id){
+  const r = await API.post(`/api/members/${id}/charge`,{amount:29});
+  document.getElementById('clout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Charge drafted', '', `<div class="strong">queued at R1</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['open_failures','Open failed payments','counted'],['recovery_rate','Recovery rate','your number (0–1)'],
+    ['avg_dues','Avg monthly dues','your number'],
+    ['details_rescheduled','Details rescheduled/yr','your number'],['avg_detail','Avg detail ticket','your number'],
+    ['desk_hours_wk','Desk hrs/wk','your number'],['desk_rate','Desk rate','your number'],
+    ['claims_value','The claims file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

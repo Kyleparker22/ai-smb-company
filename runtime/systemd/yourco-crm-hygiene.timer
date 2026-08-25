@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo CRM hygiene — weekday mornings 08:05 ET (David)
+
+[Timer]
+OnCalendar=Mon-Fri *-*-* 08:05:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

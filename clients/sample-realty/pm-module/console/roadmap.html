@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Property Management — what it does, and what comes next</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+    --ok:#1D7A46; --amber:#B26A00;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);
+       line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;
+          font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  header{background:var(--ink);color:var(--on-dark);padding:36px 0 34px}
+  .mark{font-family:Didot,Georgia,serif;font-size:22px}
+  .mark i{font-style:normal;color:var(--red)}
+  .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.28em;
+             text-transform:uppercase;color:var(--on-dark-soft);margin-left:12px;vertical-align:2px}
+  header h1{font-family:Didot,Georgia,serif;font-size:clamp(25px,3.4vw,37px);font-weight:400;margin-top:12px;line-height:1.18}
+  header h1 em{font-style:italic;color:#FF6165}
+  header p{font-family:Didot,Georgia,serif;font-size:16px;font-style:italic;color:var(--on-dark-soft);
+           margin-top:14px;max-width:60ch}
+
+  section{padding:42px 0 6px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.28em;
+          text-transform:uppercase;color:var(--red)}
+  h2{font-family:Didot,Georgia,serif;font-size:24px;font-weight:400;margin-top:6px}
+  h2 em{font-style:italic;color:var(--red)}
+  .note{font-family:Didot,Georgia,serif;font-size:12.5px;font-style:italic;color:var(--ink-soft);margin-top:5px;max-width:72ch}
+  p.body{font-size:15px;margin-top:14px;max-width:70ch}
+
+  .phase{display:grid;grid-template-columns:170px 1fr;gap:26px;padding:22px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border-bottom:0}
+  @media(max-width:720px){.phase{grid-template-columns:1fr;gap:10px}}
+  .pl{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.16em;
+      text-transform:uppercase;color:var(--ink-soft);padding-top:4px}
+  .pl b{display:block;font-family:Didot,Georgia,serif;font-size:19px;font-weight:400;letter-spacing:0;
+        text-transform:none;color:var(--ink);margin-bottom:5px}
+  .chip{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;
+        letter-spacing:.12em;text-transform:uppercase;padding:4px 11px;border-radius:9999px;white-space:nowrap}
+  .chip.ok{background:rgba(29,122,70,.1);color:var(--ok)}
+  .chip.wait{background:var(--warm);color:var(--amber);border:1px solid rgba(178,106,0,.35)}
+  .chip.dark{background:var(--ink);color:var(--on-dark)}
+  .phase ul{margin:11px 0 0 17px}
+  .phase li{font-size:14.5px;margin-bottom:6px}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);padding:20px 22px}
+  .card h3{font-family:Didot,Georgia,serif;font-size:19px;font-weight:400;margin-bottom:7px}
+  .card p{font-size:14px;color:var(--ink-soft)}
+
+  .found{background:var(--ink);color:var(--on-dark);padding:34px 0 38px;margin-top:0;border-top:1px solid var(--line-dark)}
+  .found .kicker{color:#FF6165}
+  .found h2{color:var(--on-dark)}
+  .found ul{margin:16px 0 0 18px}
+  .found li{font-size:15px;margin-bottom:9px;color:var(--on-dark)}
+  .found li span{color:var(--on-dark-soft);font-style:italic;font-size:13.5px}
+
+  .asks{counter-reset:q}
+  .ask{display:flex;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .ask:last-child{border-bottom:0}
+  .ask .n{font-family:Didot,Georgia,serif;font-size:20px;color:var(--red);min-width:26px}
+  .ask .t{font-size:14.5px}
+  .ask .t span{display:block;font-family:Didot,Georgia,serif;font-style:italic;font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+
+  .guard{background:var(--warm);border-left:3px solid var(--red);padding:22px 24px;margin-top:22px}
+  .guard h3{font-family:Didot,Georgia,serif;font-size:20px;font-weight:400;margin-bottom:9px}
+  .guard li{font-size:14.5px;margin:0 0 7px 17px}
+
+  footer{border-top:1px solid var(--line);margin-top:46px;padding:22px 0 40px;
+         font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;letter-spacing:.1em;
+         text-transform:uppercase;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Proposal outline — nothing here is live yet · figures from the Jan–Jul 2026 journal</div>
+
+<header><div class="wrap">
+  <div class="mark">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></div>
+  <h1>You already run a property management company.<br/>It just <em>runs on two spreadsheets.</em></h1>
+  <p>Eight doors, five owners, an NCREC escrow account, and a monthly reconciliation typed by hand.
+     Here's what one automated pass over your own books found — and what it would look like operated.</p>
+</div></header>
+
+<div class="found"><div class="wrap">
+  <div class="kicker">What we already did</div>
+  <h2>We ran your two workbooks. Nothing retyped.</h2>
+  <ul>
+    <li><b>137 transactions read, $96,666 in deposits traced</b> — and the journal, a ledger per property, and the NCREC trial balance regenerated entirely by formula.</li>
+    <li><b>1010 Bexton ends July at −$1,830.51.</b> <span>April's $4,331 in repairs exceeded its rents — so those bills were covered by other owners' funds sitting in the same trust account, or a top-up went unrecorded. Invisible in hand-kept books; instant when the ledgers generate themselves.</span></li>
+    <li><b>19 undated entries · 20 spellings for ~10 properties.</b> <span>Undated rows quietly vanish from monthly reports, and "Doveridge" alone means three different homes.</span></li>
+    <li><b>The running balance contradicts itself five times.</b> <span>Rows entered out of date order broke the typed balance column around February 10.</span></li>
+    <li><b>Your fees are clean.</b> <span>Everywhere rent and fee both posted, the 8% holds exactly. That part you've never gotten wrong.</span></li>
+  </ul>
+</div></div>
+
+<section><div class="wrap">
+  <div class="kicker">Why not just buy software</div>
+  <h2>Because the software would still leave you <em>doing the work.</em></h2>
+  <p class="body">Buildium, DoorLoop and AppFolio are good at tenant portals, online rent payment and screening.
+     At eight doors they're $60–200 a month and weeks of setup — and at the end of it the trust accounting
+     is still yours to type. They're a filing cabinet, not an employee.</p>
+  <p class="body">The thing that actually costs you time and carries licence risk is the part none of them do for you.
+     So: build the operated piece, and buy the commodity edges only when you need them —
+     tenant screening per applicant, online payment if your tenants ever outgrow Zelle.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">The build</div>
+  <h2>What arrives when.</h2>
+  <div class="note">Each phase is useful on its own. Nothing later is a prerequisite for something earlier working.</div>
+
+  <div class="phase">
+    <div class="pl"><b>Today</b><span class="chip ok">Done</span></div>
+    <div>
+      <ul>
+        <li>The books engine — journal in, per-property ledgers and NCREC trial balance out, by formula</li>
+        <li>Owner statements drafted for all five owners</li>
+        <li>The findings review you're holding</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="pl"><b>First month</b><span class="chip dark">Phase 2</span></div>
+    <div>
+      <ul>
+        <li><b>Rent roll and lease registry</b> — one place that knows every property, owner, tenant, rent, due day, lease dates and deposit. One sit-down to confirm what the journal couldn't tell us.</li>
+        <li><b>Bank statement in</b> — transactions matched to tenant and property automatically; you approve the exceptions only.</li>
+        <li><b>Rent watchdog</b> — on the 6th, anyone unpaid is flagged and a reminder is drafted. You approve every send.</li>
+        <li><b>Your console, live</b> — the morning view, updating itself.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="pl"><b>After that</b><span class="chip wait">Phase 3</span></div>
+    <div>
+      <ul>
+        <li><b>Maintenance intake</b> — a tenant texts a photo, a ticket drafts itself, you approve the dispatch, and the cost posts to the right property ledger and the owner's statement without anyone typing it twice</li>
+        <li><b>An owner page per landlord</b> — Raju sees Raju's numbers, whenever he wants, instead of emailing you</li>
+        <li><b>Compliance calendar</b> — monthly reconciliation, the 30-day deposit clock on any move-out, lease renewals at 90/60/30 days, 1099 totals accumulating all year</li>
+        <li><b>Vacancies flow to the website</b> — the For Lease section fills itself</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="pl"><b>As it earns it</b><span class="chip wait">Phase 4</span></div>
+    <div>
+      <ul>
+        <li>A live bank feed instead of statement uploads</li>
+        <li>Tenant screening when you next need it</li>
+        <li>The routine steps stop asking permission — but only after a clean run of you approving them and agreeing every time</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="guard">
+    <h3>What it will never do</h3>
+    <ul>
+      <li><b>It never moves money.</b> It drafts; you execute every disbursement. That doesn't change at any phase.</li>
+      <li>Every figure traces back to a source transaction, with the audit trail kept.</li>
+      <li>Your trust-account data stays isolated. Nothing is shared and nothing is trained on.</li>
+      <li>Counsel reviews the NCREC record-keeping fit before any of it goes live.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">What we need from you</div>
+  <h2>Five answers, one sitting.</h2>
+  <div class="note">These are the gaps the journal alone couldn't close. Most are two-minute answers.</div>
+  <div class="asks">
+    <div class="ask"><div class="n">1</div><div class="t">Lease dates, due days and late-fee terms per unit
+      <span>The renewal radar and late-fee maths both need these; nothing else does.</span></div></div>
+    <div class="ask"><div class="n">2</div><div class="t">15721 Capps — status?
+      <span>No rent since the March 19 pro-rate. Moved out, or missing entries?</span></div></div>
+    <div class="ask"><div class="n">3</div><div class="t">1138 Doveridge — status?
+      <span>Silent since February, after partial payments. Same question.</span></div></div>
+    <div class="ask"><div class="n">4</div><div class="t">Barossa Valley's rent
+      <span>Amounts range $1,490–$1,800 month to month. What does the lease actually say?</span></div></div>
+    <div class="ask"><div class="n">5</div><div class="t">Which bank holds the trust account
+      <span>That's the statement feed — the single change that removes the most typing.</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kicker">The honest summary</div>
+  <h2>What this is, and what it isn't.</h2>
+  <div class="grid2">
+    <div class="card"><h3>What's real today</h3>
+      <p>The books engine ran on your actual data and the findings are traceable to individual journal rows.
+         The console is seeded from those same numbers. You can check any figure against your own workbook.</p></div>
+    <div class="card"><h3>What isn't built</h3>
+      <p>Everything from the first month onward. The console is a demo of the morning view, not a live system —
+         it isn't reading your bank, and no watchdog is running. That starts when the work does.</p></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  Prepared from “Rent Account Journal 2026.xlsx” and “2026 ST Rent Trial Balance.xlsx” ·
+  companion workbook: Parker-Realty-Trust-Account-Review-2026.xlsx
+</div></footer>
+
+</body>
+</html>

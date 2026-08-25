@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Close OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-chase"></section>
+  <section class="view" id="v-docs"></section>
+  <section class="view" id="v-scope"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system takes no tax position and
+gives no advice — a question about treatment goes to a CPA unanswered.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Partner board'},{id:'chase',label:'The chase'},{id:'docs',label:'Documents'},
+      {id:'scope',label:'Scope ledger'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,chase,docs,scope,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.firm;
+  document.getElementById('cosub').textContent = `${d.config.people} people · ${(d.config.partners||[]).length} partners`;
+  document.getElementById('v-board').innerHTML =
+    panel('Who is blocking what', 'an engagement may not sit in a vague “in progress”',
+      `<div class="grid">
+        ${stat('Live engagements', fmt.num(b.rows.length))}
+        ${stat('Due inside 7 days', fmt.num(b.at_risk.length), '', b.at_risk.length?'alert':'')}
+        ${stat('Blocked on the client', fmt.num(b.blocked_on_client))}
+        ${stat('Blocked on us', fmt.num(b.blocked_on_us), 'the honest half of the board', b.blocked_on_us?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">
+        ${stat('Median blocker age', val(d.blocker_ages,'median_days', v=>v+' days'),
+          d.blocker_ages._missing?'':`worst is ${d.blocker_ages.max_days} days`)}
+        ${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 approval floor')}
+       </div>`) +
+    panel('Sorted by what blows a deadline first', '', table(
+      [{label:'Client'},{label:'Engagement'},{label:'Blocker'},{label:'Blocked',num:true},
+       {label:'Open items',num:true},{label:'Due in',num:true},{label:'Owner'}],
+      b.rows.slice(0,60), r=>`<td>${esc(r.client||'')}</td><td>${esc(r.label)}</td>
+        <td>${r.blocker?pill(r.blocker.replace(/_/g,' '), r.blocker==='firm'?'warn':''):blank('no blocker named')}</td>
+        <td class="num">${r.blocker_age==null?blank('never blocked'):r.blocker_age+'d'}</td>
+        <td class="num">${r.open_items}</td>
+        <td class="num ${r.days_to_due!=null&&r.days_to_due<=7?'strong':''}">${r.days_to_due==null?'—':r.days_to_due+'d'}</td>
+        <td class="why">${esc(r.owner||'')}</td>`), true);
+}
+
+async function chase(){
+  const d = await API.get('/api/chase');
+  document.getElementById('v-chase').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('In flight', `${d.bundles} messages · ${d.touches} items covered · ${d.escalated} escalated to a partner`,
+      table([{label:'Client'},{label:'Step'},{label:'Channel'},{label:'Items',num:true},{label:'Copy'},{label:''}],
+        d.drafts, x=>`<td>${esc(x.client||'')}</td>
+          <td>${pill(x.step, x.step==='escalate'?'bad':'')}</td><td class="why">${esc(x.channel)}</td>
+          <td class="num">${x.items}</td><td class="why">${esc(x.body)}</td>
+          <td>${x.executed?pill('sent at R2','good'):pill('waiting on you','warn')}</td>`), true) +
+    panel('Held back — not chaseable yet', 'a chase for something that cannot be produced teaches the client to ignore us',
+      table([{label:'Client'},{label:'Item'},{label:'Why not'}], d.held,
+        h=>`<td>${esc(h.client||'')}</td><td class="mono">${esc(h.type)}</td>
+          <td class="why">${esc(h.why)}</td>`), true);
+}
+
+async function docs(){
+  const d = await API.get('/api/documents');
+  const c = d.counts;
+  document.getElementById('v-docs').innerHTML =
+    `<div class="banner warn">${esc(d.note)}</div>` +
+    panel('Intake', `${d.unprocessed} unprocessed`,
+      `<div class="grid">
+        ${stat('Filed', fmt.num(c.file), 'confident match, renamed to house convention')}
+        ${stat('Flagged', fmt.num(c.flag), 'wrong year, wrong entity, nothing open for it', c.flag?'warn':'')}
+        ${stat('Human queue', fmt.num(c.human_queue), 'below the confidence threshold')}
+       </div>
+       <div style="margin-top:12px"><button class="act primary" onclick="sweepDocs()">Process the inbox</button></div>`) +
+    panel('What it did with each one', '', table(
+      [{label:'Arrived as'},{label:'Read'},{label:'Outcome'},{label:'Why'},{label:'Renamed to'}],
+      d.rows, r=>`<td class="mono">${esc(r.filename)}</td>
+        <td class="why">${r.read?`${esc(r.read.type||'unknown')} · ${r.read.year||'no year'} · conf ${r.read.confidence}`:''}</td>
+        <td>${pill(r.outcome, r.outcome==='file'?'good':r.outcome==='flag'?'bad':'warn')}</td>
+        <td class="why">${esc(r.outcome_why||'')}</td>
+        <td class="mono why">${esc(r.renamed||'')}</td>`), true);
+}
+async function sweepDocs(){ await API.post('/api/documents/sweep'); docs(); }
+
+async function scope(){
+  const d = await API.get('/api/scope');
+  document.getElementById('v-scope').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('Try it', 'paste something a client would actually write',
+      `<textarea id="msg" style="width:100%;height:70px;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px"
+        >We just formed a new LLC for the rental, and can I deduct the truck I bought in November?</textarea>
+       <div style="margin-top:10px"><button class="act primary" onclick="sendMsg()">Read it</button></div>
+       <div id="msgout"></div>`) +
+    panel('The ledger', `${d.n} events · ${d.undecided} awaiting a bill-or-forgive decision`, table(
+      [{label:'What arrived'},{label:'The clause it falls outside'},{label:'Evidence'}], d.rows,
+      r=>`<td>${pill(r.label,'brand')}<div class="why">matched “${esc(r.matched)}”</div></td>
+        <td class="why">“${esc(r.citation)}”</td><td class="why">${esc((r.evidence||'').slice(0,90))}</td>`), true);
+}
+async function sendMsg(){
+  const r = await API.post('/api/message', {engagement:'en_demo', text:document.getElementById('msg').value});
+  document.getElementById('msgout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">“${esc(s.said)}”</div>`:''}
+      ${s.refused?`<div class="banner warn" style="margin-top:10px">Refused: ${esc(s.refused)}</div>`:''}
+      ${s.citation?`<div class="why">letter says: “${esc(s.citation)}”</div>`:''}
+      ${s.why?`<div class="why">${esc(s.why)}</div>`:''}
+    </div></div>`).join('');
+  scope();
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['chase_messages_wk','Chase messages / wk','counted from the log'],
+    ['minutes_per_touch','Minutes per touch','your number'],['loaded_rate','Loaded staff rate','your number'],
+    ['documents_wk','Documents / wk','counted'],['minutes_per_doc','Minutes per document','your number'],
+    ['engagements','Live engagements','counted'],['blocker_days_removed','Blocker days removed','your number'],
+    ['daily_wip_value','Daily WIP value','your number'],
+    ['scope_events_per_year','Scope events / yr','counted from the ledger'],
+    ['capture_rate','Capture %','your number'],['avg_scope_value','Avg scope value','your number']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide')+renderEval(ev)+renderAutonomy(au.matrix)+renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'partner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

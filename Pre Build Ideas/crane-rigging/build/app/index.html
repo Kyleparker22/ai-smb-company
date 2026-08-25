@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rig OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-rfqs"></section>
+  <section class="view" id="v-lifts"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never approves a lift plan
+(it only checks the record exists), never assigns an operator without the class certification,
+never dispatches over the recorded wind limit, and never quotes a critical lift as taxi work.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'rfqs',label:'RFQs & flags'},{id:'lifts',label:'Lifts & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,rfqs,lifts,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = d.config.revenue;
+  document.getElementById('v-board').innerHTML =
+    panel('The iron, counted', '',
+      `<div class="grid">
+        ${stat('Open lifts', fmt.num(b.lifts_open), `${b.critical_open} critical`, '')}
+        ${stat('Critical without plans', fmt.num(b.critical_unplanned), 'unschedulable until the plan is on file', b.critical_unplanned?'alert':'')}
+        ${stat('Unscanned RFQs', fmt.num(b.rfqs_open), 'the flags force the engineering path', b.rfqs_open?'warn':'')}
+        ${stat('', '', '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.lifts_completed} · ${b.recovered.quotes_sent} · ${b.recovered.cert_lapses_caught}`,
+               'lifts completed · quotes sent · cert lapses caught')}</div>`);
+}
+
+async function rfqs(){
+  const d = await API.get('/api/rfqs');
+  document.getElementById('v-rfqs').innerHTML =
+    `<div class="banner warn">A critical-flagged RFQ cannot be quoted as taxi work — the
+      engineering path is the only path. No site data → estimate-pending-site-visit, never a firm
+      number.</div>` +
+    panel('RFQs', '', table([{label:'From'},{label:'Request'},{label:'Site data'},{label:'Flags'},{label:''}],
+      d.rows, r=>`<td>${esc(r.from||'')}${r.demo_tag?' '+pill(r.demo_tag,'brand'):''}</td>
+        <td>${esc(r.text)}</td>
+        <td>${r.radius_ft&&r.weight_lbs?pill('recorded','good'):pill('missing','warn')}</td>
+        <td>${(r.flags||[]).map(f=>pill(f,'bad')).join(' ')||(r.scanned_at?pill('standard'):'—')}</td>
+        <td class="right"><button class="act primary" onclick="handle('${r.id}')">Scan</button></td>`), true) +
+    `<div id="rout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/rfqs/${id}/handle`);
+  document.getElementById('rout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function lifts(){
+  const d = await API.get('/api/lifts');
+  document.getElementById('v-lifts').innerHTML =
+    `<div class="banner warn">Try it: schedule the critical lift with no plan — refused; assign
+      the TSS-only operator to the 275-ton AT — refused; dispatch into a 30mph forecast against a
+      22mph chart — refused by arithmetic.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="sched('lf_demo_noplan')">Schedule: critical, no plan</button>
+      <button class="act primary" onclick="sched('lf_demo_planned')">Schedule: plan on file</button>
+      <button class="act" onclick="assign('lf_demo_planned','op_demo_tss')">Assign: TSS card on the AT</button>
+      <button class="act primary" onclick="assign('lf_demo_planned','op_demo_tll')">Assign: TLL certified</button>
+      <button class="act" onclick="disp('lf_demo_windy',30)">Dispatch: 30mph vs 20 limit</button>
+      <button class="act primary" onclick="disp('lf_demo_windy',12)">Dispatch: 12mph</button>
+     </div><div id="lout"></div>` +
+    panel('Lifts', '', table([{label:'Lift'},{label:'Crane'},{label:'Critical'},{label:'Plan'},{label:'Wind limit'}],
+      d.rows, l=>`<td class="mono">${esc(l.id)}${l.demo_tag?' '+pill(l.demo_tag,'brand'):''}</td>
+        <td class="mono">${esc(l.crane_id||'')}</td>
+        <td>${l.critical?pill('CRITICAL','bad'):pill('standard')}</td>
+        <td>${l.lift_plan&&l.lift_plan.ref?pill(l.lift_plan.ref+' · '+l.lift_plan.signed_by,'good'):l.critical?pill('NO PLAN','bad'):'—'}</td>
+        <td>${l.wind_limit_mph?l.wind_limit_mph+'mph':'—'}</td>`), true);
+}
+async function sched(id){
+  const r = await API.post(`/api/lifts/${id}/schedule`);
+  document.getElementById('lout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Scheduled', '', `<div class="strong">queued at R1</div>`);
+}
+async function assign(lift, op){
+  const r = await API.post(`/api/lifts/${lift}/assign`,{operator_id:op});
+  document.getElementById('lout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Assignment', '', `<div class="strong">queued at R1</div>`);
+}
+async function disp(lift, mph){
+  const r = await API.post(`/api/lifts/${lift}/dispatch`,{forecast_mph:mph});
+  document.getElementById('lout').innerHTML = r.refused
+    ? panel('Stood down', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Dispatchable', '', `<div class="strong">${esc(r.why)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['lapses_caught','Cert lapses caught','counted'],['avg_crane_day','Avg crane-day','your number'],
+    ['rfqs_mo','RFQs/mo','your number'],['close_lift','Close lift from speed','your number (0–1)'],
+    ['avg_job','Avg job','your number'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['plan_value','The lift-plan file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.flags) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

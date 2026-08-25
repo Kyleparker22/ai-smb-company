@@ -1,0 +1,398 @@
+<title>yourco &mdash; Session 1: What it is, and where it actually stands</title>
+<style>
+:root{
+  --indigo:#161B33; --indigo-deep:#0F1226; --indigo-2:#1c2240;
+  --cream:#F4EFE6; --cream-2:#E8E1D3; --parchment:#EAE1CD;
+  --brass:#B8965A; --brass-bright:#D4B27A; --oxblood:#6B1E29; --pewter:#6E7180;
+
+  --bg:var(--cream);
+  --bg-alt:var(--parchment);
+  --ink:var(--indigo);
+  --ink-muted:rgba(22,27,51,.64);
+  --ink-faint:rgba(22,27,51,.45);
+  --hairline:rgba(22,27,51,.14);
+  --accent:#8F6F35;
+  --band-bg:var(--indigo-deep);
+  --band-ink:var(--cream);
+  --band-muted:rgba(244,239,230,.68);
+  --band-hairline:rgba(244,239,230,.18);
+  --band-accent:var(--brass);
+
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  --sans:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"JetBrains Mono",SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:var(--indigo); --bg-alt:#12162c;
+    --ink:var(--cream);
+    --ink-muted:rgba(244,239,230,.66);
+    --ink-faint:rgba(244,239,230,.44);
+    --hairline:rgba(244,239,230,.16);
+    --accent:var(--brass-bright);
+    --band-bg:var(--indigo-2); --band-ink:var(--cream);
+    --band-muted:rgba(244,239,230,.68); --band-hairline:rgba(244,239,230,.2);
+    --band-accent:var(--brass-bright);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:var(--indigo); --bg-alt:#12162c;
+  --ink:var(--cream);
+  --ink-muted:rgba(244,239,230,.66);
+  --ink-faint:rgba(244,239,230,.44);
+  --hairline:rgba(244,239,230,.16);
+  --accent:var(--brass-bright);
+  --band-bg:var(--indigo-2); --band-ink:var(--cream);
+  --band-muted:rgba(244,239,230,.68); --band-hairline:rgba(244,239,230,.2);
+  --band-accent:var(--brass-bright);
+}
+:root[data-theme="light"]{
+  --bg:var(--cream); --bg-alt:var(--parchment);
+  --ink:var(--indigo);
+  --ink-muted:rgba(22,27,51,.64);
+  --ink-faint:rgba(22,27,51,.45);
+  --hairline:rgba(22,27,51,.14);
+  --accent:#8F6F35;
+  --band-bg:var(--indigo-deep); --band-ink:var(--cream);
+  --band-muted:rgba(244,239,230,.68); --band-hairline:rgba(244,239,230,.18);
+  --band-accent:var(--brass);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.band{padding:76px 0; background:var(--bg)}
+.band-alt{background:var(--bg-alt)}
+.band-dark{background:var(--band-bg); color:var(--band-ink)}
+.wrap{max-width:720px; margin:0 auto; padding:0 28px}
+
+h1,h2,h3,.stat-n{font-family:var(--serif); font-weight:600; text-wrap:balance; letter-spacing:-.015em}
+h1{font-size:clamp(2.1rem,5.2vw,3.05rem); line-height:1.12; margin:0 0 18px}
+h2{font-size:clamp(1.5rem,3.4vw,2rem); line-height:1.2; margin:0 0 20px}
+h3{font-size:1.14rem; line-height:1.35; margin:0 0 8px; letter-spacing:-.005em}
+p{margin:0 0 19px}
+strong{font-weight:650}
+a{color:var(--accent)}
+
+.eyebrow{
+  font-family:var(--sans); font-size:12.5px; font-weight:600;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--accent);
+  margin:0 0 14px;
+}
+.band-dark .eyebrow{color:var(--band-accent)}
+.tick{width:70px; height:5px; background:var(--accent); border:0; margin:0 0 26px; border-radius:2px}
+.band-dark .tick{background:var(--band-accent)}
+
+.lede{font-size:1.16rem; line-height:1.6; color:var(--ink-muted)}
+.meta{
+  font-family:var(--mono); font-size:12.5px; letter-spacing:.02em;
+  color:var(--ink-faint); margin:26px 0 0; padding-top:20px;
+  border-top:1px solid var(--hairline);
+}
+.band-dark .meta{color:var(--band-muted); border-color:var(--band-hairline)}
+
+/* moat rows */
+.rows{display:flex; flex-direction:column; gap:0; margin:34px 0 26px}
+.row{
+  display:grid; grid-template-columns:170px 1fr; gap:8px 26px;
+  padding:19px 0; border-top:1px solid var(--hairline); align-items:baseline;
+}
+.row:last-child{border-bottom:1px solid var(--hairline)}
+.row dt{font-family:var(--serif); font-size:1.06rem; font-weight:600}
+.row dd{margin:0; color:var(--ink-muted); font-size:.95rem; line-height:1.55}
+.row dd em{display:block; font-style:normal; color:var(--ink-faint); font-size:.88rem; margin-top:5px}
+
+/* the numbers */
+.figures{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px; background:var(--band-hairline); border:1px solid var(--band-hairline);
+  margin:34px 0 30px;
+}
+.fig{background:var(--band-bg); padding:22px 20px}
+.fig .stat-n{
+  display:block; font-size:2.1rem; line-height:1; color:var(--band-accent);
+  font-variant-numeric:tabular-nums; margin-bottom:9px;
+}
+.fig .stat-l{font-size:.86rem; line-height:1.4; color:var(--band-muted)}
+
+.facts{margin:30px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:20px}
+.facts li{padding-left:20px; border-left:2px solid var(--band-accent); color:var(--band-muted)}
+.facts strong{color:var(--band-ink); font-weight:650}
+
+.pull{
+  font-family:var(--serif); font-size:clamp(1.3rem,3vw,1.62rem); line-height:1.34;
+  margin:0 0 26px; letter-spacing:-.015em;
+}
+blockquote.q{
+  margin:0 0 30px; padding:24px 0 24px 26px;
+  border-left:3px solid var(--accent);
+  font-family:var(--serif); font-size:clamp(1.25rem,2.9vw,1.5rem); line-height:1.35;
+}
+blockquote.q p{margin:0}
+
+.pillars{
+  font-family:var(--serif); font-size:1.1rem; line-height:1.9;
+  padding:24px 26px; border:1px solid var(--hairline);
+  margin:0 0 26px; color:var(--ink);
+}
+.pillars span{white-space:nowrap}
+.pillars i{font-style:normal; color:var(--accent); padding:0 6px}
+
+.sessions{margin:30px 0 0; padding:0; list-style:none; display:flex; flex-direction:column}
+.sessions li{
+  display:grid; grid-template-columns:96px 1fr; gap:22px;
+  padding:16px 0; border-top:1px solid var(--hairline); align-items:baseline;
+}
+.sessions li:last-child{border-bottom:1px solid var(--hairline)}
+.sessions .n{
+  font-family:var(--mono); font-size:12px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent);
+}
+.sessions .t{color:var(--ink-muted); font-size:.97rem}
+.sessions li.now .t{color:var(--ink); font-weight:600}
+.sessions li.now .n{color:var(--ink-faint)}
+
+.note{
+  font-size:.95rem; color:var(--ink-muted);
+  padding:22px 24px; border:1px solid var(--hairline); margin:0;
+}
+.note p:last-child{margin-bottom:0}
+
+@media (max-width:620px){
+  body{font-size:16px}
+  .band{padding:56px 0}
+  .row{grid-template-columns:1fr; gap:4px}
+  .sessions li{grid-template-columns:1fr; gap:4px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+
+<main>
+
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">yourco &middot; Session 1 of 6</p>
+    <h1>What yourco is, and where it actually stands</h1>
+    <p class="lede">Prepared for Partner B. About two hours. The first of six sessions walking through
+      every part of the business &mdash; what's built, what isn't, and what's true.</p>
+    <p class="meta">August 2026</p>
+  </div>
+</section>
+
+<section class="band band-alt">
+  <div class="wrap">
+    <p class="eyebrow">Start here</p>
+    <hr class="tick">
+    <h2>Why you're getting the bad news first</h2>
+    <p>Most of this session is the good part &mdash; the idea, the product, why it should work. But it opens
+      with the worst facts, on purpose.</p>
+    <p>yourco has built something genuinely unusual. If I showed you that first, you'd be impressed,
+      and then you'd find out on your own that the company has no customers and no money &mdash; and
+      everything you'd already seen would get re-priced in your head. So the hard numbers come early,
+      from me, and you can decide what the impressive parts are actually worth.</p>
+    <p>By the end of this session you should be able to explain yourco to somebody else, and you should
+      know the four or five facts that would make a reasonable person say no.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">Part one</p>
+    <hr class="tick">
+    <h2>The thesis</h2>
+    <p>AI intelligence is becoming a commodity. The models get better, cheaper, and more available to
+      everyone every few months, and nobody who simply <em>uses</em> a model gains an advantage from
+      that.</p>
+    <p class="pull">What is not commoditizing is deployment &mdash; getting AI to do real work inside a real
+      business, reliably, in a way an owner will actually trust with their customers and their
+      money.</p>
+    <p>That's the gap. Most small and mid-size businesses now know AI could run large parts of their
+      operation. Almost none of them can get from knowing that to having it running. They don't have
+      the time, the technical staff, or any way to judge whether what they built is safe to leave
+      alone.</p>
+    <p><strong>yourco closes that gap as a service, not as software.</strong></p>
+  </div>
+</section>
+
+<section class="band band-alt">
+  <div class="wrap">
+    <p class="eyebrow">Part two</p>
+    <hr class="tick">
+    <h2>The moat</h2>
+    <p>Anyone can wire up a chatbot. The tooling is free and getting easier every month. So the obvious
+      question is what stops a client &mdash; or a competitor &mdash; from just doing it themselves.</p>
+    <p>The answer is everything that happens <em>after</em> the thing works once.</p>
+
+    <dl class="rows">
+      <div class="row">
+        <dt>Reliability</dt>
+        <dd>It works on the 500th job, not just the demo.
+          <em>Requires building for failure, not for the pitch.</em></dd>
+      </div>
+      <div class="row">
+        <dt>Evaluation</dt>
+        <dd>Measured proof that it's right, not a feeling.
+          <em>You have to build the scoring before you can trust the system.</em></dd>
+      </div>
+      <div class="row">
+        <dt>Observability</dt>
+        <dd>You can see what it did, and why.
+          <em>Logging, audit trails, replay.</em></dd>
+      </div>
+      <div class="row">
+        <dt>Approval gates</dt>
+        <dd>Nothing consequential happens without a human until it has earned the right.
+          <em>This is the trust unlock &mdash; and it's a discipline, not a feature.</em></dd>
+      </div>
+      <div class="row">
+        <dt>Integration</dt>
+        <dd>It plugs into the systems the business already runs on.
+          <em>Every business is different. This is real work.</em></dd>
+      </div>
+      <div class="row">
+        <dt>Executive trust</dt>
+        <dd>The owner sleeps at night.
+          <em>This is the actual product.</em></dd>
+      </div>
+    </dl>
+
+    <p>A no-code operator can build the first version. They cannot build this. <strong>That layer is
+      where the margin lives</strong>, and it's why the offering is a service yourco operates rather
+      than software the client is handed.</p>
+    <p>One consequence worth understanding, because it's the standing answer to <em>"won't this be
+      obsolete in a year?"</em> &mdash; because yourco owns the stack and sells the outcome, every model
+      improvement flows to the client as a free upgrade. The offering appreciates as AI advances. Any
+      tool the client could have bought instead depreciates.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">Part three</p>
+    <hr class="tick">
+    <h2>What yourco actually sells</h2>
+    <p>The motion is: <strong>an audit first, then a custom AI OS.</strong></p>
+
+    <h3>The audit</h3>
+    <p>Every engagement starts with a paid diagnostic. yourco goes through the business, finds where
+      the time and money are leaking, and quantifies it. The client gets a real report whether or not
+      they buy anything else. If they do buy, the audit fee is credited in full against the build.</p>
+    <p>This exists because it solves the two hardest problems in this business at once: it gets paid
+      for discovery instead of giving it away, and it means nobody is ever sold a system before
+      somebody understood their business.</p>
+
+    <h3>The AI OS</h3>
+    <p>Then yourco builds and <em>operates</em> a custom multi-agent system fit to that business. Not a
+      tool the client has to learn &mdash; a system that does work, and that yourco owns the reliability
+      of.</p>
+    <p>Scope is mapped across eight areas of a business:</p>
+    <p class="pillars">
+      <span>Intake</span><i>&middot;</i><span>Sales</span><i>&middot;</i><span>Marketing</span><i>&middot;</i><span>Customer</span><i>&middot;</i><span>Operations</span><i>&middot;</i><span>Back&nbsp;Office</span><i>&middot;</i><span>Company&nbsp;Brain</span><i>&middot;</i><span>Training</span>
+    </p>
+    <p>Each piece can ship in one of three shapes: a named "digital employee" with its own email inside
+      the client's system, a headless automation nobody ever sees, or an AI feature embedded in the
+      client's own product for <em>their</em> customers to use.</p>
+    <p>There are four tiers, by how much of the business it covers &mdash; <strong>Core, Suite, Operation,
+      Command.</strong> Pricing is drafted but not locked; we'll go through the real numbers in
+      Session 5 rather than hand-wave them here.</p>
+
+    <blockquote class="q">
+      <p>The client never touches tokens, models, or infrastructure. yourco absorbs all of it. The
+        client gets an outcome.</p>
+    </blockquote>
+
+    <p><strong>Who it's for:</strong> small and mid-size businesses &mdash; large enough to feel the pain of
+      manual operations, too small to hire an AI team. Not restricted by industry.</p>
+  </div>
+</section>
+
+<section class="band band-dark">
+  <div class="wrap">
+    <p class="eyebrow">Part four</p>
+    <hr class="tick">
+    <h2>Where the business actually stands</h2>
+    <p style="color:var(--band-muted)">Everything above is real and built. Here is the other half.</p>
+
+    <div class="figures">
+      <div class="fig"><span class="stat-n">0</span><span class="stat-l">Live clients</span></div>
+      <div class="fig"><span class="stat-n">$0</span><span class="stat-l">Revenue</span></div>
+      <div class="fig"><span class="stat-n">$0</span><span class="stat-l">Cash on hand &middot; 0.0 months runway</span></div>
+      <div class="fig"><span class="stat-n">$614</span><span class="stat-l">Monthly burn, paid personally by the Founder</span></div>
+      <div class="fig"><span class="stat-n">0</span><span class="stat-l">Audits ever delivered</span></div>
+      <div class="fig"><span class="stat-n">3</span><span class="stat-l">Deals past a first conversation &mdash; stalled 20, 40 and 54 days</span></div>
+      <div class="fig"><span class="stat-n">12</span><span class="stat-l">Commercial touches, last 30 days</span></div>
+      <div class="fig"><span class="stat-n">84</span><span class="stat-l">New code files, last 30 days</span></div>
+    </div>
+
+    <p class="pull" style="color:var(--band-ink)">Eighty-four new code files against twelve commercial
+      touches. That ratio is the whole story.</p>
+
+    <ul class="facts">
+      <li><strong>The always-on system is currently switched off.</strong> It was paused on August 4th.
+        Nobody noticed until an audit found it on the 9th &mdash; including the monitor whose entire job is
+        catching exactly that.</li>
+      <li><strong>The infrastructure is failing for non-payment.</strong> The server the whole system
+        runs on has had its bill decline twice and is still unpaid. The AI service went dark on July
+        30th when credits ran out.</li>
+      <li><strong>No lawyer has ever been engaged.</strong> Twelve separate things are blocked waiting
+        on legal review &mdash; including the client agreement, which means a client saying yes tomorrow
+        couldn't actually be signed or invoiced.</li>
+      <li><strong>An audit of all of this was commissioned and written.</strong> You'll get it. The
+        headline: <em>yourco has built an extraordinary machine and has not yet run a business.</em></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">The pivot</p>
+    <hr class="tick">
+    <h2>The question you should be asking</h2>
+
+    <blockquote class="q">
+      <p>If the product is this good, why has nobody bought it?</p>
+    </blockquote>
+
+    <p>Ask it directly, because the answer is the reason this conversation is happening.</p>
+    <p>It isn't that people said no. <strong>Almost nobody has been asked.</strong> Three deals were
+      sourced entirely through the Founder's own relationships and then went quiet &mdash; not because anyone
+      objected, but because no one followed up and closed them. Zero cold emails have ever been sent.
+      The audit &mdash; the paid front door the entire model rests on &mdash; has never once been delivered to a
+      customer.</p>
+    <p>And underneath that: if someone had said yes last week, there was no signed client agreement, no
+      business bank account, and no way to take the payment.</p>
+    <p>So the honest read is that yourco has a building problem &mdash; in the sense that building is the
+      thing that kept happening instead of selling. The machine is roughly a year ahead of the
+      business. <strong>Closing that gap is not a technical job.</strong></p>
+    <p>That's the real subject of these six sessions, and it's why the last one is about what you'd
+      own.</p>
+  </div>
+</section>
+
+<section class="band band-alt">
+  <div class="wrap">
+    <p class="eyebrow">The series</p>
+    <hr class="tick">
+    <h2>What's coming</h2>
+    <ul class="sessions">
+      <li class="now"><span class="n">Session 1</span><span class="t">What yourco is, and where it actually stands</span></li>
+      <li><span class="n">Session 2</span><span class="t">What a client actually gets &mdash; the real systems already built and running</span></li>
+      <li><span class="n">Session 3</span><span class="t">The commercial engine, and an honest look at why nothing has closed</span></li>
+      <li><span class="n">Session 4</span><span class="t">The OS itself &mdash; how one person operates all of this</span></li>
+      <li><span class="n">Session 5</span><span class="t">The money &mdash; projections, the financial model, what it costs to get to profitable</span></li>
+      <li><span class="n">Session 6</span><span class="t">Systems, legal, risk, and where you'd fit</span></li>
+    </ul>
+
+    <h2 style="margin-top:52px">Before Session 2</h2>
+    <div class="note">
+      <p>Read the audit &mdash; at minimum the headline and the five findings &mdash; and read the company doc.</p>
+      <p>Come back with the objections. <strong>The most useful thing you can do in Session 2 is
+        disagree with something in this one.</strong></p>
+    </div>
+  </div>
+</section>
+
+</main>

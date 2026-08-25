@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco — every claim, and the check behind it</title>
+<meta name="description" content="Every number on this site is bound to a check that runs. When a check goes quiet, the number disappears and says what's missing. This page shows all of them, including the ones currently dark." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  .ledger{margin-top:44px}
+  .lrow{display:grid;grid-template-columns:104px 1fr;gap:26px;padding:26px 0;border-top:1px solid var(--hairline);align-items:start}
+  .lrow .st{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;text-align:left;margin-top:5px;color:var(--pewter)}
+  .lrow .st.proven{color:#2F5D50}
+  .lrow .st.dark{color:var(--pewter)}
+  .lrow h3{font-size:19px;font-weight:600;letter-spacing:-.015em;line-height:1.3;color:var(--indigo)}
+  .lrow .means{font-size:15px;color:var(--ink-muted);margin-top:7px;line-height:1.55;max-width:64ch}
+  .lrow .missing{font-size:15px;color:var(--ink-muted);margin-top:10px;line-height:1.6;max-width:64ch;padding-left:15px;border-left:1px solid var(--brass)}
+  .lrow .cite{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--pewter);margin-top:11px;font-variant-numeric:tabular-nums}
+  .lrow code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:rgba(22,27,51,.05);padding:2px 6px;border-radius:3px}
+  .tally{display:flex;flex-wrap:wrap;gap:0 44px;margin-top:36px;border-top:1px solid var(--hairline);padding-top:26px}
+  .tally div{padding-right:24px}
+  .tally dt{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-bottom:6px}
+  .tally dd{font-size:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .tally dd small{font-size:14px;font-weight:400;color:var(--ink-muted);letter-spacing:0}
+  .tally dd.date{font-size:19px}   /* a date is not a metric — don't set it at metric scale */
+  .banner{margin-top:26px;padding:18px 22px;border:1px solid var(--brass);border-radius:8px;background:rgba(184,150,90,.09);font-size:16px;line-height:1.5;max-width:66ch}
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+      <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=proof" class="pill sm">Book a call</a></div>
+    </div>
+  </nav>
+
+  <section class="tile hero">
+    <div class="wrap narrow">
+      <div class="eyebrow">the receipts</div>
+      <h1>Every claim, and the check behind it.</h1>
+      <p class="lede">A marketing page is normally a frozen sentence: true when somebody typed it, and there whether or not it stayed true. Ours aren&rsquo;t. Each claim below is wired to a check that runs on its own schedule. If the check stops passing — or just stops running — the number is withheld and this page tells you which one went quiet.</p>
+      <div class="banner">
+        <strong>You may be looking at a gap right now.</strong> That&rsquo;s not a bug we&rsquo;ll fix before you visit again. A page that can only ever show good news isn&rsquo;t evidence of anything, and the whole reason to build it this way is so that you don&rsquo;t have to take our word for the difference.
+      </div>
+      <dl class="tally" id="tally"></dl>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap narrow">
+      <h2 class="sec">The ledger</h2>
+      <p class="lede">Sorted so anything currently unproven comes first — the interesting half.</p>
+      <div class="ledger" id="ledger">
+        <p class="lede">Loading the evidence file&hellip;</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile dark">
+    <div class="wrap narrow">
+      <div class="eyebrow">what this is really showing you</div>
+      <h2 class="sec" style="color:var(--on-dark)">This is the same discipline we install in your business.</h2>
+      <p class="lede">An AI system that reports what it can prove — and names what it can&rsquo;t instead of filling the gap with something plausible — is the difference between automation you can run a company on and automation you have to double-check. We built ours that way first, then pointed it at our own marketing, because a reliability claim you can&rsquo;t audit is just a louder version of the thing everyone else says.</p>
+      <p class="lede"><a class="tlink" href="reliability.html">How the reliability layer works &rarr;</a></p>
+    </div>
+  </section>
+
+  <section class="tile">
+    <div class="wrap narrow close">
+      <h2>Start with the audit.</h2>
+      <div class="ctas">
+        <a class="pill" href="audit.html">Start with the audit &rarr;</a>
+        <a class="tlink" href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=proof">or book 30 min →</a>
+      </div>
+    </div>
+  </section>
+
+<script>
+/* This page renders ONLY from site-evidence.json. There is no hardcoded copy of any number here —
+   if the file is unreachable, the ledger says so rather than showing a stale ledger. */
+(function () {
+  var L = document.getElementById('ledger'), T = document.getElementById('tally');
+
+  function e(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
+
+  function stat(label, value, note) {
+    var d = e('div');
+    d.appendChild(e('dt', null, label));
+    var dd = e('dd', null, String(value));
+    if (/^\d{4}-\d{2}-\d{2}$/.test(String(value))) dd.className = 'date';
+    if (note) { var s = e('small', null, ' ' + note); dd.appendChild(s); }
+    d.appendChild(dd);
+    return d;
+  }
+
+  function row(c, stale) {
+    var r = e('div', 'lrow');
+    var proven = c.state === 'proven' && !stale;
+    r.appendChild(e('div', 'st ' + (proven ? 'proven' : 'dark'), proven ? 'proven' : 'unproven'));
+
+    var b = e('div');
+    b.appendChild(e('h3', null, proven ? c.text : c.subject));
+    b.appendChild(e('p', 'means', c.means));
+    if (!proven) {
+      b.appendChild(e('p', 'missing', stale
+        ? 'The check behind this has gone quiet, so the number is withheld.'
+        : (c.missing || 'the check did not pass')));
+    }
+    var cite = e('div', 'cite');
+    cite.appendChild(e('span', null, proven ? ('Check: ' + c.detail) : 'Check: registered, not currently passing'));
+    var src = e('span'); src.appendChild(e('code', null, c.source)); cite.appendChild(src);
+    cite.appendChild(e('span', null, proven ? ('verified ' + c.verifiedOn + ' · good for ' + c.ttlDays + ' days')
+                                            : ('good for ' + c.ttlDays + ' days once it passes')));
+    b.appendChild(cite);
+    r.appendChild(b);
+    return r;
+  }
+
+  function fail(why) {
+    L.textContent = '';
+    var p = e('p', 'lede'); p.appendChild(e('strong', null, 'The evidence file could not be read. '));
+    p.appendChild(document.createTextNode(why + ' Nothing on this page can be shown as proven until it can.'));
+    L.appendChild(p);
+    T.textContent = '';
+    T.appendChild(stat('Status', '—', 'evidence unreadable'));
+  }
+
+  fetch('site-evidence.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (d) {
+      var gen = new Date(d.generatedAt), now = new Date();
+      var claims = (d.claims || []).map(function (c) {
+        var age = Math.floor((now - gen) / 86400000);
+        return { c: c, stale: !(gen && !isNaN(gen.getTime())) || age > c.ttlDays };
+      });
+      /* Unproven first — the page is more useful read from its gaps down. */
+      claims.sort(function (a, b) {
+        var ap = a.c.state === 'proven' && !a.stale, bp = b.c.state === 'proven' && !b.stale;
+        return (ap === bp) ? 0 : (ap ? 1 : -1);
+      });
+
+      var proven = claims.filter(function (x) { return x.c.state === 'proven' && !x.stale; }).length;
+      T.textContent = '';
+      T.appendChild(stat('Claims bound', claims.length, 'each to a check'));
+      T.appendChild(stat('Currently proven', proven, 'of ' + claims.length));
+      T.appendChild(stat('Currently dark', claims.length - proven, 'shown, not hidden'));
+      T.appendChild(stat('Evidence written', d.generatedOn || '—', ''));
+
+      L.textContent = '';
+      claims.forEach(function (x) { L.appendChild(row(x.c, x.stale)); });
+
+      if (d.refused && d.refused.length) {
+        var h = e('h3', null, 'Refused at generation');
+        h.style.marginTop = '40px';
+        L.appendChild(h);
+        d.refused.forEach(function (r) {
+          var p = e('p', 'means', r.id + ' — ' + r.reason);
+          L.appendChild(p);
+        });
+      }
+
+      var note = e('p', 'means');
+      note.style.marginTop = '34px';
+      note.textContent = d.boundTo || '';
+      L.appendChild(note);
+    })
+    .catch(function (err) { fail(String(err.message || err) + '.'); });
+})();
+</script>
+</body>
+</html>

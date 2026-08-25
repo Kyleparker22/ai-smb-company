@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blackbox OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-blackbox"></section>
+  <section class="view" id="v-renewals"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. The membership prices itself from
+the home's own recorded equipment ages and history — every factor shown in dollars. An unrecorded
+age reads UNKNOWN and prices provisional (never guessed), a locked price has no mid-term code
+path, and a gas smell gets the evacuate script verbatim.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'blackbox',label:'The black box'},
+      {id:'renewals',label:'Renewals'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,blackbox,renewals,roi,trust})[w](); }
+
+function honestyStat(h){
+  if (h && h._missing) return stat('Renewal prices that went DOWN', null, esc(h._missing));
+  return stat('Renewal prices that went DOWN', fmt.num(h.went_down),
+    `of ${h.renewed} renewals recorded (${fmt.pct(h.share_down)}) — the trust stat no flat plan can print`, 'good');
+}
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.trade} · ${fmt.num(b.homes)} households on record`;
+  document.getElementById('v-board').innerHTML =
+    panel('The book, counted', '',
+      `<div class="grid">
+        ${stat('Members', fmt.num(b.members), 'each locked at a price computed from their own record')}
+        ${honestyStat(b.honesty)}
+        ${stat('Thin records', fmt.num(b.thin_records), 'an unrecorded age prices PROVISIONAL — never guessed', b.thin_records?'warn':'')}
+        ${stat('Renewals due (90d)', fmt.num(b.renewals_due_90d), 're-pricing happens here, and only here')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the emergency reads first', b.messages_open?'bad':'')}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', fmt.num(b.won.members_joined)+' joined',
+               `${fmt.money(b.won.monthly_added)}/mo added · ${b.won.renewals_repriced} renewal(s) re-priced · ${b.won.quotes_sent} quote(s) sent by a human`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The no-heat night and the gas smell read FIRST — a gas smell gets
+      the evacuate script <b>verbatim</b>, never reassurance. A fairness challenge gets the
+      asker's own factors, never "market rates".</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='emergency'?'bad':m.label==='fairness'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function blackbox(){
+  const d = await API.get('/api/homes');
+  document.getElementById('v-blackbox').innerHTML =
+    `<div class="banner warn">Try it: quote the full record — every factor in dollars; quote the
+      thin record — PROVISIONAL, reason named, no invented age; challenge the price — the answer
+      is the asker's own factors.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="quote('hm_demo_full')">Quote: full record</button>
+      <button class="act" onclick="quote('hm_demo_thin')">Quote: unrecorded age (provisional)</button>
+      <button class="act" onclick="handleTo('ms_demo_fair','bout')">"Why is my plan more than my neighbor's?"</button>
+      <button class="act" onclick="ledger('hm_demo_full')">Open a black box</button>
+     </div><div id="bout"></div>` +
+    panel(`Homes (${fmt.num(d.total)} on record)`, 'an unrecorded age reads UNKNOWN — never guessed',
+      table([{label:'Home'},{label:'Owner'},{label:'Components'},{label:'Unknown ages'},{label:'Callbacks 36mo',num:true},{label:''}],
+      d.rows, h=>`<td class="mono">${esc(h.id)}${h.demo_tag?' '+pill('demo','brand'):''}</td>
+        <td>${esc(h.owner||'')}</td><td>${h.components}</td>
+        <td>${h.unknown.length?pill(h.unknown.join(', '),'warn'):'—'}</td>
+        <td class="num">${h.callbacks_36mo}</td>
+        <td class="right"><button class="act" onclick="quote('${h.id}')">Quote</button></td>`), true);
+}
+function factorRows(q){
+  return `<div class="scroll"><table><thead><tr><th>Factor</th><th class="num">$/mo</th><th>Why</th></tr></thead><tbody>` +
+    q.factors.map(f=>`<tr><td class="strong">${esc(f.label)}</td>
+      <td class="num strong">${f.dollars<0?'−':''}$${Math.abs(f.dollars)}</td>
+      <td class="why">${esc(f.why)}</td></tr>`).join('') +
+    `<tr><td class="strong">Total</td><td class="num strong">$${q.monthly}/mo</td>
+      <td class="why">the shown factors ARE the price</td></tr></tbody></table></div>
+     <div class="why" style="margin-top:8px">${esc(q.table_source)}</div>`;
+}
+async function quote(id){
+  const r = await API.post(`/api/homes/${id}/quote`);
+  if (r.error) { document.getElementById('bout').innerHTML = panel('Error','',esc(r.error)); return; }
+  const q = r.quote;
+  document.getElementById('bout').innerHTML = q.provisional
+    ? panel(`PROVISIONAL — $${q.monthly}/mo flat`, '',
+        `<div class="banner warn">${esc(r.refused)}</div>
+         <div class="strong" style="white-space:pre-wrap">${esc(r.draft)}</div>`)
+    : panel(`Membership quote — $${q.monthly}/mo, every factor shown`, '', factorRows(q) +
+        `<div class="strong" style="white-space:pre-wrap;margin-top:10px">${esc(r.draft)}</div>`);
+}
+async function handleTo(id, into){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById(into).innerHTML = (r.steps||[]).map(s=>panel(esc(s.action),'',
+    `${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+     <div class="why">${esc(s.why||'')}</div>`)).join('');
+}
+async function ledger(id){
+  const d = await API.get(`/api/homes/${id}`);
+  document.getElementById('bout').innerHTML =
+    panel(`The black box — ${esc(d.owner||'')}, ${esc(d.address||'')}`, esc(d.note),
+      table([{label:'Component'},{label:'Installed'},{label:'Age'},{label:'Visits',num:true},{label:'Callbacks',num:true}],
+        d.components, c=>`<td class="strong">${esc(c.kind)}</td>
+          <td>${c.install_year??pill('UNKNOWN','warn')}</td>
+          <td>${c.age_years!=null?c.age_years+' yr':pill(esc(c.age_label),'warn')}</td>
+          <td class="num">${c.service_visits}</td><td class="num">${c.callbacks}</td>`), true);
+}
+
+async function renewals(){
+  const d = await API.get('/api/members');
+  document.getElementById('v-renewals').innerHTML =
+    `<div class="banner warn">A locked price is locked: mid-term there is <b>no code path</b> —
+      try it. Re-pricing happens at renewal only, and the notice carries the exact factor
+      deltas that moved it, in both directions.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="midterm('mb_demo_locked')">Re-price mid-term (refused)</button>
+      <button class="act primary" onclick="renew('mb_demo_renew_up')">Renewal: furnace crossed a band (up)</button>
+      <button class="act primary" onclick="renew('mb_demo_renew_down')">Renewal: callbacks aged out (DOWN)</button>
+     </div><div id="rout"></div>` +
+    panel('Members by renewal', '', table(
+      [{label:'Member'},{label:'Owner'},{label:'Locked',num:true},{label:'Days to renewal',num:true},{label:'Renewal'},{label:''}],
+      d.rows, m=>`<td class="mono">${esc(m.id)}${m.demo_tag?' '+pill('demo','brand'):''}</td>
+        <td>${esc(m.owner||'')}</td><td class="num">${fmt.money(m.locked_price)}/mo</td>
+        <td class="num">${m.days_to_renewal??'—'}</td>
+        <td>${m.renewal_price!=null?fmt.money(m.renewal_price)+'/mo '+pill(m.renewal_direction, m.renewal_direction==='down'?'good':''):'—'}</td>
+        <td class="right"><button class="act" onclick="renew('${m.id}')">Renewal math</button></td>`), true);
+}
+async function midterm(id){
+  const r = await API.post(`/api/members/${id}/reprice-midterm`);
+  document.getElementById('rout').innerHTML =
+    panel('Refused', '', `<div class="banner warn">${esc(r.reason||'refused')} — recorded in the
+      audit log as a refusal, never as an approvable row.</div>`);
+}
+async function renew(id){
+  const r = await API.post(`/api/members/${id}/renewal`);
+  if (r.error) { document.getElementById('rout').innerHTML = panel('Error','',esc(r.error)); return; }
+  const rp = r.reprice;
+  document.getElementById('rout').innerHTML =
+    panel(rp.provisional ? 'Renewal — provisional' :
+          `Renewal — ${fmt.money(rp.locked_price)} → ${fmt.money(rp.new_monthly)}/mo (${rp.direction})`, '',
+      `${(rp.deltas||[]).length?`<ul class="reasons">${rp.deltas.map(x=>`<li><b>${esc(x.why)}</b></li>`).join('')}</ul>`:''}
+       <div class="strong" style="white-space:pre-wrap">${esc(r.draft)}</div>
+       <div class="why">${esc(rp.note||'')}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['quotes_90d','Quotes drafted (90d)','counted'],['join_rate','Join rate on quotes','your number (0–1)'],
+    ['avg_monthly','Avg member $/mo','counted'],['renewals_due_90d','Renewals due (90d)','counted'],
+    ['retention_lift','Saved-renewal lift','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk on quoting','your number'],['office_rate','Office rate $/hr','your number'],
+    ['trust_value','The price-trust story','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt,ho]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events'),API.get('/api/honesty')]);
+  document.getElementById('v-trust').innerHTML =
+    panel('The honesty board','counted from the member records',
+      `<div class="grid">${honestyStat(ho.honesty)}</div>`) +
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

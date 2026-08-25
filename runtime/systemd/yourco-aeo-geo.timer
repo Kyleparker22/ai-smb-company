@@ -1,0 +1,10 @@
+[Unit]
+Description=YourCo answer-engine visibility — first Tuesday monthly, 08:00 ET (Cora)
+
+[Timer]
+# First Tuesday of every month
+OnCalendar=Tue *-*-1..7 08:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

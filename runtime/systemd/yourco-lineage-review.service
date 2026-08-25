@@ -1,0 +1,12 @@
+[Unit]
+Description=YourCo quarterly lineage review (Brett)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+ExecStart=/home/claudeops/yourco-os/runtime/run-loop.sh lineage-review
+TimeoutStartSec=900

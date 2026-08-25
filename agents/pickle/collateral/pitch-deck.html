@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yourco — pitch</title>
+<style>
+  :root{
+    --indigo:#161B33;--indigo-2:#1c2240;--cream:#F4EFE6;--parchment:#EFE8DA;
+    --brass:#B8965A;--brass-bright:#D4B27A;--pewter:#6E7180;--ink:#1c2030;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    background:#000;color:var(--indigo);overflow:hidden;letter-spacing:-.015em;-webkit-font-smoothing:antialiased}
+  .slide{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;padding:7vh 9vw;
+    animation:fade .4s ease}
+  .slide.on{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .slide.cream{background:var(--cream)}
+  .slide.dark{background:var(--indigo);color:var(--cream)}
+  .slide.parch{background:var(--parchment)}
+  .eyebrow{font-size:clamp(12px,1.5vw,15px);font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--brass);margin-bottom:24px}
+  h1{font-size:clamp(34px,6.2vw,76px);font-weight:650;letter-spacing:-.025em;line-height:1.02}
+  h2{font-size:clamp(30px,5vw,58px);font-weight:650;letter-spacing:-.02em;line-height:1.06}
+  .big{font-size:clamp(20px,2.6vw,30px);line-height:1.4;max-width:18ch;font-weight:500}
+  .lede{font-size:clamp(17px,2vw,23px);line-height:1.5;max-width:30ch;color:var(--ink);margin-top:18px}
+  .dark .lede{color:rgba(244,239,230,.8)}
+  .brass{color:var(--brass)}.dark .brass{color:var(--brass-bright)}
+  /* title */
+  .lockup{display:flex;align-items:center;gap:16px;margin-bottom:30px}
+  .lockup .dia{width:9px;height:9px;background:var(--brass);transform:rotate(45deg)}
+  .lockup .rule{height:1px;width:clamp(50px,9vw,110px);background:var(--brass)}
+  .lockup .word{font-size:clamp(30px,5vw,56px);font-weight:600;color:var(--cream)}
+  .tagline{font-size:clamp(18px,2.3vw,28px);color:var(--brass-bright);font-weight:600;margin-top:8px}
+  .titlesub{font-size:clamp(15px,1.8vw,20px);color:rgba(244,239,230,.7);margin-top:18px}
+  /* lists */
+  .rows{margin-top:30px;display:flex;flex-direction:column;gap:18px;max-width:30ch}
+  .row{display:flex;gap:16px;align-items:flex-start;font-size:clamp(16px,2vw,23px)}
+  .row .d{flex:none;width:9px;height:9px;background:var(--brass);transform:rotate(45deg);margin-top:.6em}
+  .steps{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:22px 50px;max-width:1000px}
+  .st{display:flex;gap:16px}
+  .st .n{flex:none;width:38px;height:38px;border-radius:50%;background:var(--brass);color:var(--indigo);font-weight:700;
+    font-size:18px;display:flex;align-items:center;justify-content:center}
+  .st .t{font-size:clamp(15px,1.7vw,20px);line-height:1.35}.st .t b{font-weight:650}
+  .dark .st .t{color:rgba(244,239,230,.92)}
+  .chips{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;max-width:900px}
+  .chip{border:1px solid rgba(244,239,230,.3);border-radius:999px;padding:10px 18px;font-size:clamp(14px,1.6vw,19px);color:var(--cream)}
+  .chip b{color:var(--brass-bright)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:30px;max-width:1000px}
+  .two .h{font-size:clamp(19px,2.2vw,26px);font-weight:650;margin-bottom:8px}
+  .two .p{font-size:clamp(14px,1.6vw,19px);line-height:1.45;color:var(--ink)}.dark .two .p{color:rgba(244,239,230,.8)}
+  .cta-big{font-size:clamp(18px,2vw,24px);margin-top:26px;color:var(--brass-bright);font-weight:600}
+  .contact{font-size:clamp(15px,1.7vw,20px);margin-top:14px;color:rgba(244,239,230,.82)}
+  /* chrome */
+  .nav{position:fixed;bottom:22px;right:26px;display:flex;align-items:center;gap:14px;z-index:10}
+  .nav button{background:rgba(110,113,128,.18);border:1px solid rgba(110,113,128,.35);color:inherit;width:38px;height:38px;
+    border-radius:50%;font-size:17px;cursor:pointer;transition:.15s}
+  .nav button:hover{background:rgba(184,150,90,.25);border-color:var(--brass)}
+  .count{position:fixed;bottom:28px;left:26px;font-size:13px;color:var(--pewter);z-index:10;font-variant-numeric:tabular-nums}
+  .hint{position:fixed;top:24px;right:26px;font-size:12px;color:var(--pewter);z-index:10}
+  .slide.dark ~ .nav button,.slide.dark ~ .count{color:var(--cream)}
+</style>
+</head>
+<body>
+
+<!-- 1 title -->
+<section class="slide dark on">
+  <div class="lockup"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+  <div class="tagline">We learn your business. AI does the work.</div>
+  <div class="titlesub">Named digital employees — live inside your business in 48 hours.</div>
+</section>
+
+<!-- 2 problem -->
+<section class="slide cream">
+  <div class="eyebrow">The problem</div>
+  <h2>The work that eats your week.</h2>
+  <div class="rows">
+    <div class="row"><span class="d"></span>Calls you miss while you're on the job.</div>
+    <div class="row"><span class="d"></span>Leads you meant to follow up — gone cold.</div>
+    <div class="row"><span class="d"></span>Quotes, replies, scheduling — piling up on your phone.</div>
+  </div>
+  <div class="lede">Hiring for it is slow and expensive. Another software tool is one more thing to manage. Most businesses are stuck in that gap.</div>
+</section>
+
+<!-- 3 the shift -->
+<section class="slide dark">
+  <div class="eyebrow">The shift</div>
+  <h1>Not a tool.<br><span class="brass">An employee.</span></h1>
+  <div class="lede">You don't get software to configure. You get a named digital employee — its own email, inside your business — scoped to a real job. It does the work. You own the outcome.</div>
+</section>
+
+<!-- 4 how it works -->
+<section class="slide cream">
+  <div class="eyebrow">How it works · live in 48 hours</div>
+  <h2>From "I wish someone handled that" to live — in two days.</h2>
+  <div class="steps">
+    <div class="st"><div class="n">1</div><div class="t"><b>We learn your business.</b> A short discovery on the job you want off your plate.</div></div>
+    <div class="st"><div class="n">2</div><div class="t"><b>We start from a proven blueprint.</b> An employee pattern we've run before, tailored to your voice, tools, and rules.</div></div>
+    <div class="st"><div class="n">3</div><div class="t"><b>It goes live in 48 hours.</b> Its own email, in your tenant. Customer-facing actions wait for your approval until you say otherwise.</div></div>
+    <div class="st"><div class="n">4</div><div class="t"><b>We keep it sharp.</b> Evals, watchdogs, and weekly improvement are ours. You keep getting the outcome.</div></div>
+  </div>
+</section>
+
+<!-- 5 the moat -->
+<section class="slide dark">
+  <div class="eyebrow">Why us, not a weekend experiment</div>
+  <h2>The hard part is ours.</h2>
+  <div class="lede">Anyone can wire up an agent. Making it reliable enough to run <i>inside your business</i> is the real job — and it's what you're actually buying.</div>
+  <div class="chips">
+    <div class="chip"><b>Eval gates</b></div><div class="chip"><b>Watchdogs</b></div>
+    <div class="chip"><b>Approval flows</b></div><div class="chip"><b>Observability</b></div>
+    <div class="chip"><b>Security</b></div><div class="chip"><b>Someone accountable</b></div>
+  </div>
+</section>
+
+<!-- 6 see it work -->
+<section class="slide parch">
+  <div class="eyebrow">See it work</div>
+  <h2>Watch one capture the lead you'd have lost.</h2>
+  <div class="lede">An after-hours text → qualified → booked, in 90 seconds. And it knows its limits — it escalates the clinical question, it won't fabricate a price. A $29 bot takes a message. Ours books the job.</div>
+  <div class="cta-big" style="color:var(--brass)">Live demo: yourco.com/demos →</div>
+</section>
+
+<!-- 7 pricing -->
+<section class="slide cream">
+  <div class="eyebrow">Pricing</div>
+  <h2>Simple and predictable.</h2>
+  <div class="two">
+    <div><div class="h">One fixed build fee</div><div class="p">To design and deploy your employee, live in 48 hours.</div></div>
+    <div><div class="h">One monthly retainer</div><div class="p">To run and improve it — and <b>all</b> the infrastructure behind it. You never see a usage, token, or model bill. Add employees as you grow.</div></div>
+  </div>
+</section>
+
+<!-- 8 proof -->
+<section class="slide dark">
+  <div class="eyebrow">Proof</div>
+  <h2>We run yourco on the employees we build.</h2>
+  <div class="lede">Our own sales, finance, content, and operations run on a roster of named digital employees — held to the same eval and approval standards we'd hold yours to. We don't recommend anything we haven't already trusted with our own business.</div>
+</section>
+
+<!-- 9 ask -->
+<section class="slide dark">
+  <div class="lockup"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+  <h2>Let's put one to work.</h2>
+  <div class="lede">Tell us the most repetitive thing your team does that shouldn't need a human. We'll show you the employee that handles it.</div>
+  <div class="cta-big">Book 30 minutes →</div>
+  <div class="contact">yourco.com · founder@yourco.example.com</div>
+</section>
+
+<div class="count"><span id="cur">1</span> / <span id="tot">9</span></div>
+<div class="hint">← → to navigate</div>
+<div class="nav"><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button></div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')], tot=slides.length;
+  let i=0; document.getElementById('tot').textContent=tot;
+  function show(n){ i=Math.max(0,Math.min(tot-1,n)); slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+    document.getElementById('cur').textContent=i+1; }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    if(e.key==='Home')show(0); if(e.key==='End')show(tot-1);
+  });
+  document.addEventListener('click',e=>{ if(e.target.closest('.nav'))return;
+    const x=e.clientX/window.innerWidth; show(x<0.28?i-1:i+1); });
+  show(0);
+</script>
+</body>
+</html>

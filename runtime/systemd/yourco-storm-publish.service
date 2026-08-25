@@ -1,0 +1,14 @@
+[Unit]
+Description=Sample Product — publish the live verified feed to the hosted app
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+# INGEST_URL + INGEST_SECRET live here (NOT in git). See runtime/storm-verified.env.example.
+EnvironmentFile=/home/claudeops/.config/storm-verified.env
+WorkingDirectory=/home/claudeops/yourco-os/clients/prospect-a/prototype
+ExecStart=/usr/bin/python3 storm_publish.py
+TimeoutStartSec=300

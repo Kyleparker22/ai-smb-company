@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sample Realty Home &amp; Land, LLC — Boutique Real Estate · Yourtown &amp; the Carolinas</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .didot{font-family:Didot,"Bodoni 72",Georgia,serif}
+  .sans{font-family:"Avenir Next",Avenir,Futura,-apple-system,sans-serif}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  /* ── nav ── */
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+  nav .links a.call{font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--red);text-decoration:none;white-space:nowrap}
+  nav .links a.call:hover{color:var(--ink)}
+  @media(max-width:840px){nav .links a{display:none} nav .links a.keep{display:inline}}
+
+  /* ── hero ── */
+  .hero{position:relative;min-height:88vh;display:flex;align-items:flex-end;background:var(--ink)}
+  .hero .bg{position:absolute;inset:0;background:url("assets/hero-estate.jpg") center 35%/cover no-repeat}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,24,.92) 0%,rgba(19,19,24,.4) 55%,rgba(19,19,24,.6) 100%)}
+  .hero .content{position:relative;width:100%;padding:0 0 84px;color:var(--on-dark)}
+  .hero .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;/* red is the brand colour on cream, but it cannot hold contrast over a bright sky — the eyebrow goes light on the photo and stays red everywhere else */color:var(--on-dark,#F7F5F0);text-shadow:0 1px 2px rgba(19,19,24,.95),0 0 10px rgba(19,19,24,.8),0 0 26px rgba(19,19,24,.55)}
+  .hero h1{font-family:Didot,Georgia,serif;font-size:clamp(40px,6vw,74px);font-weight:400;line-height:1.08;letter-spacing:-.01em;max-width:15ch;margin-top:20px}
+  .hero h1 em{font-style:italic}
+  .hero .sub{font-family:Didot,Georgia,serif;font-size:clamp(16px,2vw,20px);font-style:italic;color:var(--on-dark-soft);margin-top:22px;max-width:44ch}
+  .hero .ctas{margin-top:34px;display:flex;gap:16px;flex-wrap:wrap}
+  .hero .cta{font-family:"Avenir Next",Avenir,sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:15px 30px;border-radius:9999px}
+  .hero .cta.primary{background:var(--red);color:#fff}
+  .hero .cta.primary:hover{background:#c70004}
+  .hero .cta.ghost{color:var(--on-dark);border:1px solid var(--line-dark)}
+  .hero .cta.ghost:hover{border-color:var(--on-dark)}
+
+  /* ── shared section atoms ── */
+  section{padding:104px 0}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  h2{font-family:Didot,Georgia,serif;font-size:clamp(30px,3.6vw,44px);font-weight:400;line-height:1.15;margin-top:16px}
+  h2 em{font-style:italic;color:var(--red)}
+  .lede{font-family:Didot,Georgia,serif;font-size:19px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:22px;max-width:58ch}
+  p.body{font-size:16px;color:var(--ink-2);margin-top:18px;max-width:64ch}
+
+  /* ── featured listings (first thing after the hero) ── */
+  .featured{background:var(--paper);padding:96px 0}
+  .featured .head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}
+  .featured .all{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none;border-bottom:2px solid var(--red);padding-bottom:3px;white-space:nowrap}
+  .featured .all:hover{color:var(--red)}
+  .lgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:40px}
+  @media(max-width:960px){.lgrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.lgrid{grid-template-columns:1fr}}
+  .lgrid .card{position:relative;text-decoration:none;color:inherit;display:block}
+  .lgrid .photo{position:relative;overflow:hidden}
+  .lgrid .photo img{width:100%;height:225px;object-fit:cover;transition:transform 4s ease}
+  .lgrid .card:hover .photo img{transform:scale(1.05)}
+  .lgrid .photo:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18)}
+  .lgrid .badge{position:absolute;top:12px;left:12px;z-index:2;font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:6px 12px;border-radius:9999px}
+  .lgrid .badge.active{background:var(--red);color:#fff}
+  .lgrid .badge.coming{background:var(--paper);color:var(--ink)}
+  .lgrid .badge.lease{background:rgba(19,19,24,.82);color:var(--on-dark)}
+  .lgrid .badge.sold{background:rgba(19,19,24,.82);color:var(--on-dark)}
+  .lgrid .meta{padding:16px 2px 0}
+  .lgrid h3{font-family:Didot,Georgia,serif;font-size:20px;font-weight:400}
+  .lgrid .loc{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
+  .lgrid .price{font-family:Didot,Georgia,serif;font-size:18px;margin-top:8px}
+  .lgrid .price span{font-size:12px;font-style:italic;color:var(--ink-soft)}
+  .lgrid .facts{font-family:Didot,Georgia,serif;font-size:12.5px;font-style:italic;color:var(--ink-2);margin-top:5px}
+  .lgrid .go{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-top:9px;display:inline-block;border-bottom:2px solid var(--red);padding-bottom:2px}
+  .lgrid .card:hover .go{color:var(--red)}
+  .lgrid .note{display:none}
+  .lgrid .oh{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-top:8px}
+  .lgrid .cta.mini{background:var(--warm);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;min-height:225px}
+  .lgrid .cta.mini .mono{font-family:Didot,Georgia,serif;font-size:24px}
+  .lgrid .cta.mini .mono i{font-style:normal;color:var(--red)}
+  .lgrid .cta.mini h3{margin-top:10px;max-width:16ch}
+  .lgrid .cta.mini h3 em{font-style:italic;color:var(--red)}
+  .lgrid .cta.mini a{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);text-decoration:none;padding:11px 20px;border-radius:9999px;margin-top:16px}
+  .lgrid .cta.mini a:hover{background:var(--red)}
+
+  /* ── stats + pulse strips ── */
+  .statstrip{border-top:1px solid var(--line);margin-top:56px;padding-top:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  @media(max-width:840px){.statstrip{grid-template-columns:1fr 1fr}}
+  .stt{padding:22px 22px 6px 0}
+  .stt+.stt{padding-left:22px;border-left:1px solid var(--line)}
+  @media(max-width:840px){.stt:nth-child(3){padding-left:0;border-left:0}}
+  .stt .n{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,36px)}
+  .stt .n i{font-style:normal;color:var(--red)}
+  .stt .l{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px;line-height:1.9}
+  .statsrc{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--ink-soft);margin-top:16px}
+  .statsrc a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--red)}
+  .statsrc a:hover{color:var(--red)}
+
+  .pulse{background:#0d0d11;color:var(--on-dark);padding:18px 0}
+  .pulse .row{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap}
+  .pulse .pm{display:flex;align-items:baseline;gap:10px}
+  .pulse .pm b{font-family:Didot,Georgia,serif;font-size:19px;font-weight:400}
+  .pulse .pm b i{font-style:normal;color:var(--red)}
+  .pulse .pm span{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark-soft)}
+  .pulse .upd{font-family:Didot,Georgia,serif;font-size:11px;font-style:italic;color:var(--on-dark-soft)}
+
+  /* ── valuation band ── */
+  .worth{background:var(--warm);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:76px 0}
+  .worth .row{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:center}
+  @media(max-width:880px){.worth .row{grid-template-columns:1fr}}
+  .worth h2{margin-top:14px}
+  .worth .lede2{font-family:Didot,Georgia,serif;font-size:16.5px;font-style:italic;color:var(--ink-2);margin-top:14px;max-width:50ch}
+  .worth .act{text-align:right}
+  @media(max-width:880px){.worth .act{text-align:left}}
+  .worth .act a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:17px 34px;border-radius:9999px}
+  .worth .act a:hover{background:#c70004}
+  .worth .act .sub{font-family:Didot,Georgia,serif;font-size:12.5px;font-style:italic;color:var(--ink-soft);margin-top:12px}
+
+  /* ── staging before/after ── */
+  .ba{margin-top:56px}
+  .ba .bhead{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--red)}
+  .ba h3{font-family:Didot,Georgia,serif;font-size:24px;font-weight:400;margin-top:8px}
+  .ba h3 em{font-style:italic;color:var(--red)}
+  .bawrap{position:relative;margin-top:24px;height:380px;overflow:hidden;user-select:none;cursor:ew-resize}
+  .bawrap .pane{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .bawrap .pane.before{background:linear-gradient(135deg,#3a3a42,#23232b)}
+  .bawrap .pane.after{background:linear-gradient(135deg,#efece4,#e0dcd2);clip-path:inset(0 0 0 50%)}
+  .bawrap .tag{position:absolute;top:16px;font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:7px 14px;border-radius:9999px}
+  .bawrap .tag.b{left:16px;background:rgba(19,19,24,.8);color:var(--on-dark)}
+  .bawrap .tag.a{right:16px;background:var(--red);color:#fff}
+  .bawrap .ph{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;text-align:center;max-width:30ch;padding:0 20px}
+  .bawrap .pane.before .ph{color:var(--on-dark-soft)}
+  .bawrap .pane.after .ph{color:var(--ink-2)}
+  .bawrap .handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--red);transform:translateX(-1px)}
+  .bawrap .handle:after{content:"◂ ▸";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--red);color:#fff;font-size:11px;letter-spacing:2px;padding:9px 12px;border-radius:9999px;white-space:nowrap}
+  .bawrap:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18);pointer-events:none}
+  .ba .note{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:12px}
+
+  /* ── private list ── */
+  .plist{background:var(--ink);color:var(--on-dark);padding:80px 0}
+  .plist .row{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+  @media(max-width:880px){.plist .row{grid-template-columns:1fr}}
+  .plist h2{color:inherit;margin-top:14px}
+  .plist .lede2{font-family:Didot,Georgia,serif;font-size:16.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:50ch}
+  .plist form{display:flex;gap:12px;flex-wrap:wrap}
+  .plist input{flex:1;min-width:200px;font-family:"Avenir Next",Avenir,sans-serif;font-size:14px;padding:15px 18px;background:rgba(247,245,240,.06);border:1px solid var(--line-dark);color:var(--on-dark);border-radius:9999px}
+  .plist input::placeholder{color:var(--on-dark-soft)}
+  .plist button{font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--red);color:#fff;border:0;padding:15px 30px;border-radius:9999px;cursor:pointer}
+  .plist button:hover{background:#c70004}
+  .plist .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.06em;color:rgba(247,245,240,.45);margin-top:12px;width:100%}
+
+  /* ── firm ── */
+  .firm .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:70px;align-items:start}
+  @media(max-width:900px){.firm .grid{grid-template-columns:1fr}}
+  .creds{border-top:1px solid var(--line);margin-top:10px}
+  .cred{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .cred .n{font-family:Didot,Georgia,serif;font-size:34px}
+  .cred .n i{font-style:normal;color:var(--red)}
+  .cred .l{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);text-align:right;line-height:1.8}
+  .pull{margin-top:34px;padding-left:24px;border-left:2px solid var(--red);font-family:Didot,Georgia,serif;font-size:21px;font-style:italic;line-height:1.55}
+
+  /* ── homes band · scrolling filmstrip ── */
+  .homes{background:var(--warm);padding:84px 0;overflow:hidden}
+  .homes .track{margin-top:40px;overflow:hidden}
+  .homes .strip{display:flex;gap:22px;width:max-content;animation:filmstrip 45s linear infinite}
+  .homes .track:hover .strip{animation-play-state:paused}
+  @keyframes filmstrip{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.homes .strip{animation:none}}
+  .plate{position:relative;flex:0 0 auto}
+  .plate img{width:430px;height:300px;object-fit:cover}
+  @media(max-width:640px){.plate img{width:300px;height:220px}}
+  .plate:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18)}
+  .homes .cap{margin-top:20px;text-align:center;font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;color:var(--ink-soft)}
+  .homes .go{text-align:center;margin-top:26px}
+  .homes .go a{font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);text-decoration:none;padding:15px 32px;border-radius:9999px;display:inline-block}
+  .homes .go a:hover{background:var(--red)}
+
+  /* ── sellers · listing experience ── */
+  .sellers .duo{display:grid;grid-template-columns:.85fr 1.15fr;gap:26px;margin-top:48px;align-items:stretch}
+  @media(max-width:840px){.sellers .duo{grid-template-columns:1fr}}
+  .minicover{background:var(--ink);color:var(--on-dark);position:relative;min-height:360px;display:flex}
+  .minicover .mc{margin:14px;border:1px solid var(--line-dark);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px}
+  .mc .mono{font-family:Didot,Georgia,serif;font-size:20px}
+  .mc .mono i{font-style:normal;color:var(--red)}
+  .mc .pre{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);font-weight:600;margin-top:16px}
+  .mc .num{font-family:Didot,Georgia,serif;font-size:64px;line-height:1;margin-top:10px}
+  .mc .st{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;margin-top:2px}
+  .mc .for{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px}
+  .tourplate{position:relative;overflow:hidden;display:block;min-height:360px}
+  .tourplate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 5s ease}
+  .tourplate:hover img{transform:scale(1.05)}
+  .tourplate .scrim2{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,24,.6),transparent 55%)}
+  .tourplate .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:9999px;background:rgba(252,251,248,.92);display:flex;align-items:center;justify-content:center}
+  .tourplate .play:after{content:"";border-style:solid;border-width:11px 0 11px 19px;border-color:transparent transparent transparent var(--ink);margin-left:5px}
+  .tourplate .lab{position:absolute;left:20px;bottom:16px;color:var(--on-dark);font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+  .tourplate:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18);pointer-events:none}
+  .sellers .duocap{display:grid;grid-template-columns:.85fr 1.15fr;gap:26px;margin-top:14px}
+  @media(max-width:840px){.sellers .duocap{grid-template-columns:1fr}}
+  .sellers .duocap a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none;border-bottom:2px solid var(--red);padding-bottom:3px}
+  .sellers .duocap a:hover{color:var(--red)}
+  .sellers .duocap .note{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:8px}
+
+  /* ── tools ── */
+  .tools{background:var(--warm);padding:84px 0}
+  .tools .row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:42px;border-top:1px solid var(--line)}
+  @media(max-width:840px){.tools .row{grid-template-columns:1fr 1fr}}
+  .tool{padding:26px 26px 26px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;display:block}
+  .tool+.tool{padding-left:26px;border-left:1px solid var(--line)}
+  .tools .tool:nth-child(4n+1){padding-left:0;border-left:0}
+  @media(max-width:840px){.tools .tool:nth-child(2n+1){padding-left:0;border-left:0}}
+  .tool .tn{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--red)}
+  .tool h3{font-family:Didot,Georgia,serif;font-size:21px;font-weight:400;margin-top:6px}
+  .tool p{font-size:13px;color:var(--ink-soft);margin-top:8px;line-height:1.7}
+  .tool:hover h3{color:var(--red)}
+
+  /* ── team ── */
+  .team{background:var(--ink);color:var(--on-dark)}
+  .team .lede{color:var(--on-dark-soft)}
+  .team .photo{position:relative;margin-top:48px}
+  .team .photo img{width:100%;max-height:640px;object-fit:cover;object-position:center 30%;filter:grayscale(1) contrast(1.04)}
+  .team .photo:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px var(--line-dark)}
+  .team .roster{margin-top:22px;text-align:center;font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--on-dark-soft)}
+  .team .roster span{color:var(--on-dark)}
+  .team .desig{margin-top:30px;padding-top:22px;border-top:1px solid var(--line-dark);text-align:center;font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark-soft);line-height:2.2}
+  .team .desig i{color:var(--red);font-style:normal;padding:0 6px}
+
+  /* ── services ── */
+  .services .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:48px;border-top:1px solid var(--line)}
+  @media(max-width:900px){.services .cols{grid-template-columns:1fr}}
+  .svc{padding:34px 34px 34px 0;border-bottom:1px solid var(--line)}
+  .svc+.svc{padding-left:34px;border-left:1px solid var(--line)}
+  @media(max-width:900px){.svc+.svc{padding-left:0;border-left:0}}
+  .svc h3{font-family:Didot,Georgia,serif;font-size:24px;font-weight:400}
+  .svc h3 i{font-style:italic;color:var(--red);font-size:16px;margin-right:8px}
+  .svc p{font-size:14.5px;color:var(--ink-soft);margin-top:12px;line-height:1.8}
+
+  /* ── reviews · testimonial carousel ── */
+  .reviews{background:var(--warm);position:relative;overflow:hidden}
+  .reviews .bigmark{position:absolute;top:-30px;right:3%;font-family:Didot,Georgia,serif;font-size:clamp(220px,32vw,460px);line-height:1;color:rgba(239,0,4,.08);pointer-events:none;user-select:none}
+  .reviews .kicker,.reviews h2{text-align:center}
+  .reviews h2{margin-left:auto;margin-right:auto;max-width:26ch}
+  .rotator{margin-top:30px;text-align:center;max-width:860px;margin-left:auto;margin-right:auto;position:relative}
+  .stars{display:flex;gap:9px;justify-content:center;margin-top:6px}
+  .stars span{color:var(--red);font-size:19px;opacity:0;transform:scale(.3);transition:opacity .4s ease,transform .5s cubic-bezier(.34,1.56,.64,1)}
+  .stars.pop span{opacity:1;transform:scale(1)}
+  .stars span:nth-child(2){transition-delay:.07s}
+  .stars span:nth-child(3){transition-delay:.14s}
+  .stars span:nth-child(4){transition-delay:.21s}
+  .stars span:nth-child(5){transition-delay:.28s}
+  .rstage{display:grid;margin-top:24px;min-height:150px}
+  .rq{grid-area:1/1;opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease;pointer-events:none}
+  .rq.on{opacity:1;transform:none;pointer-events:auto}
+  .rq p{font-family:Didot,Georgia,serif;font-size:clamp(21px,2.8vw,28px);font-style:italic;line-height:1.6}
+  .rq .who{margin-top:24px;display:flex;align-items:center;justify-content:center;gap:14px}
+  .rq .who .rule{width:26px;height:2px;background:var(--red)}
+  .rq .who .nm{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft)}
+  .rarrow{position:absolute;top:52%;transform:translateY(-50%);width:46px;height:46px;border-radius:9999px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-family:Didot,Georgia,serif;font-size:22px;line-height:1;color:var(--ink-2);display:flex;align-items:center;justify-content:center;transition:background .25s,color .25s,border-color .25s}
+  .rarrow:hover{background:var(--red);color:#fff;border-color:var(--red)}
+  .rarrow.prev{left:-84px}
+  .rarrow.next{right:-84px}
+  @media(max-width:1100px){.rarrow{display:none}}
+  .rbars{display:flex;gap:10px;justify-content:center;margin-top:34px}
+  .rbar{width:46px;height:3px;background:rgba(19,19,24,.15);border:0;padding:0;cursor:pointer;position:relative;overflow:hidden;border-radius:2px}
+  .rbar i{position:absolute;inset:0;transform:scaleX(0);transform-origin:left;background:var(--red)}
+  .rbar.on i{animation:rfill 5s linear forwards}
+  @keyframes rfill{to{transform:scaleX(1)}}
+  @media(prefers-reduced-motion:reduce){.rq{transition:opacity .8s ease;transform:none}.stars span{transition:opacity .4s ease;transform:none}}
+
+  /* ── contact ── */
+  .contact{background:var(--ink);color:var(--on-dark)}
+  .contact .grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+  @media(max-width:840px){.contact .grid{grid-template-columns:1fr}}
+  .contact .lede{color:var(--on-dark-soft)}
+  .contact .phone{font-family:Didot,Georgia,serif;font-size:40px;margin-top:30px;color:var(--on-dark);text-decoration:none;display:inline-block}
+  .contact .phone:hover{color:var(--red)}
+  .contact .mail{display:block;font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:10px;text-decoration:none}
+  .contact .lic{margin-top:26px;font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--on-dark-soft);line-height:2.2}
+  form{display:grid;gap:14px;margin-top:8px}
+  input,textarea{font-family:"Avenir Next",Avenir,sans-serif;font-size:14px;padding:14px 16px;background:rgba(247,245,240,.06);border:1px solid var(--line-dark);color:var(--on-dark);border-radius:4px}
+  input::placeholder,textarea::placeholder{color:var(--on-dark-soft)}
+  textarea{min-height:110px;resize:vertical}
+  form button{font-family:"Avenir Next",Avenir,sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--red);color:#fff;border:0;padding:15px 30px;border-radius:9999px;cursor:pointer;justify-self:start}
+  form button:hover{background:#c70004}
+
+  /* ── footer ── */
+  footer{background:#0d0d11;color:var(--on-dark);padding:64px 0 44px;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:40px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .firm{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.38em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:12px}
+  footer .tag{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;margin-top:22px}
+  footer .ref{font-family:Didot,Georgia,serif;font-size:12.5px;font-style:italic;color:var(--on-dark-soft);margin-top:26px;max-width:60ch;margin-left:auto;margin-right:auto}
+  footer .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;letter-spacing:.1em;color:rgba(247,245,240,.4);margin-top:30px}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo, not the live site</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="#top">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="listings/">Listings</a>
+      <a href="results.html">Results</a>
+      <a href="neighborhoods.html">Neighborhoods</a>
+      <a href="#team">The Team</a>
+      <a href="services.html">Services</a>
+      <a href="#tools">Tools</a>
+      <a href="#reviews">Reviews</a>
+      <a class="call keep" href="tel:7045750714">704 · 575 · 0714</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="bg"></div>
+  <div class="scrim"></div>
+  <div class="content"><div class="wrap">
+    <div class="kicker">Boutique Real Estate · Yourtown &amp; the Carolinas</div>
+    <h1>We get you moving in the <em>right direction.</em></h1>
+    <div class="sub">A boutique firm offering specialized attention on every detail of the entire transaction — from listing day to closing table.</div>
+    <div class="ctas">
+      <a class="cta primary" href="#contact">Start a conversation</a>
+      <a class="cta ghost" href="#firm">Why boutique</a>
+    </div>
+  </div></div>
+</header>
+
+<div class="pulse">
+  <div class="wrap row" id="pulseRow"></div>
+</div>
+
+<section class="reviews" id="reviews">
+  <div class="bigmark">"</div>
+  <div class="wrap">
+    <div class="kicker">Client Testimonials</div>
+    <h2>The best compliment we can receive is a <em>referral.</em></h2>
+    <div class="rotator">
+      <div class="stars pop" id="rstars" aria-hidden="true"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <div class="rstage">
+        <div class="rq on"><p>As a first-time homebuyer, Kimi was extremely helpful throughout the entire process. She alleviates all of the stress of buying a home and I couldn't have done it without her.</p><div class="who"><span class="rule"></span><span class="nm">A First-Time Homebuyer</span><span class="rule"></span></div></div>
+        <div class="rq"><p>Kimi's knowledge and attention to detail is top notch! I can't imagine having a better first-time home buying experience.</p><div class="who"><span class="rule"></span><span class="nm">A Sample Realty Client</span><span class="rule"></span></div></div>
+        <div class="rq"><p>Kimi is diligent and active while representing you throughout the transaction. I have used Kimi as my agent through four home purchases, three sales, and a rental property.</p><div class="who"><span class="rule"></span><span class="nm">A Repeat Client — 8 Transactions</span><span class="rule"></span></div></div>
+      </div>
+      <button class="rarrow prev" id="rprev" aria-label="Previous testimonial">‹</button>
+      <button class="rarrow next" id="rnext" aria-label="Next testimonial">›</button>
+      <div class="rbars">
+        <button class="rbar on" aria-label="Review 1"><i></i></button>
+        <button class="rbar" aria-label="Review 2"><i></i></button>
+        <button class="rbar" aria-label="Review 3"><i></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="featured" id="listings">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="kicker">Recent Results</div>
+        <h2>Sold &amp; under <em>contract.</em></h2>
+      </div>
+      <a class="all" href="listings/">All listings — sales, leases &amp; solds</a>
+    </div>
+    <div class="lgrid" id="homeListings"></div>
+    <div class="statstrip" id="statStrip"></div>
+    <div class="statsrc" id="statSrc"></div>
+  </div>
+</section>
+
+<section class="worth" id="worth">
+  <div class="wrap row">
+    <div>
+      <div class="kicker">What's Your Home Worth?</div>
+      <h2>Zillow has never walked your street. <em>We have.</em></h2>
+      <div class="lede2">A real valuation from a broker with 24 years in these neighborhoods — built from actual closed sales, delivered within 24 hours, free.</div>
+    </div>
+    <div class="act">
+      <a href="tools/home-worth.html">Get my free home valuation</a>
+      <div class="sub">30 seconds to ask · no obligation, ever</div>
+    </div>
+  </div>
+</section>
+
+<section class="team" id="team">
+  <div class="wrap">
+    <div class="kicker">The Sample Realty Team</div>
+    <h2 style="color:inherit">Seventy years of experience,<br/>around one table.</h2>
+    <p class="lede">Selling your home is a team effort — staging, marketing, showings, feedback, negotiation, closing. Here is everyone who will be working on yours.</p>
+    <div class="photo"><img src="assets/team.jpg" alt="The Sample Realty Team"/></div>
+    <div class="roster">From left to right — <span>Colleen Stabile, Christy Lathrop, Emily Smaldone, Sample Contact, Kristi Graff, Sue Brock, and Sample Contact</span></div>
+    <div class="desig">Realtor® <i>·</i> Owner / Broker-in-Charge <i>·</i> Accredited Staging Professional <i>·</i> Investment Specialist <i>·</i> Property Management Division <i>·</i> Certified Short Sale Buyer <i>·</i> Certified Military Residential Specialist</div>
+  </div>
+</section>
+
+<section class="firm" id="firm">
+  <div class="wrap grid">
+    <div>
+      <div class="kicker">The Boutique Difference</div>
+      <h2>Specialized attention, from listing <em>to closing.</em></h2>
+      <p class="lede">Sample Realty Home &amp; Land is a boutique real estate firm — and that is your advantage.</p>
+      <p class="body">We communicate with you throughout the entire process. You are never handed off to a "transaction team" in a large office that doesn't know anything about your home — when you call, the person who answers knows your house, your timeline, and where things stand.</p>
+      <p class="body">And boutique doesn't mean a smaller stage: your home reaches the same broad markets that every agent at every large firm reaches — the MLS and every major site it feeds.</p>
+      <div class="pull">"We reach every market the big firms reach. You keep the people who know your home."</div>
+    </div>
+    <div class="creds">
+      <div class="cred"><div class="n">24<i>+</i></div><div class="l">Years as Broker / Owner<br/>Sample Contact</div></div>
+      <div class="cred"><div class="n">70<i>+</i></div><div class="l">Combined years of experience<br/>The Sample Realty Team</div></div>
+      <div class="cred"><div class="n">100<i>%</i></div><div class="l">Referral-based business<br/>built entirely on results</div></div>
+      <div class="cred"><div class="n">NC <i>&amp;</i> SC</div><div class="l">Licensed in both Carolinas<br/>one broker, two states</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="homes">
+  <div class="track">
+    <div class="strip">
+      <div class="plate"><img src="assets/home-brick.jpg" alt="Represented home — brick estate"/></div>
+      <div class="plate"><img src="assets/listings/401-wingfoot-drive.jpg" alt="401 Wingfoot Drive — sold over asking, June 2026"/></div>
+      <div class="plate"><img src="assets/hero-estate.jpg" alt="Represented home — stone and stucco estate"/></div>
+      <div class="plate"><img src="assets/home-stucco.jpg" alt="Represented home — European-style estate"/></div>
+      <div class="plate"><img src="assets/listings/7518-meadowgate-lane.jpg" alt="7518 Meadowgate Lane — sold July 2026"/></div>
+      <div class="plate"><img src="assets/home-backyard.jpg" alt="Represented home — landscaped backyard"/></div>
+      <div class="plate"><img src="assets/clients-sold.jpg" alt="Clients on closing day"/></div>
+      <div class="plate"><img src="assets/home-brick.jpg" alt=""/></div>
+      <div class="plate"><img src="assets/listings/401-wingfoot-drive.jpg" alt=""/></div>
+      <div class="plate"><img src="assets/hero-estate.jpg" alt=""/></div>
+      <div class="plate"><img src="assets/home-stucco.jpg" alt=""/></div>
+      <div class="plate"><img src="assets/listings/7518-meadowgate-lane.jpg" alt=""/></div>
+      <div class="plate"><img src="assets/home-backyard.jpg" alt=""/></div>
+      <div class="plate"><img src="assets/clients-sold.jpg" alt=""/></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="cap">A few of the homes — and closing days — we've had the privilege to be part of.</div>
+    <div class="go"><a href="listings/">View active listings</a></div>
+  </div>
+</div>
+
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="kicker">What We Do</div>
+    <h2>Every side of the transaction, <em>handled.</em></h2>
+    <div class="cols">
+      <div class="svc">
+        <h3><i>i.</i>Selling</h3>
+        <p>Staging by an Accredited Staging Professional, professional photography and video including drone, deliberate MLS keywords, luxury-level signage, Supra lockbox security, CSS showing scheduling — and every piece of feedback reported back to you.</p>
+      </div>
+      <div class="svc">
+        <h3><i>ii.</i>Buying</h3>
+        <p>From first-time buyers to luxury and investment purchases, in both Carolinas — guided by people who know the Yourtownand surrounding markets in depth, and who stay beside you from search to keys.</p>
+      </div>
+      <div class="svc">
+        <h3><i>iii.</i>Property Management</h3>
+        <p>A dedicated property-management division for owners and investors — your property cared for with the same boutique attention as every listing we represent.</p>
+      </div>
+    </div>
+    <p style="margin-top:34px"><a href="services.html" style="font-family:'Avenir Next',Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none;border-bottom:2px solid var(--red);padding-bottom:3px">See everything we do, in detail</a></p>
+  </div>
+</section>
+
+<section class="sellers" id="sellers">
+  <div class="wrap">
+    <div class="kicker">When We List Your Home</div>
+    <h2>Every listing gets the <em>full production.</em></h2>
+    <p class="lede">A private listing presentation built for your home. Staging, photography, and drone. A cinematic tour buyers actually watch. Then everywhere the MLS reaches.</p>
+    <div class="duo">
+      <div class="minicover"><div class="mc">
+        <div class="mono">P<i>·</i>R</div>
+        <div class="pre">Private Listing Presentation</div>
+        <div class="num">2304</div>
+        <div class="st">Highland Forest Drive</div>
+        <div class="for">Prepared for Gwynne &amp; Scott Coleman</div>
+      </div></div>
+      <a class="tourplate" href="../tour.html">
+        <img src="../assets/exterior.jpg" alt="Cinematic tour still — concept imagery"/>
+        <div class="scrim2"></div>
+        <div class="play"></div>
+        <div class="lab">Cinematic virtual tours</div>
+      </a>
+    </div>
+    <div class="duocap">
+      <div>
+        <a href="../listing-presentation/Coleman-Listing-Presentation-A-Signature-Red.pdf">View a sample presentation</a>
+        <div class="note">Prepared privately for every seller we meet.</div>
+      </div>
+      <div>
+        <a href="../tour.html">Play a sample tour</a>
+        <div class="note">Demo — concept imagery, not an actual property.</div>
+      </div>
+    </div>
+
+    <div class="ba">
+      <div class="bhead">Staged by our Accredited Staging Professional</div>
+      <h3>Drag the line — same room, <em>staged.</em></h3>
+      <div class="bawrap" id="baWrap">
+        <div class="pane before"><div class="ph">Empty room, echoing —<br/>the "before" buyers scroll past.</div></div>
+        <div class="pane after" id="baAfter"><div class="ph">Staged, lit, and photographed —<br/>the listing buyers book.</div></div>
+        <div class="tag b">Before</div>
+        <div class="tag a">After · Staged</div>
+        <div class="handle" id="baHandle"></div>
+      </div>
+      <div class="note">Component preview — Kimi's staging portfolio photos drop straight into this slider.</div>
+    </div>
+  </div>
+</section>
+
+<section class="plist" id="privatelist">
+  <div class="wrap row">
+    <div>
+      <div class="kicker">The Private List</div>
+      <h2>Our listings appear here before <em>the portals.</em></h2>
+      <div class="lede2">Coming-soons — like 1208 High Brook Drive — launch to this list first. Tell us what you're looking for and you'll hear about the match before the market does.</div>
+    </div>
+    <div>
+      <form id="plistForm">
+        <input id="plContact" placeholder="Email or phone" required/>
+        <button type="submit">Join the private list</button>
+        <div class="fine" id="plFine">Demo only — in production this lands in the CRM with your criteria attached. Unsubscribe anytime; never shared.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="tools" id="tools">
+  <div class="wrap">
+    <div class="kicker">Tools &amp; Resources</div>
+    <h2>Everything you need, <em>before you need it.</em></h2>
+    <div class="row">
+      <a class="tool" href="listings/"><div class="tn">i.</div><h3>Home Search</h3><p>Search every active listing across the Carolinas MLS.</p></a>
+      <a class="tool" href="tools/home-worth.html"><div class="tn">ii.</div><h3>What's My Home Worth?</h3><p>A real valuation from Kimi within 24 hours — free.</p></a>
+      <a class="tool" href="tools/mortgage.html"><div class="tn">iii.</div><h3>Mortgage Calculator</h3><p>Estimate your monthly payment before you fall in love.</p></a>
+      <a class="tool" href="tools/closing-costs.html"><div class="tn">iv.</div><h3>Closing Costs</h3><p>Know what to expect at the table — no surprises.</p></a>
+      <a class="tool" href="tools/carolina-compare.html"><div class="tn">v.</div><h3>NC vs SC</h3><p>Same budget, both sides of the line — the border math.</p></a>
+      <a class="tool" href="tools/investor.html"><div class="tn">vi.</div><h3>Investor Analyzer</h3><p>Cap rate &amp; cash flow — then we run it for you.</p></a>
+      <a class="tool" href="tools/new-construction.html"><div class="tn">vii.</div><h3>New-Construction Guide</h3><p>The builder has an agent. You should too.</p></a>
+      <a class="tool" href="tools/resources.html"><div class="tn">viii.</div><h3>Resources</h3><p>Guides and answers for every step of the move.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap grid">
+    <div>
+      <div class="kicker">Start the Conversation</div>
+      <h2 style="color:inherit">Let's talk about <em>your</em> next move.</h2>
+      <p class="lede">Selling, buying, or both — it starts with a conversation, not a contract.</p>
+      <a class="phone" href="tel:7045750714">704 · 575 · 0714</a>
+      <a class="mail" href="mailto:KimiParkerRealtor@gmail.com">KimiParkerRealtor@gmail.com</a>
+      <div class="lic">Serving Yourtown &amp; surrounding markets<br/>Licensed in North &amp; South Carolina</div>
+    </div>
+    <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='Message received ✓ (demo)';">
+      <input placeholder="Name" required/>
+      <input placeholder="Phone or email" required/>
+      <textarea placeholder="Tell us a little about your home, or what you're looking for"></textarea>
+      <button type="submit">Send message</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="firm">Sample Realty Home &amp; Land, LLC</div>
+    <div class="tag">We get you moving in the right direction!</div>
+    <div class="ref">"The best compliment we can receive is a referral from our clients and friends — thank you."</div>
+    <div class="fine">© 2026 Sample Realty Home &amp; Land, LLC · All rights reserved</div>
+  </div>
+</footer>
+
+<script src="listings-data.js"></script>
+<script>
+(function(){
+  const L = window.PR_LISTINGS, R = window.PR_renderCard;
+  const results = L.filter(l => l.status === "pending" || l.status === "sold");
+  const tile =
+    '<div class="cta mini"><div class="mono">P<i>·</i>R</div>' +
+    '<h3>See what\'s on the market <em>right now.</em></h3>' +
+    '<a href="listings/">View active listings</a></div>';
+  document.getElementById("homeListings").innerHTML =
+    results.map(l => R(l, "")).join("") + tile;
+
+  /* stats strip — from PR_STATS (real Canopy closed data) */
+  const S = window.PR_STATS;
+  document.getElementById("statStrip").innerHTML =
+    '<div class="stt"><div class="n">' + S.closedTransactions + '</div><div class="l">Closed transactions<br/>last two years</div></div>' +
+    '<div class="stt"><div class="n">' + S.closedVolume.replace("+","<i>+</i>") + '</div><div class="l">Closed volume<br/>listing + buyer side</div></div>' +
+    '<div class="stt"><div class="n">' + S.fastestContract.replace(" days","<i> days</i>") + '</div><div class="l">Fastest listing to<br/>under contract</div></div>' +
+    '<div class="stt"><div class="n">+' + S.overAsking.replace("%","<i>%</i>") + '</div><div class="l">Sold over asking<br/>401 Wingfoot Dr</div></div>';
+  document.getElementById("statSrc").innerHTML =
+    'Source: ' + S.source + ' · <a href="results.html">read the case studies</a>';
+
+  /* market pulse strip — from PR_MARKET (runtime-refreshed at launch) */
+  const M = window.PR_MARKET;
+  document.getElementById("pulseRow").innerHTML =
+    '<div class="pm"><b>' + M.medianClosed + '</b><span>' + M.medianNote + '</span></div>' +
+    '<div class="pm"><b>' + M.rate + '</b><span>' + M.rateNote + '</span></div>' +
+    '<div class="pm"><b>' + M.fastest + '</b><span>' + M.fastestNote + '</span></div>' +
+    '<div class="upd">Market pulse · updated ' + M.updated + ' · refreshed monthly</div>';
+})();
+</script>
+<script>
+(function(){
+  /* staging before/after slider */
+  const wrap = document.getElementById("baWrap");
+  if (wrap){
+    const after = document.getElementById("baAfter"), handle = document.getElementById("baHandle");
+    function setX(clientX){
+      const r = wrap.getBoundingClientRect();
+      const p = Math.min(97, Math.max(3, (clientX - r.left) / r.width * 100));
+      after.style.clipPath = "inset(0 0 0 " + p + "%)";
+      handle.style.left = p + "%";
+    }
+    let drag = false;
+    wrap.addEventListener("pointerdown", e => { drag = true; setX(e.clientX); });
+    window.addEventListener("pointermove", e => { if (drag) setX(e.clientX); });
+    window.addEventListener("pointerup", () => drag = false);
+  }
+
+  /* private list capture (demo) */
+  const pf = document.getElementById("plistForm");
+  if (pf) pf.addEventListener("submit", function(e){
+    e.preventDefault();
+    try {
+      const l = JSON.parse(localStorage.getItem("pr_private_list") || "[]");
+      l.push({ contact: document.getElementById("plContact").value, at: new Date().toISOString() });
+      localStorage.setItem("pr_private_list", JSON.stringify(l));
+    } catch (err) {}
+    pf.innerHTML = '<div style="font-family:Didot,Georgia,serif;font-size:17px;font-style:italic">You\'re on the list — you\'ll hear about the next one first. <b>(Demo — nothing actually sent.)</b></div>';
+  });
+})();
+</script>
+<script src="concierge.js" data-base=""></script>
+<script>
+(function(){
+  const quotes = [...document.querySelectorAll('.rq')];
+  const bars = [...document.querySelectorAll('.rbar')];
+  const stars = document.getElementById('rstars');
+  if (!quotes.length) return;
+  let i = 0, timer = null;
+  function show(n){
+    quotes[i].classList.remove('on'); bars[i].classList.remove('on');
+    i = n;
+    quotes[i].classList.add('on'); bars[i].classList.add('on');
+    stars.classList.remove('pop'); void stars.offsetWidth; stars.classList.add('pop');
+  }
+  const start = () => { timer = setInterval(() => show((i+1) % quotes.length), 5000); };
+  const stop = () => { if (timer) clearInterval(timer); timer = null; };
+  bars.forEach((d, n) => d.addEventListener('click', () => { stop(); show(n); start(); }));
+  document.getElementById('rprev').addEventListener('click', () => { stop(); show((i+quotes.length-1) % quotes.length); start(); });
+  document.getElementById('rnext').addEventListener('click', () => { stop(); show((i+1) % quotes.length); start(); });
+  const rot = document.querySelector('.rotator');
+  rot.addEventListener('mouseenter', stop);
+  rot.addEventListener('mouseleave', () => { if (!timer) start(); });
+  start();
+})();
+</script>
+
+</body>
+</html>

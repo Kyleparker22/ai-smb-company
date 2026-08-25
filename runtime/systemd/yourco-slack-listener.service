@@ -1,0 +1,18 @@
+[Unit]
+Description=yourco Slack per-agent command listener (two-way control surface)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=claudeops
+Group=claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+EnvironmentFile=/home/claudeops/yourco-os/runtime/.slack.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /home/claudeops/yourco-os/runtime/slack-agent-listener.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

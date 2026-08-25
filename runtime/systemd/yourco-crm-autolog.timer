@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo crm-autolog — weekday mornings 08:15 ET (David)
+
+[Timer]
+OnCalendar=Mon-Fri *-*-* 08:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

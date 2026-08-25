@@ -1,0 +1,11 @@
+2026-08-21 — Two identical tool-block partials in a row = escalate the config fix, don't defer to "next run"
+
+Source: Brett — source-watch loop, second run (2026-08-21). WebFetch was still not granted, exactly as on 2026-07-27; ~25 days passed and nothing changed. The 07-27 artifact had closed with "next run with WebFetch granted → true first sweep," which quietly assumed the grant would appear on its own. It didn't, so the second run produced a byte-for-byte-shaped partial.
+
+Pattern: When a loop stops on a `missing-input`/degraded-tool condition, the honest partial is correct — but the *default expectation* ("it'll be granted by next run") is a trap. If the same tool is missing on the SECOND run at the same step, the blocker is a **standing config gap**, not transient, and a third deferral just mints a third identical partial. The loop-contract anti-spin rule ("same step fails the same way twice = stop") has a governance twin: two runs failing the same way is the signal to escalate the *environment fix*, with the exact host + file + change named, rather than re-reporting the symptom.
+
+Implication: On the second identical tool-block partial, the artifact's headline shortfall must (a) state it's now recurring, (b) name the concrete config change (which host, which file, which allow-entry), and (c) confirm the change is inside the loop's risk posture so it's an easy yes. For read-only loops, granting a read-only tool (e.g. WebFetch, a public-URL fetcher) does NOT touch the send/delete/Bash denials — say so, so the grant reads as safe. If Bash is also denied, the contract's own helper scripts (`failure_traces.py`, `learning_triggers.py`, `rejections.py`) can't run either — record the failure trace in prose in the artifact so the recurrence still reaches the eval-review. Companion to `[[2026-07-27_degraded-read-path-dont-baseline-as-seen]]` (its state-file corollary).
+
+Audience: Brett (source-watch); any agent owning a loop that depends on a tool the runtime approval gate may not have granted; Kolby at eval-review (a second identical tool-block partial is an escalation item, not "wait and see").
+
+Triggers: loop:source-watch, WebFetch not granted, tool not granted, degraded read path, missing-input stop, config escalation, second identical partial, runtime allow-list

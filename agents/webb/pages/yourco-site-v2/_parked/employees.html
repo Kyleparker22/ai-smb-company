@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="Digital employees — yourco" />
+<meta property="og:description" content="The catalog of digital employees yourco builds — sales, customer, back-office, marketing, and people roles, each a named employee live in 48 hours, built around your business. See three of them work." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>Digital employees — yourco</title>
+<meta name="description" content="The catalog of digital employees yourco builds — sales, customer, back-office, marketing, and people roles, each a named employee live in 48 hours, built around your business. See three of them work." />
+<link rel="stylesheet" href="site.css" />
+<style>
+  .filterbar{display:flex;flex-wrap:wrap;gap:9px;margin:36px 0 30px}
+  .chip{appearance:none;font:inherit;cursor:pointer;font-size:13.5px;font-weight:600;letter-spacing:-.01em;color:var(--indigo);background:transparent;border:1px solid var(--hairline);border-radius:9999px;padding:8px 16px;transition:all .12s}
+  .chip:hover{border-color:var(--brass)}
+  .chip.active{background:var(--brass);border-color:var(--brass);color:var(--indigo)}
+  .catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:860px){.catalog{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.catalog{grid-template-columns:1fr}}
+  .ecard{border:1px solid var(--hairline);border-radius:12px;padding:20px 21px;background:var(--cream);transition:border-color .12s;display:flex;flex-direction:column}
+  .ecard:hover{border-color:var(--brass)}
+  .ecard .plate{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);border-bottom:1px solid var(--brass);padding-bottom:7px;margin-bottom:13px;display:inline-block;align-self:flex-start}
+  .ecard h4{font-size:16.5px;font-weight:600;letter-spacing:-.015em;margin-bottom:6px}
+  .ecard p{font-size:14px;color:var(--ink-muted);line-height:1.5;flex:1}
+  .seebtn{appearance:none;font:inherit;cursor:pointer;margin-top:14px;align-self:flex-start;font-size:13px;font-weight:600;color:var(--indigo);background:var(--brass);border:1px solid var(--brass);border-radius:9999px;padding:6px 15px;transition:background .12s}
+  .seebtn:hover{background:var(--brass-bright)}
+  .count{font-size:13px;color:var(--ink-muted);margin-bottom:6px}
+  /* demo player */
+  .demo-overlay{position:fixed;inset:0;background:rgba(15,18,38,.5);backdrop-filter:blur(4px);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:48px 18px;overflow:auto}
+  .demo-overlay.hidden{display:none}
+  .demo-modal{background:var(--cream);border:1px solid var(--hairline);border-radius:18px;box-shadow:0 24px 70px rgba(15,18,38,.32);width:100%;max-width:540px;display:flex;flex-direction:column;max-height:84vh}
+  .demo-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:22px 24px 14px;border-bottom:1px solid var(--hairline)}
+  .demo-head .t .ey{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--brass)}
+  .demo-head .t h3{font-size:18px;font-weight:600;letter-spacing:-.02em;margin-top:4px}
+  .demo-x{appearance:none;border:none;background:none;font-size:22px;line-height:1;color:var(--ink-muted);cursor:pointer;padding:0 2px}
+  .demo-scene{padding:20px 24px;display:flex;flex-direction:column;gap:11px;overflow:auto;flex:1}
+  .b{max-width:84%;padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.45}
+  .b.employee{align-self:flex-start;background:rgba(184,150,90,.16);border:1px solid rgba(184,150,90,.3);border-bottom-left-radius:4px}
+  .b.lead{align-self:flex-end;background:var(--cream-2);border-bottom-right-radius:4px}
+  .b.you{align-self:flex-end;background:var(--indigo);color:var(--cream);border-bottom-right-radius:4px}
+  .b .lbl{display:block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;opacity:.7}
+  .b.employee .lbl{color:#8a6d3a}
+  .status{align-self:center;text-align:center;font-size:12.5px;color:var(--ink-muted);max-width:90%;padding:4px 0}
+  .draft{align-self:flex-start;max-width:88%;background:var(--card);border:1px solid var(--hairline);border-left:3px solid var(--brass);border-radius:10px;padding:12px 14px;font-size:13.5px;line-height:1.45}
+  .draft .lbl{display:block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--brass);margin-bottom:5px}
+  .demo-foot{padding:16px 24px 22px;border-top:1px solid var(--hairline);display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .demo-prog{font-size:12px;color:var(--ink-muted)}
+  .demo-ctrl{appearance:none;font:inherit;cursor:pointer;font-size:14px;font-weight:600;color:var(--indigo);background:var(--brass);border:1px solid var(--brass);border-radius:9999px;padding:10px 22px;transition:background .12s}
+  .demo-ctrl:hover{background:var(--brass-bright)}
+  .demo-ctrl.ghost{background:transparent;color:var(--indigo);border-color:var(--hairline)}
+  .demo-illus{font-size:11.5px;color:var(--ink-muted);text-align:center;padding:0 24px 16px}
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="positioning.html">How it works</a>
+        <a href="employees.html" class="active">Employees</a>
+        <a href="demos.html">See it work</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="about.html">About</a>
+        <a href="https://calendly.com/the Founder-yourco/30min" class="pill sm">Book a call</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="tile hero">
+    <div class="wrap narrow">
+      <div class="eyebrow">the building blocks</div>
+      <h1>The capabilities your <span class="accent">AI system runs on.</span></h1>
+      <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+      <p>These are the roles yourco builds — the blocks a <strong>custom AI system</strong> is assembled from. Most businesses run several working together; a single one is the smallest way to start. Each is built around how your business actually works, not a template, and live in 48 hours. The audit tells us which ones you need first.</p>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap">
+      <div class="filterbar" id="filters"></div>
+      <div class="count" id="count"></div>
+      <div class="catalog" id="catalog"></div>
+    </div>
+  </section>
+
+  <section class="tile dark close">
+    <div class="wrap">
+      <h2>not sure which you need?</h2>
+      <p class="lede">That's exactly what the audit is for — we find the bottleneck costing you most and tell you which capabilities to build first, then assemble them into one system. A few hours of your time; the fee comes off the build.</p>
+      <div class="ctas"><a class="pill" href="audit.html">Start with the audit &rarr;</a></div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="lockup" aria-label="yourco"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+      <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+      <div class="fgrid">
+        <a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="employees.html">Employees</a>
+        <a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="audit.html">The audit</a><a href="about.html">About</a>
+        <a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="glass-box.html">The glass box</a>
+        <a href="try-to-break-it.html">Try to break it</a>
+        <a href="team.html">The team</a>
+        <a href="build-your-employee.html">Build yours</a>
+        <a href="roi-calculator.html">ROI</a>
+        <a href="org-chart.html">Your team</a>
+        <a href="manifesto.html">Manifesto</a>
+        <a href="https://calendly.com/the Founder-yourco/30min">Book a call</a>
+      </div>
+      <div class="fmeta">© 2026 yourco · yourco.com</div>
+    </div>
+  </footer>
+
+  <div class="demo-overlay hidden" id="demoOverlay">
+    <div class="demo-modal">
+      <div class="demo-head"><div class="t"><div class="ey">live demo · illustrative</div><h3 id="demoTitle"></h3></div><button class="demo-x" id="demoX">&times;</button></div>
+      <div class="demo-scene" id="demoScene"></div>
+      <div class="demo-illus">A faithful illustration of the workflow — every step represents what yourco actually builds.</div>
+      <div class="demo-foot"><span class="demo-prog" id="demoProg"></span><button class="demo-ctrl" id="demoCtrl"></button></div>
+    </div>
+  </div>
+
+<script>
+const SHAPES = [
+  ["Sales","Lead generation","Sources prospects, qualifies them on your criteria, and drafts personalized outreach — staged for your approval."],
+  ["Sales","Inbound lead responder","Replies to web-form, chat, and inbound leads in seconds — qualifies and routes or books before they cool off."],
+  ["Sales","Appointment setter","Books, confirms, and reschedules meetings, with reminders that cut your no-shows."],
+  ["Sales","Proposal & quote drafter","Turns a call or a brief into a ready-to-review proposal or quote in your voice."],
+  ["Sales","Follow-up rep","Sequences the follow-ups on leads and quotes that went quiet — so nothing slips."],
+  ["Sales","CRM hygiene rep","Logs calls and emails, updates records, and dedupes — your pipeline always clean and current."],
+  ["Sales","Renewal & upsell rep","Flags upcoming renewals and drafts the expansion offer at the right moment."],
+  ["Customer","Intake / front desk","Answers every call and form, qualifies, books the estimate, confirms, and logs it — day or night."],
+  ["Customer","Support agent","Handles 70–80% of routine tickets and escalates the rest — nothing customer-facing without your rules."],
+  ["Customer","Order / job status updater","Answers “where's my order/job?” and pushes proactive status updates so customers stop calling."],
+  ["Customer","Review & reputation manager","Requests reviews after a job, monitors them, and drafts on-brand responses."],
+  ["Customer","Onboarding concierge","Walks each new customer from welcome to setup to first value, so they stick."],
+  ["Customer","Dispatch coordinator","Schedules jobs, routes the crew, and notifies customers — the brain of a field-service day."],
+  ["Customer","Returns / RMA handler","Processes returns and exchanges end-to-end so support stops drowning in them."],
+  ["Back office","Knowledge base","Indexes your docs and answers “have we ever done X?” in plain language, with citations."],
+  ["Back office","Data & reporting analyst","Pulls from your tools, cleans the data, and produces the recurring report or dashboard."],
+  ["Back office","Invoicing & AR chaser","Sends invoices and chases overdue, tone-matched — drafts; you approve the sends."],
+  ["Back office","Bookkeeping categorizer","Categorizes transactions and flags anomalies so the books are close-ready."],
+  ["Back office","Document & form processor","Extracts data from invoices, forms, and contracts and files it where it belongs."],
+  ["Back office","Deadline & compliance tracker","Tracks licenses, renewals, and filing deadlines and reminds you before they lapse."],
+  ["Marketing","Competitor monitor","Watches competitor sites, pricing, social, and launches and reports exactly what changed."],
+  ["Marketing","Social media manager","Drafts, schedules, and engages across your channels — staged for your approval."],
+  ["Marketing","Content repurposer","Turns one asset — a call, a post — into clips, social posts, and an email."],
+  ["Marketing","Newsletter writer","Drafts the recurring newsletter from your business's own updates."],
+  ["Marketing","SEO content writer","Drafts search-optimized articles on a steady cadence."],
+  ["People","Recruiting screener","Posts the role, screens applicants, and schedules the interviews."]
+];
+const CATS = ["All","Sales","Customer","Back office","Marketing","People"];
+
+const DEMOS = {
+  "Intake / front desk": { ey:"intake employee", title:"A missed call becomes a booked estimate", steps:[
+    {k:"status",t:"9:42pm — a homeowner texts your business line."},
+    {r:"lead",t:"Hi, do you do paver patios? Need a quote."},
+    {r:"employee",t:"Hi! Yes we do. I can get you a free on-site estimate — what's your zip?"},
+    {r:"lead",t:"33602"},
+    {r:"employee",t:"Perfect, you're in our area. Rough size, and any budget in mind?"},
+    {r:"lead",t:"~400 sq ft, maybe $8–12k."},
+    {r:"employee",t:"Right in our wheelhouse. I've got Thu 10am or Fri 2pm for the estimate — which works?"},
+    {r:"lead",t:"Thursday 10 works."},
+    {k:"status",t:"✓ Booked Thu 10:00am · confirmation text sent · logged to CRM ($8–12k paver patio)"},
+    {k:"status",t:"You woke up to a booked job — the call you'd have missed."}
+  ]},
+  "Lead generation": { ey:"lead-gen employee", title:"From a vertical to ready-to-send outreach", steps:[
+    {r:"you",t:"Find me landscaping companies in Tampa, 5–15 crew."},
+    {k:"status",t:"Sourcing + enriching prospects…"},
+    {k:"status",t:"Found 18 · qualified 11 on your criteria (size, service area, no in-house marketing)."},
+    {r:"employee",t:"Top pick: Evergreen Lawn & Landscape (8 crew, Tampa). They're hiring a 'customer service rep' — usually a sign they're drowning in inbound."},
+    {r:"employee",k:"draft",t:"“Saw you're hiring for customer service — most landscapers we work with were too. We put a digital employee on the phones that books estimates 24/7, so the calls stop slipping. Worth a quick look?”"},
+    {k:"approve",label:"✓ Approve & queue"},
+    {k:"status",t:"✓ Approved · queued in the sequence · logged to CRM."},
+    {k:"status",t:"11 qualified prospects, personalized — and nothing sent without your okay."}
+  ]},
+  "Invoicing & AR chaser": { ey:"AR employee", title:"Overdue invoices, chased — with your okay", steps:[
+    {k:"status",t:"3 invoices are past due."},
+    {k:"status",t:"Reviewed each customer's payment history · tone-matched every reminder."},
+    {r:"employee",k:"draft",t:"To Sam (BlueSky · 6 days late · always pays): “Hi Sam — quick nudge, invoice #1042 ($750) slipped past due. No rush, just flagging it. Thanks!”"},
+    {r:"employee",k:"draft",t:"To YourCo (28 days late · repeat late payer): firmer reminder + a heads-up that work pauses at 30 days."},
+    {k:"approve",label:"✓ Approve all 3"},
+    {k:"status",t:"✓ Sent via your billing tool · logged · follow-ups scheduled."},
+    {k:"status",t:"Cash chased, relationships intact — you never had to write the awkward email."}
+  ]},
+  "Inbound lead responder": { ey:"inbound responder", title:"A web lead, answered in 9 seconds", steps:[
+    {k:"status",t:"A new lead just filled out your website form — 2:14pm."},
+    {r:"lead",t:"Form: “Interested in a quote for monthly lawn service.” — Jenna, 33609"},
+    {r:"employee",t:"Hi Jenna! Thanks for reaching out about monthly lawn service. You're in our area — is this for a home or a property you manage?"},
+    {r:"lead",t:"Home, about a quarter acre."},
+    {r:"employee",t:"Perfect. I can lock in a free walkthrough — Wed 3pm or Thu 11am?"},
+    {r:"lead",t:"Thu 11 is great."},
+    {k:"status",t:"✓ Booked Thu 11am · routed to the nearest crew lead · logged to CRM"},
+    {k:"status",t:"Answered in 9 seconds — before your competitor even saw the form."}
+  ]},
+  "Appointment setter": { ey:"scheduling employee", title:"A full calendar, zero phone tag", steps:[
+    {k:"status",t:"5 leads want to meet this week."},
+    {r:"employee",t:"For each: checked your calendar, offered two slots, confirmed, and set reminders."},
+    {k:"status",t:"✓ 4 booked · 1 asked to reschedule → offered new times automatically"},
+    {k:"status",t:"Reminder texts go out 24h + 1h before each meeting."},
+    {k:"status",t:"Your week filled itself — and your phone never rang once for scheduling."}
+  ]},
+  "Proposal & quote drafter": { ey:"drafting employee", title:"From a call to a proposal in minutes", steps:[
+    {r:"you",t:"Just got off a call with Ridgeline Roofing — they want a quote for the gutter job, ~200 ft, premium guards."},
+    {k:"status",t:"Pulled your pricing + the call notes…"},
+    {r:"employee",k:"draft",t:"Ridgeline Roofing — Gutter + LeafGuard install, 200 ft. Scope, materials, timeline, and a $4,200 total, valid 30 days. In your template, your voice."},
+    {k:"approve",label:"✓ Approve & send"},
+    {k:"status",t:"✓ Sent · logged to the deal · follow-up set for 3 days"},
+    {k:"status",t:"A half-day of writing, done in four minutes — before they cooled off."}
+  ]},
+  "Follow-up rep": { ey:"follow-up employee", title:"The quotes that went quiet, re-opened", steps:[
+    {k:"status",t:"6 quotes have gone quiet for 5+ days."},
+    {r:"employee",t:"Checked each: 3 are worth a nudge, 2 went cold (parked), 1 already replied (flagged for you)."},
+    {r:"employee",k:"draft",t:"To Marcus (quote sent 6 days ago): “Hi Marcus — circling back on the patio quote. Happy to tweak the scope or timing. Still interested?”"},
+    {k:"approve",label:"✓ Approve the 3"},
+    {k:"status",t:"✓ Sent · next touch staged for day 10 if no reply"},
+    {k:"status",t:"The follow-ups you never get to — handled, in your voice."}
+  ]},
+  "CRM hygiene rep": { ey:"CRM employee", title:"A pipeline that's always clean", steps:[
+    {k:"status",t:"Overnight: 14 emails, 3 calls, 2 booked meetings to log."},
+    {r:"employee",t:"Logged every touch to the right deal, updated 4 stages, merged 2 duplicate contacts."},
+    {k:"status",t:"Flagged: 1 deal stuck in 'proposal' for 3 weeks → needs your call"},
+    {k:"status",t:"✓ CRM current to the minute"},
+    {k:"status",t:"You open a clean pipeline every morning — not a mess to reconcile."}
+  ]},
+  "Renewal & upsell rep": { ey:"renewal employee", title:"Renewals caught before they lapse", steps:[
+    {k:"status",t:"3 clients renew in the next 45 days."},
+    {r:"employee",t:"Reviewed each account's usage + results. Two are strong expansion candidates."},
+    {r:"employee",k:"draft",t:"To Harbor Co (renews in 30d, heavy usage): “You've booked 40% more estimates since we started — want to add the follow-up employee before renewal?”"},
+    {k:"approve",label:"✓ Approve outreach"},
+    {k:"status",t:"✓ Sent · renewal + upsell flagged on your calendar"},
+    {k:"status",t:"Renewals never sneak up, and the easy expansions get asked for."}
+  ]},
+  "Support agent": { ey:"support employee", title:"Most tickets handled — the hard one escalated", steps:[
+    {k:"status",t:"Three support tickets just came in."},
+    {r:"lead",t:"#1: “How do I reset my password?”"},
+    {r:"employee",t:"Answered instantly with the steps + a reset link. Closed."},
+    {r:"lead",t:"#2: “I think I was double-charged this month.”"},
+    {r:"employee",t:"This one touches billing — I've drafted a reply but flagged it for you, not sent."},
+    {k:"status",t:"✓ 2 of 3 resolved automatically · 1 escalated with full context"},
+    {k:"status",t:"70–80% of tickets never reach a human — and the ones that do arrive ready to solve."}
+  ]},
+  "Order / job status updater": { ey:"status employee", title:"Stop the 'where's my order?' calls", steps:[
+    {r:"lead",t:"Customer texts: “Hey, any update on my install?”"},
+    {r:"employee",t:"Hi! Your install is set for Thursday 9–11am — the crew will text when they're 30 minutes out."},
+    {k:"status",t:"Meanwhile, sent proactive updates to 8 other customers whose jobs moved a stage."},
+    {k:"status",t:"✓ Inbound 'where is it?' messages down — customers updated before they ask"},
+    {k:"status",t:"Your phone stops ringing with status questions."}
+  ]},
+  "Review & reputation manager": { ey:"reviews employee", title:"More 5-stars, on autopilot", steps:[
+    {k:"status",t:"The Delgado project just got marked complete."},
+    {r:"employee",t:"Sent a friendly review request 2 hours after completion (your best window)."},
+    {k:"status",t:"A new 5-star review came in this morning."},
+    {r:"employee",k:"draft",t:"Drafted a warm public reply: “Thank you, Maria! It was a pleasure — enjoy the new patio.”"},
+    {k:"approve",label:"✓ Approve reply"},
+    {k:"status",t:"✓ Posted · a 3-star also flagged for your personal response"},
+    {k:"status",t:"Your rating climbs, and nothing public goes out without your okay."}
+  ]},
+  "Onboarding concierge": { ey:"onboarding employee", title:"Every new customer, to first value fast", steps:[
+    {k:"status",t:"New client just signed: Lakeside Pools."},
+    {r:"employee",t:"Sent the welcome, collected the 3 things we need, and booked the kickoff for tomorrow."},
+    {k:"status",t:"Set up their account, shared the getting-started guide, scheduled a day-3 check-in."},
+    {k:"status",t:"✓ Onboarded in hours, not weeks — first value on day one"},
+    {k:"status",t:"A smooth start every time — the #1 predictor of a client who stays."}
+  ]},
+  "Dispatch coordinator": { ey:"dispatch employee", title:"The whole day, routed", steps:[
+    {k:"status",t:"7am — 9 jobs on the board, 3 crews."},
+    {r:"employee",t:"Built the routes by location + priority, balanced the load, and texted each customer their window."},
+    {k:"status",t:"10:30am — a job ran long; rebalanced the afternoon + notified the next two customers."},
+    {k:"status",t:"✓ Crews never idle · customers never wondering"},
+    {k:"status",t:"The dispatcher's whole day, handled — without a dispatcher."}
+  ]},
+  "Returns / RMA handler": { ey:"returns employee", title:"Returns, end to end", steps:[
+    {r:"lead",t:"Customer: “I need to return the wrong-size jacket.”"},
+    {r:"employee",t:"Sorry about that! I've started the return — here's your prepaid label, and a refund the moment it ships back. Want the right size sent now?"},
+    {r:"lead",t:"Yes please, size L."},
+    {k:"status",t:"✓ RMA created · label sent · size L exchange placed · order updated"},
+    {k:"status",t:"A 10-minute support task, done in one message."}
+  ]},
+  "Knowledge base": { ey:"knowledge employee", title:"Ask the business, answered", steps:[
+    {r:"you",t:"Have we ever done a commercial job over 10,000 sq ft? What did we charge?"},
+    {k:"status",t:"Searching your docs, past quotes, and project history…"},
+    {r:"employee",t:"Yes — two: Brightwater plaza (12k sq ft, $48k, 2024) and Cedar Office Park (14k, $61k, 2025). Both used the premium paver spec. Want the scope docs?"},
+    {k:"status",t:"Answer in seconds, cited to the source files."},
+    {k:"status",t:"The hours your team loses digging through folders — gone."}
+  ]},
+  "Data & reporting analyst": { ey:"data employee", title:"The report nobody has time to make", steps:[
+    {k:"status",t:"Monday 6am — pulled data from your CRM, accounting, and scheduling tools."},
+    {r:"employee",t:"Cleaned + reconciled it, then built this week's dashboard: revenue, jobs booked, close rate, and the two metrics trending down."},
+    {k:"status",t:"Flagged: close rate dipped 8% — most losses cite 'price.'"},
+    {k:"status",t:"✓ Dashboard in your inbox before you're at your desk"},
+    {k:"status",t:"Data you were sitting on, finally working for you — every week."}
+  ]},
+  "Bookkeeping categorizer": { ey:"bookkeeping employee", title:"Books that stay close-ready", steps:[
+    {k:"status",t:"42 new transactions hit the account this week."},
+    {r:"employee",t:"Categorized all 42 to the right accounts, matched receipts, and flagged 2 that look off."},
+    {k:"status",t:"Flagged: a $1,940 charge from a vendor you usually pay ~$600 — possible duplicate."},
+    {k:"status",t:"✓ Books current · month-end will be a formality"},
+    {k:"status",t:"No more Sunday-night categorizing — and nothing slips past unnoticed."}
+  ]},
+  "Document & form processor": { ey:"documents employee", title:"Paperwork, read and filed", steps:[
+    {k:"status",t:"12 supplier invoices + 3 signed contracts landed in the inbox."},
+    {r:"employee",t:"Extracted the key fields from each — amounts, dates, terms, parties — and filed them in the right folders."},
+    {k:"status",t:"Flagged: one invoice has Net 15 terms that differ from the PO's Net 30."},
+    {k:"status",t:"✓ Everything captured + filed · zero manual data entry"},
+    {k:"status",t:"The stack of paperwork that piles up — processed before it piles."}
+  ]},
+  "Deadline & compliance tracker": { ey:"compliance employee", title:"Nothing lapses on your watch", steps:[
+    {k:"status",t:"Tracking 14 licenses, renewals, and filing deadlines."},
+    {r:"employee",t:"Your contractor's license renews in 21 days and a quarterly filing is due in 9 — both on the calendar with reminders."},
+    {k:"status",t:"Drafted the renewal application — ready when you are."},
+    {k:"status",t:"✓ No surprise lapses · no late fees"},
+    {k:"status",t:"The deadlines that cost real money when missed — never missed."}
+  ]},
+  "Competitor monitor": { ey:"monitoring employee", title:"What your competitors changed this week", steps:[
+    {k:"status",t:"Monday — checked 5 competitors' sites, pricing, and social."},
+    {r:"employee",t:"Two changes worth knowing: GreenScape dropped their starter price 15%, and PaverPros launched a financing offer."},
+    {k:"status",t:"Drafted a one-page brief with screenshots + what it might mean for you."},
+    {k:"status",t:"✓ In your inbox · the tracking you'd never keep up, kept up"},
+    {k:"status",t:"You're never the last to know what the competition is doing."}
+  ]},
+  "Social media manager": { ey:"social employee", title:"Your channels, kept alive", steps:[
+    {k:"status",t:"This week's plan: 4 posts across Instagram + LinkedIn."},
+    {r:"employee",k:"draft",t:"Post 1 (before/after of the Delgado patio): “From bare yard to backyard centerpiece in 3 days. Swipe →” + 5 hashtags, in your voice."},
+    {k:"approve",label:"✓ Approve the week"},
+    {k:"status",t:"✓ Scheduled · also replied to 6 comments + 2 DMs (flagged 1 real lead for you)"},
+    {k:"status",t:"A consistent presence + real engagement — without you touching the apps."}
+  ]},
+  "Content repurposer": { ey:"repurpose employee", title:"One asset, ten pieces", steps:[
+    {r:"you",t:"Here's the recording of last week's webinar."},
+    {k:"status",t:"Watched it + pulled the best moments…"},
+    {r:"employee",t:"Made 4 short clips, 6 social posts, a blog summary, and a newsletter section — all from the one recording."},
+    {k:"approve",label:"✓ Approve the set"},
+    {k:"status",t:"✓ Scheduled across your channels"},
+    {k:"status",t:"One piece of work becomes a week of content — instead of sitting in a folder."}
+  ]},
+  "Newsletter writer": { ey:"newsletter employee", title:"The newsletter that writes itself", steps:[
+    {k:"status",t:"Pulled this month's updates: 2 finished projects, a new service, a 5-star review."},
+    {r:"employee",k:"draft",t:"Drafted the newsletter: a project spotlight, the new winter-prep service, and a customer shout-out — in your voice, ready to send."},
+    {k:"approve",label:"✓ Approve & schedule"},
+    {k:"status",t:"✓ Scheduled for Thursday 8am to your list"},
+    {k:"status",t:"The newsletter you keep meaning to send — sent, every month."}
+  ]},
+  "SEO content writer": { ey:"SEO employee", title:"Search traffic, on a cadence", steps:[
+    {k:"status",t:"Researched what your customers search: 'paver patio cost Tampa' is hot."},
+    {r:"employee",k:"draft",t:"Drafted a 1,200-word guide: “What a paver patio really costs in Tampa (2026)” — helpful, optimized, in your voice."},
+    {k:"approve",label:"✓ Approve & publish"},
+    {k:"status",t:"✓ Published · internal links + meta handled"},
+    {k:"status",t:"One ranked article a week — compounding search traffic while you sleep."}
+  ]},
+  "Recruiting screener": { ey:"recruiting employee", title:"From a job post to your shortlist", steps:[
+    {r:"you",t:"We need to hire a crew lead."},
+    {k:"status",t:"Posted the role to 4 boards + drafted the job description."},
+    {k:"status",t:"23 applicants → screened against your must-haves → 5 strong fits."},
+    {r:"employee",t:"Top 5 ranked with notes. I've offered each two interview slots and synced them to your calendar."},
+    {k:"approve",label:"✓ Approve interviews"},
+    {k:"status",t:"✓ 3 booked so far · the rest auto-following-up"},
+    {k:"status",t:"From 'we need to hire' to interviewing your shortlist — no sourcing grind."}
+  ]}
+};
+
+let active="All", D=null, shown=0;
+const $ = s => document.querySelector(s);
+
+function render(){
+  $("#filters").innerHTML = CATS.map(c=>`<button class="chip ${c===active?'active':''}" data-c="${c}">${c}${c==="All"?` · ${SHAPES.length}`:` · ${SHAPES.filter(s=>s[0]===c).length}`}</button>`).join("");
+  const list = SHAPES.filter(s=>active==="All"||s[0]===active);
+  $("#count").textContent = `${list.length} ${list.length===1?'employee':'employees'}`;
+  $("#catalog").innerHTML = list.map(s=>`<div class="ecard"><span class="plate">${s[0]}</span><h4>${s[1]}</h4><p>${s[2]}</p>${DEMOS[s[1]]?`<button class="seebtn" data-demo="${s[1]}">▶ See it work</button>`:""}</div>`).join("");
+  document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ active=b.dataset.c; render(); });
+  document.querySelectorAll(".seebtn").forEach(b=>b.onclick=()=>openDemo(b.dataset.demo));
+}
+
+function openDemo(name){
+  D = DEMOS[name]; shown=0;
+  $("#demoTitle").textContent = D.title;
+  $(".demo-head .ey").textContent = "live demo · "+D.ey+" · illustrative";
+  $("#demoScene").innerHTML=""; $("#demoOverlay").classList.remove("hidden");
+  step();
+}
+function renderStep(s){
+  if(s.k==="status") return `<div class="status">${s.t}</div>`;
+  if(s.k==="draft") return `<div class="draft"><span class="lbl">draft · awaiting your approval</span>${s.t}</div>`;
+  const lbl = s.r==="employee"?'<span class="lbl">yourco employee</span>':(s.r==="you"?'<span class="lbl">you</span>':"");
+  return `<div class="b ${s.r}">${lbl}${s.t}</div>`;
+}
+function step(){
+  const scene=$("#demoScene"), ctrl=$("#demoCtrl"), prog=$("#demoProg");
+  if(shown < D.steps.length){
+    const next = D.steps[shown];
+    prog.textContent = `step ${shown+1} of ${D.steps.length}`;
+    if(next.k==="approve"){ ctrl.textContent = next.label; ctrl.classList.remove("ghost"); }
+    else { ctrl.textContent = "Next →"; ctrl.classList.remove("ghost"); }
+    ctrl.onclick = ()=>{
+      if(next.k==="approve"){ scene.insertAdjacentHTML("beforeend",`<div class="status">${next.label.replace('✓ ','✓ ')} — approved</div>`); }
+      else scene.insertAdjacentHTML("beforeend", renderStep(next));
+      scene.scrollTop = scene.scrollHeight; shown++; step();
+    };
+  } else {
+    prog.textContent = "done";
+    ctrl.textContent = "↻ Replay"; ctrl.classList.add("ghost");
+    ctrl.onclick = ()=>{ shown=0; scene.innerHTML=""; step(); };
+  }
+}
+function closeDemo(){ $("#demoOverlay").classList.add("hidden"); }
+$("#demoX").onclick = closeDemo;
+$("#demoOverlay").onclick = e=>{ if(e.target.id==="demoOverlay") closeDemo(); };
+
+render();
+</script>
+</body>
+</html>

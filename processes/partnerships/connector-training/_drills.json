@@ -1,0 +1,46 @@
+{
+  "_what": "Practice scenarios for the connector curriculum, served by crm/coach.py. Content, not code.",
+  "_rule": "Every drill maps to a lesson slug that exists in this folder and practises something that lesson TEACHES. A drill testing material the curriculum never covers is a trick question, not coaching.",
+  "_authored": "2026-08-24. Authored, never generated — reviewable by the Founder, and identical between runs so two connectors practising the same rung get the same test.",
+  "_honesty": "n=0 connectors. No drill may claim what 'top connectors' do, quote a success rate, or imply a benchmark. Rubrics describe what the DOCUMENTED rules require, nothing more.",
+  "drills": {
+    "01-the-intro-play": [
+      {
+        "prompt": "You are at a kid's game and a friend who runs a 12-truck plumbing company says 'we're drowning, phone rings all day and we miss half of it.' Make the introduction, out loud, right now.",
+        "looks_like": "Warm and specific. Names the pain in the owner's own words. Offers to connect, does not pitch yourco's product or mechanism. Ends with a clear next step they control ('can I introduce you to the Founder?').",
+        "fails_if": "They explain how the AI works, name a price, promise a result or a timeline, or say 'I'll set it up for you' — the connector's job ends at the introduction."
+      },
+      {
+        "prompt": "The owner replies to your intro email directly and asks: 'What's this going to cost me?' Answer them.",
+        "looks_like": "Declines to quote, without sounding evasive. Redirects to the audit and to the Founder. Something like: 'I genuinely don't quote — that's the Founder's side. What I can tell you is the audit itself is free right now.'",
+        "fails_if": "Any number at all, any range, any 'probably around', or negotiating. Quoting a price is the one thing the acknowledgement on lesson 01 explicitly forbids."
+      }
+    ],
+    "02-who-to-flag": [
+      {
+        "prompt": "Rank these three and say why: (a) a 40-person SaaS company wanting to 'add AI to the product', (b) a 6-person HVAC shop where the owner books every job from his truck, (c) a solo consultant who loves tinkering with no-code tools.",
+        "looks_like": "b first — owner-operated, misses inbound, high job value, wants it handled. a is out: wrong shape, not owner-felt pain, wants product AI not operations. c is out: DIY tinkerer, explicitly a bad fit in the lesson.",
+        "fails_if": "Picks the biggest company because it sounds more impressive, or fails to name WHY the tinkerer is a bad fit."
+      },
+      {
+        "prompt": "Say the one qualifying question from the lesson, word for word.",
+        "looks_like": "'Which of the business owners you know is losing business because they can't get to the phone?'",
+        "fails_if": "A generic 'do you need AI?' or 'are you interested in automation?' — the lesson's whole point is that the question names a symptom the owner already feels."
+      }
+    ],
+    "05-the-rules-of-the-road": [
+      {
+        "prompt": "A prospect you referred asks you to sit in on the proposal call and 'help them decide'. What do you do?",
+        "looks_like": "Declines the advisory role, stays in the relationship. Does not negotiate, interpret terms, or advocate on price. Hands it to the Founder and offers to stay available socially.",
+        "fails_if": "Agrees to 'just help them understand it' — that is negotiating on yourco's behalf, which the acknowledgement forbids regardless of intent."
+      }
+    ],
+    "14-submitting-contacts": [
+      {
+        "prompt": "You want to submit a name as a Sourcer rather than make the intro yourself. Give me the two things you must include, and say why the second one exists.",
+        "looks_like": "How you know them, and their consent answer. The consent answer exists because on a Sourcer submission YOURCO becomes the caller — so TCPA/FTSA/CAN-SPAM attach to yourco, not to the connector.",
+        "fails_if": "Treats the consent question as paperwork, or cannot say that the legal exposure moves to yourco when yourco makes the approach."
+      }
+    ]
+  }
+}

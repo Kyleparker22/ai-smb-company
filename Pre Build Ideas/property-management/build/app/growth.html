@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5fd8">
+<title>Growth · Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+
+<div class="bar"><div class="bar-in">
+  <div class="logo"><span class="mark">◈</span><span>Growth</span></div>
+  <div class="grow"></div>
+  <a class="btn ghost sm" href="/staff.html">← Console</a>
+  <button class="btn sm" id="runBtn" onclick="runGrowth()">Run scout + scribe</button>
+  <button class="btn ghost sm" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+</div></div>
+
+<main class="wrap" id="main"><div class="empty"><div class="big">◈</div>Loading pipeline…</div></main>
+
+<script src="/app.js"></script>
+<script>
+let P = null, MSGS = null;
+const STAGE_LABEL = {
+  recorded: 'Recorded', researched: 'Researched',
+  first_touch_drafted: 'First touch drafted', contacted: 'Contacted',
+  meeting: 'Meeting held', proposal: 'Proposal out', won: 'Won', lost: 'Lost',
+};
+const LIVE = ['recorded', 'researched', 'first_touch_drafted', 'contacted', 'meeting', 'proposal'];
+const NEXT = { recorded: 'researched', researched: 'first_touch_drafted',
+  first_touch_drafted: 'contacted', contacted: 'meeting', meeting: 'proposal',
+  proposal: 'won' };
+// Human buttons only exist for the stages a human is supposed to claim.
+const HUMAN_NEXT = { first_touch_drafted: 'contacted', contacted: 'meeting',
+  meeting: 'proposal', proposal: 'won' };
+
+async function load() {
+  [P, MSGS] = await Promise.all([API.get('/pipeline'), API.get('/messages')]);
+  render();
+}
+
+function draftsFor(pid) {
+  return MSGS.filter(m => m.module === 'pipeline' && m.prospect_id === pid);
+}
+
+function render() {
+  const m = P.metrics, conv = m.conversion;
+  const wonLost = `${conv.won} won · ${conv.lost} lost`;
+  $('#main').innerHTML = `
+  <div style="padding:22px 0 14px"><h1>Owner-prospect pipeline</h1>
+    <div class="muted small">${esc(P.note)}</div></div>
+
+  <div class="tiles" style="margin-bottom:16px">
+    ${tile('Open pipeline', { value: m.open }, `${m.total} recorded all-time`
+      + (m.resting ? ` · ${m.resting} resting at the touch cap` : ''))}
+    ${tile('Drafts waiting on you', { value: P.drafts_waiting },
+      'written by the scribe — you send, from your own mailbox')}
+    ${tile('Overdue touches', { value: P.nags.length },
+      P.nags.length ? 'the cadence is the product — nothing should sit' : 'nothing is sitting')}
+    ${tile('Opt-outs honored', { value: m.dnc },
+      'permanent — imports and drafts refuse them by construction')}
+    ${tile('Conversion', conv.rate == null ? { missing: conv._missing } : { value: conv.rate },
+      conv.rate == null ? '' : wonLost, pct)}
+  </div>
+
+  ${P.nags.length ? `<div class="card" style="margin-bottom:14px;border-color:color-mix(in srgb,var(--warn) 45%,transparent)">
+    <div class="card-b tight row wrap-r" style="gap:8px">
+      <span class="pill warn">⏰ ${P.nags.length} overdue</span>
+      ${P.nags.map(n => `<span class="small muted">${esc(n.name)} — ${n.overdue_days}d past the
+        ${esc(String(n.stage).replace(/_/g, ' '))} cadence</span>`).join(' · ')}
+    </div></div>` : ''}
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-h"><h2>Add a prospect</h2>
+      <span class="muted small">referrals import themselves on the scout's sweep</span></div>
+    <div class="card-b row wrap-r" style="gap:9px">
+      <input class="in grow" id="pName" placeholder="Name">
+      <input class="in grow" id="pContact" placeholder="Email or phone">
+      <input class="in grow" id="pNote" placeholder="What you know (doors, pain, how you met)">
+      <button class="btn primary" onclick="addProspect()">Record</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-h"><h2>Import a sourced list</h2>
+      <span class="muted small">county pulls, prospecting exports, meetup sheets</span></div>
+    <div class="card-b stack" style="gap:9px">
+      <input class="in" id="impProv" placeholder="Provenance — where these names came from (required)">
+      <textarea class="in" id="impRows" rows="4"
+        placeholder="One per line:  Name, contact, note (optional)&#10;e.g.  Jo Alvarez, jo@alv.example.com, owns a 6-unit on Central"></textarea>
+      <div class="row wrap-r" style="gap:9px">
+        <button class="btn primary" onclick="importTargets()">Import</button>
+        <span class="tiny muted grow">Deduped on contact. Opt-outs and previously-lost
+          prospects are skipped and reported — re-approaching a lost prospect is a
+          deliberate decision, never a list side-effect.</span>
+      </div>
+      <div class="tiny" id="impReport"></div>
+    </div>
+  </div>
+
+  ${LIVE.map(stage => stageCard(stage)).join('')}
+  ${stageCard('won')}${stageCard('lost')}
+
+  <div class="card"><div class="card-b">
+    <div class="missing">Autonomy in this module: the scout imports and briefs (R2/R3),
+      the scribe drafts (R1) and assembles proposal shells (R0 — pricing brackets are yours,
+      always). Contacted and beyond move only when you say so, because those stages are
+      claims about what a human did. There is no send action at any rung — the capability
+      does not exist, and adding one is a counsel decision, not a setting.</div>
+  </div></div>`;
+}
+
+function stageCard(stage) {
+  const rows = P.stages[stage] || [];
+  if (!rows.length && (stage === 'won' || stage === 'lost')) return '';
+  return `<div class="card" style="margin-bottom:14px">
+    <div class="card-h"><h2>${esc(STAGE_LABEL[stage])}</h2>
+      <span class="pill mute">${rows.length}</span></div>
+    ${rows.length ? `<div class="card-b" style="display:flex;flex-direction:column;gap:11px">
+      ${rows.map(p => prospectCard(p, stage)).join('')}
+    </div>` : '<div class="card-b"><div class="small muted">Nobody here right now.</div></div>'}
+  </div>`;
+}
+
+function prospectCard(p, stage) {
+  const drafts = draftsFor(p.id);
+  const docs = p.drafts || [];
+  const src = p.source || {};
+  const srcLabel = src.kind === 'referral'
+    ? 'referral' + (String(src.by || '').startsWith('owner:') ? ' · from a client' : '')
+    : src.kind === 'sourced' ? `sourced · ${esc(src.provenance || '')}`
+    : esc(src.kind || 'manual');
+  return `<div style="border:1px solid var(--line);border-radius:11px;padding:13px${p.dnc ? ';opacity:.6' : ''}">
+    <div class="spread wrap-r" style="gap:9px">
+      <div class="stack grow">
+        <strong class="small">${esc(p.name)}
+          <span class="muted" style="font-weight:400">· ${esc(p.contact)}</span>
+          ${p.dnc ? '<span class="pill bad tiny">opted out — permanent</span>' : ''}
+          ${!p.dnc && p.dormant ? '<span class="pill mute tiny">resting — touch cap reached</span>' : ''}</strong>
+        <span class="tiny muted">${srcLabel} · recorded ${esc(ago(p.at))} · in this stage
+          ${p.stage_age_days}d${p.touches_sent ? ` · ${p.touches_sent} of 3 touches sent` : ''}${
+          p.overdue_days && !p.dormant && !p.dnc ? ` · <span style="color:var(--warn)">${p.overdue_days}d overdue</span>` : ''}</span>
+        ${p.note ? `<span class="small" style="color:var(--ink-2);margin-top:3px">${esc(p.note)}</span>` : ''}
+      </div>
+      <div class="row wrap-r" style="gap:6px;align-items:center">
+        ${!p.dnc && HUMAN_NEXT[stage] ? `<button class="btn sm primary" onclick="advance('${p.id}','${HUMAN_NEXT[stage]}')">
+          ${HUMAN_NEXT[stage] === 'won' ? 'Signed — mark won' : 'Mark ' + esc(STAGE_LABEL[HUMAN_NEXT[stage]].toLowerCase())}</button>` : ''}
+        ${stage === 'won' && !p.scaffolded_owner_id ? `<button class="btn sm primary"
+          onclick="scaffold('${p.id}')">Create their Property OS records</button>` : ''}
+        ${stage === 'won' && p.scaffolded_owner_id ? '<span class="pill ok">scaffolded</span>' : ''}
+        ${!p.dnc && p.dormant && LIVE.includes(stage) ? `<button class="btn sm"
+          onclick="wake('${p.id}')">Resume cadence</button>` : ''}
+        ${!p.dnc && LIVE.includes(stage) ? `<button class="btn sm ghost" onclick="markDnc('${p.id}')">They opted out</button>` : ''}
+        ${!p.dnc && LIVE.includes(stage) ? `<button class="btn sm ghost" onclick="markLost('${p.id}')">Lost</button>` : ''}
+      </div>
+    </div>
+    ${(p.brief || []).length ? `<details style="margin-top:9px">
+      <summary class="small" style="cursor:pointer;color:var(--brand)">The scout's brief</summary>
+      <div class="small" style="margin-top:7px;color:var(--ink-2)">${p.brief.map(esc).join('<br>')}</div>
+    </details>` : ''}
+    ${drafts.map(d => `<details style="margin-top:9px">
+      <summary class="small" style="cursor:pointer;color:var(--brand)">
+        ${esc(String(d.kind).replace(/_/g, ' '))} draft
+        ${d.status === 'sent' ? '<span class="pill ok tiny">recorded sent</span>'
+          : d.status === 'blocked' ? '<span class="pill bad tiny">blocked by sentinel</span>'
+          : '<span class="pill warn tiny">waiting on you</span>'}</summary>
+      <div class="small" style="white-space:pre-wrap;margin-top:9px;padding:11px;background:var(--surface-2);border-radius:9px;border:1px solid var(--line)">${esc(d.body)}</div>
+      ${d.status === 'draft' ? `<button class="btn sm" style="margin-top:8px"
+        onclick="markSent('${d.id}')">I sent this from my own mailbox — record it</button>` : ''}
+    </details>`).join('')}
+    ${docs.map(d => `<details style="margin-top:9px">
+      <summary class="small" style="cursor:pointer;color:var(--brand)">
+        ${esc(d.kind)} shell <span class="pill mute tiny">R0 — yours to price</span></summary>
+      <div class="small" style="white-space:pre-wrap;margin-top:9px;padding:11px;background:var(--surface-2);border-radius:9px;border:1px solid var(--line)">${esc(d.body)}</div>
+    </details>`).join('')}
+    ${p.lost_reason ? `<div class="tiny muted" style="margin-top:7px">Lost: ${esc(p.lost_reason)}</div>` : ''}
+  </div>`;
+}
+
+async function addProspect() {
+  const name = $('#pName').value.trim(), contact = $('#pContact').value.trim();
+  if (!name || !contact) return toast('A name and a contact are both required');
+  try {
+    await API.post('/prospects', { name, contact, note: $('#pNote').value });
+    toast('Recorded — the scout briefs it on the next sweep');
+    load();
+  } catch (e) { toast(e.message); }
+}
+async function advance(id, to) {
+  try { await API.post('/prospects/' + id + '/advance', { stage: to }); load();
+        toast('Moved to ' + STAGE_LABEL[to]); }
+  catch (e) { toast(e.message); }
+}
+async function importTargets() {
+  const provenance = $('#impProv').value.trim();
+  const lines = $('#impRows').value.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!provenance) return toast('Provenance is required — where did these names come from?');
+  if (!lines.length) return toast('Nothing to import');
+  const targets = lines.map(l => {
+    const [name, contact, ...rest] = l.split(',').map(x => x.trim());
+    return { name, contact, note: rest.join(', ') };
+  });
+  try {
+    const res = await API.post('/prospects/import', { provenance, targets });
+    const r = res.report;
+    $('#impReport').textContent =
+      `Added ${r.added} · skipped ${r.duplicate} duplicates, ${r.previously_lost} previously lost, `
+      + `${r.do_not_contact} opt-outs, ${r.invalid} invalid`;
+    toast(`Imported ${r.added}`);
+    load();
+  } catch (e) { toast(e.message); }
+}
+async function markDnc(id) {
+  if (!confirm('Record a permanent opt-out? Imports and drafts will refuse this contact forever.')) return;
+  try { await API.post('/prospects/' + id + '/dnc', {}); load(); toast('Opt-out recorded — permanent'); }
+  catch (e) { toast(e.message); }
+}
+async function wake(id) {
+  try { await API.post('/prospects/' + id + '/wake', {}); load(); toast('Back on cadence'); }
+  catch (e) { toast(e.message); }
+}
+async function markLost(id) {
+  const reason = prompt('Why (recorded verbatim, optional)?') || '';
+  try { await API.post('/prospects/' + id + '/advance', { stage: 'lost', reason }); load();
+        toast('Closed'); }
+  catch (e) { toast(e.message); }
+}
+async function scaffold(id) {
+  try {
+    const r = await API.post('/prospects/' + id + '/scaffold', {});
+    toast('Owner + property shell created — every default is flagged for onboarding');
+    load();
+  } catch (e) { toast(e.message); }
+}
+async function markSent(id) {
+  try { await API.post('/messages/' + id + '/send', {}); load();
+        toast('Recorded as sent'); }
+  catch (e) { toast(e.message); }
+}
+async function runGrowth() {
+  const b = $('#runBtn'); b.disabled = true; b.textContent = 'Running…';
+  try {
+    await API.post('/agents/run?agent=scout');
+    await API.post('/agents/run?agent=scribe');
+    await API.post('/agents/run?agent=sentinel');
+    load();
+  } finally { b.disabled = false; b.textContent = 'Run scout + scribe'; }
+}
+
+load();
+</script>
+</body>
+</html>

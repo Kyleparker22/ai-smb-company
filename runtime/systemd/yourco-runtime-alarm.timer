@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo runtime alarm — hourly; catches a dead credit balance the Claude watchdog cannot (it shares the same credits)
+
+[Timer]
+OnCalendar=*-*-* *:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,297 @@
+{
+  "generated": "2026-08-13",
+  "wideAt": 25,
+  "intentWindowDays": 21,
+  "reads": [
+    {
+      "dealId": "d29",
+      "company": "Prospect A - Personal",
+      "stage": "discovery",
+      "stageLabel": "Discovery",
+      "amount": 12000.0,
+      "prosecution": 3,
+      "defence": 43,
+      "spread": 40,
+      "verdict": "contested",
+      "contested": {
+        "fact": "a next step is on the calendar for 2026-08-14",
+        "actor": "structure",
+        "weight": 16,
+        "why": "the prosecution discards it — structure is not action"
+      },
+      "prosecutionCites": [
+        "44d since last touch (this stage's limit is 14d)",
+        "no buyer-side signal on record at all",
+        "38d parked in Discovery without advancing"
+      ],
+      "defenceCites": [
+        "a next step is on the calendar for 2026-08-14",
+        "priced at $12,000",
+        "44d since last touch (this stage's limit is 14d)",
+        "no buyer-side signal on record at all"
+      ],
+      "nextAction": "Structure is doing the work, not the buyer — use the warm path to Prospect A - Personal to get one buyer-side commitment on the record.",
+      "facts": [
+        {
+          "actor": "us",
+          "w": 6,
+          "key": "twin",
+          "text": "digital twin filled in (6 field(s))",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "clock",
+          "w": 40,
+          "key": "stale",
+          "text": "44d since last touch (this stage's limit is 14d)",
+          "when": "2026-06-30",
+          "age": 44
+        },
+        {
+          "actor": "clock",
+          "w": 13,
+          "key": "stuck",
+          "text": "38d parked in Discovery without advancing",
+          "when": "2026-07-06",
+          "age": 38
+        },
+        {
+          "actor": "clock",
+          "w": 34,
+          "key": "silent",
+          "text": "no buyer-side signal on record at all",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "structure",
+          "w": 10,
+          "key": "priced",
+          "text": "priced at $12,000",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "structure",
+          "w": 16,
+          "key": "scheduled",
+          "text": "a next step is on the calendar for 2026-08-14",
+          "when": null,
+          "age": null
+        }
+      ],
+      "date": "2026-08-13"
+    },
+    {
+      "dealId": "d30",
+      "company": "Sample Realty Home & Land, LLC",
+      "stage": "discovery",
+      "stageLabel": "Discovery",
+      "amount": 0.0,
+      "prosecution": 47,
+      "defence": 87,
+      "spread": 40,
+      "verdict": "contested",
+      "contested": {
+        "fact": "we showed \"Sample Company 14\" — no reaction logged",
+        "actor": "us",
+        "weight": 14,
+        "why": "the prosecution discards it — it is our effort, not their intent"
+      },
+      "prosecutionCites": [
+        "reacted to \"Sample Company 28\": 3 feedback rounds from Kimi — actively engaged, texting edits",
+        "6d since last touch (this stage's limit is 14d)",
+        "no value on the deal — nobody has agreed what this is worth",
+        "opened our material 2x (~0 min)"
+      ],
+      "defenceCites": [
+        "reacted to \"Sample Company 28\": 3 feedback rounds from Kimi — actively engaged, texting edits",
+        "we showed \"Sample Company 14\" — no reaction logged",
+        "opened our material 2x (~0 min)",
+        "we built \"Sample Company 2\" — not yet shown"
+      ],
+      "nextAction": "Convert our own work into their action: put \"we showed \"Sample Company 14\" — no reaction logged\" in front of Sample Realty Home & Land, LLC and ask for a dated response.",
+      "facts": [
+        {
+          "actor": "them",
+          "w": 30,
+          "key": "artifact-reaction",
+          "text": "reacted to \"Sample Company 28\": 3 feedback rounds from Kimi — actively engaged, texting edits",
+          "when": "2026-08-04",
+          "age": 9
+        },
+        {
+          "actor": "them",
+          "w": 12,
+          "key": "heat",
+          "text": "opened our material 2x (~0 min)",
+          "when": "2026-08-07",
+          "age": 6
+        },
+        {
+          "actor": "us",
+          "w": 10,
+          "key": "artifact-built",
+          "text": "we built \"Sample Company 2\" — not yet shown",
+          "when": "2026-08-04",
+          "age": 9
+        },
+        {
+          "actor": "us",
+          "w": 10,
+          "key": "artifact-built",
+          "text": "we built \"Sample Company 27\" — not yet shown",
+          "when": "2026-08-04",
+          "age": 9
+        },
+        {
+          "actor": "us",
+          "w": 10,
+          "key": "artifact-built",
+          "text": "we built \"Sample Company 3\" — not yet shown",
+          "when": "2026-08-04",
+          "age": 9
+        },
+        {
+          "actor": "us",
+          "w": 14,
+          "key": "artifact-shown",
+          "text": "we showed \"Sample Company 14\" — no reaction logged",
+          "when": "2026-08-04",
+          "age": 9
+        },
+        {
+          "actor": "us",
+          "w": 14,
+          "key": "artifact-shown",
+          "text": "we showed \"Sample Company 13\" — no reaction logged",
+          "when": "2026-07-29",
+          "age": 15
+        },
+        {
+          "actor": "us",
+          "w": 6,
+          "key": "draft-ready",
+          "text": "a touch is drafted and waiting to send",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "us",
+          "w": 6,
+          "key": "twin",
+          "text": "digital twin filled in (6 field(s))",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "clock",
+          "w": 17,
+          "key": "stale",
+          "text": "6d since last touch (this stage's limit is 14d)",
+          "when": "2026-08-07",
+          "age": 6
+        },
+        {
+          "actor": "clock",
+          "w": 8,
+          "key": "stuck",
+          "text": "24d parked in Discovery without advancing",
+          "when": "2026-07-20",
+          "age": 24
+        },
+        {
+          "actor": "clock",
+          "w": 12,
+          "key": "unpriced",
+          "text": "no value on the deal — nobody has agreed what this is worth",
+          "when": null,
+          "age": null
+        }
+      ],
+      "date": "2026-08-13"
+    },
+    {
+      "dealId": "d11",
+      "company": "Sample Client",
+      "stage": "demo-proposal",
+      "stageLabel": "Demo and Proposal",
+      "amount": 12000.0,
+      "prosecution": 3,
+      "defence": 41,
+      "spread": 38,
+      "verdict": "contested",
+      "contested": {
+        "fact": "a next step is on the calendar for 2026-08-13",
+        "actor": "structure",
+        "weight": 16,
+        "why": "the prosecution discards it — structure is not action"
+      },
+      "prosecutionCites": [
+        "7d since last touch (this stage's limit is 7d)",
+        "no buyer-side signal on record at all",
+        "58d parked in Demo and Proposal without advancing"
+      ],
+      "defenceCites": [
+        "a next step is on the calendar for 2026-08-13",
+        "priced at $12,000",
+        "7d since last touch (this stage's limit is 7d)",
+        "no buyer-side signal on record at all"
+      ],
+      "nextAction": "Structure is doing the work, not the buyer — use the warm path to Sample Client to get one buyer-side commitment on the record.",
+      "facts": [
+        {
+          "actor": "us",
+          "w": 6,
+          "key": "twin",
+          "text": "digital twin filled in (6 field(s))",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "clock",
+          "w": 40,
+          "key": "stale",
+          "text": "7d since last touch (this stage's limit is 7d)",
+          "when": "2026-08-06",
+          "age": 7
+        },
+        {
+          "actor": "clock",
+          "w": 19,
+          "key": "stuck",
+          "text": "58d parked in Demo and Proposal without advancing",
+          "when": "2026-06-16",
+          "age": 58
+        },
+        {
+          "actor": "clock",
+          "w": 34,
+          "key": "silent",
+          "text": "no buyer-side signal on record at all",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "structure",
+          "w": 10,
+          "key": "priced",
+          "text": "priced at $12,000",
+          "when": null,
+          "age": null
+        },
+        {
+          "actor": "structure",
+          "w": 16,
+          "key": "scheduled",
+          "text": "a next step is on the calendar for 2026-08-13",
+          "when": null,
+          "age": null
+        }
+      ],
+      "date": "2026-08-13"
+    }
+  ],
+  "method": "Two readers, one evidence bundle, opposed priors. The prosecution counts only buyer-side action inside a 21-day intent window and applies the clock at full weight; the defence counts the whole record and softens the clock when a next step is booked. The spread is the disagreement, not a confidence interval."
+}

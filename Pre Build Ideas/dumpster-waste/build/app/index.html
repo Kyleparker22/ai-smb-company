@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haul OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-charges"></section>
+  <section class="view" id="v-containers"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. The system can never approve a
+hazardous item, and can never assert an overage or contamination charge without its evidence on
+file.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Can I toss…?'},{id:'charges',label:'Charges'},
+      {id:'containers',label:'Containers'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,charges,containers,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.trucks} trucks · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The yard, counted', '',
+      `<div class="grid">
+        ${stat('Idle containers flagged', fmt.num(b.idle_flagged), `${b.idle_days} idle days — turns not made`, b.idle_flagged?'alert':'')}
+        ${stat('Missed promised pickups', fmt.num(b.missed_pickups), '', b.missed_pickups?'warn':'')}
+        ${stat('Unanswered questions', fmt.num(b.messages_open), 'the never-yes rule holds in every one')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.charge_value)}`,
+               `${b.recovered.charges_sent} charge(s) sent · ${b.recovered.pulls_completed} pull(s) done · ${b.recovered.idle_flags} idle flag(s)`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The classifier is asymmetric on purpose: it may wrongly send drywall
+      to a human; it may <b>never</b> say yes to paint, batteries, asbestos, freon, or fuel.</div>` +
+    panel('Questions', '', table([{label:'When'},{label:'Question'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='hazardous'?'bad':m.label==='allowed'?'good':'warn'):'—'}</td>
+        <td class="right"><button class="act primary" onclick="answer('${m.id}')">Answer</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function answer(id){
+  const r = await API.post(`/api/messages/${id}/answer`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}${s.kind?' '+pill(s.kind,'bad'):''}</h2><div class="body">
+      ${s.said?`<div class="strong">“${esc(s.said)}”</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function charges(){
+  const d = await API.get('/api/charges');
+  document.getElementById('v-charges').innerHTML =
+    `<div class="banner warn">An overweight charge needs the scale ticket; contamination needs the
+      photo. No evidence — <b>cannot assert charge.</b></div>` +
+    panel('Charges', '', table(
+      [{label:'Charge'},{label:'Kind'},{label:'Amount',num:true},{label:'Evidence'},{label:''}],
+      d.rows, c=>`<td class="mono">${esc(c.id)}${c.demo_tag?' '+pill(c.demo_tag,'brand'):''}</td>
+        <td>${pill(c.kind, c.kind==='contamination'?'warn':'')}</td>
+        <td class="num">${fmt.money(c.amount)}</td>
+        <td>${c.check.assertable?pill('on file','good'):pill('MISSING','bad')}</td>
+        <td class="right"><button class="act" onclick="assertCharge('${c.id}')">Assert</button></td>`), true) +
+    `<div id="chout"></div>`;
+}
+async function assertCharge(id){
+  const r = await API.post(`/api/charges/${id}/assert`);
+  document.getElementById('chout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Drafted', r.note||'', `<div class="strong">queued at R1 with evidence ${esc(r.evidence)}</div>`);
+}
+
+async function containers(){
+  const [idle, missed] = await Promise.all([API.get('/api/idle'), API.get('/api/missed')]);
+  document.getElementById('v-containers').innerHTML =
+    panel(`Idle on site (flag at ${idle.flag_days}d)`, 'every idle day is a turn not made', table(
+      [{label:'Container'},{label:'Size',num:true},{label:'Site'},{label:'Idle days',num:true}],
+      idle.rows.slice(0,25), r=>`<td class="mono">${esc(r.container)}</td>
+        <td class="num">${r.size??'—'}</td><td>${esc(r.site||'')}</td>
+        <td class="num ${r.flagged?'strong':''}">${r.days!=null?r.days:blank(r._missing)}</td>`), true) +
+    panel('Missed promised pickups', '', table(
+      [{label:'Order'},{label:'Container'},{label:'Promised'},{label:'Days late',num:true}],
+      missed.rows.slice(0,20), r=>`<td class="mono">${esc(r.order)}</td>
+        <td class="mono">${esc(r.container)}</td><td>${fmt.date(r.promised_at)}</td>
+        <td class="num strong">${r.days_late}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['idle_days','Flagged idle days','counted'],['pull_margin','Margin per pull','your number'],
+    ['turn_share','Turnable share','your number (0–1)'],['assertable_charges','Assertable charges','counted'],
+    ['avg_charge','Avg charge','counted (median)'],['phone_hours_wk','Phone hrs/wk','your number'],
+    ['office_rate','Office rate','your number'],
+    ['contamination_value','Never-yes rule worth','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.items) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'dispatcher'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Key OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-registry"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. No unverified rekey or unlock has
+a dispatch path (the draft names the missing authority), a phone claim is recorded as a claim and
+never as authority, key codes are scrubbed from every outbound draft, the master-key registry is
+append-only, and no quote off the recorded rate card exists in this system.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'registry',label:'Registry & jobs'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,registry,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.vans} vans · ${b.systems} master systems under management`;
+  document.getElementById('v-board').innerHTML =
+    panel('The book, counted', '',
+      `<div class="grid">
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the emergency reads first', b.messages_open?'bad':'')}
+        ${stat('Open jobs', fmt.num(b.jobs_open), 'each closes with its authorization ref + card line')}
+        ${stat('Unverifiable requests', fmt.num(b.unverifiable), 'no authority on record — a human decides', b.unverifiable?'warn':'')}
+        ${stat('Registry records', fmt.num(b.registry_records), 'append-only; codes never leave')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('Service clocks due', fmt.num(b.clocks_due), '3-touch ladder, silence exit', b.clocks_due?'warn':'')}
+        ${stat('This week, counted', fmt.money(b.recovered.closed_value_on_card),
+               `${b.recovered.jobs_closed} job(s) closed · ${b.recovered.dispatches_sent} dispatch(es) sent · ${b.recovered.emergencies_recorded} emergency(ies)`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">Every job is an authorization question wearing a work order's
+      clothes. The hot-car message reads first and the reply leads with 911; a rekey with no
+      recorded authority drafts as <b>unverifiable</b> with the gap named — a truck never rolls
+      on a phone claim.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="handle('ms_demo_hotcar')">Emergency: toddler in a hot car</button>
+      <button class="act" onclick="handle('ms_demo_rekey_auth')">Rekey: recorded authority</button>
+      <button class="act" onclick="handle('ms_demo_rekey_noauth')">Rekey: no authority → unverifiable</button>
+      <button class="act" onclick="handle('ms_demo_master')">Master change: named authorizer</button>
+      <button class="act" onclick="handle('ms_demo_quote')">Quote: from the card</button>
+      <button class="act" onclick="scrubProbe()">Try to text a key code</button>
+     </div><div id="mout"></div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='emergency_lockout'?'bad':m.unverifiable?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true);
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}${s.unverifiable?' '+pill('unverifiable','warn'):''}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.gap?`<div class="banner warn">${esc(s.gap)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+async function scrubProbe(){
+  const r = await API.post('/api/scrub/check',{text:'your new key code is SC4-84921, bitting 3-5-2-4-6'});
+  document.getElementById('mout').innerHTML = panel('The key-code scrub', '',
+    `<div class="banner ${r.ok?'':'warn'}">${r.ok?'passed':'REFUSED — '+esc(r.why)}</div>
+     <div class="why">the same check runs structurally inside every outbound draft — a draft
+     carrying a code cannot be produced</div>`);
+}
+
+async function registry(){
+  const [s, j] = await Promise.all([API.get('/api/systems'), API.get('/api/jobs')]);
+  document.getElementById('v-registry').innerHTML =
+    `<div class="banner warn">${esc(s.append_only)}. Try it: close the job with no references —
+      refused with the missing pieces named.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="closeJob('jb_demo_norefs')">Close job: no auth ref (refused)</button>
+     </div><div id="rout"></div>` +
+    panel('Master-key systems', 'codes live here and never appear in outbound copy', table(
+      [{label:'Site'},{label:'Keyway'},{label:'Doors',num:true},{label:'Authorizers'},{label:'Records',num:true},{label:'Last change'}],
+      s.rows, x=>`<td>${esc(x.site)}</td><td>${esc(x.keyway)}</td><td class="num">${x.doors}</td>
+        <td>${esc((x.authorizers||[]).join(', '))}</td><td class="num">${x.records}</td>
+        <td>${esc(x.last_change||'—')}</td>`), true) +
+    panel('Jobs', 'each closes with its authorization ref + rate-card citation', table(
+      [{label:'Opened'},{label:'Kind'},{label:'Address'},{label:'Auth ref'},{label:'Card line'},{label:'State'}],
+      j.rows, x=>`<td>${fmt.stamp(x.opened_at)}${x.demo_tag?' '+pill(x.demo_tag,'brand'):''}</td>
+        <td>${esc(x.kind)}</td><td>${esc(x.address||'')}</td>
+        <td>${x.authorization_ref?pill(x.authorization_ref,'good'):pill('none','warn')}</td>
+        <td>${esc(x.card_item||'—')}</td>
+        <td>${x.closed_at?'closed':'open'}</td>`), true);
+}
+async function closeJob(id){
+  const r = await API.post(`/api/jobs/${id}/close`,{human:'owner'});
+  document.getElementById('rout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Closed', '', `<div class="strong">${esc(r.why)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['after_hours_jobs_90d','After-hours jobs, 90d','counted'],
+    ['after_hours_calls_mo','After-hours calls/mo','your number'],
+    ['after_hours_avg_ticket','Avg after-hours ticket','your number (the card ×1.5)'],
+    ['systems_renewed','Master contracts renewed','your number'],
+    ['contract_value','Annual contract value','your number'],
+    ['dispatch_hours_wk','Dispatch hrs/wk','your number'],
+    ['dispatch_rate','Dispatch rate','your number'],
+    ['lawsuit_value','The lawsuit file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

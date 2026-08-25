@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>yourco · HQ redesign — 2 · Chaptered</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,560&display=swap" rel="stylesheet">
+<script>document.documentElement.className="js";</script>
+<style>
+:root{
+  --base:#232833; --surface:#2e3441;
+  --hair:rgba(255,255,255,.07); --hair2:rgba(255,255,255,.11);
+  --txt:#f4f5f9; --txt2:#c3c9d7; --faint:#8f97ab;
+  --brass:#d2ae74; --brass-bright:#E2C690;
+  --green:#7fc99a; --red:#e06a78;
+  --serif:"Fraunces",Georgia,serif;
+  --sans:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--base);color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.55}
+.mockbar{background:#1a1f28;border-bottom:1px solid var(--hair2);padding:9px 30px;font-family:var(--mono);
+  font-size:11px;color:var(--faint);letter-spacing:.04em}
+.mockbar b{color:var(--brass)}
+
+/* ── BANDING · DESIGN.md idiom 4 ──────────────────────────────────────
+   "Alternate bands so stacked sections read as chapters." Live HQ paints
+   every panel the same surface on the same base, ~10% apart — which is
+   exactly the "blocks of the same colour" complaint. Here each CHAPTER
+   (not each panel) gets its own ground, so scrolling feels like turning
+   pages instead of scanning a spreadsheet of boxes. */
+.band{padding:64px 0}
+.band-a{background:var(--base)}
+.band-b{background:#262c38}            /* one step up  */
+.band-c{background:#1e232c}            /* one step down */
+.band-quiet{background:#212630}
+.wrap{max-width:1000px;margin:0 auto;padding:0 30px}
+
+/* chapter masthead: the door states its question, and answers it */
+.chapter{margin:0 0 40px}
+.chapter .tick{width:70px;height:6px;background:var(--brass);border-radius:1px;margin-bottom:20px}
+.chapter .no{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--faint);
+  text-transform:uppercase;margin-bottom:12px}
+.chapter h1{font-family:var(--serif);font-weight:560;font-size:38px;line-height:1.14;letter-spacing:-.025em;
+  margin:0 0 14px;max-width:20ch}
+.chapter .answer{font-size:16px;color:var(--txt2);max-width:60ch;margin:0}
+.chapter .answer b{color:var(--txt);font-weight:600}
+
+h2.sub{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--faint);font-weight:500;margin:0 0 18px}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);font-weight:500;padding:0 0 10px;border-bottom:1px solid var(--hair2)}
+td{padding:12px 0;border-bottom:1px solid var(--hair);vertical-align:baseline}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--serif);font-size:23px;width:62px;line-height:1}
+td.n.zero{color:var(--faint)}
+td.was{font-family:var(--mono);font-size:12px;color:var(--faint);width:70px}
+td.why{color:var(--faint);font-size:12.5px}
+.name{font-weight:500}
+.name small{display:block;color:var(--faint);font-weight:400;font-size:11.5px;font-family:var(--mono);margin-top:2px}
+.spark{display:inline-flex;align-items:flex-end;gap:2px;height:22px;width:70px}
+.spark i{flex:1;background:rgba(210,174,116,.45);border-radius:1px;min-height:2px;display:block}
+.spark i.now{background:var(--brass)}
+
+/* a pull-quote for the single most important sentence in a chapter */
+.pull{font-family:var(--serif);font-size:22px;line-height:1.35;letter-spacing:-.015em;color:var(--txt);
+  border-left:3px solid var(--brass);padding:4px 0 4px 22px;margin:34px 0 0;max-width:44ch}
+
+.charge{border-left:2px solid var(--red);padding:2px 0 2px 14px;margin:0 0 18px}
+.charge b{display:block;margin-bottom:3px}
+.charge span{color:var(--faint);font-size:12.5px}
+.clean{border-left:2px solid var(--green);padding:2px 0 2px 14px;color:var(--txt2)}
+.note{color:var(--faint);font-size:12px;line-height:1.6;margin-top:18px;max-width:78ch}
+.strip{display:flex;gap:36px;flex-wrap:wrap}
+.strip div span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+.strip div b{font-family:var(--serif);font-size:26px;font-weight:560}
+.strip div b em{font-style:normal;color:var(--faint);font-size:14px}
+
+/* the one motion default from DESIGN.md §6 — fade + rise, once.
+   Two guards the naive version gets wrong:
+   1. scoped under .js — without it, a JS failure leaves opacity:0 and the whole
+      dashboard renders INVISIBLE. Content must never depend on script to be seen.
+   2. no negative rootMargin — anything already on screen at load must reveal
+      immediately, or the first thing the reader sees is a half-faded page. */
+@media (prefers-reduced-motion:no-preference){
+  html.js .reveal{opacity:0;transform:translateY(20px);
+    transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+  html.js .reveal.in{opacity:1;transform:none}
+}
+</style></head><body>
+<div class="mockbar">MOCKUP · <b>Option 2 — Chaptered</b> · banded grounds so doors read as chapters, tick motif, a lead question per chapter, one scroll-reveal · real data, snapshot 2026-08-13 · nothing here is wired</div>
+
+<section class="band band-a"><div class="wrap">
+  <div class="strip reveal">
+    <div><span>MRR</span><b>$0<em> / 13k</em></b></div>
+    <div><span>Live clients</span><b>0<em> / 5</em></b></div>
+    <div><span>Deals in motion</span><b>3<em> / 5</em></b></div>
+    <div><span>Prospects</span><b>18<em> / 40</em></b></div>
+    <div><span>Locked domains</span><b>1<em> / 14</em></b></div>
+  </div>
+</div></section>
+
+<section class="band band-b"><div class="wrap">
+  <div class="chapter reveal">
+    <div class="tick"></div>
+    <div class="no">Chapter 1 · WBR — week of 2026-08-10</div>
+    <h1>Did the week move anything?</h1>
+    <p class="answer">One conversation and four companies touched. <b>Deliverables and deals advanced
+      both sat at zero</b> against six-week averages of 1.2 and 0.6.</p>
+  </div>
+  <h2 class="sub">The inputs you control</h2>
+  <table class="reveal">
+    <tr><th>Input</th><th>This week</th><th>6-wk avg</th><th>Trend</th><th>Why it matters</th></tr>
+    <tr><td class="name">Conversations held<small>Meeting or Call</small></td><td class="n">1</td><td class="was">0.4</td>
+        <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:9px"></i><i style="height:9px"></i><i class="now" style="height:9px"></i></span></td>
+        <td class="why">the only input that creates pipeline</td></tr>
+    <tr><td class="name">Deliverables shipped<small>type: Deliverable</small></td><td class="n zero">0</td><td class="was">1.2</td>
+        <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:11px"></i><i style="height:22px"></i><i class="now" style="height:2px"></i></span></td>
+        <td class="why">give-first proof reaching a prospect</td></tr>
+    <tr><td class="name">Companies touched<small>distinct company</small></td><td class="n">4</td><td class="was">0.8</td>
+        <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:6px"></i><i style="height:6px"></i><i style="height:11px"></i><i class="now" style="height:22px"></i></span></td>
+        <td class="why">breadth of contact</td></tr>
+    <tr><td class="name">Deals advanced<small>stage changed</small></td><td class="n zero">0</td><td class="was">0.6</td>
+        <td><span class="spark"><i style="height:22px"></i><i style="height:2px"></i><i style="height:22px"></i><i style="height:2px"></i><i style="height:22px"></i><i class="now" style="height:2px"></i></span></td>
+        <td class="why">movement, not just activity</td></tr>
+    <tr><td class="name">Warm intros made<small>new 08-13</small></td><td class="n zero">0</td><td class="was">0.0</td>
+        <td><span class="spark"><i></i><i></i><i></i><i></i><i></i><i class="now"></i></span></td>
+        <td class="why">the give-first half of the warm network</td></tr>
+    <tr><td class="name">Referral asks made<small>new 08-13</small></td><td class="n zero">0</td><td class="was">0.0</td>
+        <td><span class="spark"><i></i><i></i><i></i><i></i><i></i><i class="now"></i></span></td>
+        <td class="why">the connector program's leading indicator</td></tr>
+    <tr><td class="name">New prospects added<small>new 08-13</small></td><td class="n zero">0</td><td class="was">0.0</td>
+        <td><span class="spark"><i></i><i></i><i></i><i></i><i></i><i class="now"></i></span></td>
+        <td class="why">top-of-funnel replenishment</td></tr>
+    <tr><td class="name">Next actions set<small>activity w/ nextAction</small></td><td class="n">1</td><td class="was">2.2</td>
+        <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:4px"></i><i style="height:7px"></i><i style="height:22px"></i><i class="now" style="height:4px"></i></span></td>
+        <td class="why">whether the board is ready to be worked</td></tr>
+  </table>
+  <p class="pull reveal">The three newest inputs have never been logged once.</p>
+</div></section>
+
+<section class="band band-c"><div class="wrap">
+  <div class="chapter reveal">
+    <div class="tick"></div>
+    <div class="no">Chapter 2 · The case against</div>
+    <h1>Which of these numbers is lying?</h1>
+    <p class="answer"><b>6 charges against 4 of 4 headline figures.</b> Every one computed from the
+      same data as the number it challenges.</p>
+  </div>
+  <div class="reveal">
+    <div class="charge"><b>Pipeline value · $24,000</b><span>1 of 3 deals untouched 21+ days. A pipeline number counts deals that exist, not deals that are moving.</span></div>
+    <div class="charge"><b>Goals · 9 tracked metrics</b><span>7 of 9 read zero or unmeasurable; 5 controllable inputs were zero this week.</span></div>
+    <div class="charge"><b>Agent roster · 28 agents</b><span>9 produced nothing in the evidence window; 2 have a loop armed that produces no artifact.</span></div>
+    <div class="charge"><b>Runtime · 25 tracked loops</b><span>17 stale or never run. "Always-on" describes the timers, not the artifacts.</span></div>
+  </div>
+</div></section>
+
+<section class="band band-quiet"><div class="wrap">
+  <div class="chapter reveal">
+    <div class="no">Chapter 3 · Since you last looked</div>
+    <h1>Nothing moved.</h1>
+    <p class="answer">A computed delta of every derived payload against the snapshot taken at your
+      last visit — not a changelog anybody writes. 8 snapshots recorded.</p>
+  </div>
+  <div class="clean reveal">That is a real answer, and on a company this size it is often the correct one.</div>
+  <h2 class="sub" style="margin-top:40px">Elsewhere</h2>
+  <table class="reveal">
+    <tr><td class="name">The Board</td><td class="why">30 need a human · 17 blocked · 10 missing · 42 backlog</td></tr>
+    <tr><td class="name">Owners</td><td class="why">the Founder 53 · Partner B 0 · Mike 0 · agents 45 · unowned 10</td></tr>
+    <tr><td class="name">Lock-in run</td><td class="why">1 of 14 locked · 4 slipped · 2 likely-unconfirmed</td></tr>
+    <tr><td class="name">Loops</td><td class="why">8 on time of 25 tracked · 17 stale or never run</td></tr>
+  </table>
+</div></section>
+
+<script>
+// reveal-on-enter, fire once. rootMargin bottom-only so above-fold content
+// is already 'in' on the first callback rather than sitting faded.
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+}),{rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// belt and braces: if anything is still hidden after load, show it.
+addEventListener('load',()=>setTimeout(()=>document.querySelectorAll('.reveal:not(.in)').forEach(el=>{
+  if(el.getBoundingClientRect().top < innerHeight) el.classList.add('in');
+}),80));
+</script>
+</body></html>

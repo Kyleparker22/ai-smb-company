@@ -1,0 +1,11 @@
+[Unit]
+Description=yourco Sadie intent sweep — Google Alerts/News feeds -> #yourco-sadie
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Group=claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+ExecStart=/home/claudeops/yourco-os/runtime/sadie-intent.sh

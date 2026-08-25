@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehearsal OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-renewals"></section>
+  <section class="view" id="v-rehearsal"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. A rehearsal is arithmetic on the
+recorded policy — only the carrier adjusts a real claim. No recorded policy → UNREADABLE.
+Severity is a range, never one number. No fear language leaves this system. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'renewals',label:'Renewals'},
+      {id:'rehearsal',label:'The rehearsal'},{id:'inbox',label:'Inbox'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,renewals,rehearsal,inbox,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board, wk = b.week.this_week;
+  document.getElementById('co').textContent = d.config.agency;
+  document.getElementById('cosub').textContent = `${d.config.producers} producers · ${d.config.csrs} CSRs · ${fmt.num(b.accounts)} accounts`;
+  document.getElementById('v-board').innerHTML =
+    panel('The book, counted', '',
+      `<div class="grid">
+        ${stat('Renewals in 60 days', fmt.num(b.renewals_60), `${b.renewals_not_rehearsed} not yet rehearsed`, b.renewals_not_rehearsed?'warn':'')}
+        ${stat('Unread policies', fmt.num(b.unread_policies), 'we read policies before we rehearse them', b.unread_policies?'alert':'')}
+        ${stat('Gaps found', fmt.num(b.gaps.found), `${b.gaps.open} open · counted from the log`)}
+        ${stat('Gaps closed', fmt.num(b.gaps.closed), 'closed = the endorsement is recorded', b.gaps.closed?'good':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.num(wk.rehearsals_run)} rehearsal(s)`,
+               `${wk.packets_sent} packet(s) sent · ${wk.gaps_found} gap(s) found · ${wk.gaps_closed} closed`)}
+        ${stat('Week-over-week', b.week.delta && b.week.delta._missing==null ? `${(b.week.delta.rehearsals_run>=0?'+':'')+b.week.delta.rehearsals_run} rehearsals` : null,
+               b.week.delta && b.week.delta._missing ? esc(b.week.delta._missing) : 'vs the prior week, both counted')}
+       </div>`);
+}
+
+async function renewals(){
+  const d = await API.get('/api/renewals');
+  document.getElementById('v-renewals').innerHTML =
+    `<div class="banner warn">T-60 DATE ALERTS — renewal dates from the record, never advice.
+      An UNREADABLE row has no recorded policy detail: no rehearsal runs on it, on purpose.</div>` +
+    panel(`Renewals in the next ${d.window_days} days`, `${d.rows.length} account(s)`,
+      table([{label:'Insured'},{label:'Type'},{label:'Carrier'},{label:'Renewal'},{label:'Days',num:true},{label:'Status'},{label:'Typical gap',num:true},{label:''}],
+        d.rows.slice(0,40), r=>`<td>${esc(r.insured)}${r.demo_tag?' '+pill(r.demo_tag,'brand'):''}</td>
+          <td>${esc(r.type)}</td><td>${esc(r.carrier||'')}</td><td>${fmt.date(r.renewal)}</td>
+          <td class="num">${r.days}</td>
+          <td>${pill(r.status, r.status==='UNREADABLE'?'bad':r.status==='rehearsed'?'good':'warn')}</td>
+          <td class="num">${r.gap_typical_total!=null?fmt.money(r.gap_typical_total):'—'}</td>
+          <td class="right"><button class="act primary" onclick="rehearseTo('v-renewals','${r.account}')">Rehearse</button></td>`), true) +
+    `<div id="renout"></div>`;
+}
+
+async function rehearsal(){
+  document.getElementById('v-rehearsal').innerHTML =
+    `<div class="banner warn">Try it, in order: the rehearsal (a $41,000 typical kitchen-fire gap,
+      two recorded exclusions cited) → the unread policy (refused) → one number (refused) →
+      the fear-language and coverage-promise probes (refused) → the fix sheet, priced from the
+      recorded rate card → the renewal packet → record the endorsement to close the gap.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="rehearseTo('v-rehearsal','ac_demo_full')">Rehearse: Merrow (recorded policy)</button>
+      <button class="act" onclick="rehearseTo('v-rehearsal','ac_demo_unread')">Rehearse: unread policy</button>
+      <button class="act" onclick="oneNumber()">Ask for one number</button>
+      <button class="act" onclick="probe('fear')">Fear-language probe</button>
+      <button class="act" onclick="probe('promise')">Coverage-promise probe</button>
+      <button class="act" onclick="fixsheet('ac_demo_full')">Fix sheet: Merrow</button>
+      <button class="act" onclick="packet('ac_demo_full')">Renewal packet</button>
+      <button class="act" onclick="endorse('ac_demo_full','exclusion','HX 21 44')">Record the endorsement (HX 21 44)</button>
+     </div><div id="rhout"></div>`;
+}
+
+function out(view){ return document.getElementById(view==='v-renewals'?'renout':'rhout'); }
+
+function renderWalk(w){
+  return `${fmt.money(w.loss)} loss → policy pays ${fmt.money(w.payout)}
+    (deductible ${fmt.money(w.deductible)}) → <b>the gap: ${fmt.money(w.gap)}</b>`;
+}
+function renderRehearsal(r){
+  return `<div class="banner warn">${esc(r.label)}</div>` + r.scenarios.map(s=>
+    panel(s.label, s.range_note,
+      `<div class="scroll"><table><thead><tr><th>Severity</th><th>Loss</th><th class="num">Policy pays</th><th class="num">The gap</th></tr></thead><tbody>`+
+      ['low','typical','severe'].map(l=>{const w=s.severities[l];
+        return `<tr><td>${l}${l==='typical'?' '+pill('anchor','brand'):''}</td><td class="num">${fmt.money(w.loss)}</td>
+          <td class="num">${fmt.money(w.payout)}</td><td class="num strong">${fmt.money(w.gap)}</td></tr>`;}).join('')+
+      `</tbody></table></div>
+       <div class="why">citations (typical): ${s.severities.typical.citations.map(c=>`<span class="mono">${esc(c)}</span>`).join(' · ')||'none'}</div>`)).join('');
+}
+async function rehearseTo(view,id){
+  const r = await API.post(`/api/accounts/${id}/rehearse`);
+  out(view).innerHTML = r.unreadable
+    ? panel('UNREADABLE', '', `<div class="banner warn">${esc(r.why)}</div>`)
+    : panel(`Rehearsal — ${esc(r.rehearsal.insured)}`, `typical gap across scenarios: `,
+        `<div class="strong">Typical-severity gap, all scenarios: ${fmt.money(r.rehearsal.gap_typical_total)}</div>`) +
+      renderRehearsal(r.rehearsal);
+  if(view==='v-renewals') renewals();
+}
+async function oneNumber(){
+  const r = await API.post('/api/accounts/ac_demo_full/rehearse',{severity:'typical'});
+  out('v-rehearsal').innerHTML = panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`);
+}
+async function probe(kind){
+  const r = await API.post(`/api/probe/${kind}`);
+  out('v-rehearsal').innerHTML = r.refused
+    ? panel('Refused — R0, logged', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Passed', '', esc(r.note));
+}
+async function fixsheet(id){
+  const r = await API.post(`/api/accounts/${id}/fixsheet`);
+  if(r.unreadable){ out('v-rehearsal').innerHTML = panel('UNREADABLE','',`<div class="banner warn">${esc(r.why)}</div>`); return; }
+  out('v-rehearsal').innerHTML =
+    panel('Fix sheet — drafted at R1, a producer sends', esc(r.sheet.rate_source),
+      table([{label:'Scenario'},{label:'What drives the gap'},{label:'Gap',num:true},{label:'The fix'},{label:'Premium / yr',num:true}],
+        r.sheet.lines, l=>`<td>${esc(l.scenario)}${l.severe_only?' '+pill('severe only','warn'):''}${l.closed?' '+pill('closed','good'):''}</td>
+          <td class="why">${esc(l.cite)}</td><td class="num">${fmt.money(l.gap)}</td>
+          <td>${l.fix?esc(l.fix):'—'}</td>
+          <td class="num">${l.annual_premium!=null?fmt.money(l.annual_premium):blank(l._missing)}</td>`), true) +
+    panel('The cover note — tone-checked structurally', '', `<div class="strong" style="white-space:pre-wrap">${esc(r.cover)}</div>`);
+}
+async function packet(id){
+  const r = await API.post(`/api/accounts/${id}/packet`);
+  if(r.unreadable){ out('v-rehearsal').innerHTML = panel('UNREADABLE','',`<div class="banner warn">${esc(r.why)}</div>`); return; }
+  out('v-rehearsal').innerHTML =
+    panel('Renewal packet — queued R1', `<span></span>`,
+      `<div class="strong">${esc(r.packet.cover)}</div>
+       <div class="why">${esc(r.packet.label)} · packet = the rehearsal + the fix sheet; approve it under Trust &amp; audit</div>`) +
+    renderRehearsal(r.packet.rehearsal);
+}
+async function endorse(id,kind,key){
+  const r = await API.post(`/api/accounts/${id}/endorse`,{kind,key});
+  out('v-rehearsal').innerHTML = panel('Endorsement queued — R1', '',
+    `<div class="strong">${esc(r.reason||'')}</div>
+     <div class="why">approve it under Trust &amp; audit; only then does the gap count as closed</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The ACTIVE claim reads first: the claims-reporting script with the
+      recorded carrier and claim line — never a coverage opinion mid-crisis. Only the carrier
+      adjusts a real claim.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='active_claim'?'bad':m.label==='rehearsal_ask'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['rehearsed_renewals','Rehearsed renewals','counted'],
+    ['retention_points_gained','Retention points gained','your number (0–1)'],
+    ['avg_commission','Avg commission $','your number'],
+    ['gaps_closed','Gaps closed','counted'],
+    ['avg_endorsement_premium','Avg endorsement premium','recorded rate card'],
+    ['commission_rate','Commission rate','recorded'],
+    ['eo_claim_value','The E&O file','yours or blank'],
+    ['csr_hours_wk','CSR hrs/wk','your number'],['csr_rate','CSR loaded rate','your number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'principal'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

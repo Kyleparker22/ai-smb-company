@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traveler OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-rfqs"></section>
+  <section class="view" id="v-jobs"></section>
+  <section class="view" id="v-materials"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. No quote off a stale material price,
+no promise date without capacity math, no cert-required part shipped without its paper, and nobody
+clicks past an inspection.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'rfqs',label:'RFQ desk'},{id:'jobs',label:'Jobs & the cert gate'},
+      {id:'materials',label:'Materials'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,rfqs,jobs,materials,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.people} people · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The shop, counted', '',
+      `<div class="grid">
+        ${stat('On-time delivery (180d)', val(b.otd,'rate',fmt.pct),
+          b.otd._missing?'':`${b.otd.on_time} of ${b.otd.of} — the number customers experience`)}
+        ${stat('Cert-blocked jobs', fmt.num(b.cert_blocked), 'cannot ship until the paper is on file', b.cert_blocked?'warn':'')}
+        ${stat('Backlog', b.backlog_weeks!=null?b.backlog_weeks+' wks':'—', 'from recorded capacity, not optimism')}
+        ${stat('Unscanned RFQs', fmt.num(b.rfqs_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.quotes_sent} · ${b.recovered.jobs_shipped} · ${b.recovered.dates_committed}`,
+               'quotes sent · jobs shipped · dates committed — from the log')}</div>`);
+}
+
+async function rfqs(){
+  const d = await API.get('/api/rfqs');
+  document.getElementById('v-rfqs').innerHTML =
+    `<div class="banner warn">An RFQ is scanned for cert language first — a missed flag means the
+      part gets built like a bracket for a barbecue. A quote refuses off a stale material price:
+      <b>metal moved; reprice it.</b></div>` +
+    panel('RFQs', '', table([{label:'When'},{label:'RFQ'},{label:'Flags'},{label:''}],
+      d.rows, r=>`<td>${fmt.stamp(r.at)}${r.demo_tag?' '+pill(r.demo_tag,'brand'):''}</td>
+        <td>${esc(r.text)}</td>
+        <td>${(r.flags||[]).map(f=>pill(f,'bad')).join(' ')||(r.scanned_at?pill('commercial','good'):'—')}</td>
+        <td class="right"><button class="act primary" onclick="handleRfq('${r.id}')">Scan & quote</button></td>`), true) +
+    `<div id="rout"></div>`;
+}
+async function handleRfq(id){
+  const r = await API.post(`/api/rfqs/${id}/handle`);
+  document.getElementById('rout').innerHTML =
+    panel('Flags', r.flags.why, (r.flags.flags||[]).map(f=>pill(f,'bad')).join(' ')||pill('commercial','good')) +
+    (r.steps||[]).map(s=> s.refused
+      ? panel('Quote refused', '', `<div class="banner warn">${esc(s.refused)}</div>`)
+      : panel('Quote drafted', s.why, `<div class="grid">
+          ${stat('Total', fmt.money(s.quote.total))}${stat('Material', fmt.money(s.quote.lines.material))}
+          ${stat('Labor', fmt.money(s.quote.lines.labor))}${stat('Material age', s.quote.material_age_days+'d')}</div>`)).join('');
+  rfqs();
+}
+
+async function jobs(){
+  const d = await API.get('/api/jobs');
+  document.getElementById('v-jobs').innerHTML =
+    `<div class="banner warn">Try shipping both demo brackets — the one missing its material cert
+      is refused: <b>cannot certify.</b></div>` +
+    panel('Open jobs', '', table(
+      [{label:'Job'},{label:'Cert'},{label:'Ship check'},{label:''}],
+      d.rows, j=>`<td>${esc(j.name)}${j.demo_tag?' '+pill(j.demo_tag,'brand'):''}</td>
+        <td>${j.cert_required?pill('cert required','warn'):pill('commercial')}</td>
+        <td class="why">${esc(j.ship_check)}</td>
+        <td class="right"><button class="act" onclick="ship('${j.id}')">Ship</button>
+          <button class="act" onclick="promiseJob('${j.id}')">Promise date</button></td>`), true) +
+    `<div id="jout"></div>`;
+}
+async function ship(id){
+  const r = await API.post(`/api/jobs/${id}/ship`);
+  document.getElementById('jout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Release drafted', '', `<div class="strong">queued at R1 past the cert gate</div>`);
+}
+async function promiseJob(id){
+  const r = await API.post(`/api/jobs/${id}/promise`);
+  document.getElementById('jout').innerHTML = r.refused
+    ? panel('No promise', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Promise drafted', r.note, `<div class="strong">${fmt.date(r.promise.date)} (${r.promise.weeks_out} wks)</div>
+        <div class="why">${esc(r.promise.basis)}</div>`);
+}
+
+async function materials(){
+  const d = await API.get('/api/materials');
+  document.getElementById('v-materials').innerHTML =
+    panel('Material prices', 'fresh ≤ 14 days — stale refuses the quote', table(
+      [{label:'Material'},{label:'Price',num:true},{label:'Priced'},{label:'Status'}],
+      d.rows, m=>`<td>${esc(m.label)}</td><td class="num">${fmt.money2(m.price)}</td>
+        <td>${fmt.date(m.priced_at)}</td>
+        <td>${m.check.ok?pill('fresh ('+m.check.age_days+'d)','good'):pill('STALE — reprice','bad')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['rfqs_yr','RFQs','counted'],['win_lift','Same-day win lift','your number (0–1)'],
+    ['avg_job','Avg job value','your number'],['quote_hours_wk','Quoting hrs/wk','your number'],
+    ['estimator_rate','Estimator rate','your number'],['broken_promises_yr','Broken promises/yr','your history'],
+    ['avg_expedite','Avg expedite cost','your number'],['cert_value','The aerospace customer','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.flags) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'gm'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

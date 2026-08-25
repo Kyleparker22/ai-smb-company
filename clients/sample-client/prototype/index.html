@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client × yourco — the whole setup</title>
+<!-- Walkthrough hub linking the Sample Client mockups. Sample data; for showing Client Owner. -->
+<style>
+  :root{--bg:#f4f5f1;--card:#fff;--ink:#1c2419;--muted:#6b7280;--line:#e8e9e3;--sc:#2c5f2d;--sc-d:#234a24;--green:#2f7d52;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .top{background:var(--sc);color:#fff;padding:30px 0 26px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  .top .logo{font-size:18px;font-weight:700;opacity:.9}
+  .top h1{font-size:27px;font-weight:700;margin:12px 0 6px;letter-spacing:-.02em}
+  .top p{font-size:14.5px;color:rgba(255,255,255,.85);max-width:54ch}
+  .steps{margin:24px auto}
+  .step{display:flex;gap:15px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-decoration:none;color:inherit;transition:border-color .15s}
+  .step:hover{border-color:var(--sc)}
+  .step .n{width:30px;height:30px;border-radius:50%;background:#eef3ee;color:var(--sc-d);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+  .step .tx{flex:1}
+  .step .tt{font-size:15.5px;font-weight:650}
+  .step .ds{font-size:13px;color:var(--muted);margin-top:1px}
+  .step .arr{color:var(--sc);font-size:18px}
+  .step.flow{cursor:default;background:#eef3ee;border-color:#dde7dd}.step.flow:hover{border-color:#dde7dd}
+  .note{font-size:12.5px;color:var(--muted);text-align:center;margin:8px 0 32px;line-height:1.6}
+  .note b{color:var(--sc)}
+</style>
+</head>
+<body>
+  <div class="top"><div class="wrap">
+    <div class="logo">Sample Client × yourco</div>
+    <h1>Your setup, end to end</h1>
+    <p>When an Installation proposal signs in Aspire, your digital employee runs the early-stage coordination — and you approve anything customer-facing from your phone. Here's the whole thing, on a sample job.</p>
+  </div></div>
+
+  <div class="wrap">
+    <div class="steps">
+      <div class="step flow"><div class="n">1</div><div class="tx"><div class="tt">A proposal signs in Aspire</div><div class="ds">Your employee reads it, applies your tiers, sorts materials, spots subs — and drafts everything. Nothing sends yet.</div></div></div>
+
+      <a class="step" href="approval.html"><div class="n">2</div><div class="tx"><div class="tt">Charlene approves the deposit</div><div class="ds">The client email + text, with the amount locked by code. One tap to send.</div></div><div class="arr">→</div></a>
+
+      <a class="step" href="client-owner-approvals.html"><div class="n">3</div><div class="tx"><div class="tt">You approve supplier + sub orders</div><div class="ds">Material orders routed shop vs job site, sub notices with scope + dates. Tap through them.</div></div><div class="arr">→</div></a>
+
+      <a class="step" href="status-board.html"><div class="n">4</div><div class="tx"><div class="tt">Watch every job from one board</div><div class="ds">Deposit, suppliers, subs — where each job stands, plus a daily nudge list of anything stuck.</div></div><div class="arr">→</div></a>
+
+      <a class="step" href="greenlit.html"><div class="n">5</div><div class="tx"><div class="tt">Greenlit when it's all confirmed</div><div class="ds">Deposit in, suppliers + subs locked — you and Charlene get the all-clear automatically.</div></div><div class="arr">→</div></a>
+
+      <a class="step" href="monthly-report.html"><div class="n">6</div><div class="tx"><div class="tt">A monthly report of what it did</div><div class="ds">Volume, deposits, hours saved — and the reliability behind it.</div></div><div class="arr">→</div></a>
+    </div>
+    <div class="note">These are mockups on sample data — nothing here is live, and nothing was sent.<br>The real build wires this to your Aspire, your number, and your mailbox. Built &amp; run by <b>yourco</b>.</div>
+  </div>
+</body>
+</html>

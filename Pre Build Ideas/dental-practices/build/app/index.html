@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chair OS</title>
+<link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top">
+  <h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+  <button class="act" onclick="runAgents()">Run the sweeps</button>
+</header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-unscheduled"></section>
+  <section class="view" id="v-fill"></section>
+  <section class="view" id="v-benefits"></section>
+  <section class="view" id="v-recall"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system never diagnoses, never
+suggests treatment, and never tells a patient what their plan will pay.</footer>
+
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Tomorrow'},{id:'unscheduled',label:'Unscheduled treatment'},
+      {id:'fill',label:'Same-day fill'},{id:'benefits',label:'Benefits pack'},
+      {id:'recall',label:'Recall'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,unscheduled,fill,benefits,recall,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.practice;
+  document.getElementById('cosub').textContent =
+    `${(d.config.doctors||[]).length} doctors · ${(d.config.hygienists||[]).length} hygiene chairs`;
+  document.getElementById('v-board').innerHTML =
+    panel('Tomorrow', 'production per chair-hour is the only number that matters here',
+      `<div class="grid">
+        ${stat('Scheduled production', fmt.money(b.tomorrow_production.amount),
+          `${b.tomorrow_production.appointments} appointments · ${esc(b.tomorrow_production.basis)}`)}
+        ${stat('Holes', fmt.num(b.holes.n), esc(b.holes.basis), b.holes.n ? 'warn' : '')}
+        ${stat('Value of those holes', fmt.money(b.holes.amount), 'chair-hours do not bank')}
+        ${stat('Verification exceptions', fmt.num(b.verification_exceptions),
+          'each one a human has to call', b.verification_exceptions ? 'warn' : '')}
+       </div>`) +
+    panel('The ledger', 'diagnosed, presented, never booked',
+      `<div class="grid">
+        ${stat('Unscheduled treatment', val(b.unscheduled,'amount',fmt.money),
+          b.unscheduled.n ? `${b.unscheduled.n} procedures on the ledger` : '')}
+        ${stat('Recovered (7d)', val(b.recovered,'amount',fmt.money),
+          b.recovered._missing ? '' : esc(b.recovered.basis))}
+        ${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 approval floor')}
+       </div>`);
+}
+
+async function unscheduled(){
+  const d = await API.get('/api/unscheduled');
+  document.getElementById('v-unscheduled').innerHTML =
+    `<div class="banner">Ranked by production × clinical urgency <b>as the doctor recorded it</b> ×
+      benefit-year expiry × how often the patient answers. Every component is shown, because the
+      office manager will ask why this patient is above that one.</div>` +
+    panel('The queue', val(d.total,'amount',fmt.money) + ' on the ledger',
+      table([{label:'Patient'},{label:'Procedure'},{label:'Fee',num:true},{label:'Score',num:true},{label:'Why it ranks here'}],
+        d.rows, r=>`<td>${esc(r.patient||'')}<div class="why">diagnosed ${fmt.date(r.diagnosed_at)} by ${esc(r.diagnosed_by||'')}</div></td>
+        <td>${esc(r.label)}${r.tooth?' <span class="why">'+esc(r.tooth)+'</span>':''}</td>
+        <td class="num">${fmt.money(r.fee)}</td><td class="num strong">${r.score}</td>
+        <td><ul class="reasons">${(r.why||[]).map(w=>`<li>${esc(w)}</li>`).join('')}</ul></td>`), true) +
+    `<div style="margin-top:4px"><button class="act primary" onclick="runReact()">Draft the top 25</button></div>
+     <div id="react"></div>`;
+}
+async function runReact(){
+  const r = await API.post('/api/reactivation/run');
+  document.getElementById('react').innerHTML = panel('Drafted, not sent', `${r.drafted} in the queue`,
+    table([{label:'Copy'},{label:'Why this patient'}], r.detail,
+      d=>`<td>${esc(d.body)}</td><td><ul class="reasons">${(d.why||[]).map(w=>`<li>${esc(w)}</li>`).join('')}</ul></td>`), true);
+}
+
+async function fill(){
+  const d = await API.get('/api/openings');
+  document.getElementById('v-fill').innerHTML =
+    `<div class="banner warn">A hygiene opening cannot be filled with a crown. Fit — the right chair
+      and the right minutes — is checked before value, which is the constraint most schedule-filling
+      tools quietly ignore.</div>` +
+    panel('Openings', esc(d.note),
+      table([{label:'When'},{label:'Chair'},{label:'Minutes'},{label:'State'},{label:''}], d.openings,
+        o=>`<td>${fmt.stamp(o.starts_at)} ${pill(o.demo_tag||'','brand')}</td>
+          <td>${esc(o.provider_type)}</td><td class="num">${o.minutes}</td>
+          <td>${pill(o.state, o.state==='open'?'warn':'')}</td>
+          <td class="right"><button class="act primary" onclick="doFill('${o.id}')">
+            ${o.state==='open'?'Build the ASAP list':'Cancel it'}</button></td>`), true) +
+    `<div id="fillout"></div>`;
+}
+async function doFill(id){
+  const r = await API.post(`/api/openings/${id}/fill`);
+  document.getElementById('fillout').innerHTML =
+    panel(`Opening ${fmt.stamp(r.opening.at)} — ${r.opening.provider_type} chair, ${r.opening.minutes}m`,
+      esc(r.note),
+      table([{label:'Wave'},{label:'Patient'},{label:'Procedure'},{label:'Fee',num:true},{label:'Fit'},{label:'Why ranked here'},{label:''}],
+        [...r.wave_one.map(c=>({...c,w:1})), ...r.wave_two.map(c=>({...c,w:2}))],
+        c=>`<td>${pill('wave '+c.w, c.w===1?'good':'')}</td><td>${esc(c.patient||'')}</td>
+          <td>${esc(c.label)}</td><td class="num">${fmt.money(c.fee)}</td>
+          <td class="why">${esc(c.fit_why)}</td><td class="why">${esc(c.rank_why)}</td>
+          <td class="right"><button class="act" onclick="accept('${id}','${c.id}')">They said yes</button></td>`), true) +
+    panel('Refused for this chair', 'not ranked lower — refused', table(
+      [{label:'Patient'},{label:'Procedure'},{label:'Why it cannot go here'}], r.rejected_sample,
+      x=>`<td>${esc(x.patient||'')}</td><td>${esc(x.procedure)}</td><td class="why">${esc(x.why)}</td>`), true);
+}
+async function accept(a,p){
+  const r = await API.post(`/api/openings/${a}/accept`, {plan:p});
+  alert(r.booked ? `Filled in ${r.time_to_fill_minutes} minutes.` : `Refused: ${r.refused}`);
+  fill();
+}
+
+async function benefits(){
+  const d = await API.get('/api/benefits');
+  const f = (row,k) => { const x = row.fields[k]; return x==null?'—':(x.value==null?blank(x._missing):
+    (typeof x.value==='boolean'?(x.value?pill('yes','good'):pill('no','bad')):esc(String(x.value)))); };
+  document.getElementById('v-benefits').innerHTML =
+    `<div class="banner warn">${esc(d.note)}</div>` +
+    panel(`Tomorrow's pack — ${d.date}`, `${d.sheets.length} patients · ${d.exceptions.length} exceptions`,
+      table([{label:'Patient'},{label:'Procedure'},{label:'Payer'},{label:'Eligible'},{label:'Remaining max'},
+             {label:'Frequency'},{label:'Waiting'},{label:'Downgrade'},{label:'Can we state coverage?'}],
+        d.sheets, r=>`<td>${esc(r.patient)}</td><td>${esc(r.procedure)}</td><td>${esc(r.payer)}</td>
+          <td>${f(r,'eligible')}</td><td>${f(r,'remaining_max')}</td><td>${f(r,'frequency_ok')}</td>
+          <td>${f(r,'waiting_ok')}</td><td>${f(r,'downgrade')}</td>
+          <td>${r.can_state_coverage?pill('yes — payer confirmed','good'):pill('no — do not quote','bad')}</td>`), true) +
+    panel('Exceptions — call these', 'the honest output of a verification run', table(
+      [{label:'Patient'},{label:'Procedure'},{label:'What we could not confirm'},{label:'Why'}], d.exceptions,
+      e=>`<td>${esc(e.patient)}</td><td>${esc(e.procedure)}</td>
+        <td class="mono">${(e.unconfirmed||[]).join(', ')}</td><td class="why">${esc(e.why)}</td>`), true);
+}
+
+async function recall(){
+  const d = await API.get('/api/recall');
+  document.getElementById('v-recall').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('Due and overdue', `${d.n} patients · benefit-expiry hooks first`, table(
+      [{label:'Patient'},{label:'State'},{label:'Days since'},{label:'Interval'},{label:'Benefit days left'},{label:'Hook'}],
+      d.due, r=>`<td>${esc(r.patient)}</td><td>${pill(r.state, r.state==='overdue'?'warn':'')}</td>
+        <td class="num">${r.days_since}</td><td class="num">${r.interval}</td>
+        <td class="num">${r.benefit_days_left==null?blank('benefit year end not on file'):r.benefit_days_left}</td>
+        <td>${r.hook==='benefits'?pill('benefits expire','brand'):esc(r.hook)}<div class="why">${esc(r.why)}</div></td>`), true) +
+    panel('Not flagged', '', table([{label:'Patient'},{label:'Why not'}], d.not_flagged,
+      r=>`<td>${esc(r.patient)}</td><td class="why">${esc(r.why)}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['unscheduled_value','Unscheduled treatment $','counted from your ledger'],
+    ['contact_rate','Contact %','your number'],['acceptance_rate','Acceptance %','your number'],
+    ['canceled_hours_wk','Canceled chair-hours / wk','your number'],['fill_rate','Fill %','your number'],
+    ['production_per_chair_hour','Production per chair-hour','counted from completed appointments'],
+    ['overdue_patients','Overdue patients','counted'],['reactivation_rate','Reactivation %','your number'],
+    ['annual_patient_value','Annual patient value','your number'],
+    ['verifications_wk','Verifications / wk','your number'],['minutes_each','Minutes each','your number'],
+    ['loaded_rate','Loaded staff rate','your number']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev) + renderAutonomy(au.matrix) +
+    renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'office'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+2026-07-27 — In a detection loop, if you couldn't READ the items, don't mark them "seen"
+
+Source: Brett — source-watch loop first run. WebFetch was not granted and Bash (yt-dlp) was gate-denied, so items could be detected (WebSearch) but not read/transcribed or triaged.
+Pattern: A state-tracking detection loop (source-watch; also Sadie's intent sweep, any "diff against seen-IDs" loop) has a tempting wrong move when the read path is degraded: write the detected item IDs into `state.json` "seen" to "establish the baseline / clear the backlog." That silently buries every unread item — the next run diffs against them and skips them forever, so a real steal/signal that was merely *detected-but-unread* never gets triaged. "Seen" must mean "actually read + triaged," never "the title scrolled past."
+Implication: When a run detects items but cannot complete the SOP's read/triage step (tool not granted, feed errored, transcript unavailable), leave the `seen` list EMPTY (or record only items you truly processed), set an explicit `baseline_established: false` + status note, list the detected-but-unread items in the artifact as NOT-triaged, and let the next working run do the real first sweep. An honest empty baseline costs one duplicate detection next run; a false baseline costs a permanently-skipped signal. Companion to the loop-contract "name the missing input, never fabricate around it" — this is its state-file corollary.
+Audience: Brett (source-watch); Sadie/any agent owning a seen-ID detection loop; any loop that writes a state file it diffs against.
+
+Triggers: loop:source-watch, loop:sadie, loop:connector-spotter, seen state file, detection loop, diffing against state, degraded read

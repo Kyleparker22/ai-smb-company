@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flue OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-households"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never declares
+safe-to-burn beyond the recorded inspection (level, date, findings — or "book the inspection"),
+never softens a stage-3 / blockage / CO finding, and never turns an active CO or smoke event
+into a booking — the evacuate script and 911 are the whole reply.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'households',label:'Households'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,households,roi,trust})[w](); }
+
+function seasonFoot(s){
+  if(s._missing) return esc(s._missing);
+  return `${fmt.num(s.due_book)} due vs ${fmt.num(s.month_capacity)} slots/mo` +
+    (s.offer?` · overflow ${fmt.num(s.overflow)} → February${s.offer.discount_pct?` at −${s.offer.discount_pct}% (recorded)`:''}`:
+     s.peak?' · inside capacity':' · off-peak');
+}
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.techs} techs · ~${fmt.num(d.config.households)} households on file`;
+  document.getElementById('v-board').innerHTML =
+    panel('The due book, counted', '',
+      `<div class="grid">
+        ${stat('Due for annual', fmt.num(b.due.count), b.due.value!=null?`${fmt.money(b.due.value)} at the recorded ticket`:'no recorded ticket', b.due.count?'alert':'')}
+        ${stat('No record on file', fmt.num(b.due.no_record), 'UNKNOWN — never assumed current')}
+        ${stat('Hazards on record', fmt.num(b.hazards), 'stage-3 / blockage / CO — never softened', b.hazards?'bad':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the CO/smoke event reads first', b.messages_open?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('Season book', b.season._missing?null:fmt.num(b.season.overflow)+' overflow', seasonFoot(b.season), b.season.offer?'warn':'')}
+        ${stat('This week, counted', `${b.recovered.households_swept} swept`,
+               `${b.recovered.sweep_revenue!=null?fmt.money(b.recovered.sweep_revenue)+' · ':''}${b.recovered.recalls_sent} recall(s) sent · ${b.recovered.co_events_escalated} CO event(s) escalated`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An active CO or smoke event gets the evacuate script verbatim and
+      911 — never a booking. "Safe to burn" gets the recorded inspection cited (level, date,
+      findings) or "book the inspection". A chimney fire gets the Level 3 per the recorded rule.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='co_smoke_event'?'bad':m.label==='chimney_fire_aftermath'?'warn':m.label==='safe_to_burn_ask'?'brand':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function households(){
+  const [d,s] = await Promise.all([API.get('/api/households'),API.get('/api/season')]);
+  document.getElementById('v-households').innerHTML =
+    `<div class="banner warn">Try it: safe-to-burn with a recorded Level 2 — the record cited;
+      with no record — refused, "book the inspection"; with a stage-3 on record — the finding
+      verbatim, never softened. The CO message gets the evacuate script as the whole reply.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="verdict('hh_demo_l2')">Safe to burn: recorded Level 2</button>
+      <button class="act" onclick="verdict('hh_demo_none')">Safe to burn: no record</button>
+      <button class="act" onclick="verdict('hh_demo_stage3')">Safe to burn: stage-3 on record</button>
+      <button class="act" onclick="handleH('ms_demo_co')">CO alarm message → the script</button>
+      <button class="act" onclick="handleH('ms_demo_fire')">Chimney fire → Level 3</button>
+      <button class="act" onclick="report('hh_demo_stage3')">Report draft: stage-3 preserved</button>
+     </div><div id="hout"></div>` +
+    panel('Season book', s._missing?esc(s._missing):'capacity by tech-day; overflow offered February, never silently lost',
+      `<div class="grid">
+        ${stat('Slots this month', s._missing?null:fmt.num(s.month_capacity), 'techs × jobs/day × workdays')}
+        ${stat('Due book', fmt.num(s.due_book), 'counted from the household records')}
+        ${stat('Overflow', s._missing?null:fmt.num(s.overflow), s.offer?(s.offer.discount_pct?`offered February at −${s.offer.discount_pct}% (recorded rate)`:esc(s.offer.note)):'inside capacity or off-peak', s.offer?'warn':'')}
+       </div>`) +
+    panel('Due for annual — the recall ladder runs here', '3 touches max, 21-day cooldown, seasonal-aware',
+      table([{label:'Household'},{label:'Days since service',num:true},{label:'Recall touches'}],
+        d.rows.slice(0,40), h=>`<td>${esc(h.name)}</td><td class="num">${fmt.num(h.days_since_service)}</td>
+          <td>${h.touches} of 3</td>`), true);
+}
+async function verdict(id){
+  const v = await API.get(`/api/households/${id}/verdict`);
+  const c = v.citation || v.recorded;
+  document.getElementById('hout').innerHTML =
+    v.verdict==='book_the_inspection'
+    ? panel('Refused: no verdict without the record', '', `<div class="banner warn">${esc(v.why)}</div>`)
+    : panel(v.verdict==='hazard_on_record'?'Hazard on record — cited verbatim':'The record, cited', '',
+        `<div class="strong">Level ${esc(c.level)} — ${esc(String(c.date).slice(0,10))} — ${esc(c.tech)} (${c.age_days} days old)</div>
+         <div style="margin-top:6px;white-space:pre-wrap">${(c.findings||[]).map(f=>esc(f)).join('\n')}</div>
+         <div class="why">${esc(v.why)}</div>`);
+}
+async function handleH(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('hout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+async function report(id){
+  const r = await API.post(`/api/households/${id}/report`);
+  document.getElementById('hout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Inspection report — draft (R1, a human sends)', '',
+        `<div class="strong" style="white-space:pre-wrap">${esc(r.body)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['due_book','Due-for-annual households','counted'],['avg_ticket','Average ticket','recorded'],
+    ['booking_rate','Booking rate on recalls','your number (0–1)'],
+    ['october_overflow','October overflow','counted vs capacity'],
+    ['offseason_capture','Off-season capture','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['housefire_value','The house-fire file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

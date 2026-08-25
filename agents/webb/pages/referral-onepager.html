@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco — refer a business, earn every month</title>
+<!--
+  REFERRAL ONE-PAGER — rep-facing recruitment sheet. Built from processes/partnerships/referral-recruitment-onepager.md.
+  Owner: web/conversion (page) + account-growth (program). Self-contained, print-ready (one letter page → PDF or link).
+  STAGED: v0 numbers (the Founder + pricing lock); not sent until the launch-gate clears. Voice: brand/writing-rules.md.
+-->
+<style>
+  :root{
+    --indigo:#161B33; --indigo-2:#0F1226; --cream:#F4EFE6; --parchment:#EFE8DA;
+    --brass:#B8965A; --brass-2:#D4B27A; --ink:#1c2138; --muted:#6E7180; --hair:rgba(22,27,51,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#d8d3c8;color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;padding:24px}
+  .sheet{max-width:820px;margin:0 auto;background:var(--cream);border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgba(22,27,51,.18)}
+
+  .top{background:var(--indigo);color:var(--cream);padding:30px 40px 26px}
+  .mark{font-size:19px;font-weight:600;letter-spacing:-.01em}.mark .dot{color:var(--brass)}
+  .top h1{font-size:30px;font-weight:650;line-height:1.12;margin:16px 0 8px;letter-spacing:-.02em}
+  .top p{font-size:14.5px;color:rgba(244,239,230,.82);max-width:62ch}
+
+  .body{padding:26px 40px 16px}
+  .lead{font-size:15px;color:#2a3050}
+  .lead b{font-weight:650}
+
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 6px}
+  .tier{background:#fff;border:1px solid var(--hair);border-radius:12px;padding:16px 16px 14px;position:relative}
+  .tier.hl{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass)}
+  .tier .lvl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
+  .tier .pct{font-size:34px;font-weight:680;letter-spacing:-.02em;margin:4px 0 2px;color:var(--indigo)}
+  .tier .who{font-size:12.5px;color:var(--muted)}
+  .tier .badge{position:absolute;top:13px;right:14px;font-size:10px;font-weight:700;background:var(--brass);color:var(--indigo);border-radius:9999px;padding:2px 8px}
+  .tiernote{font-size:12.5px;color:var(--muted);margin:4px 0 2px}
+  .recruit{margin:14px 0 2px;background:var(--parchment);border-left:3px solid var(--brass);border-radius:8px;padding:11px 14px;font-size:13.5px;color:#2a3050}
+  .recruit b{font-weight:650;color:var(--indigo)}
+
+  .grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;margin-top:22px}
+  h2{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--brass);margin-bottom:11px}
+  ol{margin:0;padding-left:18px}
+  ol li{font-size:14px;margin-bottom:8px;padding-left:3px}
+  .who-list{font-size:14px;color:#2a3050}
+  .who-list p{margin-bottom:9px}
+
+  .example{background:var(--parchment);border:1px solid var(--hair);border-radius:12px;padding:16px 18px;margin-top:22px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .example .big{font-size:30px;font-weight:680;color:var(--indigo);letter-spacing:-.02em;line-height:1}
+  .example .big span{font-size:14px;font-weight:500;color:var(--muted)}
+  .example .ex-t{font-size:13.5px;color:#2a3050;flex:1;min-width:240px}
+
+  .fine{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:20px;border-top:1px solid var(--hair);padding-top:14px}
+
+  .foot{background:var(--indigo-2);color:var(--cream);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .foot .cta{font-size:15px;font-weight:600}
+  .foot .pill{display:inline-block;background:var(--brass);color:var(--indigo);font-weight:650;font-size:13.5px;padding:9px 18px;border-radius:9999px;text-decoration:none}
+  .foot .em{color:var(--brass-2)}
+
+  @media(max-width:680px){.tiers{grid-template-columns:1fr}.grid2{grid-template-columns:1fr;gap:18px}.top,.body,.foot{padding-left:24px;padding-right:24px}}
+  @media print{
+    body{background:#fff;padding:0}
+    .sheet{box-shadow:none;border-radius:0;max-width:100%}
+    @page{margin:0}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="top">
+      <div class="mark">yourco<span class="dot">.</span></div>
+      <h1>Refer a business or a person. Earn every month.</h1>
+      <p>yourco builds and runs a named AI agent for whoever needs one — an employee inside a business, or a personal agent for an individual. Send us anyone who's a fit, and you earn a share of what they pay us, every month, for as long as they're a client.</p>
+    </div>
+
+    <div class="body">
+      <p class="lead">No quota. No base. No cost to you. You make the introduction; we do discovery, the build, and the day-to-day. <b>You get paid when they do.</b></p>
+
+      <div class="tiers">
+        <div class="tier"><div class="lvl">Referrer</div><div class="pct">3%</div><div class="who">1–4 active clients</div></div>
+        <div class="tier"><div class="lvl">Senior</div><div class="pct">5%</div><div class="who">5–9 active clients</div></div>
+        <div class="tier hl"><div class="badge">top tier</div><div class="lvl">Partner</div><div class="pct">10%</div><div class="who">10+ active clients</div></div>
+      </div>
+      <p class="tiernote">Your rate is a recurring percentage of each referred client's monthly fee — and it applies to your <b>whole book</b>, not just the next client. Land your fifth and all five move up. Land your tenth and you're at 10% on everyone.</p>
+
+      <div class="recruit"><b>Bring in other referrers, too.</b> Know people who could send us business? Refer them into the program and you earn an extra <b>1%</b> on every client they sign, for as long as it stays. Your own introductions, plus a slice of theirs.</div>
+
+      <div class="grid2">
+        <div>
+          <h2>How it works</h2>
+          <ol>
+            <li>Join and get your referral link.</li>
+            <li>Send us a business that's a fit, or just make the intro.</li>
+            <li>We close it, build it, and run it. You stay hands-off.</li>
+            <li>You're paid monthly, on what the client actually pays us, starting the month they go live.</li>
+          </ol>
+        </div>
+        <div>
+          <h2>Who this is for</h2>
+          <div class="who-list">
+            <p>Consultants and fractional execs, bookkeepers and MSPs, anyone who talks to small-business owners all day, and current clients who want their referrals to pay them back.</p>
+            <p>It doesn't have to be a business. If you know an owner who'd rather hire an outcome than learn another tool — or an individual who wants a personal AI agent of their own — this pays you to introduce them.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="fine">You're an independent referrer, not an yourco employee. We handle pricing, contracts, and delivery. You're paid on collected revenue; a refund in the first 60 days is clawed back. The agreement asks for honest, compliant outreach — no spam — which protects you and us. W-9 on file, 1099 at year end. Figures shown are current program terms and may be updated.</p>
+    </div>
+
+    <div class="foot">
+      <div class="cta">Want in? Let's set up your link.</div>
+      <a class="pill" href="mailto:contact@yourco.example.com?subject=yourco%20referral%20program">partners<span class="em">@</span>yourco.com</a>
+    </div>
+  </div>
+</body>
+</html>

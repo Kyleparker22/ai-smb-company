@@ -1,0 +1,14 @@
+# The store is regenerable: `python3 seed.py` rebuilds it. The RNG is seeded, so
+# the portfolio itself (properties, units, residents, vendors, request mix) is
+# identical every run — but timestamps are anchored to the run's wall clock, so
+# the bytes differ each time and the demo always reads as current.
+#
+# That is exactly why it is not committed: ~3.5MB of JSON that churns completely
+# on every re-seed would bloat the repo and make every diff unreadable.
+data/
+
+__pycache__/
+.env
+.venv-bench/
+
+data_synthetic_backup/

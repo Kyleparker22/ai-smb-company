@@ -1,0 +1,14 @@
+[Unit]
+Description=YourCo agent-registry reconciliation watchdog (Rafi) — drift detection vs runtime/agent-registry.json
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+# Deterministic check (not an agent prompt): pull, run the --live diff, then commit+push the dated
+# report (loops/_governance/<date>.md), mirroring runtime/run-loop.sh's persistence. Read-only re: the OS.
+ExecStart=/bin/bash -lc 'cd /home/claudeops/yourco-os && git pull --rebase --autostash >/dev/null 2>&1 || true; python3 runtime/agent-registry-check.py --live --quiet; git add -A >/dev/null 2>&1 || true; git commit -q -m "loop:agent-registry $(date -u +%%FT%%TZ)" >/dev/null 2>&1 || true; git push -q >/dev/null 2>&1 || true'
+TimeoutStartSec=300

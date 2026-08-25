@@ -1,0 +1,15 @@
+[Unit]
+Description=Sample Product — send verified storm alerts to subscribers (SMS/email)
+After=network-online.target yourco-storm-publish.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+# INGEST_URL + INGEST_SECRET (+ optional TWILIO_* / SMTP_*) live here (NOT in git).
+# See runtime/storm-verified.env.example. Without Twilio/SMTP creds this is a DRY RUN.
+EnvironmentFile=/home/claudeops/.config/storm-verified.env
+WorkingDirectory=/home/claudeops/yourco-os/clients/prospect-a/prototype
+ExecStart=/usr/bin/python3 storm_alerts.py
+TimeoutStartSec=300

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>2304 Highland Forest Drive — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.62);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.16);
+    --field:#131318; --on-dark:#FFFFFF; --on-dark-soft:rgba(255,255,255,.93); --line-dark:rgba(255,255,255,.3);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:#e6e4df;line-height:1.6}
+
+  .sheet{width:8.5in;height:11in;background:var(--paper);margin:0 auto;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  @media screen{.sheet{margin:26px auto;box-shadow:0 10px 40px rgba(0,0,0,.22)}}
+  @media print{@page{size:letter;margin:0} body{background:#fff} .sheet{margin:0}}
+
+  /* ═══ HERO ═══ */
+  .hero{background:var(--field);color:var(--on-dark);padding:.3in .7in .26in;text-align:center;flex:0 0 auto}
+  .hero .monogram{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:23px;letter-spacing:.06em}
+  .hero .monogram i{font-style:normal;color:var(--red)}
+  .hero .firmline{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:5px}
+  .hero h1{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:46px;line-height:1;font-weight:400;margin-top:11px}
+  .hero .street{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:21px;font-style:italic;margin-top:1px}
+  .hero .loc{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:9px}
+  .facts{display:flex;justify-content:center;gap:.38in;margin-top:12px;padding-top:11px;border-top:1px solid var(--line-dark)}
+  .facts .f b{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:20px;font-weight:400;display:block;line-height:1.1}
+  .facts .f span{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark-soft);display:block;margin-top:3px}
+
+  /* ═══ BODY ═══ */
+  .body{flex:1 1 auto;padding:.24in .7in 0;display:flex;flex-direction:column;min-height:0}
+  .lede{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:14px;font-style:italic;line-height:1.55;text-align:center;color:var(--ink-2);max-width:6.6in;margin:0 auto}
+  .lede b{font-style:normal;font-weight:400}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 .4in;margin-top:11px}
+  .grp{break-inside:avoid;margin-bottom:7px}
+  .grp h2{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+  .grp ul{list-style:none}
+  .grp li{font-size:12px;line-height:1.48;color:var(--ink-2);padding-left:13px;position:relative;margin-bottom:2px}
+  .grp li:before{content:"·";position:absolute;left:2px;color:var(--red);font-weight:700}
+  .grp li b{font-weight:400;font-family:Didot,"Bodoni 72",Georgia,serif;font-size:13px}
+  .grp li i{font-style:italic;color:var(--ink-soft);font-size:11px}
+
+  /* ═══ IMPROVEMENTS ═══ */
+  .imp{margin-top:0;padding-top:8px;border-top:1px solid var(--line)}
+  .imp .lab{text-align:center;font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+  .imp .row{text-align:center;margin-top:8px;font-size:11px;white-space:nowrap;color:var(--ink-2);line-height:1.75}
+  .imp .row b{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:14px;font-weight:400;color:var(--red)}
+  .imp .row i{font-style:normal;color:var(--line);padding:0 5px}
+
+  /* ═══ FOOTER ═══ */
+  .foot{flex:0 0 auto;background:var(--field);color:var(--on-dark);padding:.2in .7in .18in;margin-top:.08in}
+  .foot .close{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:13.5px;font-style:italic;text-align:center;color:var(--on-dark-soft);line-height:1.5}
+  .foot .rule{width:.5in;height:1px;background:var(--red);margin:9px auto}
+  .foot .agent{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+  .foot .nm{font-family:Didot,"Bodoni 72",Georgia,serif;font-size:21px;font-style:italic}
+  .foot .rl{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:4px;line-height:1.8}
+  .foot .ct{text-align:right;font-family:Didot,"Bodoni 72",Georgia,serif;font-size:14px;line-height:1.55}
+  .foot .ct b{color:var(--red);font-weight:400;font-size:16px}
+  .foot .ct span{font-style:italic;color:var(--on-dark-soft);font-size:12.5px}
+  .foot .fine{margin-top:9px;padding-top:8px;border-top:1px solid var(--line-dark);text-align:center;font-family:"Avenir Next",Avenir,sans-serif;font-size:7.5px;letter-spacing:.06em;color:rgba(255,255,255,.62)}
+</style>
+</head>
+<body>
+
+<section class="sheet">
+
+  <header class="hero">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="firmline">Sample Realty Home &amp; Land, LLC</div>
+    <h1>2304</h1>
+    <div class="street">Highland Forest Drive</div>
+    <div class="loc">Yourtown &nbsp;·&nbsp; Your State &nbsp;·&nbsp; 28173</div>
+    <div class="facts">
+      <div class="f"><b>5</b><span>Bedrooms</span></div>
+      <div class="f"><b>5.5</b><span>Baths</span></div>
+      <div class="f"><b>6,049</b><span>Square Feet</span></div>
+      <div class="f"><b>3</b><span>Car Garage</span></div>
+      <div class="f"><b>0.44</b><span>Acres</span></div>
+      <div class="f"><b>2005</b><span>Built</span></div>
+    </div>
+  </header>
+
+  <div class="body">
+
+    <p class="lede">Set on a quiet pond lot where water is the view from nearly every gathering space, <b>2304 Highland Forest Drive</b> pairs enduring brick-and-stone architecture with the features that make a large home genuinely easy to enjoy — a quartzite-and-granite gourmet kitchen, a fireside covered deck, and a private golf simulator.</p>
+
+    <div class="cols">
+
+      <div class="grp">
+        <h2>The Setting</h2>
+        <ul>
+          <li>Picturesque <b>pond lot</b> with scenic water views</li>
+          <li>Professionally landscaped grounds, lush <b>Zoysia</b> lawn</li>
+          <li>Elegant <b>colonnade detail</b> with brick &amp; stone accents</li>
+          <li>Real wood shutters throughout the exterior</li>
+          <li><b>Three-car garage</b> with eight-foot doors</li>
+        </ul>
+      </div>
+
+      <div class="grp">
+        <h2>Outdoor Living</h2>
+        <ul>
+          <li>Permitted <b>covered deck</b> — vaulted ceiling &amp; <b>stone fireplace</b></li>
+          <li>Freshly repainted in 2026, ready to enjoy</li>
+          <li>Built for entertaining against the pond setting</li>
+          <li><b>Gas line</b> for grilling or a future outdoor kitchen</li>
+          <li>Underground electric fence for pets</li>
+        </ul>
+      </div>
+
+      <div class="grp">
+        <h2>The Gourmet Kitchen</h2>
+        <ul>
+          <li>Beautifully remodeled with sophisticated finishes</li>
+          <li><b>Quartzite and granite</b> countertops</li>
+          <li>Professional <b>Wolf gas range</b></li>
+          <li><b>Sub-Zero</b> refrigerator</li>
+          <li>Built-in <b>bench</b> wrapping the bay window</li>
+        </ul>
+      </div>
+
+      <div class="grp">
+        <h2>Elegant Interiors</h2>
+        <ul>
+          <li>Warm <b>hardwood flooring</b> across the main level</li>
+          <li><b>Hardwood staircases</b> with iron spindles</li>
+          <li>Fresh interior paint throughout</li>
+          <li>Spacious, versatile living areas</li>
+          <li>Generous storage on every floor</li>
+        </ul>
+      </div>
+
+      <div class="grp">
+        <h2>Recreation &amp; Entertainment</h2>
+        <ul>
+          <li>Dedicated <b>golf simulator room</b>, playable year-round</li>
+          <li>System conveys <i>(software activation separate)</i></li>
+          <li><b>Two televisions</b> convey with the golf room</li>
+          <li>Flexible lower level — recreation, hobbies, exercise</li>
+          <li>Upper-level <b>bonus &amp; billiards room</b></li>
+          <li>Surround sound in living room, golf room &amp; basement</li>
+        </ul>
+      </div>
+
+      <div class="grp">
+        <h2>Comfort &amp; Flexibility</h2>
+        <ul>
+          <li><b>Second living quarters</b> — in-laws, nanny, or guests</li>
+          <li>Multiple levels of flexible living space</li>
+          <li><b>Four HVAC systems</b>, updated 2021 &amp; 2023</li>
+          <li><b>Tankless water heater</b></li>
+          <li>Abundant storage throughout the home</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="imp">
+      <div class="lab">Improvements &amp; Updates</div>
+      <div class="row"><b>2014</b> Roof <i>·</i> <b>2016</b> Kitchen remodel <i>·</i> <b>2016</b> Covered deck <i>·</i> <b>2020</b> Golf simulator <i>·</i> <b>2021/23</b> Four HVAC <i>·</i> <b>2026</b> Deck repainted</div>
+    </div>
+
+  </div>
+
+  <footer class="foot">
+    <div class="close">From the pond at its back to the golf room below, a truly special home — designed, and updated, to be enjoyed.</div>
+    <div class="rule"></div>
+    <div class="agent">
+      <div>
+        <div class="nm">Sample Contact</div>
+        <div class="rl">Broker / Owner · Sample Realty Home &amp; Land, LLC<br/>Licensed in North &amp; South Carolina</div>
+      </div>
+      <div class="ct">
+        <b>704 · 575 · 0714</b><br/>
+        <span>KimiParkerRealtor@gmail.com &nbsp;·&nbsp; SampleRealtyteam.com</span>
+      </div>
+    </div>
+    <div class="fine">Information deemed reliable but not guaranteed. Square footage and lot size approximate; buyer to verify all details material to their decision.</div>
+  </footer>
+
+</section>
+
+</body>
+</html>

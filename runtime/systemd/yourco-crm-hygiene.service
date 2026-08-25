@@ -1,0 +1,13 @@
+[Unit]
+Description=YourCo CRM hygiene — auto next-step, stale-deal nudge, closed-won ping (David, deterministic)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+# Deterministic sweep (not an agent prompt): pull, run, commit+push the artifacts + any CRM stamps.
+ExecStart=/bin/bash -lc 'cd /home/claudeops/yourco-os && git pull --rebase --autostash >/dev/null 2>&1 || true; python3 runtime/crm_hygiene.py; git add loops/_crm-hygiene crm/data.json crm/data.js >/dev/null 2>&1 || true; git commit -q -m "loop:crm-hygiene $(date -u +%%FT%%TZ)" >/dev/null 2>&1 || true; git push -q >/dev/null 2>&1 || true'
+TimeoutStartSec=300

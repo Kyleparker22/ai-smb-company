@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exit Radar · yourco</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1d1c1a;--ink2:#5c5a55;--ink3:#8d8a83;
+  --line:#e6e3dd;--brand:#3b3691;--brass:#a8842c;--ok:#2c7a4b;--warn:#b06d10;--bad:#b3382e;
+  font-family:-apple-system,'Segoe UI',Roboto,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#171614;--card:#201f1c;--ink:#efece6;
+  --ink2:#b5b1a8;--ink3:#7d7a72;--line:#33312c}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.5}
+.wrap{max-width:1060px;margin:0 auto;padding:26px 18px 60px}
+h1{font-size:23px;letter-spacing:-.02em}
+h2{font-size:16px}
+.muted{color:var(--ink2)}.tiny{font-size:12px;color:var(--ink3)}.small{font-size:13.2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;margin-bottom:14px}
+.cb{padding:15px 17px}
+.ch{padding:12px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.tile .v{font-size:26px;font-weight:680;letter-spacing:-.03em}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;
+  background:color-mix(in srgb,var(--ink3) 14%,transparent)}
+.pill.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+.pill.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+.pill.brand{background:color-mix(in srgb,var(--brand) 13%,transparent);color:var(--brand)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;
+  padding:6px 12px;font-size:13px;font-weight:560;cursor:pointer}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.ghost{background:transparent}
+.in{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;
+  padding:8px 11px;font-size:13.5px;width:100%}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.grow{flex:1 1 140px}
+.cand{border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:10px}
+.note{border-left:3px solid var(--brass);padding:8px 12px;font-size:12.5px;color:var(--ink2);
+  background:color-mix(in srgb,var(--brass) 6%,transparent);border-radius:0 8px 8px 0}
+details summary{cursor:pointer;color:var(--brand);font-size:13px}
+pre{white-space:pre-wrap;font:12.5px/1.55 ui-monospace,Menlo,monospace;background:var(--bg);
+  border:1px solid var(--line);border-radius:9px;padding:11px;margin-top:8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);
+  color:var(--bg);padding:9px 17px;border-radius:99px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<main class="wrap" id="main">Loading…</main>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let B=null;
+const STAGE_META={
+  found:['Found — review the signal','mute'],
+  qualified:['Qualified — worth the conversation','brand'],
+  staged:['Staged for the exit-flip campaign (OtherVenture-gated)','ok'],
+  broker_referral:['Broker referrals → Bird (partner category 9)','warn'],
+  eta_lane:['ETA lane — the buyer is the prospect','warn'],
+  dismissed:['Dismissed','mute']};
+
+async function api(p,body){const r=await fetch('/api'+p,body?{method:'POST',
+  headers:{'content-type':'application/json'},body:JSON.stringify(body)}:{});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||'failed');return j}
+function toast(m){let t=$('.toast');if(!t){t=document.createElement('div');
+  t.className='toast';document.body.appendChild(t)}t.textContent=m;
+  t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3400)}
+
+async function load(){B=(await api('/board'));render()}
+
+function render(){
+  const c=B.counts;
+  $('#main').innerHTML=`
+  <h1>Exit Radar</h1>
+  <div class="muted small" style="margin:4px 0 6px">SMBs in ownership transition — the
+    exit-flip lane (<span class="tiny">decisions/2026-07-29 + 08-17</span>). Three-sided pitch:
+    <em>don't sell</em> / <em>sell for more</em> / <em>hand it off without selling</em>.
+    Humans read listings; software records.</div>
+
+  <div class="tiles">
+    <div class="tile"><div class="tiny">FOUND / TO REVIEW</div><div class="v">${c.found}</div></div>
+    <div class="tile"><div class="tiny">QUALIFIED</div><div class="v">${c.qualified}</div></div>
+    <div class="tile"><div class="tiny">STAGED (GATED)</div><div class="v">${c.staged}</div></div>
+    <div class="tile"><div class="tiny">BROKER → BIRD</div><div class="v">${c.broker_referral}</div></div>
+    <div class="tile"><div class="tiny">ETA LANE</div><div class="v">${c.eta_lane}</div></div>
+  </div>
+
+  <div class="note" style="margin-bottom:14px">${esc(B.note)}</div>
+
+  <div class="card"><div class="ch"><h2>Add a candidate</h2>
+    <span class="tiny">provenance required · ToS-gated listing URLs need the human-read attestation</span></div>
+    <div class="cb">
+      <div class="row" style="margin-bottom:8px">
+        <input class="in grow" id="fName" placeholder="Business name (or the listing's anonymized label)">
+        <input class="in grow" id="fIndustry" placeholder="Industry">
+        <input class="in grow" id="fLocation" placeholder="City, ST">
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <select class="in grow" id="fStatus">
+          ${Object.entries(B.statuses).map(([k,v])=>`<option value="${k}">${esc(v)}</option>`).join('')}
+        </select>
+        <select class="in grow" id="fPath">
+          <option value="owner_direct">Owner directly reachable</option>
+          <option value="broker">Through a named broker</option>
+          <option value="anonymized" selected>Anonymized listing</option>
+        </select>
+        <input class="in grow" id="fOwner" placeholder="Owner name (if public)">
+        <input class="in grow" id="fContact" placeholder="Owner email/phone (if public)">
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <input class="in grow" id="fUrl" placeholder="Provenance URL — where the signal was seen">
+        <input class="in grow" id="fSource" placeholder="Source (e.g. local news, Google Alert, listing read by hand)">
+        <label class="tiny" style="display:flex;align-items:center;gap:5px">
+          <input type="checkbox" id="fHuman"> a human read this page</label>
+      </div>
+      <div class="row">
+        <input class="in grow" id="fNote" placeholder="Note — what the listing/article actually said">
+        <button class="btn primary" onclick="add()">Record</button>
+      </div>
+    </div>
+  </div>
+
+  ${Object.keys(STAGE_META).map(stage=>stageCard(stage)).join('')}
+
+  <div class="card"><div class="ch"><h2>Hand-off</h2>
+    <button class="btn" onclick="exportStaged()">Export staged → sadie-json</button></div>
+    <div class="cb tiny">Staged candidates export in Sadie's schema for
+      <code>runtime/sourcing.py --sadie-json … --campaign "Exit-flip"</code> —
+      the existing cold pipeline (Reilly stages, Michelle's copy, CRM on reply).
+      Broker referrals go to Bird by hand; the ETA lane is its own conversation.
+      <strong>Nothing sends until the launch-gate clears. the Founder sends; agents draft.</strong></div>
+  </div>
+  <pre id="exportOut" style="display:none"></pre>`;
+}
+
+function stageCard(stage){
+  const rows=B.stages[stage]||[];
+  const [label,tone]=STAGE_META[stage];
+  if(!rows.length&&['dismissed','eta_lane'].includes(stage))return'';
+  return`<div class="card"><div class="ch"><h2>${esc(label)}</h2>
+    <span class="pill ${tone}">${rows.length}</span></div>
+    <div class="cb">${rows.length?rows.map(c=>cand(c,stage)).join(''):
+      '<div class="tiny">Nobody here.</div>'}</div></div>`;
+}
+
+function cand(c,stage){
+  const s=c.score;
+  return`<div class="cand">
+    <div class="row" style="justify-content:space-between">
+      <div style="flex:1 1 300px">
+        <strong>${esc(c.name)}</strong>
+        <span class="muted small">· ${esc(c.industry||'?')} · ${esc(c.location||'?')}</span><br>
+        <span class="tiny">${esc(B.statuses[c.status])} · ${esc(c.contact_path.replace('_',' '))}
+          ${c.owner_name?` · ${esc(c.owner_name)}`:''}${c.broker?` · broker: ${esc(c.broker)}`:''}
+          · score ${s.total}</span><br>
+        <span class="tiny">↳ ${s.parts.map(p=>esc(p[0]+' +'+p[1])).join(' · ')}</span>
+        ${c.note?`<div class="small muted" style="margin-top:4px">${esc(c.note)}</div>`:''}
+        <div class="tiny" style="margin-top:4px">source:
+          <a href="${esc(c.provenance.url)}" target="_blank" rel="noopener">${esc(c.provenance.source)}</a>
+          · ${esc(c.provenance.accessed)}${c.provenance.human_read?' · read by a human':''}</div>
+      </div>
+      <div class="row">
+        ${stage==='found'?`<button class="btn primary" onclick="setStage('${c.id}','qualified')">Qualify</button>`:''}
+        ${stage==='qualified'?`<button class="btn primary" onclick="setStage('${c.id}','staged')">Stage for campaign</button>`:''}
+        ${['found','qualified','staged','broker_referral'].includes(stage)?
+          `<button class="btn" onclick="draft('${c.id}')">Draft the pitch</button>
+           <button class="btn ghost" onclick="dnc('${c.id}')">They said no</button>
+           <button class="btn ghost" onclick="setStage('${c.id}','dismissed')">Dismiss</button>`:''}
+      </div>
+    </div>
+    ${(c.drafts||[]).map(d=>`<details style="margin-top:8px"><summary>${esc(d.kind.replace('_',' '))}
+      — draft (the Founder sends)</summary><pre>${esc(d.body)}</pre>
+      <div class="tiny">${esc(d.note||'')}</div></details>`).join('')}
+  </div>`;
+}
+
+async function add(){
+  try{
+    await api('/candidates',{name:$('#fName').value,industry:$('#fIndustry').value,
+      location:$('#fLocation').value,status:$('#fStatus').value,
+      contact_path:$('#fPath').value,owner_name:$('#fOwner').value,
+      contact:$('#fContact').value,note:$('#fNote').value,
+      provenance:{url:$('#fUrl').value,source:$('#fSource').value,
+                  human_read:$('#fHuman').checked}});
+    toast('Recorded');load();
+  }catch(e){toast(e.message)}
+}
+async function setStage(id,to){try{await api(`/candidates/${id}/stage`,{stage:to});
+  load();toast('Moved')}catch(e){toast(e.message)}}
+async function draft(id){try{await api(`/candidates/${id}/draft`,{});load();
+  toast('Drafted — expand the card to read it')}catch(e){toast(e.message)}}
+async function dnc(id){if(!confirm('Record a permanent "no" — never contact again?'))return;
+  try{await api(`/candidates/${id}/dnc`,{});load();toast('Recorded — permanent')}catch(e){toast(e.message)}}
+async function exportStaged(){
+  const r=await api('/export');
+  const el=$('#exportOut');el.style.display='block';
+  el.textContent=JSON.stringify(r.sadie_json,null,1)+"\n\n→ "+r.next;
+  toast(r.sadie_json.length+' staged candidate(s) exported below');
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-exp"></section>
+  <section class="view" id="v-ledger"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Below the recorded sample floor
+the verdict function has no winner in it — TOO EARLY TO KNOW is a real verdict. A rollout drafts
+only from a concluded CLEAR result, an 86 is priced only from the unit's own recorded pace
+(no pace → unmeasured, never estimated), and an illness claim is logged verbatim and never
+answered in writing by software.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'exp',label:'Experiments'},
+      {id:'ledger',label:'86 & graveyard'},{id:'roi',label:'What it\'s worth'},
+      {id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,exp,ledger,roi,trust})[w](); }
+
+function vpill(v){ if(!v) return '—';
+  if(String(v).startsWith('TOO EARLY')) return pill(v,'warn');
+  return pill(v, v==='CLEAR'?'good':v==='NOISE'?'':'brand'); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board, w = b.week;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.units} units · ${d.config.concept} · the lab`;
+  document.getElementById('v-board').innerHTML =
+    panel('The lab, counted', '',
+      `<div class="grid">
+        ${stat('Live experiments', fmt.num(b.experiments_live), `${b.too_early} still below the floor — TOO EARLY TO KNOW`, 'brand')}
+        ${stat('Concluded', fmt.num(b.experiments_concluded), 'verdicts frozen over their closed windows')}
+        ${stat('The 86 board, 7d', fmt.money(b.eightysix_week.dollared), `${b.eightysix_week.priced} priced from own pace · ${b.eightysix_week.unmeasured} unmeasured (counted, not dollared)`, b.eightysix_week.dollared?'alert':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the illness claim reads first', b.messages_open?'bad':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${w.experiments_concluded} concluded · ${w.rollout_drafts} rollout draft(s)`,
+               `${w.stockouts_logged} stockouts logged · ${w.gm_replies_sent} GM repl(ies) sent · ${w.illness_escalated} illness escalated`)}
+        ${stat('','','')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The illness claim ("your tacos made me sick") gets a hard stop, not
+      a reply: logged <b>verbatim</b>, escalated to a human with counsel on the language — software
+      never answers it in writing. A GM's "who's winning" gets the verdict quoted verbatim, TOO
+      EARLY included.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='illness'?'bad':m.label==='stockout_report'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      ${s.verbatim_logged?`<div class="why">the message is on the incident record verbatim — human + counsel path</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function exp(){
+  const d = await API.get('/api/experiments');
+  document.getElementById('v-exp').innerHTML =
+    `<div class="banner warn">Try it: the live guac test reads <b>TOO EARLY TO KNOW</b> — below the
+      recorded floor that return has no winner in it, by construction. Roll out the concluded CLEAR
+      winner (drafts at R1 with the stats attached); try the live one — no path; try the noise
+      result — no path; create an overlapping test — refused: one lever per dial.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="showVerdict('exp_demo_live')">Verdict: live guac test</button>
+      <button class="act primary" onclick="showVerdict('exp_demo_clear')">Verdict: concluded bundle</button>
+      <button class="act" onclick="rollout('exp_demo_clear')">Roll out the CLEAR winner</button>
+      <button class="act" onclick="rollout('exp_demo_live')">Roll out the live test</button>
+      <button class="act" onclick="rollout('exp_demo_noise')">Roll out the noise result</button>
+      <button class="act" onclick="conclude('exp_demo_live')">Conclude the live test early</button>
+      <button class="act" onclick="createOverlap()">Create an overlapping test</button>
+     </div><div id="xout"></div>` +
+    panel('The experiment desk', esc(d.floors_source), table(
+      [{label:'Hypothesis'},{label:'Metric'},{label:'Arms'},{label:'Status'},{label:'Verdict'},{label:'n / need',num:true}],
+      d.rows, e=>{const v=e.current||{};return `<td>${esc(e.hypothesis)}</td><td class="mono">${esc(e.metric)}</td>
+        <td class="why">${esc(e.arms)}</td><td>${pill(e.status, e.status==='live'?'brand':'')}</td>
+        <td>${vpill(v.verdict)}${v.lift_pct!=null?` <span class="why">lift ${v.lift_pct}% · z ${v.z} · ${esc(v.direction||'')}</span>`:''}</td>
+        <td class="num">${v.n_treatment!=null?Math.min(v.n_treatment,v.n_control)+' / '+v.need:'—'}</td>`}), true);
+}
+async function showVerdict(id){
+  const v = await API.get(`/api/experiments/${id}/verdict`);
+  document.getElementById('xout').innerHTML =
+    panel('Verdict — '+(v.hypothesis||id), '', `<div class="strong">${vpill(v.verdict)}
+      ${v.lift_pct!=null?` lift ${v.lift_pct}% (${esc(v.direction)}, z=${v.z})`:''}</div>
+      <div class="why">arms: n=${v.n_treatment} vs n=${v.n_control} · floor ${v.need} ${esc(v.floor_unit||'')}</div>
+      ${v.confidence_read?`<div class="why">${esc(v.confidence_read)} · ${esc(v.method)}</div>`:''}
+      ${v.why?`<div class="banner warn">${esc(v.why)}</div>`:''}
+      <div class="why">${esc(v.floor_source||'')}</div>`);
+}
+async function rollout(id){
+  const r = await API.post(`/api/experiments/${id}/rollout`);
+  document.getElementById('xout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Rollout recommendation drafted (R1)', '',
+        `<div class="strong">CLEAR — lift ${r.stats_attached.lift_pct}% (z=${r.stats_attached.z}),
+         n=${r.stats_attached.n_treatment}/${r.stats_attached.n_control}</div>
+         <div class="why">the full stats ride with the approval — a human decides the rollout</div>`);
+}
+async function conclude(id){
+  const r = await API.post(`/api/experiments/${id}/conclude`);
+  document.getElementById('xout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Concluded', '', `<div class="strong">${vpill(r.verdict.verdict)}</div>`);
+}
+async function createOverlap(){
+  const r = await API.post('/api/experiments/create', {hypothesis:'louder guac prompt',
+    metric:'attach_rate', item:'guacamole', treatment_units:['u_elm'], control_units:['u_north']});
+  document.getElementById('xout').innerHTML = r.refused
+    ? panel('Refused at creation', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Created', '', `<div class="strong">${esc(r.experiment.id)}</div>`);
+}
+
+async function ledger(){
+  const [d, g] = await Promise.all([API.get('/api/ledger'), API.get('/api/graveyard')]);
+  document.getElementById('v-ledger').innerHTML =
+    `<div class="banner warn">Every 86 is priced from <b>that unit's own recorded pace</b> for that
+      item and daypart — median units/hr × hours dark × price. No pace history → unmeasured:
+      counted, never dollared. Try it: price last Friday's brisket 86 at Riverside.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="priceDemo()">Price Friday's 86 (Riverside brisket, dinner)</button>
+     </div><div id="lout"></div>` +
+    panel('What the 86 board cost you — 7 days, counted',
+      `${d.week.priced} priced · ${d.week.unmeasured} unmeasured`,
+      `<div class="grid">${stat('Priced from own pace', fmt.money(d.week.dollared), esc(d.week.note))}
+       ${stat('Counted, not dollared', fmt.num(d.week.unmeasured), 'no recorded pace — no number, by rule')}</div>`) +
+    panel('The ledger', `last ${d.days} days`, table(
+      [{label:'When'},{label:'Unit'},{label:'Item'},{label:'Daypart'},{label:'Hours dark',num:true},{label:'Cost',num:true}],
+      d.rows, s=>`<td>${fmt.stamp(s.at)}${s.demo_tag?' '+pill(s.demo_tag,'brand'):''}</td>
+        <td>${esc(s.unit)}</td><td>${esc(s.item)}</td><td>${esc(s.daypart)}</td>
+        <td class="num">${s.duration_hours}</td>
+        <td class="num">${val(s,'cost',fmt.money2)}</td>`), true) +
+    panel('The menu graveyard', 'killed items keep their recorded numbers — "let\'s bring back X" starts from what X actually did',
+      table([{label:'Item'},{label:'Killed'},{label:'Why'},{label:'Recorded numbers'}],
+        g.rows, r=>`<td class="strong">${esc(r.item)}</td><td>${fmt.date(r.killed_at)}</td>
+          <td class="why">${esc(r.why)}</td>
+          <td class="mono">${r.recorded.avg_units_per_week}/wk · ${r.recorded.margin_pct}% margin · ${r.recorded.weeks_on_menu} weeks</td>`), true);
+}
+async function priceDemo(){
+  const r = await API.get('/api/stockouts/so_demo_friday/price');
+  document.getElementById('lout').innerHTML = r.cost==null
+    ? panel('Unmeasured', '', `<div class="banner warn">${esc(r._missing)}</div>`)
+    : panel('Priced from the unit\'s own pace', '', `<div class="strong">${fmt.money2(r.cost)}</div>
+        <div class="why">${esc(r.basis)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['clear_lift_per_ticket','CLEAR lift $/ticket','counted'],
+    ['weekly_tickets','Weekly tickets (group)','your number'],
+    ['eightysix_cost_28d','86 cost, 28d','counted'],
+    ['recovery_share','Share of 86s you can prevent','your number (0–1)'],
+    ['analysis_hours_wk','Owner analysis hrs/wk','your number'],
+    ['owner_rate','Owner rate $/hr','your number'],
+    ['bad_rollout_value','The bad rollout avoided','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

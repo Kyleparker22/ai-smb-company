@@ -1,0 +1,10 @@
+[Unit]
+Description=Sample Product alert send — every 20 minutes, 3 min after the feed publish
+
+[Timer]
+# Offset from the publish (*:0/20) so alerts go out on a fresh feed.
+OnCalendar=*:3/20
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,455 @@
+{
+  "_comment": "SANCTIONED-AGENT REGISTRY — the known-good baseline for the yourco OS. Owned by Rafi (compliance); see processes/compliance-posture.md. The agent-registry-check.py watchdog diffs LIVE runtime against this list and alerts on any delta (a new prompt/timer/service, a widened connector scope, or an unknown commit author). When you legitimately add or retire an agent/loop/connector, update THIS file in the same change — that's the act of 'sanctioning'. Decision: decisions/2026-06-22_agent-registry-governance-watchdog.md. Full wiring steps when adding an agent/channel/connector: runtime/agent-wiring-checklist.md.",
+  "updated": "2026-08-25",
+  "owner": "Rafi",
+  "_system_units_note": "sanctioned_system_units: non-yourco admin-installed units in /etc/systemd/system that are known-good (e.g. tailscaled, docker). The --live check flags ANY unit there not in sanctioned_timers/services or this list as drift — so the FIRST --live run on the VPS may surface legit system units; the Founder reviews each and adds the good ones here (or removes a real rogue). Empty until that first host run populates it.",
+  "sanctioned_system_units": [
+    "dbus-org.freedesktop.ModemManager1.service",
+    "dbus-org.freedesktop.resolve1.service",
+    "dbus-org.freedesktop.timesync1.service",
+    "iscsi.service",
+    "syslog.service",
+    "vmtoolsd.service"
+  ],
+  "_client_infra_note": "yourco-storm-publish + yourco-storm-alerts are Sample Product (clients/prospect-a) product infra, not internal agent loops: publish pushes the verified feed to the hosted app every 20 min; alerts sends subscriber SMS/email (Twilio/SMTP; dry-run without creds) 3 min later. They run OUTSIDE the Claude approval gate (plain python via systemd), sanctioned 2026-07-04 after the governance watchdog flagged the drift. Owner: the Founder (until the partnership is papered). Setup: runtime/storm-verified-setup.md.",
+  "sanctioned_prompts": [
+    "_loop-contract.md",
+    "advisor.md",
+    "aeo-geo.md",
+    "brand-audit.md",
+    "brett-ideas.md",
+    "connector-spotter.md",
+    "content.md",
+    "crm-autolog.md",
+    "customer-health.md",
+    "demo-prep.md",
+    "eval-review.md",
+    "evidence-sweep.md",
+    "finance-close.md",
+    "finance.md",
+    "inbox-signal.md",
+    "inbox-triage.md",
+    "initiative.md",
+    "lineage-review.md",
+    "melanie-briefing.md",
+    "monday-briefing.md",
+    "open-loops-chaser.md",
+    "outreach-eval.md",
+    "pipeline-report.md",
+    "pricing-review.md",
+    "sales.md",
+    "source-watch.md",
+    "watchdog.md"
+  ],
+  "sanctioned_timers": [
+    "yourco-advisor.timer",
+    "yourco-aeo-geo.timer",
+    "yourco-agent-registry.timer",
+    "yourco-brand-audit.timer",
+    "yourco-brett-ideas.timer",
+    "yourco-connector-spotter.timer",
+    "yourco-consistency.timer",
+    "yourco-content.timer",
+    "yourco-crm-autolog.timer",
+    "yourco-crm-hygiene.timer",
+    "yourco-customer-health.timer",
+    "yourco-demo-prep.timer",
+    "yourco-eval-review.timer",
+    "yourco-evidence-sweep.timer",
+    "yourco-finance-close.timer",
+    "yourco-finance.timer",
+    "yourco-heartbeat.timer",
+    "yourco-inbox-signal.timer",
+    "yourco-inbox-triage.timer",
+    "yourco-initiative.timer",
+    "yourco-lineage-review.timer",
+    "yourco-melanie-briefing.timer",
+    "yourco-monday-briefing.timer",
+    "yourco-open-loops-chaser.timer",
+    "yourco-pipeline-report.timer",
+    "yourco-pricing-review.timer",
+    "yourco-runtime-alarm.timer",
+    "yourco-sadie-intent.timer",
+    "yourco-sales.timer",
+    "yourco-source-watch.timer",
+    "yourco-storm-alerts.timer",
+    "yourco-storm-publish.timer",
+    "yourco-watchdog.timer"
+  ],
+  "sanctioned_services": [
+    "yourco-advisor.service",
+    "yourco-aeo-geo.service",
+    "yourco-agent-registry.service",
+    "yourco-brand-audit.service",
+    "yourco-brett-ideas.service",
+    "yourco-connector-spotter.service",
+    "yourco-consistency.service",
+    "yourco-content.service",
+    "yourco-crm-autolog.service",
+    "yourco-crm-hygiene.service",
+    "yourco-crm.service",
+    "yourco-customer-health.service",
+    "yourco-dashboard.service",
+    "yourco-demo-prep.service",
+    "yourco-eval-review.service",
+    "yourco-evidence-sweep.service",
+    "yourco-finance-close.service",
+    "yourco-finance.service",
+    "yourco-heartbeat.service",
+    "yourco-inbox-signal.service",
+    "yourco-inbox-triage.service",
+    "yourco-initiative.service",
+    "yourco-melanie-briefing.service",
+    "yourco-monday-briefing.service",
+    "yourco-open-loops-chaser.service",
+    "yourco-pipeline-report.service",
+    "yourco-pricing-review.service",
+    "yourco-runtime-alarm.service",
+    "yourco-sadie-intent.service",
+    "yourco-sales.service",
+    "yourco-site-intake.service",
+    "yourco-slack-listener.service",
+    "yourco-source-watch.service",
+    "yourco-storm-alerts.service",
+    "yourco-storm-publish.service",
+    "yourco-telegram-listener.service",
+    "yourco-watchdog.service"
+  ],
+  "sanctioned_daemons_no_timer": [
+    "yourco-crm.service",
+    "yourco-dashboard.service",
+    "yourco-slack-listener.service",
+    "yourco-telegram-listener.service"
+  ],
+  "sanctioned_slack_agent_channels": [
+    "yourco-atlas",
+    "yourco-brett",
+    "yourco-charles",
+    "yourco-david",
+    "yourco-jim",
+    "yourco-katie",
+    "yourco-Reed",
+    "yourco-kolby",
+    "yourco-kortney",
+    "yourco-luka",
+    "yourco-polo",
+    "yourco-reilly",
+    "yourco-mario",
+    "yourco-michelle",
+    "yourco-bella",
+    "yourco-webb",
+    "yourco-janice",
+    "yourco-kimi",
+    "yourco-bird",
+    "yourco-harry",
+    "yourco-kori",
+    "yourco-sadie",
+    "yourco-ray",
+    "yourco-rafi",
+    "yourco-kemba",
+    "yourco-pickle"
+  ],
+  "sanctioned_connectors_allow": [
+    "Read",
+    "Write",
+    "Edit",
+    "Glob",
+    "Grep",
+    "WebSearch",
+    "mcp__slack__conversations_add_message",
+    "mcp__slack__channels_list",
+    "mcp__slack__conversations_history",
+    "mcp__slack__conversations_replies",
+    "mcp__slack__conversations_search_messages",
+    "mcp__gmail__draft_email",
+    "mcp__gmail__read_email",
+    "mcp__gmail__search_emails",
+    "mcp__gmail__list_email_labels",
+    "mcp__gmail__create_label",
+    "mcp__gmail__get_or_create_label",
+    "mcp__gmail__modify_email",
+    "mcp__gmail__batch_modify_emails",
+    "mcp__calendar"
+  ],
+  "sanctioned_connectors_deny": [
+    "Bash",
+    "mcp__gmail__send_email",
+    "mcp__gmail__delete_email",
+    "mcp__gmail__batch_delete_emails"
+  ],
+  "sanctioned_commit_authors": [
+    "founder22",
+    "the Founder"
+  ],
+  "_agent_budgets_note": "Agent payroll (added 2026-08-13). Per-agent MONTHLY USD caps, read by runtime/agent_payroll.py. Budget is the eighth of the eight agent-governance dimensions and the one control class the R2/R3 'no-human' stack in processes/autonomy-matrix.md never had (eval gate, guardrails, watchdog, rollback, kill switch — no spend cap). Caps live HERE, in Rafi's sanctioned registry, so the governance watchdog sees a cap change as drift: a budget nobody can quietly raise. DELIBERATELY EMPTY ON ARRIVAL — per-run cost only starts accruing when runtime/run-loop.sh's next firing writes to loops/_agentops/runs.jsonl, and a cap invented before any cost data exists is a made-up number wearing a policy's clothes. The honest sequence is: 30 days of run-journal data, then the Founder sets caps from observed spend. Note the cap REPORTS, it does not enforce — see agent_payroll.py rule 3.",
+  "agent_budgets": {},
+  "_agent_review_note": "Agent expiry (added 2026-08-13, panel idea 3). Every agent gets a review date; an agent that has produced nothing by it is PROPOSED for retirement on HQ -> Agents/Vacancies. Modelled on Entra Agent ID's lifecycle rule — an agent should not hold access longer than it needs it. defaultDays applies to any agent with no explicit override, so this block cannot rot into 27 hand-maintained dates. A sponsor is the human who answers for the agent existing; 'the Founder' until the roster has other humans. Proposes only — retiring an agent is the Founder's call, same rule as hiring one.",
+  "agent_review": {
+    "defaultDays": 90,
+    "graceDays": 30,
+    "sponsors": {
+      "_default": "the Founder"
+    },
+    "reviewBy": {},
+    "exempt": {
+      "melanie": "conductor — the entity-level initiative loop; retiring it would remove the layer that originates work",
+      "atlas": "owns HQ + the registry's own reporting surface",
+      "rafi": "owns this registry and the compliance gates",
+      "kolby": "owns the eval record every other retirement decision reads"
+    }
+  },
+  "_agent_metrics_note": "Agent metrics (added 2026-08-25). THE ONE NUMBER EACH AGENT OWNS. yourco had 27 agents and no agent owned a number — the gap three separate inputs pointed at on 2026-08-24 (the 9x9 grid's centre cell, OKR's single Objective, and 'Every Role Owns a Number' from the AI-native agency map; loops/_triage/2026-08-24_frameworks-kpis-batch.md). Read by dashboard/northstar.py and rendered on HQ -> Agents. Rules: (1) EVERY agent in agents/ must appear here — runtime/consistency-check.py fails otherwise, so an agent cannot be added without someone answering what number it moves. (2) 'source' is either a real computation northstar.py implements or the literal string 'unmeasured' — there is no third state, and a number is NEVER stored here, only its definition. (3) An unmeasured metric MUST name 'needs' (the one thing missing) and 'blockedBy' (its root cause), because the useful output of this block today is the list of 21 named gaps, not the 6 green numbers. (4) 'ladders' is direct or enabling — an agent whose number does neither is a retirement question, which is why 'neither' is not a legal value. (5) DID-IT-RUN IS NOT A NUMBER. Loop liveness counts only for Atlas, whose job IS liveness; everywhere else activity was deliberately rejected in favour of an outcome that is currently unmeasurable, per 'Reports Outcomes, Not Activity'. The north-star metric itself is NOT declared here — it is the Founder's, and lives in dashboard/goals.json.northstar.",
+  "agent_metrics": {
+    "_northstar": "declared in dashboard/goals.json -> northstar (the Founder's, not Rafi's) — this block never restates it",
+    "sources": {
+      "crm.activity": "counted from crm/data.json activities via dashboard/wbr.py count_inputs()",
+      "crm.deals": "computed from crm/data.json deals",
+      "crm.goals": "dashboard/server.py goals_currents() — the same math the goal band uses",
+      "crm.connectors": "crm/connector_ladder.py",
+      "loops.liveness": "loops/*/ latest artifact vs the cadence in dashboard/board.py",
+      "finance.actuals": "finance/actuals.json — the machine-readable close figures",
+      "unmeasured": "no computation exists; 'needs' names the one missing thing",
+      "gates.counsel": "processes/counsel-gates.md, via dashboard/refresh.py _gates() — the same parse HQ and the Board already run",
+      "decisions.citations": "the precedent graph: a memo cited by a decisions/ or rejections/ entry counts as adopted (dashboard/loop_metrics.py)",
+      "loops.governance": "the DRIFT/MISSING rows in the newest loops/_governance/ report — read from Rafi's own run, which sees the host",
+      "loops.evalReview": "the SOP-mandated scoreboard table in the newest loops/eval-review/ artifact",
+      "loops.aeoGeo": "the '## Citation-presence score' heading in the newest loops/aeo-geo/ artifact",
+      "loops.brandAudit": "the '## Review volume' line in the newest loops/brand-audit/ artifact (required by the SOP from 2026-08-25)",
+      "crm.channel": "crm/data.json company.channel — the controlled channel vocabulary (meta.sourceChannels), added 2026-08-25",
+      "crm.audits": "'Audit delivered' activities in crm/data.json, against the companies that later signed",
+      "crm.artifacts": "deal artifacts typed `collateral` at status shown/reacted, against agents/pickle/collateral/",
+      "loops.openLoops": "the 'Waiting since' column of the queue in the newest loops/open-loops/ artifact",
+      "crm.stageHistory": "deal.stageHistory — appended on every stage move from 2026-08-25; the one record that could not have been reconstructed after the fact",
+      "crm.health": "deal.health on live deals; an unscored client is not counted as healthy",
+      "crm.priceEvents": "deal.priceEvents of kind `quoted`, against the locked band table parsed from pricing/README.md",
+      "finance.invoices": "finance/actuals.json invoices.rows — deliberately empty until the first invoice is issued",
+      "runtime.heartbeat": "loops/_health/heartbeat.jsonl — beats received over beats expected; a missing line IS the outage (dashboard/uptime.py)",
+      "crm.seqStatus": "deal.seqStatus against meta.seqStatuses — `replied` split into positive/negative on 2026-08-25 so a reply rate is expressible at all",
+      "crm.bookings": "'Booking' activities at companies whose channel is inbound-site; the site's Calendly links carry utm_source so the attribution survives the click"
+    },
+    "humans": {
+      "the Founder": {
+        "owns": "conversationsHeld",
+        "label": "Conversations held",
+        "source": "crm.activity",
+        "ladders": "direct",
+        "why": "The only input that creates pipeline, and the only one no agent can do. Listed here so the ladder is honest about where it terminates: 26 agents feed a number a human has to produce."
+      }
+    },
+    "agents": {
+      "atlas": {
+        "owns": "loopLiveness",
+        "label": "Sanctioned loops keeping cadence (%)",
+        "source": "loops.liveness",
+        "ladders": "enabling",
+        "why": "The only agent whose outcome IS liveness — a loop that dies silently corrupts every number downstream of it, and the runtime alarm fires on failed runs, never on silence."
+      },
+      "bird": {
+        "owns": "activeConnectors",
+        "label": "Active connectors",
+        "source": "crm.goals",
+        "ladders": "direct",
+        "why": "The connector network is the primary growth lever; the count of connectors actually working is the lever's position."
+      },
+      "charles": {
+        "owns": "runwayMonths",
+        "label": "Runway (months)",
+        "source": "finance.actuals",
+        "ladders": "enabling",
+        "why": "Runway is the clock the north star races. Charles does not move live clients; he decides how many months there are to reach them."
+      },
+      "david": {
+        "owns": "nextActionCoverage",
+        "label": "In-motion deals carrying a next action (%)",
+        "source": "crm.deals",
+        "ladders": "direct",
+        "why": "RevOps' outcome is not rows kept tidy — it is that no deal on the board is waiting on nobody."
+      },
+      "kori": {
+        "owns": "connectorsOnboarded",
+        "label": "Connectors onboarded (provisioned + trained)",
+        "source": "crm.connectors",
+        "ladders": "direct",
+        "why": "Bird owns whether connectors are working; Kori owns whether they were ever properly stood up. Zero is the honest answer today and it is a computed zero, not an assumed one."
+      },
+      "reilly": {
+        "owns": "companiesTouched",
+        "label": "Companies touched",
+        "source": "crm.activity",
+        "ladders": "direct",
+        "why": "Breadth of real contact — the input that stops the board shrinking, and the one Reilly can move without waiting for anybody's approval."
+      },
+      "bella": {
+        "owns": "auditsToEngagement",
+        "label": "Audits that became an engagement (%)",
+        "source": "crm.audits",
+        "ladders": "direct",
+        "needs": "an audit to actually be delivered — the instrument exists, the event has not happened",
+        "blockedBy": "awaiting-first-event",
+        "why": "The Audit is the free front door and the only motion that is supposed to produce a signature; its conversion rate is the single most important unmeasured number in the company. Countable from 2026-08-25: 'Audit delivered' is now an activity type, so the first audit is counted on the day the report lands."
+      },
+      "brett": {
+        "owns": "recommendationsAdopted",
+        "label": "Recommendations that became a decision (%)",
+        "source": "decisions.citations",
+        "ladders": "enabling",
+        "why": "An advisor who is never acted on is an expensive newsletter. Adoption is the only outcome the role has. Counted from the precedent graph: citing the memo file is already how this repo records that a recommendation became a call."
+      },
+      "harry": {
+        "owns": "invoicesPaidOnTime",
+        "label": "Invoices paid within terms (%)",
+        "source": "finance.invoices",
+        "ladders": "enabling",
+        "needs": "a first invoice — finance/actuals.json.invoices exists and is deliberately empty, on the same principle as the agent budgets: the meter goes in before the first reading",
+        "blockedBy": "no-client-yet",
+        "why": "Back office's outcome is cash actually arriving, not documents produced. An invoice still inside its terms is neither on-time nor late and is excluded from both halves."
+      },
+      "janice": {
+        "owns": "daysToGoLive",
+        "label": "Days from signature to go-live",
+        "source": "crm.stageHistory",
+        "ladders": "direct",
+        "needs": "a first signed client — the instrument is complete and lossless from now on",
+        "blockedBy": "no-client-yet",
+        "why": "The 48-hour go-live is a public promise; onboarding either keeps it or it does not. The clock is now recorded on every stage move — before 2026-08-25 `stageSince` held only the current stage, so this interval would have been GONE by the time anyone asked, even after client #1."
+      },
+      "jim": {
+        "owns": "oldestOpenLoopDays",
+        "label": "Oldest item on the open-loops queue (days)",
+        "source": "loops.openLoops",
+        "ladders": "enabling",
+        "why": "Chief of staff's outcome is not items surfaced — it is that nothing sits. The OLDEST rather than the average, because an average hides the one item that has been rotting for ten weeks, and that item is the whole job. Not a missing field after all: his own queue has carried 'Waiting since' per row all along."
+      },
+      "katie": {
+        "owns": "inboundFromContent",
+        "label": "Conversations sourced by content",
+        "source": "crm.channel",
+        "ladders": "direct",
+        "needs": "the launch-gate — nothing has been published, so the metric cannot be non-zero",
+        "blockedBy": "launch-gate",
+        "why": "Content that produces no conversation is a hobby. The channel field now makes it measurable — and the remaining blocker is the gate, not the CRM: content that has never been published cannot have sourced a conversation, so this refuses rather than reporting a flattering zero that would read as a verdict on the content."
+      },
+      "kemba": {
+        "owns": "runtimeUptimePct",
+        "label": "Runtime availability (%)",
+        "source": "runtime.heartbeat",
+        "ladders": "enabling",
+        "needs": "the heartbeat timer to be enabled on the VPS — a HOST install only the Founder can do (`sudo systemctl enable --now yourco-heartbeat.timer`). Until it runs, availability is unmeasured, and under the SLA's own §6 an unmeasured month reads as a miss",
+        "blockedBy": "awaiting-host-install",
+        "why": "The substrate every other agent runs on, and the only thing here that could not be measured by reading a log — a log records what happened while the box was working, so it can never record an outage. The heartbeat writes one line every 15 minutes and nothing else, so uptime is computed from expected-vs-received and absence IS the measurement. Deliberately distinct from Atlas's loop liveness: Atlas measures whether the work landed, this measures whether the substrate could run at all — 59% liveness cannot tell a dead box from dead loops, and together they can. Also SLA precondition #1 (processes/contracts/sla.md §7)."
+      },
+      "kimi": {
+        "owns": "daysDiscoveryToGoLive",
+        "label": "Days from discovery to go-live",
+        "source": "crm.stageHistory",
+        "ladders": "direct",
+        "needs": "a first engagement to reach live",
+        "blockedBy": "no-client-yet",
+        "why": "Kimi builds the thing yourco sells; delivery speed is the product's headline claim. Same lossless clock as Janice's, measured from the other end."
+      },
+      "Reed": {
+        "owns": "videosReachedProspect",
+        "label": "Published assets that reached a prospect (%)",
+        "source": "crm.artifacts",
+        "ladders": "direct",
+        "needs": "one published asset registered on a deal as type `video` and marked shown — the same missing habit that blocks Pickle, which is one habit rather than two problems",
+        "blockedBy": "awaiting-first-event",
+        "why": "RE-SCOPED 2026-08-25 from 'assets that appeared in a won deal', which graded a production agent on whether the founder closes. Reach is the boundary of what Reed controls; what happens after the prospect watches it is the sales agent's number. Production volume is activity — an asset nobody saw did not do its job."
+      },
+      "kolby": {
+        "owns": "evalPassRate",
+        "label": "Agent outputs passing eval first time (%)",
+        "source": "loops.evalReview",
+        "ladders": "enabling",
+        "why": "The moat is reliability, and the moat's own auditor should be the agent with the cleanest number. Today it has none. A pass is 'no zero on any of the six rubric dimensions', not a perfect 12 — reading the Total column would reclassify every honest 11 as a failure."
+      },
+      "kortney": {
+        "owns": "clientsHealthy",
+        "label": "Live clients scored healthy",
+        "source": "crm.health",
+        "ladders": "enabling",
+        "needs": "a first live client — deal.health is the instrument and it is waiting, not missing",
+        "blockedBy": "no-client-yet",
+        "why": "Retention starts before renewal — health is the leading half of the number Charles reports late. An UNSCORED live client is not counted as healthy: 'nobody looked' and 'it's fine' are different facts and only one is good news."
+      },
+      "luka": {
+        "owns": "brandFirstPass",
+        "label": "External assets cleared on first review (%)",
+        "source": "loops.brandAudit",
+        "ladders": "enabling",
+        "needs": "the next monthly brand audit to write its SOP-required '## Review volume' line; inferring the count from the audit's prose is the fragility this deliberately refuses",
+        "blockedBy": "awaiting-first-reading",
+        "why": "The brand custodian's outcome is that other agents stop needing him, not that reviews happen. The rate has no denominator today: the 2026-08 audit records zero assets queued for pre-ship review, two months running — Luka is catching drift after ship rather than at it, and that zero is the finding, not a gap in the instrument."
+      },
+      "mario": {
+        "owns": "citationPresence",
+        "label": "Citation-presence score",
+        "source": "loops.aeoGeo",
+        "ladders": "direct",
+        "why": "Answer-engine visibility is measurable and Mario's own SOP already defines the score; it is written into a memo instead of a file anything can read. The SOP already computes it and already writes it under a fixed heading; nothing was missing but a reader."
+      },
+      "melanie": {
+        "owns": "initiativesAdopted",
+        "label": "Initiatives the Founder adopted (floor)",
+        "source": "decisions.citations",
+        "ladders": "enabling",
+        "why": "The conductor may propose but never self-adopt. Adoption is therefore the only evidence her judgment is converging on the Founder's — and it is the input the DRI twin needs. Reported as a FLOOR — a move the Founder simply did, without writing a decision that cites the run, is invisible to this count."
+      },
+      "michelle": {
+        "owns": "positiveReplyRate",
+        "label": "Positive reply rate (%)",
+        "source": "crm.seqStatus",
+        "ladders": "direct",
+        "needs": "the launch-gate and 10DLC — nothing has been sent, so a 0% would read as a verdict on the copy rather than on the gate. The instrument is complete: the vocabulary exists and promote.py's three writing bugs are fixed",
+        "blockedBy": "launch-gate",
+        "why": "Copy has exactly one outcome and the industry already agrees what it is. Until 2026-08-25 it was not expressible: seqStatus had a single undifferentiated `replied`, and the interest classification lived in Instantly's database rather than in yourco's record. Counted here from deal.seqStatus, because a number that disappears with a subscription is not owned."
+      },
+      "pickle": {
+        "owns": "collateralReachedBuyer",
+        "label": "Collateral that reached a buyer (%)",
+        "source": "crm.artifacts",
+        "ladders": "direct",
+        "needs": "one piece of collateral registered on a deal as type `collateral` and marked shown",
+        "blockedBy": "awaiting-first-event",
+        "why": "A battlecard nobody opened in front of a buyer did not exist. Reach, not production — `built` deliberately does not count. Deals already carried an artifacts array; what it lacked was a TYPE, so a one-pager was indistinguishable from a build."
+      },
+      "polo": {
+        "owns": "proposalsAtLockedPrice",
+        "label": "Quoted prices inside a locked band",
+        "source": "crm.priceEvents",
+        "ladders": "direct",
+        "why": "Pricing's outcome is that prices hold under pressure. Needed no customer at all — a price is quoted before anything is signed, and the data was already there. Reported as a COUNT: with one quote on record a percentage would be theatre."
+      },
+      "rafi": {
+        "owns": "registryDriftOpen",
+        "label": "Open registry drift findings",
+        "source": "loops.governance",
+        "ladders": "enabling",
+        "why": "Compliance's outcome is that the live system matches the sanctioned baseline. The watchdog already computes this every Monday and then writes it as prose. Read from the watchdog's own report rather than re-derived here, because only its --live run sees the host."
+      },
+      "ray": {
+        "owns": "counselGatesOpen",
+        "label": "Open counsel gates",
+        "source": "gates.counsel",
+        "ladders": "enabling",
+        "why": "Every gate is a thing yourco has built and may not use. The count is the size of the shelf. Not a prose problem after all — the gate table was already parsed by two other surfaces and no metric pointed at it."
+      },
+      "sadie": {
+        "owns": "signalsPromotedToRows",
+        "label": "Intent signals that became a CRM row",
+        "source": "crm.channel",
+        "ladders": "direct",
+        "why": "Listening is not the outcome. A signal that never became a row a human worked was noise. Not a missing stamp after all — promote_intent.py has written its own source since July, and nothing has ever come through it. The zero is real."
+      },
+      "webb": {
+        "owns": "bookingsFromSite",
+        "label": "Bookings from the site",
+        "source": "crm.bookings",
+        "ladders": "direct",
+        "needs": "the launch-gate — the site is unpublished. The instrument is complete: all 61 Calendly links across 24 pages carry utm_source=site so a booking is attributable the day it goes live",
+        "blockedBy": "launch-gate",
+        "why": "The site's job is one thing. Sessions, scroll depth and page count are not it. `Booking` is a separate activity type from `Meeting` because contact.nextMeeting holds only the NEXT one — without the activity, the second booking erases the first."
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+[Unit]
+Description=YourCo demo-prep — weekday business hours (server-local = ET)
+
+[Timer]
+# Server timezone = America/New_York (runtime/README.md). Catches new prospects a few times a workday.
+# STAGED: do NOT enable until the deps exist (Instantly merge-var write + the Mode-B demo generator + per-vertical
+# hero videos) AND the launch gate clears — see decisions/2026-06-17_auto-demo-prep-loop.md.
+OnCalendar=Mon-Fri *-*-* 09,13,17:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

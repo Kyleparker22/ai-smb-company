@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Audit — yourco</title>
+<style>
+  :root{--indigo:#161B33;--indigo2:#1f274a;--cream:#F4EFE6;--brass:#B8965A;--ink:#15192e;--muted:#5b617a;--line:#e7e1d4;--good:#4F6B4A;--warn:#b5542f}
+  *{box-sizing:border-box}
+  body{margin:0;font:15.5px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink);background:#e9e4d8}
+  .page{max-width:860px;margin:24px auto;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.12)}
+  .pad{padding:40px 48px}
+  header{background:var(--indigo);color:var(--cream);padding:38px 48px}
+  .wm{font-weight:700;letter-spacing:.02em;opacity:.9}
+  header h1{margin:14px 0 4px;font-size:30px}
+  header .meta{color:rgba(244,239,230,.72);font-size:13.5px}
+  h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);border-bottom:1px solid var(--line);padding-bottom:8px;margin:34px 0 16px}
+  .lead{font-size:18px;line-height:1.5}
+  .big{background:var(--indigo);color:var(--cream);border-radius:14px;padding:22px 24px;margin:18px 0;text-align:center}
+  .big .n{font-size:44px;font-weight:800;color:#f1d9a8;line-height:1}
+  .big .l{font-size:14px;color:rgba(244,239,230,.8);margin-top:6px}
+  .bn{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:12px 0}
+  .bn h3{margin:0 0 4px;font-size:17px}
+  .bn .axes{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0}
+  .ax{font-size:12px;color:var(--muted)}.ax b{color:var(--ink)}
+  .heatbar{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--brass),var(--warn));margin-top:6px}
+  table{width:100%;border-collapse:collapse;margin:6px 0}
+  td,th{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .phase{font-weight:700;color:var(--brass)}
+  .math{background:#faf7f0;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px}
+  .math code{background:#efe9dc;padding:1px 6px;border-radius:5px}
+  .first{background:radial-gradient(120% 120% at 90% -20%,rgba(184,150,90,.18),transparent),var(--indigo);color:var(--cream);border-radius:14px;padding:24px 26px;margin:18px 0}
+  .first h3{margin:0 0 6px;font-size:20px}
+  .first .cta{display:inline-block;margin-top:12px;background:var(--brass);color:#1a1d2e;font-weight:700;padding:11px 20px;border-radius:9px;text-decoration:none}
+  .foot{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);margin-top:30px;padding-top:14px}
+  @media print{body{background:#fff}.page{box-shadow:none;margin:0}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="wm">yourco</div>
+    <h1>AI Audit — <span id="client">—</span></h1>
+    <div class="meta"><span id="vertical">—</span> · prepared <span id="date">—</span> · confidential</div>
+  </header>
+  <div class="pad">
+    <h2>The headline</h2>
+    <p class="lead" id="headline">—</p>
+    <div class="big"><div class="n" id="bigNum">—</div><div class="l" id="bigLabel">—</div></div>
+
+    <h2>What we found — your bottlenecks, ranked</h2>
+    <div id="bottlenecks"></div>
+
+    <h2>The math on #1</h2>
+    <div class="math" id="math">—</div>
+
+    <h2>Recommended roadmap</h2>
+    <table><thead><tr><th>Phase</th><th>AI employee</th><th>Fixes</th><th>Impact</th></tr></thead><tbody id="roadmap"></tbody></table>
+
+    <h2>What we'd build first</h2>
+    <div class="first">
+      <h3 id="fbName">—</h3>
+      <div id="fbDesc">—</div>
+      <a class="cta" href="#" id="fbCta">Build this — live in 48 hours →</a>
+    </div>
+
+    <div class="foot" id="foot">Diagnosis based on your inputs + public data. Dollar figures use your own numbers — the math is shown so you can check it. The audit fee is credited toward your first build on a minimum six-month engagement. Prepared by yourco · founder@yourco.example.com</div>
+  </div>
+</div>
+
+<script>
+  /* ===== Delivery fills this per client. Sample = a landscaping audit. ===== */
+  const AUDIT = {
+    client: "YourCo Landscaping",
+    vertical: "Landscaping · ~12 staff · Yourtown",
+    date: "June 2026",
+    headline: "Your single biggest leak isn't lead-gen — it's the calls you never answer. You're generating demand and dropping it at the door.",
+    bigNum: "$9,000 / mo",
+    bigLabel: "estimated revenue leaking through missed & after-hours calls",
+    bottlenecks: [
+      { name: "Missed & after-hours calls", heat: 92, money:5, freq:5, drain:4, fix:5,
+        desc: "~30 calls/mo go to voicemail while crews are on jobs. Most don't leave a message; they call the next landscaper." },
+      { name: "Slow estimates", heat: 70, money:4, freq:4, drain:5, fix:4,
+        desc: "Quotes take 3–6 days because only you write them, after hours. Faster quotes close more — and you'd reclaim your evenings." },
+      { name: "Lead follow-up falls through", heat: 55, money:3, freq:4, drain:3, fix:5,
+        desc: "Warm leads who didn't book the first time rarely get a second touch. No system, no nudge." }
+    ],
+    math: 'About <code>30 missed calls/mo</code> × <code>~30% would have booked</code> × <code>$1,000 avg job</code> = <b>~$9,000/mo</b> walking to a competitor. Even recovering half is <b>$54k/yr</b>.',
+    roadmap: [
+      { phase:"Now (48h)", emp:"AI Front Desk", fixes:"Missed & after-hours calls", impact:"Catch every call 24/7, qualify, book the estimate" },
+      { phase:"Phase 2", emp:"Estimate Assistant", fixes:"Slow quotes", impact:"Same-day quotes; you approve, it drafts" },
+      { phase:"Phase 3", emp:"Follow-up Agent", fixes:"Dropped leads", impact:"Auto second-touch on every warm lead" }
+    ],
+    firstBuild: {
+      name: "AI Front Desk — your missed calls, handled",
+      desc: "An AI receptionist live in 48 hours: answers every call day or night in your voice, qualifies the job, and books the estimate straight onto your calendar. You approve anything customer-facing. We build it, we run it, we keep it reliable — you just take the booked work.",
+      cta: "#"
+    }
+  };
+
+  /* ===== render ===== */
+  const $=id=>document.getElementById(id);
+  $("client").textContent=AUDIT.client; $("vertical").textContent=AUDIT.vertical; $("date").textContent=AUDIT.date;
+  $("headline").textContent=AUDIT.headline; $("bigNum").textContent=AUDIT.bigNum; $("bigLabel").textContent=AUDIT.bigLabel;
+  $("math").innerHTML=AUDIT.math;
+  $("bottlenecks").innerHTML=AUDIT.bottlenecks.map(b=>`
+    <div class="bn"><h3>${b.name}</h3><div>${b.desc}</div>
+      <div class="axes"><span class="ax">Money <b>${b.money}/5</b></span><span class="ax">Frequency <b>${b.freq}/5</b></span>
+      <span class="ax">Owner-drain <b>${b.drain}/5</b></span><span class="ax">Fixability <b>${b.fix}/5</b></span></div>
+      <div class="heatbar" style="width:${b.heat}%"></div></div>`).join("");
+  $("roadmap").innerHTML=AUDIT.roadmap.map(r=>`<tr><td class="phase">${r.phase}</td><td><b>${r.emp}</b></td><td>${r.fixes}</td><td>${r.impact}</td></tr>`).join("");
+  $("fbName").textContent=AUDIT.firstBuild.name; $("fbDesc").textContent=AUDIT.firstBuild.desc; $("fbCta").href=AUDIT.firstBuild.cta;
+</script>
+</body>
+</html>

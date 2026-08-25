@@ -1,0 +1,11 @@
+[Unit]
+Description=YourCo daily Melanie briefing — weekday mornings 07:45 (server-local time)
+
+[Timer]
+# Server timezone should be America/New_York (see runtime/README.md) so this = 07:45 ET.
+# Fires after sales (07:08) and finance (07:24); the weekly Monday briefing still runs at 07:55.
+OnCalendar=Mon-Fri *-*-* 07:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

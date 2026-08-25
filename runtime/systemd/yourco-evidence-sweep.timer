@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo weekly evidence sweep — Sunday 16:30 ET, ahead of the 17:00 eval review (Kolby)
+
+[Timer]
+OnCalendar=Sun *-*-* 16:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

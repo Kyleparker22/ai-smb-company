@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client — your approvals</title>
+<!-- MOCKUP (sample data). What Client Owner sees: supplier orders + sub notices waiting for his okay. -->
+<style>
+  :root{--bg:#e9eae6;--card:#fff;--ink:#1c2419;--muted:#6b7280;--line:#e6e7e2;--sc:#2c5f2d;--sc-d:#234a24;--green:#2f7d52;--green-d:#256643;--red:#b23b32;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;min-height:100vh;padding:22px 14px}
+  .phone{width:100%;max-width:390px;background:var(--card);border-radius:30px;overflow:hidden;box-shadow:0 20px 60px rgba(28,36,25,.22);align-self:flex-start}
+  @media(max-width:430px){.phone{border-radius:0;box-shadow:none}body{padding:0}}
+  .bar{background:var(--sc);color:#fff;padding:16px 18px 14px;display:flex;align-items:center;gap:10px}
+  .bar .logo{font-weight:700}.bar .secure{margin-left:auto;font-size:11px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:9999px}
+  .body{padding:18px}
+  .lede{font-size:13px;color:var(--muted)}
+  .h{font-size:19px;font-weight:680;margin:3px 0 4px;letter-spacing:-.01em}
+  .count{font-size:12.5px;color:var(--sc-d);font-weight:650;margin-bottom:14px}
+  .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:13px}
+  .ch{padding:12px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+  .ch .kind{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--sc);border-radius:9999px;padding:3px 9px}
+  .ch .kind.sub{background:#7a5616}
+  .ch .to{font-size:14px;font-weight:650}
+  .cbody{padding:13px 15px;font-size:13px;color:#283226;white-space:pre-wrap;line-height:1.5}
+  .meta{font-size:12px;color:var(--muted);padding:0 15px 12px}.meta b{color:var(--ink)}
+  .acts{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;padding:0 15px 14px}
+  .btn{appearance:none;border:none;font:inherit;font-size:14px;font-weight:650;border-radius:10px;padding:11px;cursor:pointer}
+  .approve{background:var(--green);color:#fff}.approve:active{background:var(--green-d)}
+  .decline{background:#fff;border:1px solid #eccfcc;color:var(--red)}
+  .resolved{padding:14px 15px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:9px}
+  .resolved.ok{color:var(--green-d);background:#f1f8f2}.resolved.no{color:var(--red);background:#fbf3f2}
+  .allclear{text-align:center;padding:22px;font-size:14px;color:var(--muted)}
+  .allclear b{color:var(--sc-d)}
+  .note{font-size:11.5px;color:var(--muted);text-align:center;margin-top:8px}.note b{color:var(--sc)}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="bar"><span class="logo">Sample Client</span><span class="secure">🔒 secure link</span></div>
+    <div class="body">
+      <div class="lede">Hi Client Owner — orders ready for your okay.</div>
+      <div class="h">Approve before they send.</div>
+      <div class="count" id="count">3 waiting on you</div>
+
+      <div class="card" data-card>
+        <div class="ch"><span class="kind">Supplier</span><span class="to">Carolina Stone Supply</span></div>
+        <div class="cbody">Material order for the Chen patio — needed by Jul 6 (start date).
+
+Deliver to JOB SITE:
+• 14 pallets — Belgard Holland pavers
+• 22 tons — paver base / screenings
+
+Deliver to SHOP:
+• 6 pallets — seating-wall block + caps
+
+Please confirm availability + delivery date.</div>
+        <div class="meta"><b>Routing:</b> bulk → job site, packaged → shop · auto-sorted</div>
+        <div class="acts"><button class="btn approve" data-ok>Approve &amp; send</button><button class="btn decline" data-no>Decline</button></div>
+      </div>
+
+      <div class="card" data-card>
+        <div class="ch"><span class="kind">Supplier</span><span class="to">Volt Lighting</span></div>
+        <div class="cbody">Material order — needed by Jul 6.
+
+Deliver to SHOP:
+• 9 units — low-voltage fixtures
+• 1 box — transformer + wire spool
+
+Please confirm availability + delivery date.</div>
+        <div class="meta"><b>Routing:</b> packaged → shop</div>
+        <div class="acts"><button class="btn approve" data-ok>Approve &amp; send</button><button class="btn decline" data-no>Decline</button></div>
+      </div>
+
+      <div class="card" data-card>
+        <div class="ch"><span class="kind sub">Sub</span><span class="to">Precision Grading LLC</span></div>
+        <div class="cbody">Job notice — excavation + subgrade grading.
+
+Window: Jul 6 → Jul 17
+Site: 412 Birkdale Commons Pkwy, Yourtown
+
+Please confirm availability + your rate.</div>
+        <div class="meta"><b>Detected as SUB</b> from the proposal line items</div>
+        <div class="acts"><button class="btn approve" data-ok>Approve &amp; send</button><button class="btn decline" data-no>Decline</button></div>
+      </div>
+
+      <div class="allclear hidden" id="allclear">✓ <b>All clear</b> — nothing else waiting on you.<br>Replies get tracked; you'll get a summary.</div>
+      <div class="note">Nothing sends until you tap. <b>yourco</b> tracks every reply and nudges anything that goes quiet.</div>
+    </div>
+  </div>
+<script>
+  const cards=[...document.querySelectorAll('[data-card]')];
+  let left=cards.length;
+  const count=document.getElementById('count');
+  function resolve(card,ok){
+    if(card.dataset.done)return; card.dataset.done=1; left--;
+    card.innerHTML='<div class="resolved '+(ok?'ok':'no')+'">'+(ok?'✓ Approved — sending now.':'✕ Declined — not sent; back to your team.')+'</div>';
+    count.textContent = left>0 ? left+' waiting on you' : 'all done';
+    if(left===0){ count.classList.add('hidden'); document.getElementById('allclear').classList.remove('hidden'); }
+  }
+  cards.forEach(c=>{ c.querySelector('[data-ok]').onclick=()=>resolve(c,true); c.querySelector('[data-no]').onclick=()=>resolve(c,false); });
+</script>
+</body>
+</html>

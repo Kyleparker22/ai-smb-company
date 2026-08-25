@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The AI OS blueprint — yourco</title>
+<meta name="description" content="The AI operating system yourco would build for this business — what it does, where it starts, and what happens in the first 48 hours. No form, no login." />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  /* The configurator's component styles, needed because this page renders the same board. */
+  .osb-intro{max-width:640px;margin:0 0 22px;color:rgba(22,27,51,.66);font-size:16px}
+  .osb-intro b{color:#161B33}
+  .osb-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:820px){.osb-board{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.osb-board{grid-template-columns:1fr}}
+  .osb-mod{background:#fff;border:1px solid rgba(22,27,51,.12);border-radius:13px;padding:14px 15px}
+  .osb-mod .pill-tag{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#6E7180}
+  .osb-mod h4{font-size:15.5px;font-weight:650;margin:3px 0 4px;color:#161B33}
+  .osb-mod p{font-size:13px;color:rgba(22,27,51,.62);line-height:1.45}
+  .osb-mod .badge{display:inline-block;margin-top:9px;font-size:11px;font-weight:700;color:#6E7180}
+  .osb-mod.start{border-color:#B8965A;box-shadow:0 6px 20px rgba(184,150,90,.18)}
+  .osb-mod.start .pill-tag{color:#B8965A}
+  .osb-mod.start .badge{color:#161B33;background:#B8965A;border-radius:9999px;padding:3px 10px}
+  .osb-note{color:#6E7180;font-size:12.5px;max-width:620px;margin:20px 0 0;font-style:italic}
+  .osb-flow{margin-top:18px;background:#161B33;color:#F4EFE6;border-radius:16px;padding:22px 24px 24px}
+  .osb-flow .dh{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+  .osb-flow .dh .dot{width:34px;height:34px;border-radius:50%;background:#B8965A;color:#161B33;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+  .osb-flow .dh .dt{font-size:15px;font-weight:650}
+  .osb-flow .dh .ds{font-size:12px;color:rgba(244,239,230,.6)}
+  .flow-steps{list-style:none;margin:0;padding:0}
+  .fstep{position:relative;padding:0 0 2px 28px;margin-bottom:15px}
+  .fstep::before{content:"";position:absolute;left:5px;top:5px;width:10px;height:10px;border-radius:50%;background:#B8965A;box-shadow:0 0 0 4px rgba(184,150,90,.16)}
+  .fstep:not(:last-child)::after{content:"";position:absolute;left:9.5px;top:17px;bottom:-15px;width:1.5px;background:linear-gradient(#B8965A,rgba(184,150,90,.28))}
+  .fnode{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .fnode .fp{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#D4B27A}
+  .fnode .fn{font-size:15px;font-weight:650;color:#F4EFE6}
+  .fdid{font-size:13.5px;color:rgba(244,239,230,.82);margin-top:3px;line-height:1.45}
+  .fdid b{color:#F4EFE6}
+  .fpass{font-size:12px;color:rgba(244,239,230,.5);margin-top:6px}
+  .fpass b{color:#D4B27A;font-weight:600}
+  .fpass .farr{color:#B8965A;font-weight:700;margin-right:3px}
+  .fstep.final::before{background:#6B1E29;box-shadow:0 0 0 4px rgba(107,30,41,.28)}
+  .osb-demo,.osb-legend{display:none}
+
+  .bp-head{padding-top:64px;padding-bottom:0}
+  .bp-for{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-bottom:16px}
+  .bp-qa{margin-top:44px}
+  .bp-q{padding:26px 0;border-top:1px solid var(--hairline)}
+  .bp-q h3{font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.25}
+  .bp-q p{font-size:16.5px;color:var(--ink-muted);margin-top:9px;line-height:1.6;max-width:66ch}
+  .bp-q p+p{margin-top:11px}
+  .bp-q strong{color:var(--indigo)}
+  .bp-note{margin-top:30px;padding:20px 24px;border:1px solid var(--hairline);border-left:3px solid var(--brass);border-radius:6px;background:#FBF8F1;font-size:15.5px;line-height:1.6;color:var(--ink-muted);max-width:70ch}
+  .bp-actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:34px}
+  .bp-print{background:none;border:0;color:var(--brass);font:inherit;font-size:16px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+  @media print{
+    .nav,.bp-actions,footer.site,.bp-print{display:none!important}
+    body{background:#fff}
+    .tile{padding:18px 0!important}
+    .tile.parchment,.tile.dark{background:#fff!important;color:#161B33!important}
+    .osb-flow{background:#fff!important;color:#161B33!important;border:1px solid rgba(22,27,51,.2)}
+    .osb-flow .dh .ds,.fdid,.fpass{color:rgba(22,27,51,.62)!important}
+    .fnode .fn{color:#161B33!important}
+    .osb-mod{break-inside:avoid}
+    a[href]::after{content:" (" attr(href) ")";font-size:10px;color:#6E7180}
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+      <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=blueprint" class="pill sm">Book a call</a></div>
+    </div>
+  </nav>
+
+  <section class="tile bp-head">
+    <div class="wrap">
+      <div class="bp-for" id="bpFor">A blueprint</div>
+      <h1 style="font-size:clamp(32px,5.2vw,52px);line-height:1.06;font-weight:600;letter-spacing:-.03em;max-width:17ch" id="bpTitle">The AI system we&rsquo;d build.</h1>
+      <p class="lede" style="max-width:60ch">Someone you work with put this together on our site. It&rsquo;s a sketch of the AI operating system we&rsquo;d build for a business like this one — what each part does, where we&rsquo;d start, and how the pieces hand work to each other.</p>
+      <p class="lede" style="max-width:60ch"><strong>Nothing here is a quote or a commitment.</strong> It&rsquo;s a shape, so the conversation you&rsquo;re about to have with each other starts from something concrete.</p>
+      <div class="bp-actions">
+        <a class="pill" href="audit.html">See how an engagement starts &rarr;</a>
+        <button class="bp-print" type="button" onclick="window.print()">Print or save as PDF</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap">
+      <div class="eyebrow">the blueprint</div>
+      <div id="stage"></div>
+    </div>
+  </section>
+
+  <section class="tile">
+    <div class="wrap">
+      <div class="eyebrow">for whoever is reading this second</div>
+      <h2 class="sec">The four questions you&rsquo;re about to ask.</h2>
+      <p class="lede">You weren&rsquo;t on the call, so here are the answers without the call.</p>
+
+      <div class="bp-qa">
+        <div class="bp-q">
+          <h3>What is this, exactly?</h3>
+          <p>A set of AI agents that do specific jobs inside the business — answering the phone, chasing a quote, prepping an invoice — coordinated so work passes between them instead of landing back on a person. <strong>We build it and we run it.</strong> Nobody at your end manages agents, picks models, or babysits a dashboard.</p>
+          <p>The comparison people reach for is software. It&rsquo;s closer to hiring: you&rsquo;re buying the work getting done, not a tool that helps someone do it.</p>
+        </div>
+        <div class="bp-q">
+          <h3>What does it replace?</h3>
+          <p>Mostly it replaces work that <em>isn&rsquo;t currently getting done</em> — the follow-up nobody had time for, the call that went to voicemail at 6pm, the quote that sat for three days. That&rsquo;s where the money usually is, and it&rsquo;s why this rarely turns into a headcount conversation.</p>
+          <p>Where it does touch existing work, it takes the repetitive half and leaves the judgment. Anything that reaches a customer or moves money waits for a human to approve it. That&rsquo;s a design decision, not a setting.</p>
+        </div>
+        <div class="bp-q">
+          <h3>What happens in the first 48 hours?</h3>
+          <p>One capability goes live — the highlighted module above, usually. Not the whole system: the single piece that stops the most expensive leak, running for real, with a human approving anything that leaves the building.</p>
+          <p>Everything else on the board is the growth path. Which parts, and in what order, is what the audit decides.</p>
+        </div>
+        <div class="bp-q">
+          <h3>What&rsquo;s the risk if it goes wrong?</h3>
+          <p>Bounded on purpose. The agents cannot send email, delete anything, or run commands — those are denied at the configuration layer, not left to policy. Every action is logged with what it did, why, and what it cost. If something drifts, it&rsquo;s our problem to catch, and we publish which of our own controls have actually been attacked and which haven&rsquo;t.</p>
+          <p><a class="tlink" href="proof.html">Every claim we make, and the check behind it &rarr;</a></p>
+        </div>
+      </div>
+
+      <div class="bp-note">
+        <strong>How this blueprint was made:</strong> someone typed a business description into our site and this is what came back — assembled from the module patterns we build from, not from anything specific about your books, your systems, or your numbers. We haven&rsquo;t seen those. The real version comes out of the audit, which is a paid, fixed-scope piece of work that can perfectly well end with us recommending you don&rsquo;t build this.
+      </div>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap narrow close">
+      <h2 style="font-size:clamp(26px,4.2vw,38px);font-weight:600;letter-spacing:-.025em;line-height:1.12;max-width:22ch;margin:0 auto 26px">If it&rsquo;s worth a conversation, it starts with the audit.</h2>
+      <div class="ctas">
+        <a class="pill" href="audit.html">What the audit involves &rarr;</a>
+        <a class="tlink" href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=blueprint">or book 30 min →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site" style="padding:48px 0;border-top:1px solid var(--hairline)">
+    <div class="wrap" style="font-size:14px;color:var(--pewter)">
+      © 2026 yourco · <a class="tlink" href="index.html" style="font-size:14px">yourco.com</a>
+    </div>
+  </footer>
+
+<script src="os-blueprint.js"></script>
+<script>
+/* Renders from os-blueprint.js — the same source the configurator uses, so this page cannot
+   show a different taxonomy than the one the person who sent it was looking at. */
+(function () {
+  var OSB = window.OSBlueprint;
+  var raw = new URLSearchParams(location.search).get('b') || '';
+  var name = OSB.clean(raw);
+  var stage = document.getElementById('stage');
+
+  if (!name) {
+    /* No business on the link: show the generic board and say so, rather than pretending the
+       link was personalised. */
+    document.getElementById('bpFor').textContent = 'A blueprint';
+    OSB.renderInto(stage, 'other', 'a business like yours');
+    var n = document.createElement('p');
+    n.className = 'osb-note';
+    n.textContent = 'This link didn’t carry a business description, so this is the general shape ' +
+      'rather than one built around a specific business. Build one at /build-your-os.html.';
+    stage.appendChild(n);
+    return;
+  }
+
+  document.getElementById('bpFor').textContent = 'A blueprint for ' + name;
+  document.getElementById('bpTitle').textContent = 'The AI system we’d build for ' + name + '.';
+  document.title = 'AI OS blueprint — ' + name + ' — yourco';
+  OSB.renderInto(stage, OSB.classify(name), name);
+})();
+</script>
+</body>
+</html>

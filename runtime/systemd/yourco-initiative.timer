@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo initiative — weekdays 08:45 ET, after the morning loops refresh the state (Melanie)
+
+[Timer]
+OnCalendar=Mon-Fri *-*-* 08:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

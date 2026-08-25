@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>3524 Donovan Place — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+  nav .links a.call{color:var(--red);font-weight:600;letter-spacing:.08em}
+  nav .links a.call:hover{color:var(--ink)}
+
+  /* hero */
+  .hero{position:relative;min-height:72vh;display:flex;align-items:flex-end;background:var(--ink)}
+  .hero .bg{position:absolute;inset:0;background:url("../../assets/exterior.jpg") center 60%/cover no-repeat}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,24,.9) 0%,rgba(19,19,24,.25) 60%)}
+  .hero .content{position:relative;width:100%;padding:0 0 56px;color:var(--on-dark)}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;/* sits over the property photo — red cannot hold contrast there */color:var(--on-dark,#F7F5F0);text-shadow:0 1px 12px rgba(19,19,24,.75),0 0 3px rgba(19,19,24,.5)}
+  .hero h1{font-family:Didot,Georgia,serif;font-size:clamp(36px,5vw,62px);font-weight:400;line-height:1.08;margin-top:14px}
+  .hero .loc{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:14px}
+  .hero .factrow{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap}
+  .hero .f b{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400}
+  .hero .f span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-dark-soft);display:block;margin-top:2px}
+
+  section{padding:88px 0}
+  h2{font-family:Didot,Georgia,serif;font-size:clamp(28px,3.2vw,38px);font-weight:400;line-height:1.15;margin-top:14px}
+  h2 em{font-style:italic;color:var(--red)}
+  .lede{font-family:Didot,Georgia,serif;font-size:18px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:18px;max-width:58ch}
+
+  .about .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:start}
+  @media(max-width:840px){.about .grid{grid-template-columns:1fr}}
+  .about p.body{font-size:15.5px;color:var(--ink-2);margin-top:16px;max-width:60ch}
+  .features{border-top:1px solid var(--line);margin-top:8px}
+  .feat{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2);align-items:baseline}
+  .feat i{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);font-size:13px}
+
+  /* tour */
+  .tour{background:var(--ink);color:var(--on-dark)}
+  .tour .lede{color:var(--on-dark-soft)}
+  .tour .frame{position:relative;margin-top:40px}
+  .tour iframe{width:100%;height:760px;border:1px solid var(--line-dark);display:block;background:#0d0d11}
+  .tour .open{margin-top:18px;text-align:center}
+  .tour .open a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark);text-decoration:none;border:1px solid var(--line-dark);padding:13px 26px;border-radius:9999px}
+  .tour .open a:hover{border-color:var(--red);color:var(--red)}
+
+  /* agent */
+  .agent{background:var(--warm)}
+  .agent .row{display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap}
+  .agent .nm{font-family:Didot,Georgia,serif;font-size:30px;font-style:italic}
+  .agent .rl{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--ink-soft);margin-top:6px}
+  .agent .ct{text-align:right}
+  .agent .ct a.phone{font-family:Didot,Georgia,serif;font-size:28px;color:var(--ink);text-decoration:none}
+  .agent .ct a.phone:hover{color:var(--red)}
+  .agent .ct .mail{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;color:var(--ink-soft);margin-top:4px}
+  @media(max-width:700px){.agent .ct{text-align:left}}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:70ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept demo — real listing (Canopy MLS #4395709) · photo gallery is the real listing photography; hero &amp; cinematic tour are AI concept art</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="index.html">← All Listings</a>
+      <a href="#photos">Photos</a>
+      <a href="#tour">Cinematic Tour</a>
+      <a class="call" href="tel:7045750714">704 · 575 · 0714</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="bg"></div>
+  <div class="scrim"></div>
+  <div class="content"><div class="wrap">
+    <div class="kicker">For Lease · Active</div>
+    <h1>3524 Donovan Place</h1>
+    <div class="loc">Shannon Park &nbsp;·&nbsp; Yourtown 28215</div>
+    <div class="factrow">
+      <div class="f"><b>$2,600</b><span>Per Month · 12-Mo Lease</span></div>
+      <div class="f"><b>4</b><span>Bedrooms</span></div>
+      <div class="f"><b>2.5</b><span>Baths</span></div>
+      <div class="f"><b>2,002</b><span>Square Feet</span></div>
+    </div>
+  </div></div>
+</header>
+
+<section class="about">
+  <div class="wrap grid">
+    <div>
+      <div class="kicker">About This Home</div>
+      <h2>A Shannon Park split-level with <em>room to spread out.</em></h2>
+      <p class="lede">A beautifully laid-out four-bedroom home that checks all the boxes for space, flexibility, and comfort.</p>
+      <p class="body">A smart floor plan with multiple living areas makes this home perfect for families, roommates, or anyone who wants room to spread out. The main living area flows easily into the kitchen and dining space — great for entertaining — with bonus living space beyond.</p>
+      <p class="body">Outside: a fenced yard with mature shade trees, minutes from everything Yourtown's east side offers.</p>
+    </div>
+    <div class="features">
+      <div class="feat"><i>i.</i>Smart split-level plan, multiple living areas</div>
+      <div class="feat"><i>ii.</i>Bonus living space — office, den, or playroom</div>
+      <div class="feat"><i>iii.</i>Main living flows to kitchen &amp; dining</div>
+      <div class="feat"><i>iv.</i>Fenced yard with mature trees</div>
+      <div class="feat"><i>v.</i>12-month lease · unfurnished · pets conditional</div>
+      <div class="feat"><i>vi.</i>Established Shannon Park neighborhood</div>
+    </div>
+  </div>
+</section>
+
+<section id="photos" style="background:var(--warm)">
+  <div class="wrap">
+    <div class="kicker">The Photos</div>
+    <h2>The real thing, room by <em>room.</em></h2>
+    <p class="lede">The listing's actual photography, straight from the MLS.</p>
+    <div id="donovanShots" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px"></div>
+    <script>
+      (function(){
+        let h = "";
+        for (let n = 0; n < 14; n++)
+          h += '<div style="position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18)">' +
+               '<img src="../assets/listings/3524-donovan-place/photo-' + n +
+               '.jpg" alt="3524 Donovan Place — listing photo ' + (n+1) +
+               '" loading="lazy" style="width:100%;height:200px;object-fit:cover"/></div>';
+        document.getElementById("donovanShots").innerHTML = h;
+      })();
+    </script>
+  </div>
+</section>
+
+<section class="tour" id="tour">
+  <div class="wrap">
+    <div class="kicker">The Cinematic Tour</div>
+    <h2 style="color:inherit">Walk it before you <em>visit it.</em></h2>
+    <p class="lede">Every Sample Realty listing includes a cinematic tour — a room-by-room film built from the listing's own photography. Tap any room below to play.</p>
+    <div class="frame">
+      <iframe src="../../tour.html" title="Cinematic tour — 3524 Donovan Place (concept demo)" loading="lazy"></iframe>
+    </div>
+    <div class="open"><a href="../../tour.html" target="_blank">Open the tour full-screen ↗</a></div>
+  </div>
+</section>
+
+<section class="agent">
+  <div class="wrap row">
+    <div>
+      <div class="kicker">Listed By</div>
+      <div class="nm" style="margin-top:10px">Sample Contact</div>
+      <div class="rl">Broker / Owner · Sample Realty Home &amp; Land, LLC · Licensed in ST &amp; SC</div>
+    </div>
+    <div class="ct">
+      <a class="phone" href="tel:7045750714">704 · 575 · 0714</a>
+      <div class="mail">KimiParkerRealtor@gmail.com</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine">Concept demonstration. Property facts are from the Canopy MLS listing (#4395709); imagery is AI-generated concept art and does not depict the actual property. In production, every tour is generated exclusively from the listing's own licensed photography under a camera-movement-only rule, and carries an "AI-enhanced virtual tour" disclosure consistent with MLS and state advertising rules.</div>
+  </div>
+</footer>
+
+</body>
+</html>

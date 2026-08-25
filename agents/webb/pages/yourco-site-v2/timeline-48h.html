@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — 48 hours, documented" />
+<meta property="og:description" content="From a signed agreement to the first capability of your AI OS, live — the actual clock, hour by hour. Here's a real build." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — 48 hours, documented</title>
+<meta name="description" content="From a signed agreement to the first capability of your AI OS, live — the actual clock, hour by hour. Here's a real build." />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  :root{
+    --green:#3f7d52;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:54px 0 6px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 18px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(31px,5.2vw,50px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:600px;margin:14px auto 0}
+  .ctx{text-align:center;font-size:13px;color:var(--pewter);margin-top:14px}
+  .ctx b{color:var(--indigo)}
+  .tl{max-width:720px;margin:40px auto 0;position:relative;padding-left:30px}
+  .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:30px;width:2px;background:linear-gradient(var(--brass),rgba(184,150,90,.25))}
+  .mil{position:relative;margin-bottom:26px}
+  .mil::before{content:"";position:absolute;left:-30px;top:5px;width:16px;height:16px;border-radius:50%;background:var(--brass);border:3px solid var(--cream);box-shadow:0 0 0 1px var(--brass)}
+  .mil.live::before{background:var(--green);box-shadow:0 0 0 1px var(--green)}
+  .mil .t{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:var(--brass);text-transform:uppercase}
+  .mil .h{font-size:19px;font-weight:650;margin:3px 0 7px}
+  .card{background:#fff;border:1px solid var(--hairline);border-radius:12px;padding:14px 17px;box-shadow:0 4px 14px rgba(22,27,51,.05)}
+  .card ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .card li{font-size:14px;color:#2a3142;display:flex;gap:9px}
+  .card li::before{content:"›";color:var(--brass);font-weight:700}
+  .card li b{color:var(--indigo)}
+  .card .ok{color:var(--green);font-weight:600}
+  .stamp{display:inline-block;background:var(--indigo);color:var(--brass-bright);font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 9px;margin-left:8px;vertical-align:middle}
+  .endcard{max-width:720px;margin:6px auto 0;margin-left:auto;background:var(--indigo);color:var(--cream);border-radius:14px;padding:22px 24px;text-align:center}
+  .endcard h2{font-size:22px;color:var(--cream)}.endcard p{color:rgba(244,239,230,.8);margin-top:8px;font-size:15px}
+  .endcard .tag{color:var(--brass-bright);font-weight:600;margin-top:14px}
+  .note{text-align:center;color:var(--pewter);font-size:12.5px;max-width:620px;margin:26px auto 0;font-style:italic}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:46px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+
+/* ===== PREMIUM POLISH (2026-06-22, Webb) — editorial type · material grain · tactility · section rhythm · scroll-reveal. Quiet-luxury (Luka watch-notes). Additive + reversible; degrades gracefully. ===== */
+h1,.hero h1,h2.sec,.close h2,.pullquote,.value h3,.ptier h3,.audit-card h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560}
+h1,.hero h1{letter-spacing:-.022em}
+h2.sec,.close h2{letter-spacing:-.016em}
+.pullquote,.value h3,.ptier h3,.audit-card h3{letter-spacing:-.012em;font-weight:560}
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E")}
+.tile,footer,footer.site{position:relative;z-index:1}
+.nav{z-index:20}
+.card,.ptier{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease;box-shadow:0 1px 2px rgba(22,27,51,.04)}
+.card:hover,.ptier:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(22,27,51,.10);border-color:rgba(184,150,90,.55)}
+.tile.dark .card{box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tile.dark .card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34);border-color:rgba(184,150,90,.5)}
+.demo-frame{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.demo-frame:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(22,27,51,.18)}
+.pill{box-shadow:0 1px 2px rgba(22,27,51,.08)}
+.pill:hover{box-shadow:0 10px 24px rgba(184,150,90,.34);transform:translateY(-1px)}
+.pill:active{transform:translateY(0) scale(.98)}
+.nav-links a:not(.pill){position:relative;padding-bottom:3px}
+.nav-links a:not(.pill)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.2,.7,.3,1)}
+.nav-links a:not(.pill):hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.tile + .tile{box-shadow:0 -1px 0 var(--hairline)}
+.tile.dark + .tile,.tile + .tile.dark,.tile.dark{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .tile:not(.hero) .eyebrow,.tile:not(.hero) h2.sec,.tile:not(.hero) .lede,.tile:not(.hero) .value,.tile:not(.hero) .ptier,.tile:not(.hero) .card,.tile:not(.hero) .moat .m,.tile:not(.hero) .audit-card,.tile:not(.hero) .pullquote,.tile:not(.hero) .demo-frame,.tile:not(.hero) .prose > *,.close h2,.close .ctas{animation:revealRise linear both;animation-timeline:view();animation-range:entry 8% entry 46%}
+  @keyframes revealRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+}}
+/* ===== /PREMIUM POLISH ===== */
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=timeline-48h" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>48 hours, documented.</h1>
+    <p class="lede">Most AI projects measure time-to-live in quarters. We measure it in hours. Here's a build &mdash; the actual clock &mdash; for the <b>first capability of your AI OS</b>.</p>
+    <p class="ctx">Example build: an intake agent &mdash; answers every call and text, qualifies the inquiry, books the next step. It&rsquo;s the first piece of the OS to go live; the rest follow, one at a time. The clock starts when the agreement is signed and access is in.</p>
+  </div></section>
+
+  <div class="tl">
+    <div class="mil">
+      <div class="t">Hour 0 <span class="stamp">signed</span></div>
+      <div class="h">The agreement is signed.</div>
+      <div class="card"><ul>
+        <li>Onboarding opens the engagement and provisions the agent's identity — its own email in the client's tenant. (Tenant access = client-approved.)</li>
+        <li>A four-question pre-call intake goes out so discovery starts from facts.</li>
+      </ul></div>
+    </div>
+    <div class="mil">
+      <div class="t">Hours 0–4 <span class="stamp">discovery</span></div>
+      <div class="h">We learn the business.</div>
+      <div class="card"><ul>
+        <li>The job: <b>answer every inbound, qualify it, book the estimate, confirm, log</b> — day or night.</li>
+        <li>Locked the qualification fields, the calendar rules, the brand voice, and the approval line.</li>
+        <li>Picked the stack for the shape: text/SMS + Calendar + CRM log.</li>
+      </ul></div>
+    </div>
+    <div class="mil">
+      <div class="t">Hours 4–24 <span class="stamp">build</span></div>
+      <div class="h">The agent gets built.</div>
+      <div class="card"><ul>
+        <li>Overlaid the client's logic on a proven blueprint — the agent's actual reasoning, written.</li>
+        <li>Wired the live connectors: book to the calendar, send the confirmation, log the lead.</li>
+        <li>Set the approval gates (customer-facing actions wait for sign-off) and turned on cost tracking.</li>
+      </ul></div>
+    </div>
+    <div class="mil">
+      <div class="t">Hours 24–36 <span class="stamp">eval + red-team</span></div>
+      <div class="h">We try to break it before a customer can.</div>
+      <div class="card"><ul>
+        <li>Ran the test set end-to-end — <span class="ok">every downstream action fired</span> (booking, confirmation, log).</li>
+        <li>Red-teamed it: refused to fabricate a price, escalated an out-of-area lead, held against a prompt injection. <span class="ok">0 breaches.</span></li>
+        <li>Brand voice approved by the client. Watchdogs + human-fallback wired.</li>
+      </ul></div>
+    </div>
+    <div class="mil live">
+      <div class="t">Hours 36–48 <span class="stamp">live</span></div>
+      <div class="h">The agent goes live.</div>
+      <div class="card"><ul>
+        <li>Pointed the client's intake at the agent. Soft launch — watched the first real texts closely.</li>
+        <li>Sent the go-live note: what's live, how to reach a human, what to expect.</li>
+        <li><b>48 hours from signed &rarr; the first capability of your AI OS, live in the business.</b> Weekly improvement starts now &mdash; and the next capability follows when you&rsquo;re ready.</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="endcard"><h2>Speed you can trust on day one.</h2>
+    <p>The fast part is the first agent. The product is the standard that went up in those same 48 hours &mdash; and the AI OS that keeps growing on top of it.</p>
+    <div class="tag">We learn your business. AI does the work.</div>
+  </div>
+  <p class="note">A faithful illustration of an yourco build. For real engagements, we publish the actual timeline — every step shown is what the build does.</p>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=timeline-48h">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+</body>
+</html>

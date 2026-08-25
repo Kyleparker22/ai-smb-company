@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garment OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-rack"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never denies a claim
+(settlements draft from the recorded fair-claims schedule), never promises a stain outcome, and
+never disposes of a garment before the state clock — or at all; disposal is a human act.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'rack',label:'Rack & claims'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,rack,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.storefronts} storefronts · ${d.config.wholesale_routes} routes`;
+  document.getElementById('v-board').innerHTML =
+    panel('The rack, counted', '',
+      `<div class="grid">
+        ${stat('Finished, unclaimed', fmt.money(b.rack.value), `${b.rack.count} order(s) on the rack`, b.rack.count?'alert':'')}
+        ${stat('Open claims', fmt.num(b.open_claims), 'never denied by software', b.open_claims?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the claim reads first', b.messages_open?'bad':'')}
+        ${stat('', '', '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.rack_cash_released)}`,
+               `${b.recovered.orders_picked_up} picked up · ${b.recovered.claims_settled} claim(s) settled · ${b.recovered.reminders_sent} reminder(s)`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The wedding-dress claim gets a procedure, not a counter argument:
+      logged verbatim, settled from the <b>published schedule</b>, decided by a human. A stain
+      question gets "we'll try" — a promised outcome cannot be produced.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='claim'?'bad':m.label==='stain_ask'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function rack(){
+  const d = await API.get('/api/rack');
+  document.getElementById('v-rack').innerHTML =
+    `<div class="banner warn">Try it: settle the wedding-dress claim — the schedule's arithmetic
+      drafts at R1; settle the claim with missing inputs — refused; dispose before the clock —
+      refused.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="settle('cl_demo_full')">Settle: schedule math</button>
+      <button class="act" onclick="settle('cl_demo_partial')">Settle: missing inputs</button>
+      <button class="act" onclick="dispose('or_demo_aging')">Dispose: 40 days (clock runs 90)</button>
+      <button class="act" onclick="dispose('or_demo_expired')">Dispose: 100 days, no human</button>
+     </div><div id="rout"></div>` +
+    panel('The ready rack', esc(d.rules_source), table(
+      [{label:'Customer'},{label:'Value',num:true},{label:'Days on rack',num:true},{label:'Touches'},{label:'Disposal clock'}],
+      d.rows, o=>`<td>${esc(o.customer||'')}</td><td class="num">${fmt.money(o.value)}</td>
+        <td class="num">${o.days_on_rack??'—'}</td><td>${o.touches} of 3</td>
+        <td>${o.disposal_clock_days!=null?(o.disposal_clock_days>0?o.disposal_clock_days+'d left':pill('clock complete — human decision','warn')):'—'}</td>`), true);
+}
+async function settle(id){
+  const r = await API.post(`/api/claims/${id}/settle`);
+  document.getElementById('rout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Settlement drafted', '', `<div class="strong">${fmt.money(r.math.amount)} — ${esc(r.math.basis)}</div>
+        <div class="why">${r.evidence.has_intake?'intake notes: '+esc(r.evidence.notes):esc(r.evidence.note)}</div>`);
+}
+async function dispose(id){
+  const r = await API.post(`/api/orders/${id}/dispose`,{});
+  document.getElementById('rout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Disposed', '', `<div class="strong">${esc(r.why)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['rack_value','Rack value','counted'],['pickup_lift','Pickup lift from reminders','your number (0–1)'],
+    ['counter_hours_wk','Counter hrs/wk','your number'],['counter_rate','Counter rate','your number'],
+    ['claims_value','The claims file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

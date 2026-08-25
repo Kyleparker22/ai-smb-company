@@ -1,0 +1,12 @@
+[Unit]
+Description=YourCo initiative loop — Melanie originates the day's unscheduled moves (entity-level)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+ExecStart=/home/claudeops/yourco-os/runtime/run-loop.sh initiative
+TimeoutStartSec=1800

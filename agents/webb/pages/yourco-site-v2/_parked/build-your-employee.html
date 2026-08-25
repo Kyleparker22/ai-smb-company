@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — build your employee" />
+<meta property="og:description" content="Pick your business and the job you want off your plate. See the named digital employee that handles it — live in 48 hours." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — build your employee</title>
+<meta name="description" content="Pick your business and the job you want off your plate. See the named digital employee that handles it — live in 48 hours." />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;--brass-bright:#D4B27A;
+    --pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);--hairline:rgba(22,27,51,.12);}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:58px 0 6px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 20px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(32px,5.4vw,52px);font-weight:650;letter-spacing:-.025em;line-height:1.04}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:600px;margin:14px auto 0}
+  .builder{max-width:820px;margin:34px auto 0}
+  .step{margin-bottom:26px}
+  .step .lab{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--brass);margin-bottom:12px}
+  .opts{display:flex;flex-wrap:wrap;gap:10px}
+  .opt{background:#fff;border:1px solid var(--hairline);border-radius:11px;padding:10px 15px;font-size:14px;cursor:pointer;font-weight:550;transition:.14s}
+  .opt:hover{border-color:var(--brass)}.opt.on{background:var(--indigo);color:var(--cream);border-color:var(--indigo)}
+  .spec{margin-top:8px;background:#fff;border:1px solid var(--hairline);border-radius:16px;overflow:hidden;box-shadow:0 14px 40px rgba(22,27,51,.1);display:none}
+  .spec.show{display:block;animation:pop .35s ease}
+  @keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+  .spec .top{background:var(--indigo);color:var(--cream);padding:22px 26px;display:flex;align-items:center;gap:16px}
+  .spec .av{flex:none;width:52px;height:52px;border-radius:50%;background:rgba(212,178,122,.2);color:var(--brass-bright);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+  .spec .top .nm{font-size:22px;font-weight:650}.spec .top .rl{font-size:13.5px;color:rgba(244,239,230,.72)}
+  .spec .bd{padding:22px 26px}
+  .spec .desc{font-size:16px;color:#23293a;line-height:1.5}
+  .spec .desc b{color:var(--indigo)}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  .chips .c{background:var(--parchment);border:1px solid var(--hairline);border-radius:999px;padding:7px 13px;font-size:12.5px;color:var(--indigo)}
+  .chips .c b{color:var(--brass);font-weight:700}
+  .gated{margin-top:16px;font-size:13px;color:var(--pewter);border-top:1px solid var(--hairline);padding-top:14px}
+  .cap{display:flex;gap:6px;margin-top:14px}
+  .cap input{flex:1;border:1px solid var(--hairline);background:#fff;color:var(--indigo);border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit}
+  .cap input:focus{outline:none;border-color:var(--brass)}
+  .cap button{border:none;background:var(--brass);color:var(--indigo);border-radius:9px;padding:0 14px;font-size:13px;font-weight:650;cursor:pointer;font-family:inherit}
+  .capdone{font-size:12.5px;color:#8a6f3c;margin-top:8px}.capdone a{color:#8a6f3c}
+  .acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .acts a{text-decoration:none;font-weight:650;font-size:14px;padding:11px 20px;border-radius:9999px}
+  .acts .p1{background:var(--brass);color:var(--indigo)}.acts .p2{background:transparent;color:var(--brass);border:1px solid var(--brass)}
+  .hint{text-align:center;color:var(--pewter);font-size:14px;margin-top:18px}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:50px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="positioning.html">How it works</a>
+      <a href="demos.html">See it work</a><a href="build-your-employee.html" class="active">Build yours</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>Build your first employee.</h1>
+    <p class="lede">Pick your business and the job you'd hand off first — see the employee that handles it. It's the smallest way to start; most businesses end up with a system of several, scoped from an <a href="audit.html" style="color:var(--brass)">audit</a>.</p>
+  </div></section>
+
+  <div class="builder">
+    <div class="step">
+      <div class="lab">Pick a tier</div>
+      <div class="opts" id="tiers" style="flex-direction:row;flex-wrap:wrap"></div>
+    </div>
+    <div class="step">
+      <div class="lab">1 · Your business</div>
+      <div class="opts" id="verts"></div>
+    </div>
+    <div class="step">
+      <div class="lab">2 · The job you want off your plate</div>
+      <div class="opts" id="jobs"></div>
+    </div>
+    <p class="hint" id="hint">Pick one from each above ↑</p>
+    <div class="spec" id="spec">
+      <div class="top"><div class="av" id="av"></div><div><div class="nm" id="snm"></div><div class="rl" id="srl"></div></div></div>
+      <div class="bd">
+        <div class="desc" id="sdesc"></div>
+        <div class="chips" id="schips"></div>
+        <div class="gated">Anything customer-facing waits for <b>your</b> approval until you've seen enough to trust it — and we keep it sharp every week. You own the outcome; never the tokens, models, or infrastructure.</div>
+        <div class="acts"><a class="p1" href="https://calendly.com/the Founder-yourco/30min">Book 30 min to build it →</a><a class="p2" href="demos.html">See one like it work</a></div>
+        <form class="cap" id="cap"><input id="cem" type="email" placeholder="Email me this employee spec" autocomplete="off" /><button type="submit">Send</button></form>
+        <div class="capdone" id="capdone"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="demos.html">See it work</a><a href="team.html">The team</a><a href="https://calendly.com/the Founder-yourco/30min">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const VERTS={
+  home:{label:"🌿 Home services",name:"Sage",biz:"home-services company",cust:"homeowners",job1:"estimate"},
+  trades:{label:"🛠️ Trades / contractors",name:"Hank",biz:"business",cust:"customers",job1:"estimate"},
+  dental:{label:"🦷 Dental",name:"Remy",biz:"practice",cust:"patients",job1:"appointment"},
+  medical:{label:"🩺 Medical / clinic",name:"Mira",biz:"clinic",cust:"patients",job1:"appointment"},
+  vet:{label:"🐾 Veterinary",name:"Bella",biz:"clinic",cust:"pet owners",job1:"appointment"},
+  realestate:{label:"🏠 Real estate",name:"Ada",biz:"brokerage",cust:"buyers and sellers",job1:"showing"},
+  property:{label:"🏢 Property management",name:"Dell",biz:"property",cust:"residents",job1:"request"},
+  restaurant:{label:"🍝 Restaurant",name:"Theo",biz:"restaurant",cust:"guests",job1:"reservation"},
+  hospitality:{label:"🥂 Hospitality / events",name:"Tess",biz:"venue",cust:"guests",job1:"booking"},
+  law:{label:"⚖️ Law firm",name:"Lex",biz:"firm",cust:"potential clients",job1:"consult"},
+  services:{label:"💼 Professional services",name:"Quinn",biz:"firm",cust:"clients",job1:"consult"},
+  financial:{label:"📊 Financial / insurance",name:"Iris",biz:"agency",cust:"clients",job1:"review"},
+  retail:{label:"📦 Shop / e-commerce",name:"Cleo",biz:"store",cust:"customers",job1:"order"},
+  auto:{label:"🚗 Auto / service",name:"Otto",biz:"shop",cust:"drivers",job1:"appointment"},
+  fitness:{label:"🧘 Fitness / wellness",name:"Gia",biz:"studio",cust:"members",job1:"class"},
+  beauty:{label:"💅 Beauty / spa",name:"Nova",biz:"salon",cust:"clients",job1:"appointment"},
+  education:{label:"🎓 Education / tutoring",name:"Posy",biz:"program",cust:"families",job1:"session"},
+  other:{label:"✨ Something else",name:"Remi",biz:"business",cust:"customers",job1:"appointment"}
+};
+const TIER1_JOBS={
+  intake:{label:"Answer & book inbound",role:"intake employee",
+    verb:(v)=>`answers every inbound from your ${v.cust} — day or night — qualifies it, and books the ${v.job1}`,
+    chips:["📞 Calls + texts","📅 Calendar","⚡ Replies in seconds"]},
+  followup:{label:"Chase & follow up leads",role:"follow-up employee",
+    verb:(v)=>`follows up with every ${v.cust.replace(/s$/,'')} who went quiet — politely, persistently — until they book or opt out`,
+    chips:["✉️ Email + SMS","🔁 Sequenced","🚫 Honors opt-outs"]},
+  schedule:{label:"Schedule & send reminders",role:"scheduling employee",
+    verb:(v)=>`handles every ${v.job1} request, reschedule, and reminder for your ${v.cust} without a double-book`,
+    chips:["📅 Calendar","⏰ Reminders","🛡️ Conflict guard"]},
+  noshow:{label:"Cut no-shows",role:"reminder employee",
+    verb:(v)=>`confirms and reminds every ${v.cust.replace(/s$/,'')} ahead of their ${v.job1} so your calendar stays full`,
+    chips:["⏰ Confirms + reminds","📅 One-tap reschedule","📉 Fewer no-shows"]},
+  draft:{label:"Draft quotes & replies",role:"drafting employee",
+    verb:(v)=>`drafts the quotes, follow-ups, and replies your ${v.cust} are waiting on — in your voice, ready for your okay`,
+    chips:["✍️ In your voice","🧾 Grounded","✅ You approve sends"]},
+  qa:{label:"Answer common questions",role:"front-desk Q&A employee",
+    verb:(v)=>`answers the repetitive questions your ${v.cust} ask all day — accurately — and escalates anything it shouldn't guess on`,
+    chips:["💬 Knowledge base","🛟 Honest 'I don't know'","↗️ Escalates"]},
+  support:{label:"Handle support & status",role:"support employee",
+    verb:(v)=>`handles status, changes, and routine support for your ${v.cust} — and routes refunds and money decisions to a human`,
+    chips:["📦 Status + changes","🛟 Money stays gated","↗️ Escalates"]},
+  reviews:{label:"Get reviews & referrals",role:"reviews & referrals employee",
+    verb:(v)=>`asks every happy ${v.cust.replace(/s$/,'')} for a review after the job, and nudges for referrals — automatically`,
+    chips:["⭐ After every job","🔁 Referral nudges","📈 More 5-star proof"]},
+  reactivate:{label:"Win back past customers",role:"reactivation employee",
+    verb:(v)=>`reaches your past ${v.cust} who've gone quiet and brings them back to book again`,
+    chips:["📨 Past-customer list","💤 Re-engages","💰 Found revenue"]},
+  upsell:{label:"Upsell & cross-sell",role:"growth employee",
+    verb:(v)=>`offers your ${v.cust} the right add-on at the right moment — helpful, never pushy`,
+    chips:["✨ Right offer","🎯 Right moment","💰 Higher ticket"]},
+  invoicing:{label:"Invoice & collect",role:"billing employee",
+    verb:(v)=>`sends invoices on schedule and chases what's overdue — tone-matched — with your okay on every send`,
+    chips:["🧾 On schedule","💵 Chases overdue","✅ You approve sends"]},
+  dispatch:{label:"Triage & dispatch urgent",role:"dispatch employee",
+    verb:(v)=>`triages urgent requests from your ${v.cust}, prioritizes them, and dispatches same-day — routing anything tricky to a human`,
+    chips:["🚨 Triages urgency","⚡ Same-day","↗️ Routes to a human"]}
+};
+
+// Tier 2 — "produce it" employees (cross-vertical production roles)
+const TIER2_JOBS={
+  marketing:{label:"Produce your marketing",role:"marketing employee",
+    verb:v=>`produces your marketing — the copy, the social posts, the email — coordinates the photo shoot, and publishes to reach your ${v.cust}`,
+    chips:["✍️ Copy + social + email","📸 Coordinates the shoot 🧍","✅ You approve every send"],
+    replaces:"a copywriter + a social manager + a coordinator",human:"the photo / video shoot"},
+  proposals:{label:"Build estimates & proposals",role:"proposals employee",
+    verb:v=>`turns your notes and specs into polished, branded estimates and proposals for your ${v.cust}, then chases them to a decision`,
+    chips:["🧾 Branded proposals","🔁 Chases to a decision","✅ Pricing from your price book"],
+    replaces:"a proposal writer + estimating admin",human:"the site visit / scoping"},
+  campaigns:{label:"Run marketing campaigns",role:"campaign employee",
+    verb:v=>`runs your campaigns end-to-end — recall, win-back, seasonal, lifecycle — across email and SMS to your ${v.cust}`,
+    chips:["📣 End-to-end campaigns","🔁 Recall + win-back","✅ Approved before it sends"],
+    replaces:"a campaign / email marketer",human:"the creative sign-off"},
+  research:{label:"Research & client reports",role:"research employee",
+    verb:v=>`pulls the data and builds the packets your ${v.cust} need — comparables, market summaries, review reports — sourced, never fabricated`,
+    chips:["📊 Sourced research","📁 Client-ready packets","🛟 No fabricated numbers"],
+    replaces:"an analyst's prep time",human:"the expert's judgment / recommendation"},
+  content:{label:"Produce ongoing content",role:"content employee",
+    verb:v=>`produces your ongoing content — social, email, education — on a schedule, in your voice, for your ${v.cust}`,
+    chips:["🗓️ On a schedule","✍️ In your voice","✅ Approved before publish"],
+    replaces:"a content / social manager",human:"any photo / video shoots"}
+};
+let vSel=null,jSel=null,tier='t1',JOBS=TIER1_JOBS;
+const vBox=document.getElementById('verts'),jBox=document.getElementById('jobs'),tBox=document.getElementById('tiers'),
+  spec=document.getElementById('spec'),hint=document.getElementById('hint');
+[['t1','Tier 1 · handle it',TIER1_JOBS],['t2','Tier 2 · produce it',TIER2_JOBS]].forEach(([k,label,jobs])=>{
+  const b=document.createElement('button');b.className='opt'+(k==='t1'?' on':'');b.style.flex='1';b.textContent=label;
+  b.onclick=()=>{tier=k;JOBS=jobs;jSel=null;[...tBox.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');buildJobs();spec.classList.remove('show');hint.style.display='block';};
+  tBox.appendChild(b);});
+Object.entries(VERTS).forEach(([k,v])=>{const b=document.createElement('button');b.className='opt';b.textContent=v.label;
+  b.onclick=()=>{vSel=k;[...vBox.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');render();};vBox.appendChild(b);});
+function buildJobs(){jBox.innerHTML='';
+  Object.entries(JOBS).forEach(([k,j])=>{const b=document.createElement('button');b.className='opt';b.textContent=j.label;
+    b.onclick=()=>{jSel=k;[...jBox.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');render();};jBox.appendChild(b);});}
+buildJobs();
+
+function render(){
+  if(!vSel||!jSel){return;}
+  const v=VERTS[vSel],j=JOBS[jSel];
+  document.getElementById('av').textContent=v.name[0];
+  document.getElementById('snm').textContent=v.name;
+  document.getElementById('srl').textContent=`your ${j.role} · ${v.label.replace(/^\S+\s/,'')}`;
+  let desc=`Meet <b>${v.name}</b> — your ${j.role}. ${v.name} ${j.verb(v)}. Its own email, inside your ${v.biz}, <b>live in 48 hours</b>.`;
+  if(tier==='t2'&&j.replaces)desc+=` It replaces <b>${j.replaces}</b> — one accountable employee instead of a stack of vendors.`;
+  document.getElementById('sdesc').innerHTML=desc;
+  const ch=document.getElementById('schips');ch.innerHTML='';
+  j.chips.forEach(c=>{const d=document.createElement('span');d.className='c';d.textContent=c;ch.appendChild(d);});
+  const gated=spec.querySelector('.gated');
+  if(tier==='t2'&&j.human)gated.innerHTML=`Anything customer-facing waits for <b>your</b> approval, and the <b>${j.human}</b> stays a human step it coordinates — we're honest about where the line is. You own the outcome; never the tokens, models, or infrastructure.`;
+  else gated.innerHTML=`Anything customer-facing waits for <b>your</b> approval until you've seen enough to trust it — and we keep it sharp every week. You own the outcome; never the tokens, models, or infrastructure.`;
+  hint.style.display='none'; spec.classList.add('show');
+  spec.scrollIntoView({behavior:'smooth',block:'center'});
+}
+// Lead capture — high-intent: they just built their ideal employee. mailto stopgap now; /api/capture at launch.
+(function(){var f=document.getElementById('cap');if(!f)return;
+  f.addEventListener('submit',function(e){e.preventDefault();
+    var em=document.getElementById('cem').value.trim();if(!em||em.indexOf('@')<1)return;
+    var ctx=(document.getElementById('snm').textContent||'')+' — '+(document.getElementById('srl').textContent||'');
+    var lead={source:'Build-your-employee configurator',email:em,context:ctx};
+    try{console.log('[yourco lead]',JSON.stringify(lead));window.__yourcoLeads=(window.__yourcoLeads||[]);window.__yourcoLeads.push(lead);}catch(_){}
+    var mt='mailto:founder@yourco.example.com?subject='+encodeURIComponent('Configurator lead — '+em)+'&body='+encodeURIComponent('Source: build-your-employee\nEmail: '+em+'\nBuilt: '+ctx);
+    f.style.display='none';
+    document.getElementById('capdone').innerHTML='✓ Done — the Founder will send your employee spec + what it’d take. <a href="'+mt+'">email it instead</a>';
+  });})();
+</script>
+</body>
+</html>

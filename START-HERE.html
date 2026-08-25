@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco — start here (the whole machine)</title>
+<!-- The clickable front door: a guided tour of the yourco OS for a new teammate/collaborator.
+     00_README.md is the written equivalent; this page links out to it and to every live surface.
+     Every href here is RELATIVE TO THE REPO ROOT — that is why this file lives at the root and
+     must not be moved into a folder without rewriting all of them. Refreshed 2026-08-23. -->
+<style>
+  :root{--indigo:#161B33;--indigo-deep:#0F1226;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;
+    --brass-bright:#D4B27A;--oxblood:#6B1E29;--pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);--hairline:rgba(22,27,51,.12);--green:#3f7d52;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:0 26px}
+  @media(max-width:560px){.levels td:nth-child(2){white-space:normal}.levels,.levels tr,.levels td{display:block;border:0}
+    .levels td{padding:2px 0}.levels tr{border-bottom:1px solid var(--hairline);padding:7px 0;display:block}}
+  header{background:var(--indigo);color:var(--cream);padding:46px 0 38px}
+  .mark{font-size:26px;font-weight:600}.mark .dot{color:var(--brass)}
+  header h1{font-size:clamp(24px,3.6vw,34px);font-weight:650;letter-spacing:-.02em;margin:14px 0 10px;max-width:24ch}
+  header p{font-size:15.5px;color:rgba(244,239,230,.78);max-width:64ch;line-height:1.55}
+  .gate{display:flex;align-items:center;gap:10px;max-width:300px;margin:18px 0 0}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  .how{background:var(--parchment);border:1px solid var(--hairline);border-radius:13px;padding:18px 20px;margin:26px 0}
+  .how h3{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--brass);margin-bottom:8px}
+  .how ol{margin:0 0 0 18px;font-size:14px;color:#2a3142}.how li{margin:4px 0}
+  .how code{background:#fff;border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-size:12.5px}
+  section{margin:30px 0}
+  .sh{display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--indigo);padding-bottom:8px;margin-bottom:4px}
+  .sh .n{font-size:13px;font-weight:700;color:var(--brass)}
+  .sh h2{font-size:19px;font-weight:650;letter-spacing:-.015em}
+  .sh .tag{margin-left:auto;font-size:11px;color:var(--pewter)}
+  .item{display:block;text-decoration:none;color:inherit;border-bottom:1px solid var(--hairline);padding:13px 2px;transition:.12s}
+  .item:hover{background:#fbfaf7;padding-left:8px}
+  .item .t{font-size:15px;font-weight:600;color:var(--indigo)}.item .t .arrow{color:var(--brass);font-weight:700}
+  .item .d{font-size:13px;color:var(--ink-muted);margin-top:2px;max-width:72ch}
+  .item .path{font-size:11.5px;color:var(--pewter);font-family:ui-monospace,Menlo,monospace}
+  .live{background:var(--indigo-deep);color:var(--cream);border-radius:13px;padding:18px 20px;margin-top:10px}
+  .live .t{font-size:14.5px;font-weight:650}.live .d{font-size:12.5px;color:rgba(244,239,230,.7);margin:3px 0 8px}
+  .live code{display:block;background:rgba(244,239,230,.08);border:1px solid rgba(244,239,230,.16);border-radius:7px;padding:8px 11px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace;color:var(--brass-bright);margin-bottom:6px}
+  .note{font-size:12px;color:var(--pewter);margin-top:6px}
+  .honest{background:#fff;border:1px solid var(--hairline);border-left:3px solid var(--oxblood);border-radius:13px;padding:18px 20px;margin:26px 0 0}
+  .honest h3{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--oxblood);margin-bottom:8px}
+  .honest p{font-size:14px;color:#2a3142;max-width:74ch}
+  .honest code{background:var(--parchment);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace}
+  .levels{border-collapse:collapse;margin:12px 0 8px;width:100%}
+  .levels td{padding:5px 10px 5px 0;font-size:13.5px;color:#2a3142;vertical-align:top;border-bottom:1px solid var(--hairline)}
+  .levels td:nth-child(2){white-space:nowrap}
+  .lv{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:4px;white-space:nowrap}
+  .lv.real{background:var(--green);color:#fff}.lv.desc{background:var(--brass);color:#fff}
+  .lv.built{background:var(--brass-bright);color:var(--indigo)}.lv.fake{background:var(--pewter);color:#fff}
+  .lv.dead{background:var(--indigo);color:var(--cream)}
+  .src{font-size:12px;color:var(--pewter);margin-top:8px}
+  .src a{color:var(--pewter)}
+  footer{border-top:1px solid var(--hairline);margin-top:36px;padding:24px 0 40px;font-size:12.5px;color:var(--pewter)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="mark">yourco<span class="dot">.</span></div>
+  <h1>The whole machine, in one tour.</h1>
+  <p>yourco is a boutique AI-implementation consultancy. The motion is <b style="color:#fff">Audit first &rarr; a custom AI OS</b> that we build <i>and operate</i> inside the client's business &mdash; they buy an outcome and never touch a token, a model, or a server. The company is run by a small number of humans and a roster of <b style="color:#fff">27<!--#count: dirs agents/*--> AI agents</b>. This page is the front door to the entire operating system; walk it top to bottom.</p>
+  <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+</div></header>
+
+<div class="wrap">
+  <div class="honest">
+    <h3>Read this before anything else</h3>
+    <p><b>yourco is pre-revenue. Zero signed clients.</b> Everything in this tour is built and staged, and nothing external ships until a legal matter (the launch-gate) clears. Several folders look alike and mean completely different things &mdash; get this wrong and you will read a prototype as a product:</p>
+    <table class="levels">
+      <tr><td><span class="lv real">REAL</span></td><td><code>clients/</code></td><td>Actual engagements with actual people. Sample Client is at <b>Proposal &mdash; unsigned</b>.</td></tr>
+      <tr><td><span class="lv desc">DESCRIBED</span></td><td><code>offerings/</code></td><td>33<!--#count: dirs offerings/*--> specs. Written and argued, never built.</td></tr>
+      <tr><td><span class="lv built">BUILT, UNSOLD</span></td><td><code>Pre Build Ideas/</code></td><td>76<!--#count: files Pre Build Ideas/*/BUILD.md--> running prototypes on invented data. No client, no revenue.</td></tr>
+      <tr><td><span class="lv fake">FAKE ON PURPOSE</span></td><td><code>playground/</code></td><td>The sandbox. Real code, synthetic data.</td></tr>
+      <tr><td><span class="lv dead">DEAD</span></td><td><code>_archive/</code></td><td>History only. Never cite it for current state.</td></tr>
+    </table>
+    <p class="src">Source of these levels: <a href="00_README.md">00_README.md</a> &mdash; the written front door this page is the clickable version of.</p>
+  </div>
+
+  <div class="how">
+    <h3>How to use this page (new-teammate path, ~20 min)</h3>
+    <ol>
+      <li><b>What it is</b> (&sect;1) &rarr; <b>who does the work</b> (&sect;2) &rarr; <b>how an engagement flows</b> (&sect;3).</li>
+      <li>Then <b>how it runs itself</b> (&sect;4) and <b>see the live cockpits</b> (&sect;5).</li>
+      <li>Finally <b>what clients get</b> (&sect;6) and <b>how we get clients</b> (&sect;7).</li>
+      <li><b>One step for the live surfaces:</b> from the repo root run <code>./show.sh</code>. It starts every server and opens the app &mdash; one sign-in in front of all three cockpits. <code>./show.sh stop</code> when done. Ports are read from <code>.claude/launch.json</code>; never type one from memory.</li>
+    </ol>
+  </div>
+
+  <section>
+    <div class="sh"><span class="n">&sect;1</span><h2>What yourco is</h2><span class="tag">read first</span></div>
+    <a class="item" href="00_README.md"><div class="t">The written front door <span class="arrow">&rarr;</span></div><div class="d">The human's orientation page: the five reality levels above, every top-level folder and what is in it, and the order to read things in.</div><div class="path">00_README.md</div></a>
+    <a class="item" href="CLAUDE.md"><div class="t">The boot context <span class="arrow">&rarr;</span></div><div class="d">The machine's counterpart &mdash; loaded automatically into every AI session. The motion, the moat (reliability + eval + observability + approval + trust), what is parked and why.</div><div class="path">CLAUDE.md</div></a>
+    <a class="item" href="01_company.md"><div class="t">The company doc <span class="arrow">&rarr;</span></div><div class="d">Full thesis: the defensible layer, the model-upgrade dividend, the ICP, and the "client owns the outcome, never the tokens" principle.</div><div class="path">01_company.md</div></a>
+    <a class="item" href="06_business-plan.md"><div class="t">The plan, the numbers, the principles <span class="arrow">&rarr;</span></div><div class="d">Written as a letter to the company's owners &mdash; bad news on the first page. Also the home of the 17 owner's rules and the 12 core principles every human and agent behaves by.</div><div class="path">06_business-plan.md</div></a>
+    <a class="item" href="07_RULES.md"><div class="t">How work gets done here <span class="arrow">&rarr;</span></div><div class="d">The rules index: the six places rules actually live, and the "when you do X, update Y" table. It points at sources and never copies them &mdash; a copied rule drifts.</div><div class="path">07_RULES.md</div></a>
+  </section>
+
+  <section>
+    <div class="sh"><span class="n">&sect;2</span><h2>The team &mdash; who does the work</h2></div>
+    <a class="item" href="04_agent_roster.md"><div class="t">The agent roster <span class="arrow">&rarr;</span></div><div class="d">All 27 agents: each one's trigger, scope, and hard approval gate, plus the expert each is modelled on. Operating model: siblings, the Founder conducts. <b>These agents run yourco</b> &mdash; none is ever deployed into a client's tenant; a client gets their own, built for them.</div><div class="path">04_agent_roster.md</div></a>
+    <a class="item" href="05_operating_rhythm.md"><div class="t">The operating rhythm <span class="arrow">&rarr;</span></div><div class="d">The cockpit manual &mdash; the daily 10 minutes, the weekly cadence, and the short list of things only a human can do.</div><div class="path">05_operating_rhythm.md</div></a>
+    <a class="item" href=".claude/skills/_README.md"><div class="t">The skill library <span class="arrow">&rarr;</span></div><div class="d">21<!--#count: dirs .claude/skills/*--> repeatable procedures any agent invokes by name instead of being re-told &mdash; the how-to complement to decisions (choices) and learnings (observations).</div><div class="path">.claude/skills/</div></a>
+  </section>
+
+  <section>
+    <div class="sh"><span class="n">&sect;3</span><h2>How a client engagement flows</h2></div>
+    <a class="item" href="processes/audit-sop.md"><div class="t">The Audit &mdash; the mandatory front door <span class="arrow">&rarr;</span></div><div class="d">Every engagement starts here: a fixed-scope, currently <b>free</b> diagnostic that learns how the business really runs and puts a dollar figure on its bottlenecks. Its findings <i>are</i> the discovery doc.</div><div class="path">processes/audit-sop.md</div></a>
+    <a class="item" href="processes/ai-os-modules.md"><div class="t">What an AI OS is made of <span class="arrow">&rarr;</span></div><div class="d">The eight pillars the Audit scopes against &mdash; Intake, Sales, Marketing, Customer, Operations, Back Office, Company Brain, Training &mdash; all sitting on the reliability/eval/approval layer that is never sold as a line item.</div><div class="path">processes/ai-os-modules.md</div></a>
+    <a class="item" href="02_delivery_loop.md"><div class="t">The delivery loop <span class="arrow">&rarr;</span></div><div class="d">The 6-stage SOP: discovery &rarr; build &rarr; eval/gates/watchdogs &rarr; 48h go-live &rarr; weekly iteration &rarr; expansion. Plus Stage 0: when a client folder gets created.</div><div class="path">02_delivery_loop.md</div></a>
+    <a class="item" href="clients/_yourco-template/"><div class="t">The golden client template <span class="arrow">&rarr;</span></div><div class="d">Every engagement starts from this. Client logic is an overlay, never a fork &mdash; if a build needs a fork, that is a missing abstraction and it gets logged.</div><div class="path">clients/_yourco-template/</div></a>
+  </section>
+
+  <section>
+    <div class="sh"><span class="n">&sect;4</span><h2>How it runs itself &mdash; the always-on machine</h2></div>
+    <a class="item" href="runtime/README.md"><div class="t">The runtime (24/7 headless) <span class="arrow">&rarr;</span></div><div class="d">A VPS running the loops on systemd timers with no human &mdash; they self-gate, commit and push. <b>Always-on is not auto-send:</b> the approval gate lives in the host's own permissions and denies send, delete and shell outright. There is also a global pause switch (<code>runtime/.paused</code>) that makes every loop a no-op.</div><div class="path">runtime/README.md &middot; runtime/run-loop.sh</div></a>
+    <a class="item" href="03_internal_platform.md"><div class="t">The internal platform <span class="arrow">&rarr;</span></div><div class="d">The golden template and Atlas, the ops agent &mdash; the two things that make client delivery scale &mdash; plus a pointer table to everything built since.</div><div class="path">03_internal_platform.md</div></a>
+    <a class="item" href="learnings/"><div class="t">The closed-loop substrate <span class="arrow">&rarr;</span></div><div class="d"><code>learnings/</code> (patterns each run reads at Step 0 and adjusts to) + <code>decisions/</code> (settled calls, each carrying a trip-wire that says what would reopen it) + <code>rejections/</code> (the anti-library &mdash; checked before any idea is re-proposed). This is how the OS compounds instead of repeating itself.</div><div class="path">learnings/ &middot; decisions/ &middot; rejections/</div></a>
+    <a class="item" href="playground/_README.md"><div class="t">The sandbox <span class="arrow">&rarr;</span></div><div class="d">A whole synthetic yourco the <i>real</i> code runs against, so you can practise without touching production &mdash; and so the sandbox can never drift from the product.</div><div class="path">playground/_README.md</div></a>
+  </section>
+
+  <section>
+    <div class="sh"><span class="n">&sect;5</span><h2>See the live cockpits</h2><span class="tag">needs a server</span></div>
+    <div class="live">
+      <div class="t">One command, one sign-in</div>
+      <div class="d"><code style="display:inline;padding:1px 6px">./show.sh</code> starts the website, HQ, the CRM, the Connector Console and the app gateway &mdash; then opens the app. HQ and the CRM have no login of their own, so the gateway is the only thing that may ever face outward; the rest stay on 127.0.0.1.</div>
+      <code>./show.sh</code>
+      <div class="note">opens the app automatically &middot; three roles: partner (all three) &middot; advisor (CRM + console) &middot; connector (console only) &middot; <code style="display:inline;padding:1px 5px">./show.sh stop</code> when done</div>
+    </div>
+    <a class="item" href="dashboard/_README.md"><div class="t">YourCo HQ &mdash; the command dashboard <span class="arrow">&rarr;</span></div><div class="d">12<!--#count: match dashboard/index.html /data-v="([a-z-]+)"/--> doors. <b>The Board</b> = every open item in the OS in one list (start here when you have time rather than a trigger). <b>WBR</b> = the inputs you actually control, plus the case against our own headline numbers. <b>Evidence</b> = what this OS can prove about itself. <b>Partners</b> = the three-partner view. Every panel refuses to state a number its inputs do not support.</div><div class="path">dashboard/_README.md &middot; inside the app at /hq/</div></a>
+    <a class="item" href="crm/_README.md"><div class="t">The CRM &mdash; the pipeline, and the source of truth <span class="arrow">&rarr;</span></div><div class="d">Companies, contacts, deals, activity &mdash; plus an insight layer of seven reads a CRM row cannot produce (where every deal would be at your own median velocity; which single relationship unlocks the most pipeline; your own forecasting bias, measured).</div><div class="path">crm/_README.md &middot; inside the app at /crm/</div></a>
+    <a class="item" href="app/_README.md"><div class="t">The app &mdash; what stands in front of all three <span class="arrow">&rarr;</span></div><div class="d">A reverse-proxy gateway with one login, role-scoped, installable to a phone's home screen. Built as a gateway rather than a rewrite, so 7,500 lines of existing dashboard UI were left untouched.</div><div class="path">app/_README.md</div></a>
+  </section>
+
+  <section>
+    <div class="sh"><span class="n">&sect;6</span><h2>What clients get &mdash; the product</h2></div>
+    <a class="item" href="agents/webb/pages/yourco-site-v2/index.html"><div class="t">The website <span class="arrow">&rarr;</span></div><div class="d">The staged public face &mdash; positioning, how it works, the Audit as the lead offer. Built, not deployed: nothing goes live until the gate clears.</div><div class="path">agents/webb/pages/yourco-site-v2/</div></a>
+    <a class="item" href="clients/_yourco-template/client-console.html"><div class="t">The client console <span class="arrow">&rarr;</span></div><div class="d">What a paying client sees daily: live activity, the approvals queue, outcomes delivered, and the reliability panel &mdash; the moat made visible. White-label by rule: the client's brand only.</div><div class="path">clients/_yourco-template/client-console.html</div></a>
+    <a class="item" href="Pre Build Ideas/_README.md"><div class="t">76<!--#count: files Pre Build Ideas/*/BUILD.md--> industry prototypes <span class="arrow">&rarr;</span></div><div class="d">A running prototype for each of 74 SMB industries, on synthetic data. The purpose is <i>demo before Audit</i> &mdash; a working surface in the prospect's own industry closes the "I can't picture it" gap. <b>None is sold and none has a client.</b> Read the honest counter-argument in its README.</div><div class="path">Pre Build Ideas/_README.md</div></a>
+  </section>
+
+  <section>
+    <div class="sh"><span class="n">&sect;7</span><h2>How we get clients &mdash; the GTM machine</h2></div>
+    <a class="item" href="processes/partnerships/"><div class="t">The connector network <span class="arrow">&rarr;</span></div><div class="d"><b>The primary growth lever</b> &mdash; not one channel among several. Connectors refer, and from R1 they recruit connectors who refer, so it compounds without yourco adding headcount. One rate card: everyone who refers earns the same escalator, a referring client included. Parts of it are counsel-gated and cannot start until they clear.</div><div class="path">processes/partnerships/</div></a>
+    <a class="item" href="processes/demand-generation.md"><div class="t">The demand-gen playbook <span class="arrow">&rarr;</span></div><div class="d">Every channel and how they connect: proof asset &rarr; capture &rarr; nurture &rarr; call &rarr; Audit &rarr; build &rarr; referral. Targeting is horizontal and warm-first &mdash; the sequencing filter is relationship, not industry.</div><div class="path">processes/demand-generation.md</div></a>
+    <a class="item" href="processes/launch-gate.md"><div class="t">The gate that holds all of it <span class="arrow">&rarr;</span></div><div class="d">Nothing external is deployed or sent until this clears. It is the one place gate state lives &mdash; and the plan's own most-likely failure mode is that it never defines itself while the company keeps polishing.</div><div class="path">processes/launch-gate.md &middot; processes/counsel-gates.md</div></a>
+  </section>
+
+  <footer>
+    This page is the human-readable front door; the source of truth is the git repo, where everything is tracked and compounding. Numbers on this page are deliberately few &mdash; the ones that move live in HQ, not here. &copy; 2026 YourCo LLC &middot; yourco.com
+  </footer>
+</div>
+</body>
+</html>

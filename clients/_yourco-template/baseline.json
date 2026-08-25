@@ -1,0 +1,37 @@
+{
+  "_readme": "The client's PRE-ENGAGEMENT baseline — how the business ran before yourco touched it. Consumed by runtime/counterfactual.py to maintain a shadow model of the business as it would be running without the OS. Captured at discovery and NEVER reconstructed afterwards: a baseline written after go-live is just today's numbers with a story attached, and it would quietly manufacture whatever gap we wanted.",
+  "_theRule": "A counterfactual is a MODEL, not a measurement — nobody observed the business that didn't happen. Every metric here states the assumption it will be projected under, and the module refuses to compare a metric that was measured today but never baselined (that would invent a gap out of an absence).",
+  "_capture": "Ask two questions per metric at discovery: (1) what is it today, (2) which way was it moving and roughly how fast. Question 2 is the one people skip; without it the model holds the metric flat, which is itself an assumption and gets disclosed as one.",
+  "_exampleOnly": true,
+  "capturedOn": "2026-03-01",
+  "capturedBy": "discovery call — client's own figures, not estimated by yourco",
+  "metrics": {
+    "quotesPerWeek": {
+      "label": "Quotes written per week",
+      "value": 12,
+      "monthlyTrendPct": 4,
+      "assumption": "growing ~4%/month, the client's own read of their pipeline before engagement",
+      "lowerIsBetter": false
+    },
+    "quoteHoursPerWeek": {
+      "label": "Owner hours per week spent quoting",
+      "value": 4,
+      "monthlyTrendPct": 4,
+      "assumption": "tracks quote volume — hand-written quotes take a fixed ~20 minutes each, so hours grow with volume",
+      "lowerIsBetter": true
+    },
+    "avgQuoteTurnaroundHours": {
+      "label": "Average quote turnaround (hours)",
+      "value": 30,
+      "assumption": "no trend stated at capture — held flat",
+      "lowerIsBetter": true
+    },
+    "adminHoursPerWeek": {
+      "label": "Owner hours per week on admin",
+      "value": 12,
+      "monthlyTrendPct": 2,
+      "assumption": "creeping up ~2%/month as job volume grew",
+      "lowerIsBetter": true
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "_header": "STAGED — internal until launch (OtherVenture) + this offering's own trigger (post-launch AND first 3-5 white-glove engagements complete).",
+  "_doc": "Business ER capacity gate (frontier #12, SPEC 3.1). This file is the single source of truth the triage agent reads before accepting any T1 case. Config, not intention: the cap is enforced here, never by judgment. The agent may not override any value; the dashboard renders this file; changes are human-committed only.",
+
+  "max_concurrent_cases": 1,
+  "active_cases": 0,
+  "active_case_ids": [],
+
+  "agent_override_allowed": false,
+  "existing_clients_preempt": true,
+
+  "at_capacity_behavior": {
+    "disclose_capacity_honestly": true,
+    "still_triage": true,
+    "still_give_immediate_guidance": true,
+    "offer_first_available_slot": true,
+    "silently_accept_case": false
+  },
+
+  "free_window_hours": 72,
+  "checkpoint_hour": 48,
+
+  "_revisit_rule": "max_concurrent_cases changes only with delivery capacity beyond the Founder (SPEC 3.1), by human commit, with a decision-log entry.",
+  "_updated": "2026-08-07",
+  "_updated_by": "staged build wave (Janice) — no live line exists; values are the v1 spec defaults"
+}

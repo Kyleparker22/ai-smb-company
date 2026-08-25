@@ -1,0 +1,66 @@
+{
+  "generated": "2026-08-07",
+  "candidates": [
+    {
+      "text": "we'll re-run every line with your real numbers before you sign",
+      "cue": "we'll",
+      "source": "clients/sample-client/07_proposal-os.md",
+      "dueHint": null,
+      "madeOn": null,
+      "companyId": "c11",
+      "company": "Sample Client",
+      "status": "candidate"
+    },
+    {
+      "text": "we'll re-run this with your numbers",
+      "cue": "we'll",
+      "source": "clients/sample-client/07_proposal-os.md",
+      "dueHint": null,
+      "madeOn": null,
+      "companyId": "c11",
+      "company": "Sample Client",
+      "status": "candidate"
+    },
+    {
+      "text": "we'll confirm your start date and keep you updated every step of the way",
+      "cue": "we'll",
+      "source": "clients/sample-client/prototype/sample-run-output.txt",
+      "dueHint": null,
+      "madeOn": null,
+      "companyId": "c11",
+      "company": "Sample Client",
+      "status": "candidate"
+    },
+    {
+      "text": "I'll give you to their weekly availability reports (skips the login/captcha problem entirely, like Colton said)",
+      "cue": "I'll",
+      "source": "clients/sample-client/meetings/2026-08-07_followup-email-draft.md",
+      "dueHint": null,
+      "madeOn": "2026-08-07",
+      "companyId": "c11",
+      "company": "Sample Client",
+      "status": "candidate"
+    },
+    {
+      "text": "I'll have the updated build ready for us to walk through next week like we talked about — 30–60 min, screen share or I'll come",
+      "cue": "I'll",
+      "source": "clients/sample-client/meetings/2026-08-07_followup-email-draft.md",
+      "dueHint": null,
+      "madeOn": "2026-08-07",
+      "companyId": "c11",
+      "company": "Sample Client",
+      "status": "candidate"
+    },
+    {
+      "text": "I'll give you\" for availability reports — decide the address before sending (something on yourco",
+      "cue": "I'll",
+      "source": "clients/sample-client/meetings/2026-08-07_followup-email-draft.md",
+      "dueHint": null,
+      "madeOn": "2026-08-07",
+      "companyId": "c11",
+      "company": "Sample Client",
+      "status": "candidate"
+    }
+  ],
+  "note": "Proposed, not accepted. Confirm in the CRM dossier to enter the ledger."
+}

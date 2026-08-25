@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — the team you could hire" />
+<meta property="og:description" content="Pick your business and see the whole org of digital employees you could hire — the universal roles plus specialists tailored to your industry. Hire them one at a time." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — the team you could hire</title>
+<meta name="description" content="Pick your business and see the whole org of digital employees you could hire — the universal roles plus specialists tailored to your industry. Hire them one at a time." />
+<style>
+  :root{--indigo:#161B33;--indigo-2:#1c2240;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;--brass-bright:#D4B27A;
+    --pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);--hairline:rgba(22,27,51,.12);--line:#cfc6b4;}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:30;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:54px 0 4px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 18px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(30px,5vw,48px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:17px;max-width:620px;margin:13px auto 0}
+  .picker{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin:24px auto 0;max-width:920px}
+  .vchip{background:#fff;border:1px solid var(--hairline);border-radius:999px;padding:8px 15px;font-size:13.5px;cursor:pointer;font-weight:600;transition:.14s}
+  .vchip:hover{border-color:var(--brass)}.vchip.on{background:var(--indigo);color:var(--cream);border-color:var(--indigo)}
+  .chart{margin:36px auto 0;text-align:center}
+  .topnode{display:inline-flex;flex-direction:column;align-items:center;background:var(--indigo);color:var(--cream);border-radius:14px;padding:16px 30px;box-shadow:0 12px 34px rgba(22,27,51,.22)}
+  .topnode .t{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-bright);font-weight:700}
+  .topnode .b{font-size:20px;font-weight:650;margin-top:2px}
+  .stem{width:2px;height:30px;background:var(--line);margin:0 auto}
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;position:relative}
+  @media(max-width:820px){.cols{grid-template-columns:1fr;gap:30px}}
+  .cols::before{content:"";position:absolute;top:-30px;left:16.66%;right:16.66%;height:2px;background:var(--line)}
+  @media(max-width:820px){.cols::before{display:none}}
+  .dept{position:relative;padding-top:30px}
+  .dept::before{content:"";position:absolute;top:-30px;left:50%;width:2px;height:30px;background:var(--line)}
+  @media(max-width:820px){.dept::before{display:none}}
+  .dept h3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:13px}
+  .node{background:#fff;border:1px solid var(--hairline);border-radius:12px;padding:13px 15px;margin-bottom:11px;cursor:pointer;display:flex;align-items:center;gap:11px;text-align:left;transition:.15s;opacity:0;transform:translateY(8px)}
+  .node.in{opacity:1;transform:none}
+  .node:hover{border-color:var(--brass);transform:translateY(-2px);box-shadow:0 8px 20px rgba(22,27,51,.08)}
+  .node.sel{border-color:var(--indigo);box-shadow:0 0 0 2px rgba(22,27,51,.12)}
+  .node .ic{flex:none;font-size:20px}
+  .node .nm{font-size:14.5px;font-weight:650;line-height:1.12}
+  .node .first{margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.04em;color:var(--brass);border:1px solid var(--brass);border-radius:999px;padding:2px 7px;white-space:nowrap}
+  /* specialists */
+  .spec{margin-top:34px;border-top:1px dashed var(--line);padding-top:26px}
+  .spec .sh{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--indigo);font-weight:700;margin-bottom:4px}
+  .spec .sh b{color:var(--brass)}
+  .spec .ss{font-size:13.5px;color:var(--pewter);margin-bottom:16px}
+  .specrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:820px){.specrow{grid-template-columns:1fr}}
+  .specnode{background:linear-gradient(180deg,#fff, #fbf8f1);border:1px solid var(--brass);border-radius:12px;padding:14px 16px;cursor:pointer;text-align:left;transition:.15s;opacity:0;transform:translateY(8px)}
+  .specnode.in{opacity:1;transform:none}
+  .specnode:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(184,150,90,.18)}
+  .specnode.sel{box-shadow:0 0 0 2px var(--brass)}
+  .specnode .si{font-size:20px}.specnode .sn{font-size:14.5px;font-weight:650;margin-top:6px}.specnode .sd{font-size:12px;color:var(--pewter);margin-top:2px}
+  /* drawer */
+  .drawer{max-width:760px;margin:30px auto 0;background:var(--indigo);color:var(--cream);border-radius:16px;padding:24px 28px;display:none}
+  .drawer.show{display:block;animation:pop .35s ease}
+  @keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+  .drawer .dh{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+  .drawer .dic{font-size:28px}.drawer .dt{font-size:21px;font-weight:650}.drawer .dr{font-size:13px;color:rgba(244,239,230,.66)}
+  .drawer .does{font-size:15.5px;line-height:1.5;color:rgba(244,239,230,.92)}.drawer .does b{color:var(--brass-bright)}
+  .drawer .out{margin-top:14px;font-size:14px;background:rgba(212,178,122,.13);border-left:3px solid var(--brass);border-radius:8px;padding:11px 14px}
+  .drawer .out b{color:var(--brass-bright)}
+  .drawer .acts{display:flex;gap:11px;flex-wrap:wrap;margin-top:18px}
+  .drawer .acts a{text-decoration:none;font-weight:650;font-size:13.5px;padding:10px 18px;border-radius:9999px}
+  .drawer .p1{background:var(--brass);color:var(--indigo)}.drawer .p2{background:transparent;color:var(--brass-bright);border:1px solid rgba(212,178,122,.5)}
+  .hint{text-align:center;color:var(--pewter);font-size:13.5px;margin-top:18px}
+  .closer{max-width:720px;margin:42px auto 0;text-align:center}
+  .closer p{font-size:17px;color:var(--indigo)}.closer p b{color:var(--brass)}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:50px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="positioning.html">How it works</a>
+      <a href="demos.html">See it work</a><a href="org-chart.html" class="active">Your team</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>The team you could hire.</h1>
+    <p class="lede">The roles a growing business needs — universal hires plus specialists for your industry. Pick your business; tap any role to meet it. Each one live in 48 hours.</p>
+  </div></section>
+
+  <div class="wrap">
+    <div class="picker" id="picker"></div>
+    <div class="chart">
+      <div class="topnode"><span class="t">Your business</span><span class="b" id="bizname">Your business</span></div>
+      <div class="stem"></div>
+      <div class="cols" id="cols"></div>
+      <div class="spec">
+        <div class="sh">Specialists for <b id="specVert">your industry</b></div>
+        <div class="ss">Roles tuned to how your business actually runs.</div>
+        <div class="specrow" id="specrow"></div>
+      </div>
+    </div>
+    <div class="drawer" id="drawer"></div>
+    <p class="hint" id="hint">↑ Tap any role to see what it does for your business.</p>
+    <div class="closer"><p>You'd never hire all of these as people on day one. <b>You don't have to.</b> Start with the one job that hurts most — add the next when you're ready.</p></div>
+  </div>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="demos.html">See it work</a><a href="roi-calculator.html">ROI</a><a href="https://calendly.com/the Founder-yourco/30min">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const VERTS={
+  home:{label:"🌿 Home services",biz:"Home-services co.",vname:"home services",cust:"homeowners",job:"estimate",spec:[
+    {ic:"📐",nm:"On-site estimate booking",does:"Captures the job details up front and books the estimate at a time that fits the crew's route.",out:"Estimators show up prepared, not double-booked."},
+    {ic:"🍂",nm:"Seasonal re-booking",does:"Reaches out to past customers at the right season — spring cleanups, fall prep — to re-book recurring work.",out:"A full schedule before the season even starts."},
+    {ic:"🚚",nm:"Crew dispatch & updates",does:"Sends day-of routing and 'on the way' texts so customers and crews stay in sync.",out:"Fewer 'where's my crew?' calls."}]},
+  dental:{label:"🦷 Dental / medical",biz:"Your practice",vname:"dental",cust:"patients",job:"appointment",spec:[
+    {ic:"🔔",nm:"Patient recall & reactivation",does:"Nudges patients overdue for a cleaning or checkup back onto the schedule.",out:"The recall list stops gathering dust."},
+    {ic:"🪪",nm:"Insurance verification intake",does:"Collects insurance details up front and flags what needs the team to confirm — never guesses coverage.",out:"Fewer surprises at the front desk."},
+    {ic:"🩺",nm:"New-patient intake + triage",does:"Welcomes new patients, qualifies the visit, and safely escalates anything clinical to a human.",out:"New patients booked, emergencies routed."}]},
+  realestate:{label:"🏠 Real estate",biz:"Your brokerage",vname:"real estate",cust:"buyers & sellers",job:"showing",spec:[
+    {ic:"⚡",nm:"Listing-inquiry responder",does:"Replies to portal and sign-call leads in seconds, qualifies, and books the showing.",out:"You win the lead the slow agent loses."},
+    {ic:"🔑",nm:"Showing coordinator",does:"Schedules and confirms showings around your calendar and the listing's availability.",out:"No more phone-tag to see a house."},
+    {ic:"📨",nm:"Past-client nurture",does:"Keeps in touch with past clients and your sphere so referrals keep coming.",out:"Repeat + referral business on autopilot."}]},
+  restaurant:{label:"🍝 Restaurant",biz:"Your restaurant",vname:"restaurant",cust:"guests",job:"reservation",spec:[
+    {ic:"📖",nm:"Reservations + waitlist",does:"Takes reservations day and night, manages the waitlist, and notes occasions.",out:"Tables full, even after the host goes home."},
+    {ic:"🎉",nm:"Catering / large-party intake",does:"Qualifies catering and big-group requests and routes the high-value ones to you.",out:"The deals worth your time, surfaced."},
+    {ic:"🥡",nm:"Online-order support",does:"Answers menu, allergy, and order-status questions instantly.",out:"Fewer interruptions during the rush."}]},
+  services:{label:"💼 Professional services",biz:"Your firm",vname:"professional services",cust:"clients",job:"consult",spec:[
+    {ic:"✅",nm:"Lead qualify + conflict check",does:"Qualifies the matter and flags a conflict-check before booking — never gives advice.",out:"Only real, clean opportunities reach you."},
+    {ic:"🗓️",nm:"Consult scheduling",does:"Books and confirms consults around your availability.",out:"A full calendar without the back-and-forth."},
+    {ic:"📁",nm:"Document intake",does:"Collects the documents and details a matter needs to get moving.",out:"Engagements start ready, not waiting."}]},
+  retail:{label:"📦 Shop / e-commerce",biz:"Your store",vname:"retail",cust:"customers",job:"order",spec:[
+    {ic:"🚚",nm:"Order status + returns",does:"Handles 'where's my order' and starts returns/exchanges — routes refunds to a human.",out:"The support inbox stops overflowing."},
+    {ic:"🛒",nm:"Abandoned-cart recovery",does:"Follows up on carts and quotes that stalled, with a nudge that converts.",out:"Sales you'd already lost, recovered."},
+    {ic:"❓",nm:"Product Q&A",does:"Answers sizing, fit, and product questions from your catalog, accurately.",out:"More 'add to cart,' less hesitation."}]},
+  auto:{label:"🚗 Auto & repair",biz:"Your shop",vname:"auto service",cust:"drivers",job:"appointment",spec:[
+    {ic:"🔧",nm:"Service reminders & recalls",does:"Reminds customers when they're due for service and books it.",out:"Bays stay full with repeat work."},
+    {ic:"🔍",nm:"Diagnostic booking",does:"Books the diagnostic without guessing a repair price up front.",out:"Honest expectations, booked jobs."},
+    {ic:"📲",nm:"Status updates",does:"Texts customers as their vehicle moves through the shop.",out:"Fewer status calls, happier customers."}]},
+  fitness:{label:"🧘 Fitness & wellness",biz:"Your studio",vname:"fitness",cust:"members",job:"class",spec:[
+    {ic:"🎟️",nm:"Free-trial → membership",does:"Turns a curious DM into a booked free class, then nudges toward membership.",out:"The top of your funnel, captured."},
+    {ic:"📅",nm:"Class booking + waitlist",does:"Books classes, manages waitlists, and fills cancellations.",out:"Full classes, fewer empty mats."},
+    {ic:"💪",nm:"Win-back lapsed members",does:"Reaches members who've gone quiet before they cancel.",out:"Retention you weren't getting."}]},
+  beauty:{label:"💅 Beauty & spa",biz:"Your salon",vname:"beauty & spa",cust:"clients",job:"appointment",spec:[
+    {ic:"📆",nm:"Booking + rebooking",does:"Books appointments and prompts the next one before they leave.",out:"A calendar that books itself."},
+    {ic:"⏰",nm:"No-show reduction",does:"Confirms and reminds so empty chairs don't cost you.",out:"Fewer no-shows, more revenue."},
+    {ic:"✨",nm:"Package / promo upsell",does:"Offers the right package or add-on at booking — never a made-up medical claim.",out:"Higher ticket, on-brand."}]},
+  vet:{label:"🐾 Veterinary",biz:"Your clinic",vname:"veterinary",cust:"pet owners",job:"appointment",spec:[
+    {ic:"💉",nm:"Vaccine & checkup recall",does:"Reminds owners when pets are due and books the visit.",out:"Preventive care that doesn't slip."},
+    {ic:"🚨",nm:"Urgent-symptom triage",does:"Screens for red-flag symptoms and routes emergencies to a human — never diagnoses.",out:"Pets seen fast, judgment intact."},
+    {ic:"🛏️",nm:"Boarding & grooming booking",does:"Books boarding and grooming around your availability.",out:"Ancillary revenue, handled."}]},
+  trades:{label:"🛠️ Trades & contractors",biz:"Your business",vname:"the trades",cust:"customers",job:"estimate",spec:[
+    {ic:"🚨",nm:"Emergency dispatch",does:"Triages urgent calls (no heat, a leak), prioritizes them, and dispatches same-day.",out:"You win the high-value emergency call."},
+    {ic:"📐",nm:"Estimate coordination",does:"Captures the job and books the estimate to fit the route.",out:"More estimates, less windshield time."},
+    {ic:"📋",nm:"Permit & job follow-up",does:"Tracks job follow-ups and nudges the next step.",out:"Nothing falls between jobs."}]},
+  education:{label:"🎓 Education & tutoring",biz:"Your program",vname:"education",cust:"families",job:"session",spec:[
+    {ic:"📝",nm:"Enrollment inquiry",does:"Answers prospective families fast, qualifies fit, and books a tour or intro.",out:"Inquiries become enrollments."},
+    {ic:"🗓️",nm:"Class / tutor scheduling",does:"Schedules sessions and handles reschedules around availability.",out:"Less coordinating, more teaching."},
+    {ic:"👪",nm:"Parent updates",does:"Sends reminders and updates so parents stay in the loop.",out:"Fewer 'when is it again?' messages."}]},
+  financial:{label:"📊 Financial & insurance",biz:"Your agency",vname:"financial services",cust:"clients",job:"review",spec:[
+    {ic:"🧮",nm:"Quote-request intake",does:"Captures quote requests, qualifies, and books time with an advisor.",out:"More qualified quotes in the door."},
+    {ic:"🔁",nm:"Policy & renewal reminders",does:"Reminds clients ahead of renewals and reviews.",out:"Retention and cross-sell, on time."},
+    {ic:"📑",nm:"Document collection",does:"Collects the documents a quote or filing needs.",out:"Less chasing paperwork."}]}
+};
+const DEPTS=[
+  {h:"Front office",roles:[
+    {ic:"📞",nm:"Intake & booking",first:true,does:v=>`Answers every inbound from your ${v.cust} — call, text, or form — qualifies it, and books the ${v.job}. Day or night.`,out:"No missed lead ever sits in a voicemail again."},
+    {ic:"💬",nm:"Reception / FAQ",does:v=>`Answers the repetitive questions your ${v.cust} ask all day, from your knowledge base — and escalates anything it shouldn't guess on.`,out:"The front desk stops getting interrupted."},
+    {ic:"📅",nm:"Scheduling & reminders",does:v=>`Handles every ${v.job}, reschedule, and reminder — without a double-book.`,out:"Fewer no-shows, zero scheduling chaos."}
+  ]},
+  {h:"Growth",roles:[
+    {ic:"🔁",nm:"Lead follow-up",does:v=>`Follows up with every ${v.cust.replace(/s$/,'')} who went quiet — politely, persistently — until they book or opt out.`,out:"The leads you already paid for stop leaking."},
+    {ic:"✉️",nm:"Outbound / new business",does:v=>`Runs peer-to-peer outreach to bring new ${v.cust} in — staged for your approval, never spammy.`,out:"A top-of-funnel that doesn't depend on your time."},
+    {ic:"⭐",nm:"Reviews & referrals",does:v=>`Asks for a review after every happy job, and nudges for referrals — automatically.`,out:"More five-star proof, on autopilot."},
+    {ic:"📈",nm:"Account growth",does:v=>`Spots the next thing a happy ${v.cust.replace(/s$/,'')} needs and tees up the offer.`,out:"More revenue from customers you already have."}
+  ]},
+  {h:"Back office",roles:[
+    {ic:"🧾",nm:"Invoicing & AR",does:v=>`Sends invoices on schedule and chases what's overdue — tone-matched — with your okay on every send.`,out:"Cash in the door faster, no awkward chasing."},
+    {ic:"📊",nm:"Bookkeeping",does:v=>`Categorizes and logs every transaction so the books stay current.`,out:"No more month-end scramble."},
+    {ic:"🛟",nm:"Customer support",does:v=>`Handles status, changes, and routine support for your ${v.cust} — and routes money decisions to a human.`,out:"Support that never has an off day."}
+  ]}
+];
+let curV='home';
+const picker=document.getElementById('picker'),cols=document.getElementById('cols'),specrow=document.getElementById('specrow'),
+  drawer=document.getElementById('drawer'),bizname=document.getElementById('bizname'),specVert=document.getElementById('specVert');
+Object.entries(VERTS).forEach(([k,v])=>{const b=document.createElement('button');b.className='vchip'+(k==='home'?' on':'');b.textContent=v.label;
+  b.onclick=()=>{curV=k;[...picker.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');render();};picker.appendChild(b);});
+
+function render(){
+  const v=VERTS[curV]; bizname.textContent=v.biz; specVert.textContent=v.vname; cols.innerHTML=''; specrow.innerHTML='';
+  drawer.classList.remove('show'); document.getElementById('hint').style.display='block';
+  let delay=0;
+  DEPTS.forEach(d=>{
+    const col=document.createElement('div');col.className='dept';col.innerHTML=`<h3>${d.h}</h3>`;
+    d.roles.forEach(r=>{
+      const n=document.createElement('div');n.className='node';
+      n.innerHTML=`<span class="ic">${r.ic}</span><span class="nm">${r.nm}</span>${r.first?'<span class="first">most start here</span>':''}`;
+      n.onclick=()=>{clearSel();n.classList.add('sel');openDrawer(r.ic,r.nm,r.does(v),r.out);};
+      col.appendChild(n); const dd=delay;setTimeout(()=>n.classList.add('in'),dd);delay+=55;
+    });
+    cols.appendChild(col);
+  });
+  v.spec.forEach(s=>{
+    const n=document.createElement('div');n.className='specnode';
+    n.innerHTML=`<div class="si">${s.ic}</div><div class="sn">${s.nm}</div><div class="sd">specialist</div>`;
+    n.onclick=()=>{clearSel();n.classList.add('sel');openDrawer(s.ic,s.nm,s.does,s.out);};
+    specrow.appendChild(n); const dd=delay;setTimeout(()=>n.classList.add('in'),dd);delay+=70;
+  });
+}
+function clearSel(){document.querySelectorAll('.node,.specnode').forEach(x=>x.classList.remove('sel'));}
+function openDrawer(ic,nm,does,out){
+  document.getElementById('hint').style.display='none';
+  drawer.innerHTML=`<div class="dh"><span class="dic">${ic}</span><div><div class="dt">${nm}</div><div class="dr">a named digital employee · live in 48 hours</div></div></div>
+    <div class="does">${does}</div>
+    <div class="out">The outcome: ${out}</div>
+    <div class="acts"><a class="p1" href="https://calendly.com/the Founder-yourco/30min">Hire this one →</a><a class="p2" href="demos.html">See one like it work</a></div>`;
+  drawer.classList.add('show'); drawer.scrollIntoView({behavior:'smooth',block:'center'});
+}
+render();
+</script>
+</body>
+</html>

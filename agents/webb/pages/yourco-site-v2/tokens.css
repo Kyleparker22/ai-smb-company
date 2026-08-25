@@ -1,0 +1,58 @@
+/* tokens.css — the single source of the yourco palette and display face.
+ *
+ * WHY THIS FILE EXISTS. Until 2026-08-13, fifteen of the site's twenty-six pages restated the whole
+ * `:root` token block inline and never linked a shared stylesheet, so the brand existed as a
+ * document (`brand/DESIGN.md`) that the site did not consume. That fork was already visible:
+ * `--ink-muted` had drifted to .66 on the two legal pages while every other page used .62, and
+ * seven semantic colours (--green, --amber, --human, --stop, --loss, --bubble-*) had been invented
+ * per page with no entry in the design system at all.
+ *
+ * DESIGN.md §8 sets the order of truth as guidelines → DESIGN.md → site, and says *fix downstream,
+ * don't fork*. This file is the downstream fix: every page links it, nothing restates it.
+ *
+ * SCOPE, DELIBERATELY NARROW. Tokens and the font only — no selectors. A tokens-only file can be
+ * linked into a page that has never seen a shared stylesheet without changing a single rule that
+ * page already depends on. Consolidating the *component* CSS is a larger sweep with real regression
+ * risk and is tracked separately.
+ *
+ * ADDING A TOKEN IS A DESIGN DECISION, NOT A CONVENIENCE. New brand tokens are Luka's call, logged
+ * in `brand/CHANGELOG.md` (DESIGN.md §8). Page-local one-offs stay in the page's own `<style>` —
+ * that is what they are. The undeclared semantic colours listed above are still page-local on
+ * purpose: promoting them into the system means deciding what yourco's "success" green *is*, and
+ * that is a decision, not a sweep.
+ */
+
+/* ── the display face, self-hosted ────────────────────────────────────────────────────────────
+ * Fraunces variable (latin subset, 66KB), SIL Open Font License 1.1 — see fonts/OFL.txt.
+ * Previously loaded via `@import url(fonts.googleapis.com)` in sixteen files: an @import inside
+ * CSS cannot be preloaded and serialises the request chain, so the one element carrying the whole
+ * brand arrived last and flashed. Self-hosted + preloaded, it arrives with the page.
+ */
+@font-face{
+  font-family:'Fraunces';
+  font-style:normal;
+  font-weight:400 600;              /* variable range — matches the old css2 request */
+  font-display:swap;
+  src:url('fonts/fraunces-latin-var.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,
+                U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* ── the palette (DESIGN.md §1 — never restate these hexes by hand) ─────────────────────────── */
+:root{
+  --indigo:#161B33;      /* primary; dark bg, headers, wordmark-on-cream */
+  --indigo-deep:#0F1226; /* darker context (video frames, deep panels) */
+  --indigo-2:#1c2240;    /* raised dark surface */
+  --cream:#F4EFE6;       /* page bg, text-on-dark */
+  --cream-2:#E8E1D3;     /* hover / interactive secondary */
+  --parchment:#EAE1CD;   /* alternate full-bleed band + footers */
+  --brass:#B8965A;       /* THE accent — sparingly (DESIGN.md §4.1) */
+  --brass-bright:#D4B27A;/* brass hover/highlight */
+  --oxblood:#6B1E29;     /* reserved: eval-pass, "live" status, signature moments ONLY */
+  --pewter:#6E7180;      /* neutral */
+  --ink-muted:rgba(22,27,51,.62);
+  --on-dark:#F4EFE6;
+  --on-dark-muted:rgba(244,239,230,.66);
+  --hairline:rgba(22,27,51,.12);
+  --hairline-dark:rgba(244,239,230,.16);
+}

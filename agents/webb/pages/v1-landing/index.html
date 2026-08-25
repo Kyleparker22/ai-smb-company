@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco — a digital employee for your business, live in 48 hours</title>
+<meta name="description" content="yourco designs, deploys, and runs a named AI employee inside your company. It does the work. You own the outcome — never the tokens, models, or infrastructure." />
+<style>
+  /* YourCo brand (Luka v0.2) executed with Apple-system discipline. */
+  :root{
+    --indigo:#161B33;
+    --indigo-deep:#0F1226;
+    --indigo-2:#1c2240;
+    --cream:#F4EFE6;
+    --cream-2:#E8E1D3;
+    --parchment:#EFE8DA;
+    --brass:#B8965A;
+    --brass-bright:#D4B27A;
+    --pewter:#6E7180;
+    --ink-muted:rgba(22,27,51,.62);
+    --on-dark:#F4EFE6;
+    --on-dark-muted:rgba(244,239,230,.66);
+    --hairline:rgba(22,27,51,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    background:var(--cream);color:var(--indigo);
+    font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;
+  }
+  /* full-bleed alternating tiles; color change is the primary divider */
+  .tile{padding:88px 0}
+  .tile.dark{background:var(--indigo);color:var(--on-dark)}
+  .tile.parchment{background:var(--parchment)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 28px}
+
+  /* slim frosted nav; minimal wordmark per Luka (small-size lockup) */
+  .nav{position:sticky;top:0;z-index:10;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:54px}
+  .mark{font-size:21px;font-weight:600;letter-spacing:-.01em;color:var(--indigo);text-decoration:none}
+  .mark .dot{color:var(--brass)}
+
+  /* single action grammar: one brass pill */
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;font-size:17px;letter-spacing:-.01em;padding:13px 26px;border-radius:9999px;border:1px solid var(--brass);transition:background .15s ease,transform .1s ease;white-space:nowrap}
+  .pill:hover{background:var(--brass-bright)}
+  .pill:active{transform:scale(.97)}
+  .pill.sm{font-size:14px;padding:9px 18px}
+
+  /* hero */
+  .hero{padding-top:104px;padding-bottom:64px}
+  .hero h1{font-size:clamp(38px,6.4vw,60px);line-height:1.06;font-weight:600;letter-spacing:-.03em;max-width:14ch}
+  /* the one brass "eval gate" rule — a single checkpoint accent on this surface */
+  .gate{display:flex;align-items:center;gap:14px;margin:30px 0 0;max-width:520px}
+  .gate .line{height:1px;background:var(--brass);flex:1}
+  .gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg);flex:none}
+  .hero p{font-size:clamp(19px,2.6vw,24px);font-weight:400;line-height:1.42;letter-spacing:-.01em;color:var(--ink-muted);margin:30px 0 36px;max-width:30ch}
+
+  /* demo — "paper, not glass": thin brass frame, no drop shadow */
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-bottom:18px}
+  .demo-frame{display:block;position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--indigo-deep);border:1px solid var(--brass);text-decoration:none}
+  .demo-cap{font-size:17px;color:var(--on-dark-muted);margin-top:22px;letter-spacing:-.01em}
+  .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:var(--brass);display:flex;align-items:center;justify-content:center;transition:transform .12s ease}
+  .demo-frame:hover .play{transform:translate(-50%,-50%) scale(1.05)}
+  .play::after{content:"";display:block;width:0;height:0;border-left:23px solid var(--indigo);border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:7px}
+
+  /* values — quiet, generous, no chrome */
+  .values{display:grid;gap:0}
+  .value{display:grid;grid-template-columns:42px 1fr;gap:20px;align-items:start;padding:30px 0;border-top:1px solid var(--hairline)}
+  .value:first-child{border-top:0}
+  .value .n{font-size:14px;font-weight:600;color:var(--brass);border:1.5px solid var(--brass);border-radius:9999px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;margin-top:3px}
+  .value h3{font-size:clamp(21px,3vw,28px);font-weight:600;letter-spacing:-.02em;line-height:1.15}
+  .value p{font-size:17px;color:var(--ink-muted);margin-top:8px;max-width:54ch}
+
+  /* trust strip — reframes the approval moat */
+  .trust .wrap{max-width:760px;text-align:center}
+  .trust h2{font-size:clamp(26px,4vw,36px);font-weight:600;letter-spacing:-.025em;line-height:1.12}
+  .trust p{font-size:19px;color:var(--on-dark-muted);margin:20px auto 0;max-width:50ch;line-height:1.45}
+
+  /* closing */
+  .close{text-align:center}
+  .close h2{font-size:clamp(28px,4.6vw,40px);font-weight:600;letter-spacing:-.025em;line-height:1.1;max-width:18ch;margin:0 auto 30px}
+
+  /* footer — the wax seal: locked Eval Gate wordmark lockup */
+  footer{background:var(--parchment);padding:64px 0;border-top:1px solid var(--hairline);text-align:center}
+  .lockup{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:22px}
+  .lockup .rule{height:1px;width:clamp(40px,12vw,96px);background:var(--brass)}
+  .lockup .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg);flex:none}
+  .lockup .word{font-size:24px;font-weight:600;letter-spacing:-.01em;color:var(--indigo)}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:10px}
+  .sig .cap{}  /* capital I stays as typed */
+  .sig .p{color:var(--brass)}
+  .meta{font-size:13px;color:var(--pewter);letter-spacing:-.01em}
+
+  @media (max-width:640px){
+    .tile{padding:60px 0}
+    .hero{padding-top:68px}
+    .value{grid-template-columns:1fr;gap:8px}
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="#top">yourco<span class="dot">.</span></a>
+      <a class="pill sm" href="/book">Book 30 min</a>
+    </div>
+  </nav>
+
+  <!-- hero (cream) -->
+  <section class="tile hero" id="top">
+    <div class="wrap">
+      <h1>a digital employee for your business — live in 48 hours.</h1>
+      <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+      <p>yourco designs, deploys, and runs a named AI employee inside your company. It does the work. You own the outcome — never the tokens, the models, or the infrastructure.</p>
+      <a class="pill" href="/book">Book 30 min &rarr;</a>
+    </div>
+  </section>
+
+  <!-- demo (indigo) -->
+  <section class="tile dark">
+    <div class="wrap">
+      <div class="eyebrow">see it work</div>
+      <a class="demo-frame" href="https://share.descript.com/view/L6EdW0JYGQJ" target="_blank" rel="noopener" aria-label="Watch the 60-second intake employee demo">
+        <span class="play" aria-hidden="true"></span>
+      </a>
+      <div class="demo-cap">sixty seconds — what an yourco intake employee does on day one.</div>
+    </div>
+  </section>
+
+  <!-- values (cream) -->
+  <section class="tile">
+    <div class="wrap">
+      <div class="values">
+        <div class="value"><div class="n">1</div><div><h3>Live in 48 hours.</h3><p>From a signed agreement to a working employee on your first use case — two days, not a two-quarter project.</p></div></div>
+        <div class="value"><div class="n">2</div><div><h3>Built around your business &mdash; not a template.</h3><p>We scope it to the work you actually want handled &mdash; answering calls and booking jobs for one company, chasing invoices or drafting proposals for another. Its own email inside your business, doing the job you built it for &mdash; a hire that doesn&rsquo;t sleep.</p></div></div>
+        <div class="value"><div class="n">3</div><div><h3>You own the outcome, not a tool.</h3><p>We own reliability, security, and improvement. You get the result — nothing to manage, no dashboard to babysit.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- trust (indigo) -->
+  <section class="tile dark trust">
+    <div class="wrap">
+      <h2>Nothing goes out without your say-so.</h2>
+      <p>Your employee drafts, schedules, and prepares — you approve what matters before it ever reaches a customer. Always on, never off the leash.</p>
+    </div>
+  </section>
+
+  <!-- closing (cream) -->
+  <section class="tile close">
+    <div class="wrap">
+      <h2>see what one digital employee does for you.</h2>
+      <a class="pill" href="/book">Book 30 min &rarr;</a>
+    </div>
+  </section>
+
+  <!-- footer: Eval Gate wordmark lockup + signature line (the wax seal) -->
+  <footer>
+    <div class="wrap">
+      <div class="lockup" aria-label="yourco">
+        <span class="dia"></span><span class="rule"></span>
+        <span class="word">yourco</span>
+        <span class="rule"></span><span class="dia"></span>
+      </div>
+      <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+      <div class="meta">yourco &middot; getteamyourco.com</div>
+    </div>
+  </footer>
+
+</body>
+</html>

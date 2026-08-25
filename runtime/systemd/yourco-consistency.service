@@ -1,0 +1,14 @@
+[Unit]
+Description=YourCo cross-surface consistency watchdog — invariants across site/packet/spec/CRM (drift from parallel sessions)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+# Deterministic check (not an agent prompt): pull, run the invariant sweep, commit+push the dated
+# report (loops/_consistency/<date>.md). Mirrors yourco-agent-registry.service.
+ExecStart=/bin/bash -lc 'cd /home/claudeops/yourco-os && git pull --rebase --autostash >/dev/null 2>&1 || true; python3 runtime/consistency-check.py --quiet; rc=$?; git add loops/_consistency >/dev/null 2>&1 || true; git commit -q -m "loop:consistency $(date -u +%%FT%%TZ)" >/dev/null 2>&1 || true; git push -q >/dev/null 2>&1 || true; exit 0'
+TimeoutStartSec=300

@@ -1,0 +1,9 @@
+2026-07-05 — The agent-builder layer is now a named competitive set
+
+Source: the Founder's ~45-item tool triage (`decisions/2026-07-05_tool-triage.md`)
+Pattern: Dify, Langflow, Open WebUI, Typebot, AnythingLLM (and Glean at the enterprise end) are the no-code/self-serve agent layer prospects will have tried — or that cheap competitors build on. They are what yourco counter-positions against, not candidate stack: they cannot carry rigorous evals, observability, or approval gates (the no-code stance, `decisions/2026-06-11_no-code-tooling-stance.md`).
+Implication: Brett — add these five as named entries in the competitive watch; track their SMB-facing positioning and pricing so the sell-against stays current. Sales side (Reilly/Michelle/Sadie): when a prospect says "we tried building a bot on Dify/Make/GPTs," that is a *qualified-pain signal*, not competition — the discovery question is "who owns it when it breaks at 2am?" The answer is the moat pitch.
+Audience: Brett (primary); Reilly, Michelle, Sadie (sell-against framing)
+Addendum 2026-07-05: same layer, educational flavor — free harness-engineering courses + OSS harness-builder skills (e.g. WalkingLabs `harness-creator`) now teach/scaffold the generic harness (CLAUDE.md, progress file, evaluator) in one command. Confirms the commoditization line; yourco's sell stays the *operated*, eval-earned, business-specific reliability layer, not the template. Useful sales artifact from that source: Anthropic's same-model bare-vs-harness proof ($9/broken vs playable app) — cite it, never restate as our own metric.
+
+Triggers: agent:brett, competitive set, sell against, positioning against a competitor, loop:advisor, loop:brett-ideas, skill:tool-triage

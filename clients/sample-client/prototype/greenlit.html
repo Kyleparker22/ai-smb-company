@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client — greenlit</title>
+<!-- MOCKUP (sample data). The all-clear Client Owner + Charlene get when deposit + suppliers + subs all confirm. -->
+<style>
+  :root{--bg:#e9eae6;--card:#fff;--ink:#1c2419;--muted:#6b7280;--line:#e6e7e2;--sc:#2c5f2d;--sc-d:#234a24;--green:#2f7d52;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;min-height:100vh;padding:22px 14px}
+  .phone{width:100%;max-width:390px;background:var(--card);border-radius:30px;overflow:hidden;box-shadow:0 20px 60px rgba(28,36,25,.22);align-self:flex-start}
+  @media(max-width:430px){.phone{border-radius:0;box-shadow:none}body{padding:0}}
+  .hero{background:linear-gradient(160deg,var(--sc),var(--sc-d));color:#fff;padding:30px 22px 26px;text-align:center}
+  .hero .ic{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 14px}
+  .hero h1{font-size:23px;font-weight:720;letter-spacing:-.01em}
+  .hero p{font-size:13.5px;color:rgba(255,255,255,.85);margin-top:6px}
+  .body{padding:20px 18px}
+  .job{font-size:15px;font-weight:680;margin-bottom:3px}
+  .jp{font-size:13px;color:var(--muted);margin-bottom:16px}
+  .checks{display:grid;gap:10px;margin-bottom:18px}
+  .chk{display:flex;align-items:center;gap:11px;border:1px solid #cfe6d4;background:#f3f9f4;border-radius:12px;padding:12px 14px}
+  .chk .c{width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+  .chk .t{font-size:14px;font-weight:600;color:var(--sc-d)}
+  .chk .s{font-size:12px;color:var(--muted)}
+  .go{background:#f1f8f2;border:1px solid #cfe6d4;border-radius:12px;padding:15px;text-align:center}
+  .go .big{font-size:16px;font-weight:680;color:var(--sc-d)}
+  .go .sm{font-size:13px;color:var(--muted);margin-top:4px}
+  .note{font-size:11.5px;color:var(--muted);text-align:center;margin-top:16px}.note b{color:var(--sc)}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="hero">
+      <div class="ic">🎉</div>
+      <h1>Greenlit — all systems go</h1>
+      <p>Everything's confirmed for the Chen job. You're clear to start.</p>
+    </div>
+    <div class="body">
+      <div class="job">Robert &amp; Amanda Chen</div>
+      <div class="jp">Backyard paver patio + seating wall · $48,500 · starts Jul 6</div>
+
+      <div class="checks">
+        <div class="chk"><span class="c">✓</span><div><div class="t">Deposit received</div><div class="s">$16,975 · paid by card</div></div></div>
+        <div class="chk"><span class="c">✓</span><div><div class="t">Suppliers confirmed</div><div class="s">Carolina Stone + Volt Lighting · delivery dates locked</div></div></div>
+        <div class="chk"><span class="c">✓</span><div><div class="t">Subcontractor confirmed</div><div class="s">Precision Grading · available, rate agreed</div></div></div>
+      </div>
+
+      <div class="go">
+        <div class="big">Crew is clear to start Jul 6.</div>
+        <div class="sm">You and Charlene both got this. Nothing's left hanging.</div>
+      </div>
+
+      <div class="note">Your employee handled the coordination · every message was approved by you or Charlene · built &amp; run by <b>yourco</b></div>
+    </div>
+  </div>
+</body>
+</html>

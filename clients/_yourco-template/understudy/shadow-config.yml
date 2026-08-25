@@ -1,0 +1,53 @@
+# Understudy shadow-capture config — per-role stub (offerings/understudy/SPEC.md §3)
+# One file per shadowed role: clients/<client>/understudy/<role>-shadow-config.yml
+# The weekly shadow loop (built per .claude/skills/add-runtime-loop) reads this file.
+# HARD RULE: the loop REFUSES to run unless consent.signed is true and the file it points
+# to is the signed pack. No covert monitoring, ever (spec §8).
+
+role:
+  title: "[[ROLE TITLE]]"
+  owner: "[[EMPLOYEE NAME]]"
+  client: "[[CLIENT NAME]]"
+  handbook: "clients/[[client]]/understudy/[[role]]-handbook.md"
+
+consent:
+  signed: false                      # loop no-ops while false — this is the master switch
+  signed_pack: "[[path to signed consent-form + scope schedule]]"
+  scope_version: "[[v1]]"
+  signed_date: "[[YYYY-MM-DD]]"
+  revoked: false                     # flip true on revocation -> loop stops same-day,
+                                     # extracts deleted; handbook keeps operational patterns only
+
+# --- SHADOW MODE: permanently R0, observe-only. This block never grants any action. ---
+mode: R0                             # fixed. The shadow loop reads, diffs the handbook,
+                                     # proposes handbook updates. It sends nothing, ever.
+cadence: weekly                      # standard runtime loop pattern
+
+sources:                             # read-only, and ONLY what the signed scope schedule lists
+  email:
+    mailbox: "[[mailbox address]]"
+    folders_in_scope: ["[[Inbox]]", "[[Sent]]"]
+  calendar: "[[calendar id]]"
+  systems: []                        # e.g. [{ name: "[[QuickBooks]]", scope: "[[modules]]", access: read-only }]
+
+exclusions:                          # scope filter AND prompt-level refusal; ambiguous = dropped, not summarized
+  folders: ["[[Personal]]", "[[HR]]"]
+  content: [hr, medical, compensation, disciplinary, legal, personal]
+  voice_capture: false               # HARD OFF — FL two-party consent; stays off until counsel clears (spec §5)
+
+# --- ACTIVATION: a client DECISION, never automatic. Flipping this is what moves the
+# understudy from R0 shadow to R1 active — and only within the activation window. ---
+activation:
+  active: false                      # the client's approver flips this on a named event below
+  events: ["[[resignation]]", "[[illness]]", "[[PTO >= N days]]"]   # client defines
+  approver: "[[NAMED CLIENT APPROVER]]"
+  active_mode: R1                    # floor: draft-for-review on EVERYTHING outward; ceiling R2;
+                                     # payments/pricing/HR/legal/medical/financial stay R1 always
+  drafts_route_to: "[[named reviewer]]"
+  covers: ["[[workflows from handbook §2 the understudy drafts]]"]
+  escalates: ["[[everything else — per handbook §7]]"]
+  deactivation: "on role-owner return or backfill; writes a handover debrief to the handbook"
+
+branding:                            # external-surface rules — client staff/customers see only:
+  agent_name: "[[client-chosen name — never an yourco roster name]]"
+  brand: "[[client brand only — white-label]]"

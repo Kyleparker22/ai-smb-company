@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+<main class="mob" style="max-width:420px;padding-top:12vh">
+  <div class="logo" style="justify-content:center;margin-bottom:22px">
+    <span class="mark">◈</span><span style="font-size:19px">Property OS</span>
+  </div>
+  <div class="card"><div class="card-b" style="display:flex;flex-direction:column;gap:13px">
+    <div>
+      <h2 style="margin-bottom:5px">Sign in</h2>
+      <div class="muted small">Enter the access code you were given. Residents, owners
+        and staff each land in their own view — the code is the identity.</div>
+    </div>
+    <input class="in" id="code" placeholder="access code" autocomplete="off" autofocus>
+    <button class="btn lg primary" onclick="go()">Continue</button>
+    <div class="hint" id="hint">Vendors don't sign in — your job link is your key.</div>
+  </div></div>
+</main>
+<script src="/app.js"></script>
+<script>
+async function go() {
+  const r = await fetch('/api/auth/login', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ code: $('#code').value.trim() })
+  });
+  const j = await r.json();
+  if (!r.ok) { $('#hint').textContent = j.error || 'Unknown code'; return; }
+  location.href = { staff: '/staff.html', owner: '/owner.html', tenant: '/tenant.html' }[j.role] || '/';
+}
+$('#code').addEventListener('keydown', e => e.key === 'Enter' && go());
+</script>
+</body>
+</html>

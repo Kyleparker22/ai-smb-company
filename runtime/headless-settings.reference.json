@@ -1,0 +1,35 @@
+{
+  "_comment": "REFERENCE COPY of the host approval gate. The ACTIVE file is the server's ~/.claude/settings.json (machine-local, NOT this repo path, so Cowork is unaffected). Apply changes here, then copy to the server. This is Step 6 of the always-on runtime: loops draft/post/read freely; external send / delete / payments are denied. Encodes the approval posture in decisions/2026-06-09_always-on-runtime.md. 2026-06-16: added non-destructive inbox organizing for Jim (create/apply labels, archive = remove INBOX label, mark read) via modify_email/create_label/batch_modify_emails — REVERSIBLE bulk relabel, never irreversible. send + delete (incl. batch_delete) remain denied.",
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "defaultMode": "default",
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "mcp__slack__conversations_add_message",
+      "mcp__slack__channels_list",
+      "mcp__slack__conversations_history",
+      "mcp__slack__conversations_replies",
+      "mcp__slack__conversations_search_messages",
+      "mcp__gmail__draft_email",
+      "mcp__gmail__read_email",
+      "mcp__gmail__search_emails",
+      "mcp__gmail__list_email_labels",
+      "mcp__gmail__create_label",
+      "mcp__gmail__get_or_create_label",
+      "mcp__gmail__modify_email",
+      "mcp__gmail__batch_modify_emails",
+      "mcp__calendar"
+    ],
+    "deny": [
+      "Bash",
+      "mcp__gmail__send_email",
+      "mcp__gmail__delete_email",
+      "mcp__gmail__batch_delete_emails"
+    ]
+  }
+}

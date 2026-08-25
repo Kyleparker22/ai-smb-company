@@ -1,0 +1,8 @@
+2026-06-11 — Check a platform's data/API terms BEFORE wiring a connector for commercial + LLM use
+
+Source: Reddit API attempt for Sadie (`agents/rafi/reddit-api-assessment.md`)
+Pattern: Several major platforms (Reddit confirmed; X/Twitter same posture) restrict their free API to *non-commercial* use AND separately restrict *using their content with AI/LLMs* — both require a paid commercial data agreement. YourCo's default connector use is commercial + LLM-driven, so it trips both. The terms-acceptance gate (e.g. Reddit's "Responsible Builder Policy") is the moment this surfaces — and accepting it binds YourCo.
+Implication: For any new connector that (a) serves a commercial purpose and (b) feeds content to an LLM, run a quick compliance check FIRST — Rafi reads the platform's data/API terms before we accept anything or build the integration. Don't rubber-stamp a developer-terms acknowledgment; it's an agreement on YourCo's behalf. Default to the most defensible posture: open-web search (WebSearch) or genuine human-in-the-loop use over systematic API/scraping, unless a commercial agreement is worth it. This is on-brand: YourCo's moat is compliance + trust — we don't violate platform terms to find leads.
+Audience: Kemba/platform (connector wiring), David (integrations), Rafi (compliance), the Founder
+
+Triggers: skill:wire-credentialed-connector, agent:kemba, agent:rafi, agent:david, connector wiring, api terms, commercial use

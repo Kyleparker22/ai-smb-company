@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rebid OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-graveyard"></section>
+  <section class="view" id="v-capacity"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Every lost quote is a standing
+order against COUNTED idle hours. No bid goes below the marginal floor (the floor's arithmetic
+prints on every re-bid), no hour is sold from an unmaintained schedule (the desk stands down),
+a capability loss never re-bids, and deadline answers cite counted hours — never optimism.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'graveyard',label:'The graveyard'},
+      {id:'capacity',label:'Capacity, counted'},{id:'inbox',label:'Inbox'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,graveyard,capacity,inbox,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board, g = b.graveyard;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.machines} machines · ${d.config.classes} classes`;
+  const reasons = Object.entries(g.by_reason||{}).map(([k,v])=>`${k} ${v}`).join(' · ');
+  document.getElementById('v-board').innerHTML =
+    panel('The graveyard vs the counted hours', '',
+      `<div class="grid">
+        ${stat('Standing orders watching', fmt.num(g.watching), `of ${g.count} lost quotes · ${reasons}`, g.watching?'alert':'')}
+        ${stat('Died-at value on file', fmt.money(g.died_at_value), `${g.unrebiddable} UNREBIDDABLE (no recorded hours) · ${g.retired} retired`)}
+        ${stat('Counted idle, 2 weeks', b.idle_counted+'h', b.unmeasured_classes.length
+              ? `${b.idle_held}h held by pending drafts · ${esc(b.unmeasured_classes.join(', '))}: unmeasured — desk stands down`
+              : `${b.idle_held}h held by pending drafts`, b.unmeasured_classes.length?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the deadline RFQ reads first', b.messages_open?'bad':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor — every re-bid, every deadline answer')}
+        ${stat('This week, counted', `${b.week_counted.rebids_sent} re-bid(s) sent`,
+               `${b.week_counted.deadline_answers_sent} deadline answer(s) · ${b.week_counted.losses_recorded} loss(es) recorded · counted from the log`)}</div>`);
+}
+
+async function graveyard(){
+  const d = await API.get('/api/graveyard');
+  document.getElementById('v-graveyard').innerHTML =
+    `<div class="banner warn">Every lost quote is a standing order watching counted idle. Try it:
+      the standing order fires with the floor's arithmetic printed; a $2,000 bid under the floor has
+      NO PATH; a capability loss never re-bids; unrecorded hours read UNREBIDDABLE; the
+      unmaintained wire-EDM week stands the desk down.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="rebid('gq_demo_rebid')">Re-bid: the standing order fires</button>
+      <button class="act" onclick="propose('gq_demo_rebid',2000)">Propose $2,000 — below the floor</button>
+      <button class="act" onclick="rebid('gq_demo_capability')">Re-bid a capability loss</button>
+      <button class="act" onclick="rebid('gq_demo_unrecorded')">Re-bid unrecorded hours</button>
+      <button class="act" onclick="rebid('gq_demo_edm')">Re-bid on the uncounted week</button>
+     </div><div id="gout"></div>` +
+    panel('The graveyard', 'lost quotes, each with its loss reason and status', table(
+      [{label:'Part'},{label:'Class'},{label:'Hours',num:true},{label:'Died at',num:true},{label:'Loss'},{label:'Status'}],
+      d.rows, q=>`<td>${esc(q.part||'')}${q.demo_tag?' '+pill(q.demo_tag,'brand'):''}<div class="why">${esc(q.buyer||'')} · lost ${fmt.date(q.lost_at)}</div></td>
+        <td>${esc(q.machine_class||'')}</td>
+        <td class="num">${q.hours!=null?q.hours+'h':pill('none','bad')}</td>
+        <td class="num">${q.died_at_price!=null?fmt.money(q.died_at_price):'—'}</td>
+        <td>${pill(q.loss_reason, q.loss_reason==='capability'?'bad':q.loss_reason==='price'?'warn':'')}</td>
+        <td class="why">${esc(q.status||'')}</td>`), true);
+}
+async function rebid(id){
+  const r = await API.post(`/api/graveyard/${id}/rebid`);
+  document.getElementById('gout').innerHTML = r.refused
+    ? panel(r.stand_down?'The desk stands down':'Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : r.skipped
+    ? panel('Bounded — no draft', '', `<div class="banner">${esc(r.skipped)}</div>`)
+    : panel('Re-bid drafted at R1 — a human sends', '',
+        `<div class="strong" style="white-space:pre-wrap">${esc(r.draft)}</div>
+         <div class="why mono" style="margin-top:8px">${esc(r.floor.arithmetic)}</div>
+         <div class="why">week of ${esc(r.week_of)} · ${r.held_hours}h already held by other pending drafts</div>`);
+}
+async function propose(id,price){
+  const r = await API.post(`/api/graveyard/${id}/propose`,{price});
+  document.getElementById('gout').innerHTML = r.refused
+    ? panel('NO PATH', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Clears the floor', '', `<div class="strong">${esc(r.note)}</div>
+        <div class="why mono">${esc(r.floor.arithmetic)}</div>`);
+}
+
+async function capacity(){
+  const d = await API.get('/api/capacity');
+  document.getElementById('v-capacity').innerHTML =
+    `<div class="banner warn">Counted, never estimated: available shift hours − booked jobs =
+      idle. A week whose schedule wasn't maintained reads <b>unmeasured</b> and the desk stands
+      down — we don't sell hours we can't count. A drafted re-bid holds its hours until a human
+      decides, so two re-bids can never sell the same counted hour.</div>` +
+    panel('Idle hours per machine class per week', esc(d.note), table(
+      [{label:'Class'},{label:'Week of'},{label:'Machines',num:true},{label:'Available',num:true},{label:'Booked',num:true},{label:'Counted idle',num:true},{label:'Held by drafts',num:true}],
+      d.rows, r=>r.idle
+        ? `<td>${esc(r.machine_class)}</td><td>${esc(r.week_of)}</td><td class="num">${r.machines}</td>
+           <td colspan="4">${blank(r.idle._missing)}</td>`
+        : `<td>${esc(r.machine_class)}</td><td>${esc(r.week_of)}</td><td class="num">${r.machines}</td>
+           <td class="num">${r.available}h</td><td class="num">${r.booked}h</td>
+           <td class="num strong">${r.idle_hours}h</td><td class="num">${r.held_hours||0}h</td>`), true);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"Need 200 by Friday, can you?" is answered from <b>counted</b> idle
+      hours for the class — never optimism. No recorded hours-per-piece, no committed answer;
+      an unmaintained schedule stands the desk down.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='deadline_rfq'?'bad':m.label==='rebid_reply'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}${s.answer?' — '+esc(s.answer):''}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['rebids_won_yr','Re-bids won / yr','your number until wins land'],
+    ['avg_rebid_price','Avg re-bid price','your number'],
+    ['target_margin','Target margin','recorded'],
+    ['idle_hours_sold_yr','Idle hours sold / yr','your number'],
+    ['avg_price_hr','Avg price / hr','your number'],
+    ['avg_variable_cost_hr','Avg variable cost / hr','recorded (fleet average)'],
+    ['rebid_hours_wk','Re-bid & chase hrs/wk','your number'],
+    ['estimator_rate','Estimator rate','your number'],
+    ['price_integrity_value','The defensible-price story','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

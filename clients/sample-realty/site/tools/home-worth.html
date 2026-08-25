@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>What's Your Home Worth? — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  .hero{background:var(--ink);color:var(--on-dark);padding:90px 0}
+  .hero .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start}
+  @media(max-width:940px){.hero .grid{grid-template-columns:1fr}}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  .hero h1{font-family:Didot,Georgia,serif;font-size:clamp(36px,4.6vw,58px);font-weight:400;line-height:1.1;margin-top:16px}
+  .hero h1 em{font-style:italic}
+  .hero .lede{font-family:Didot,Georgia,serif;font-size:19px;font-style:italic;color:var(--on-dark-soft);margin-top:20px;max-width:46ch;line-height:1.7}
+  .hero .points{margin-top:34px;border-top:1px solid var(--line-dark)}
+  .pt{display:flex;gap:16px;padding:15px 0;border-bottom:1px solid var(--line-dark);font-size:14.5px;align-items:baseline}
+  .pt i{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red)}
+  .pull{margin-top:30px;padding-left:22px;border-left:2px solid var(--red);font-family:Didot,Georgia,serif;font-size:20px;font-style:italic;line-height:1.55}
+
+  .card{background:var(--paper);color:var(--ink);padding:40px 40px 36px;border:1px solid var(--line)}
+  .card h2{font-family:Didot,Georgia,serif;font-size:24px;font-weight:400}
+  .card h2 em{font-style:italic;color:var(--red)}
+  .card .sub{font-family:Didot,Georgia,serif;font-size:13.5px;font-style:italic;color:var(--ink-soft);margin-top:8px}
+  form{display:grid;gap:14px;margin-top:24px}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:520px){.frow{grid-template-columns:1fr}}
+  label{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+  input,select{width:100%;font-family:"Avenir Next",Avenir,sans-serif;font-size:14.5px;padding:13px 14px;background:#fff;border:1px solid var(--line);border-radius:4px;color:var(--ink)}
+  input:focus,select:focus{outline:2px solid var(--red);outline-offset:-1px}
+  form button{font-family:"Avenir Next",Avenir,sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--red);color:#fff;border:0;padding:16px 30px;border-radius:9999px;cursor:pointer;margin-top:6px}
+  form button:hover{background:#c70004}
+  .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.05em;color:var(--ink-soft);line-height:1.8}
+  .done{display:none;text-align:center;padding:30px 6px 8px}
+  .done .big{font-family:Didot,Georgia,serif;font-size:26px}
+  .done .big em{font-style:italic;color:var(--red)}
+  .done p{font-family:Didot,Georgia,serif;font-size:14.5px;font-style:italic;color:var(--ink-soft);margin-top:12px}
+  .card.sent form{display:none}
+  .card.sent .done{display:block}
+
+  section.how{padding:92px 0}
+  section.how h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;margin-top:12px}
+  section.how h2 em{font-style:italic;color:var(--red)}
+  .steps3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:44px;border-top:1px solid var(--line)}
+  @media(max-width:840px){.steps3{grid-template-columns:1fr}}
+  .s3{padding:30px 30px 30px 0;border-bottom:1px solid var(--line)}
+  .s3+.s3{padding-left:30px;border-left:1px solid var(--line)}
+  @media(max-width:840px){.s3+.s3{padding-left:0;border-left:0}}
+  .s3 .n{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);font-size:14px}
+  .s3 h3{font-family:Didot,Georgia,serif;font-size:21px;font-weight:400;margin-top:6px}
+  .s3 p{font-size:14px;color:var(--ink-soft);margin-top:8px;line-height:1.75}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine2{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo, not the live site</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../results.html">Results</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap grid">
+    <div>
+      <div class="kicker">What's Your Home Worth?</div>
+      <h1>Zillow has never walked your street. <em>We have.</em></h1>
+      <div class="lede">An algorithm can't see your renovated kitchen, your lot, your light, or what the house three doors down really sold for and why. A broker with 24 years in these neighborhoods can.</div>
+      <div class="points">
+        <div class="pt"><i>i.</i>A real comparative market analysis — built by Kimi personally, not generated</div>
+        <div class="pt"><i>ii.</i>From actual closed sales around your home, adjusted for condition, lot &amp; timing</div>
+        <div class="pt"><i>iii.</i>Delivered within 24 hours, walked through with you line by line</div>
+        <div class="pt"><i>iv.</i>Free, no strings — whether you list this year or in five</div>
+      </div>
+      <div class="pull">"The estimate is the easy part. Knowing what would make your home worth more — that's the conversation."</div>
+    </div>
+    <div class="card" id="cmaCard">
+      <h2>Your home's <em>real number.</em></h2>
+      <div class="sub">Takes 30 seconds. Kimi replies within 24 hours.</div>
+      <form id="cmaForm">
+        <div>
+          <label for="addr">Property address</label>
+          <input id="addr" placeholder="Street address, city" required/>
+        </div>
+        <div class="frow">
+          <div>
+            <label for="nm">Name</label>
+            <input id="nm" placeholder="Your name" required/>
+          </div>
+          <div>
+            <label for="ct">Email or phone</label>
+            <input id="ct" placeholder="How to reach you" required/>
+          </div>
+        </div>
+        <div class="frow">
+          <div>
+            <label for="tf">Thinking of selling…</label>
+            <select id="tf">
+              <option>Within 3 months</option>
+              <option>3–12 months</option>
+              <option>1+ years out</option>
+              <option>Just curious what it's worth</option>
+            </select>
+          </div>
+          <div>
+            <label for="reno">Updates or renovations?</label>
+            <input id="reno" placeholder="Kitchen 2023, new roof… (optional)"/>
+          </div>
+        </div>
+        <button type="submit">Get my free home valuation</button>
+        <div class="fine">Demo only — in production this reaches Kimi instantly and starts the CMA. No spam, no obligation, ever.</div>
+      </form>
+      <div class="done">
+        <div class="big">Thank you — Kimi is <em>on it.</em></div>
+        <p>Your comparative market analysis will be in your hands within 24 hours, and she'll walk you through it personally. <b>(Demo — no message actually sent.)</b></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="how">
+  <div class="wrap">
+    <div class="kicker">Why Not Just Use the Estimate Online?</div>
+    <h2>What a human sees that an algorithm <em>can't.</em></h2>
+    <div class="steps3">
+      <div class="s3"><div class="n">i.</div><h3>Condition &amp; character</h3><p>The algorithm knows your square footage. It doesn't know about the renovated primary bath, the encapsulated crawlspace, or that yours is the one lot on the street that backs to trees.</p></div>
+      <div class="s3"><div class="n">ii.</div><h3>The real comps</h3><p>We know which nearby "comps" sold with seller concessions, which sold in a bidding war, and which one shouldn't count at all — because we were in the room for some of them.</p></div>
+      <div class="s3"><div class="n">iii.</div><h3>This month's market</h3><p>Pricing is timing. What buyers are doing at showings <em>right now</em> — not six months ago when the data was indexed — decides your launch price and strategy.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine2">Sample Realty Home &amp; Land, LLC · Licensed in North &amp; South Carolina</div>
+  </div>
+</footer>
+
+<script>
+document.getElementById("cmaForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  /* Demo capture — production posts to the CRM/intake with the address and
+     timeframe attached, and queues the CMA-draft workflow for Kimi. */
+  try {
+    const leads = JSON.parse(localStorage.getItem("pr_cma_leads") || "[]");
+    leads.push({ addr: document.getElementById("addr").value,
+                 name: document.getElementById("nm").value,
+                 contact: document.getElementById("ct").value,
+                 timeframe: document.getElementById("tf").value,
+                 reno: document.getElementById("reno").value,
+                 at: new Date().toISOString() });
+    localStorage.setItem("pr_cma_leads", JSON.stringify(leads));
+  } catch (err) {}
+  document.getElementById("cmaCard").classList.add("sent");
+});
+</script>
+<script src="../listings-data.js"></script>
+<script src="../concierge.js" data-base="../"></script>
+
+</body>
+</html>

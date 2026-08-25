@@ -1,0 +1,12 @@
+[Unit]
+Description=YourCo runtime heartbeat — every 15 minutes. Uptime is computed from expected-vs-received beats, so a missing line IS the outage; changing this interval changes the denominator and must be swept to runtime/heartbeat.sh and dashboard/uptime.py in the same commit.
+
+[Timer]
+OnCalendar=*:0/15
+# Persistent=false ON PURPOSE. A persistent timer fires catch-up runs after downtime, which would
+# back-fill the exact gap this instrument exists to expose — the outage would erase its own evidence.
+Persistent=false
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

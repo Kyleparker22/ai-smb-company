@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+  nav .links a.call{color:var(--red);font-weight:600;letter-spacing:.08em}
+  nav .links a.call:hover{color:var(--ink)}
+
+  .hero{position:relative;min-height:72vh;display:flex;align-items:flex-end;background:var(--ink)}
+  .hero .bg{position:absolute;inset:0;background:var(--ink) center 55%/cover no-repeat}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,24,.9) 0%,rgba(19,19,24,.25) 60%)}
+  .hero .content{position:relative;width:100%;padding:0 0 56px;color:var(--on-dark)}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  .hero h1{font-family:Didot,Georgia,serif;font-size:clamp(36px,5vw,62px);font-weight:400;line-height:1.08;margin-top:14px}
+  .hero .loc{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:14px}
+  .hero .factrow{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap}
+  .hero .f b{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400}
+  .hero .f span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-dark-soft);display:block;margin-top:2px}
+  .hero .oh{margin-top:20px;display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;background:var(--red);color:#fff;padding:9px 18px;border-radius:9999px}
+
+  section{padding:88px 0}
+  h2{font-family:Didot,Georgia,serif;font-size:clamp(28px,3.2vw,38px);font-weight:400;line-height:1.15;margin-top:14px}
+  h2 em{font-style:italic;color:var(--red)}
+  .lede{font-family:Didot,Georgia,serif;font-size:18px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:18px;max-width:58ch}
+
+  .about .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:start}
+  @media(max-width:840px){.about .grid{grid-template-columns:1fr}}
+  .about p.body{font-size:15.5px;color:var(--ink-2);margin-top:16px;max-width:60ch}
+  .features{border-top:1px solid var(--line);margin-top:8px}
+  .feat{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2);align-items:baseline}
+  .feat i{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);font-size:13px}
+
+  .cine{background:var(--ink);color:var(--on-dark);padding:88px 0 0}
+  .cine .lede{color:var(--on-dark-soft)}
+  .theater{position:relative;height:72vh;min-height:420px;overflow:hidden;margin-top:44px;background:#0d0d11;cursor:pointer}
+  .theater .kbimg{position:absolute;inset:-8%;background-position:center;background-size:cover;opacity:0;transition:opacity 1.6s ease;will-change:transform,opacity}
+  .theater .kbimg.on{opacity:1;animation:kbA 9s ease-out forwards}
+  .theater .kbimg.on.alt{animation-name:kbB}
+  @keyframes kbA{from{transform:scale(1) translate(0,0)}to{transform:scale(1.14) translate(1.5%,-1.5%)}}
+  @keyframes kbB{from{transform:scale(1.12) translate(-1.5%,1%)}to{transform:scale(1) translate(0,0)}}
+  @media(prefers-reduced-motion:reduce){.theater .kbimg.on{animation:none}}
+  .theater .tscrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,24,.55),transparent 40%);pointer-events:none}
+  .theater .tcap{position:absolute;left:28px;bottom:20px;font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--on-dark);text-shadow:0 1px 8px rgba(0,0,0,.6)}
+  .theater .tstate{position:absolute;right:28px;bottom:20px;font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--on-dark-soft)}
+  .cine .fineline{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark-soft);text-align:center;padding:16px 0 0}
+
+  .vobar{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;padding:22px 24px 0}
+  .vobar .vplay{display:inline-flex;align-items:center;gap:12px;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:var(--red);color:#fff;border:0;padding:14px 26px;border-radius:9999px;cursor:pointer}
+  .vobar .vplay:hover{background:#c70004}
+  .vobar .vplay .ic{font-size:13px}
+  .vobar .vscript{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark);background:none;border:1px solid var(--line-dark);padding:13px 24px;border-radius:9999px;cursor:pointer}
+  .vobar .vscript:hover{border-color:var(--red);color:var(--red)}
+  .vonote{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--on-dark-soft);text-align:center;margin-top:12px}
+  .voscript{display:none;max-width:720px;margin:26px auto 0;padding:26px 30px;border:1px solid var(--line-dark);font-family:Didot,Georgia,serif;font-size:16px;font-style:italic;line-height:1.85;color:var(--on-dark)}
+  .voscript.open{display:block}
+  .voscript .vt{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-style:normal;margin-bottom:12px}
+
+  .gallery{background:var(--ink);color:var(--on-dark);padding:88px 0}
+  .gallery .lede{color:var(--on-dark-soft)}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px}
+  @media(max-width:700px){.shots{grid-template-columns:1fr}}
+  .shots .shot{position:relative;overflow:hidden}
+  .shots img{width:100%;height:360px;object-fit:cover;transition:transform 4s ease}
+  .shots .shot:hover img{transform:scale(1.04)}
+  .shots .shot:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px var(--line-dark)}
+
+  .ask{background:var(--warm)}
+  .ask .row{display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap}
+  .ask .nm{font-family:Didot,Georgia,serif;font-size:30px;font-style:italic}
+  .ask .rl{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--ink-soft);margin-top:6px}
+  .ask .ct{text-align:right}
+  .ask .ct a.phone{font-family:Didot,Georgia,serif;font-size:28px;color:var(--ink);text-decoration:none}
+  .ask .ct a.phone:hover{color:var(--red)}
+  .ask .ct .mail{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;color:var(--ink-soft);margin-top:4px}
+  .ask .ct .tourbtn{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:13px 26px;border-radius:9999px;margin-top:14px}
+  .ask .ct .tourbtn:hover{background:#c70004}
+  @media(max-width:700px){.ask .ct{text-align:left}}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:70ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · listing data &amp; photos via Canopy MLS, August 2026</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="index.html">← All Listings</a>
+      <a href="#cine">Cinematic Tour</a>
+      <a href="#photos">Photos</a>
+      <a class="call" href="tel:7045750714">704 · 575 · 0714</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="bg" id="heroBg"></div>
+  <div class="scrim"></div>
+  <div class="content"><div class="wrap">
+    <div class="kicker" id="kicker"></div>
+    <h1 id="addr"></h1>
+    <div class="loc" id="loc"></div>
+    <div class="factrow" id="factrow"></div>
+    <div id="ohSlot"></div>
+  </div></div>
+</header>
+
+<section class="about">
+  <div class="wrap grid">
+    <div>
+      <div class="kicker">About This Home</div>
+      <h2 id="headline"></h2>
+      <p class="lede" id="lede"></p>
+      <p class="body" id="body1"></p>
+      <p class="body" id="body2"></p>
+    </div>
+    <div class="features" id="features"></div>
+  </div>
+</section>
+
+<section class="cine" id="cine">
+  <div class="wrap">
+    <div class="kicker">The Cinematic Tour</div>
+    <h2 style="color:inherit">Walk it before you <em>visit it.</em></h2>
+    <p class="lede">Every Sample Realty listing gets a cinematic tour — built from the listing's own photography, camera movement only, nothing altered.</p>
+  </div>
+  <div class="theater" id="theater" title="Click to pause / play">
+    <div class="tscrim"></div>
+    <div class="tcap" id="tcap"></div>
+    <div class="tstate" id="tstate">Playing — click to pause</div>
+  </div>
+  <div class="vobar" id="voBar"></div>
+  <div class="vonote" id="voNote"></div>
+  <div class="wrap"><div class="voscript" id="voScript"></div></div>
+  <div class="fineline">Camera-movement-only presentation of the listing's licensed photography</div>
+</section>
+
+<section class="gallery" id="photos">
+  <div class="wrap">
+    <div class="kicker">The Photos</div>
+    <h2 style="color:inherit">Take a look <em>around.</em></h2>
+    <p class="lede">Professional listing photography — see every room in person at a showing.</p>
+    <div class="shots" id="shots"></div>
+  </div>
+</section>
+
+<section class="ask">
+  <div class="wrap row">
+    <div>
+      <div class="kicker">Listed By</div>
+      <div class="nm" style="margin-top:10px">Sample Contact</div>
+      <div class="rl">Broker / Owner · Sample Realty Home &amp; Land, LLC · Licensed in ST &amp; SC</div>
+    </div>
+    <div class="ct">
+      <a class="phone" href="tel:7045750714">704 · 575 · 0714</a>
+      <div class="mail">KimiParkerRealtor@gmail.com</div>
+      <br/>
+      <a class="tourbtn" href="../index.html#contact">Request a showing</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine" id="footfine">Listing data &amp; photography from Canopy MLS. All information deemed reliable but not guaranteed — verify details with your agent.</div>
+  </div>
+</footer>
+
+<script src="../listings-data.js"></script>
+<script>
+(function(){
+  const id = new URLSearchParams(location.search).get("id");
+  const l = (window.PR_LISTINGS || []).find(x => x.slug === id);
+  if (!l || !l.factrow) { location.replace("index.html"); return; }
+
+  const dir = "../assets/listings/" + l.slug + "/";
+  document.title = l.address + " — Sample Realty Home & Land, LLC";
+  document.getElementById("heroBg").style.backgroundImage = "url('" + dir + "photo-0.jpg')";
+  const kickerMap = { coming: "Coming Soon", pending: "Under Contract · Representing the Buyer" };
+  document.getElementById("kicker").textContent =
+    (kickerMap[l.status] || "For Sale · Active") + " · " + l.price;
+  document.getElementById("addr").textContent = l.address;
+  document.getElementById("loc").innerHTML = l.loc.replace(/·/g, "&nbsp;·&nbsp;");
+  document.getElementById("factrow").innerHTML =
+    l.factrow.map(f => '<div class="f"><b>' + f[0] + '</b><span>' + f[1] + '</span></div>').join("");
+  if (l.oh) document.getElementById("ohSlot").innerHTML = '<div class="oh">' + l.oh + '</div>';
+  document.getElementById("headline").innerHTML = l.headline;
+  document.getElementById("lede").textContent = l.lede;
+  document.getElementById("body1").textContent = l.body1;
+  document.getElementById("body2").textContent = l.body2;
+  const roman = ["i","ii","iii","iv","v","vi","vii","viii"];
+  document.getElementById("features").innerHTML =
+    l.features.map((f,n) => '<div class="feat"><i>' + roman[n] + '.</i>' + f + '</div>').join("");
+  let shots = "";
+  for (let n = 1; n < l.photoCount; n++)
+    shots += '<div class="shot"><img src="' + dir + "photo-" + n + '.jpg" alt="' +
+             l.address + ' — photo ' + (n+1) + '" loading="lazy"/></div>';
+  document.getElementById("shots").innerHTML = shots;
+
+  /* cinematic tour — Ken Burns cycle over the listing's own photos */
+  const theater = document.getElementById("theater");
+  const frames = [];
+  for (let n = 0; n < l.photoCount; n++) {
+    const d = document.createElement("div");
+    d.className = "kbimg" + (n % 2 ? " alt" : "");
+    d.style.backgroundImage = "url('" + dir + "photo-" + n + ".jpg')";
+    theater.appendChild(d); frames.push(d);
+  }
+  let cur = 0, playing = true;
+  const cap = document.getElementById("tcap"), st = document.getElementById("tstate");
+  function showFrame(n){
+    frames[cur].classList.remove("on"); cur = n;
+    const f = frames[cur];
+    f.classList.remove("on"); void f.offsetWidth;   /* restart the pan */
+    f.classList.add("on");
+    cap.textContent = l.address + " — " + (cur+1) + " / " + frames.length;
+  }
+  showFrame(0);
+  let timer = setInterval(() => showFrame((cur+1) % frames.length), 7000);
+  function playTour(){ if (!playing){ playing = true; timer = setInterval(() => showFrame((cur+1) % frames.length), 7000); st.textContent = "Playing — click to pause"; } }
+  function pauseTour(){ if (playing){ playing = false; clearInterval(timer); st.textContent = "Paused — click to play"; } }
+  theater.addEventListener("click", () => playing ? pauseTour() : playTour());
+
+  /* ── narrated tour (~60s voice-over) ── */
+  if (l.voScript){
+    const bar = document.getElementById("voBar"), note = document.getElementById("voNote");
+    const scriptBox = document.getElementById("voScript");
+    scriptBox.innerHTML = '<div class="vt">The 60-second narration · read by your agent</div>' + l.voScript;
+    /* accepts a raw iPhone voice memo: drop narration.m4a (or .mp3/.wav)
+       into the listing's photo folder — no conversion needed */
+    const candidates = ["narration.m4a", "narration.mp3", "narration.wav"];
+    let audio = null, hasAudio = null, voPlaying = false, ci = 0;
+    function tryNext(){
+      if (ci >= candidates.length) { hasAudio = false; render(); return; }
+      audio = new Audio(dir + candidates[ci++]);
+      audio.addEventListener("canplaythrough", () => { hasAudio = true; render(); });
+      audio.addEventListener("error", tryNext);
+      audio.addEventListener("ended", () => { voPlaying = false; render(); });
+    }
+    tryNext();
+    function render(){
+      bar.innerHTML =
+        (hasAudio !== false
+          ? '<button class="vplay" id="voPlay"><span class="ic">' + (voPlaying ? "❚❚" : "▶") + '</span>' +
+            (voPlaying ? "Pause narration" : "Play the narrated tour") + "</button>"
+          : "") +
+        '<button class="vscript" id="voToggle">Read the 60-second script</button>';
+      note.textContent = hasAudio === false
+        ? "Narration coming soon — recorded by your agent from the script below."
+        : "About a minute — the house and the process, in your agent's own words.";
+      const p = document.getElementById("voPlay");
+      if (p) p.addEventListener("click", () => {
+        if (voPlaying) { audio.pause(); voPlaying = false; }
+        else { audio.play().then(() => { voPlaying = true; playTour(); render(); })
+                          .catch(() => { hasAudio = false; render(); }); voPlaying = true; }
+        render();
+      });
+      document.getElementById("voToggle").addEventListener("click", () =>
+        scriptBox.classList.toggle("open"));
+    }
+    render();
+  }
+  document.getElementById("footfine").innerHTML = (l.status === "pending"
+    ? "Property data from Canopy MLS (#" + l.mls + "); photography by Sample Realty from construction walkthroughs."
+    : "Listing data &amp; photography from Canopy MLS (#" + l.mls + ").") +
+    " All information deemed reliable but not guaranteed — verify details with your agent.";
+})();
+</script>
+<script src="../concierge.js" data-base="../"></script>
+
+</body>
+</html>

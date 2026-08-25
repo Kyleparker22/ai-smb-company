@@ -1,0 +1,10 @@
+[Unit]
+Description=YourCo monthly finance close — first Monday, 08:30 ET (Charles)
+
+[Timer]
+# Mon within day-of-month 1..7 == the first Monday of the month
+OnCalendar=Mon *-*-1..7 08:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

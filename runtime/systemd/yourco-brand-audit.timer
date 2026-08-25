@@ -1,0 +1,10 @@
+[Unit]
+Description=YourCo monthly brand audit — first Monday, 09:00 ET (Luka)
+
+[Timer]
+# Mon within day-of-month 1..7 == the first Monday of the month
+OnCalendar=Mon *-*-1..7 09:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

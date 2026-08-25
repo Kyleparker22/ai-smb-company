@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pool OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-stops"></section>
+  <section class="view" id="v-quotes"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never declares water safe
+to swim, never answers a chemical dosing question, never replies to an injury report, and never
+bills a stop without its recorded readings.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'stops',label:'Stops & proof'},
+      {id:'quotes',label:'Quotes'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,stops,quotes,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.routes} routes · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The week, counted', '',
+      `<div class="grid">
+        ${stat('Proven stops unbilled', fmt.money(b.unbilled.value), `${b.unbilled.count} stop(s) with proof, no invoice`, b.unbilled.count?'alert':'')}
+        ${stat('Injury reports', fmt.num(b.injury_reports), 'verbatim-logged, human-handled', b.injury_reports?'warn':'')}
+        ${stat('Open equipment quotes', fmt.money(b.open_quote_value), `${b.open_quotes} quote(s) in the ladder`)}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.billed_value + b.recovered.won_value)}`,
+               `${b.recovered.stops_billed} stop(s) billed · ${b.recovered.quotes_won} quote(s) won · ${b.recovered.recovery_visits_booked} recovery visit(s)`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An injury or drowning-adjacent report is logged verbatim and handled
+      by a human — software replies to it with <b>nothing</b>. A chemical dosing question goes to a
+      certified tech unanswered: the label is the law.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='injury'?'bad':m.label==='chemical_question'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function stops(){
+  const d = await API.get('/api/stops');
+  document.getElementById('v-stops').innerHTML =
+    `<div class="banner warn">Try it: bill the stop with no proof — refused with the missing fields
+      named; bill the proven one — queued at R1.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="bill('st_demo_noproof')">Bill: missing proof</button>
+      <button class="act primary" onclick="bill('st_demo_proven')">Bill: proof complete</button>
+      <button class="act" onclick="reading('st_demo_proven')">Readings vs ranges</button>
+     </div><div id="sout"></div>` +
+    panel('Recent stops', '', table(
+      [{label:'Stop'},{label:'Arrived'},{label:'FC'},{label:'pH'},{label:'TA'},{label:'Rate',num:true},{label:'Billed'}],
+      d.rows, s=>`<td class="mono">${esc(s.id)}${s.demo_tag?' '+pill(s.demo_tag,'brand'):''}</td>
+        <td>${s.arrived_at?fmt.stamp(s.arrived_at):pill('no stamp','bad')}</td>
+        <td>${s.readings&&s.readings.fc!=null?s.readings.fc:'—'}</td>
+        <td>${s.readings&&s.readings.ph!=null?s.readings.ph:'—'}</td>
+        <td>${s.readings&&s.readings.ta!=null?s.readings.ta:'—'}</td>
+        <td class="num">${fmt.money(s.rate)}</td>
+        <td>${s.billed_at?pill('billed','good'):pill('open','warn')}</td>`), true);
+}
+async function bill(id){
+  const r = await API.post(`/api/stops/${id}/bill`);
+  document.getElementById('sout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Invoice drafted', '', `<div class="strong">queued at R1</div>`);
+}
+async function reading(id){
+  const r = await API.get(`/api/stops/${id}/reading`);
+  document.getElementById('sout').innerHTML =
+    panel('Readings vs this pool\'s ranges', esc(r.note), table(
+      [{label:'Param'},{label:'Value'},{label:'Range'},{label:''}],
+      r.rows, x=>`<td>${esc(x.param)}</td><td>${x.value??blank(x._missing)}</td>
+        <td>${x.range?x.range.join('–'):esc(x.note||'—')}</td>
+        <td>${x.in_range===true?pill('in range','good'):x.in_range===false?pill('out of range','bad'):'—'}</td>`), true);
+}
+
+async function quotes(){
+  const d = await API.get('/api/quotes');
+  document.getElementById('v-quotes').innerHTML =
+    panel('Equipment quotes', 'bounded ladder — 3 touches, 7-day cooldown, then silence is an answer', table(
+      [{label:'Customer'},{label:'Item'},{label:'Amount',num:true},{label:'Touches'},{label:'State'}],
+      d.rows, q=>`<td>${esc(q.customer_name||'')}</td><td>${esc(q.item)}</td>
+        <td class="num">${fmt.money(q.amount)}</td>
+        <td>${(q.touches||[]).length} of 3</td>
+        <td>${q.won_at?pill('won','good'):q.lost_at?pill('lost'):pill('open','warn')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['unbilled_stops_value','Proven stops unbilled','counted'],
+    ['open_quote_value','Open quote value','counted'],['close_rate','Quote close rate','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['liability_value','The liability file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

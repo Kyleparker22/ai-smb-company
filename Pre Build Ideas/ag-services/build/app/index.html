@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-jobs"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never recommends a chemical
+or rate, never asserts or denies drift causation, never bills without the as-applied record, and
+never dispatches a restricted-use product without a licensed applicator on the order.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'jobs',label:'Jobs & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,jobs,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.rigs} rigs · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The season, counted', '',
+      `<div class="grid">
+        ${stat('Open jobs', fmt.num(b.open_jobs), `${b.billable} billable with records · ${b.unbillable} missing paper`)}
+        ${stat('RUP-blocked', fmt.num(b.rup_blocked), 'no licensed applicator on the order', b.rup_blocked?'alert':'')}
+        ${stat('Complaints logged', fmt.num(b.complaints_logged), 'regulator-grade, every one', b.complaints_logged?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.invoices_sent} · ${b.recovered.jobs_dispatched} · ${b.recovered.complaints_logged}`,
+               'invoices sent · jobs dispatched · complaints logged — from the log')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A drift or exposure complaint is logged verbatim with a timestamp and
+      escalated — the system asserts <b>nothing</b> about cause. A chemical question goes to the
+      licensed agronomist unanswered: the label is the law.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='drift_exposure'?'bad':m.label==='chemical_question'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function jobs(){
+  const d = await API.get('/api/jobs');
+  document.getElementById('v-jobs').innerHTML =
+    `<div class="banner warn">Try the demo jobs: bill the one with an incomplete as-applied record —
+      refused; dispatch the paraquat order with no licensed applicator — refused.</div>` +
+    `<div style="margin:10px 0">
+      <button class="act" onclick="bill('jb_demo_norec')">Bill: incomplete as-applied</button>
+      <button class="act primary" onclick="bill('jb_demo_complete')">Bill: complete record</button>
+      <button class="act" onclick="dispatch('jb_demo_rup')">Dispatch: RUP, no license</button>
+     </div><div id="jout"></div>` +
+    panel('Open jobs', 'oldest first', table(
+      [{label:'Job'},{label:'Grower'},{label:'Age',num:true},{label:'RUP'},{label:'Billable'},{label:'Window'}],
+      d.rows, j=>`<td>${esc(j.desc)}</td><td>${esc(j.grower)}</td>
+        <td class="num">${j.age_days}d</td>
+        <td>${j.rup?(j.dispatchable?pill('RUP · licensed','warn'):pill('RUP BLOCKED','bad')):pill('general')}</td>
+        <td>${j.billable?pill('records complete','good'):pill('missing paper','warn')}</td>
+        <td class="why">${esc(j.window_note||'—')}</td>`), true);
+}
+async function bill(id){
+  const r = await API.post(`/api/jobs/${id}/bill`);
+  document.getElementById('jout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Invoice drafted', '', `<div class="strong">queued at R1 — ${esc(r.reason)}</div>`);
+}
+async function dispatch(id){
+  const r = await API.post(`/api/jobs/${id}/dispatch`);
+  document.getElementById('jout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Dispatch drafted', '', `<div class="strong">queued at R1</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['billable_unbilled','Billable jobs unbilled','counted'],['avg_job','Avg job value','your book'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['complaint_value','A defensible file','yours or blank'],
+    ['windows_missed_yr','Windows missed/yr','your history'],['avg_window_acres','Avg acres/window','your number'],
+    ['margin_acre','Margin per acre','your number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

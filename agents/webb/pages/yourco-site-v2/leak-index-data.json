@@ -1,0 +1,22 @@
+{
+  "_note": "Data for the Industry Leak Index (leak-index.html). TWO sources, always kept honest + visibly separated: (1) INDUSTRY-SOURCED — illustrative per-vertical leak modeled from a standard scenario + the cited stats in snapshot-config.js (Sadie-sourced, 2025-present). (2) YOURCO-MEASURED — the anonymized aggregate of real completed Revenue Leak Snapshots, written by runtime/snapshot_intake.py. Pre-launch that is empty (count 0) and the page says so — NEVER present modeled numbers as measured. The illustrative scenario's assumptions (leads/mo, miss rate, avg job) are the PAGE's stated assumptions, labeled as such; the avg-job values are representative placeholders, not measured. Decision: decisions/2026-06-16_two-motions-productized-employees.md + the 2026-06-17 Brett ideas drop (Industry Leak Index).",
+  "updated": "2026-06-17",
+  "scenario": { "leadsPerMonth": 100, "missRate": 0.26, "bookRate": 0.30, "missRateSource": "Invoca, Dec 2025 — 26% of local-business calls go unanswered", "missRateUrl": "https://www.invoca.com/blog/how-much-missed-sales-calls-cost-home-services-businesses" },
+  "verticals": [
+    { "slug": "landscaping",  "name": "Landscaping",   "avgJob": 1000 },
+    { "slug": "hardscaping",  "name": "Hardscaping",   "avgJob": 12000 },
+    { "slug": "hvac",         "name": "HVAC",          "avgJob": 1500 },
+    { "slug": "plumbing",     "name": "Plumbing",      "avgJob": 650 },
+    { "slug": "electrical",   "name": "Electrical",    "avgJob": 900 },
+    { "slug": "roofing",      "name": "Roofing",       "avgJob": 10000 },
+    { "slug": "restoration",  "name": "Restoration",   "avgJob": 8000 },
+    { "slug": "garage-door",  "name": "Garage Door",   "avgJob": 450 },
+    { "slug": "tree-service", "name": "Tree Service",  "avgJob": 1200 },
+    { "slug": "septic-well",  "name": "Septic & Well", "avgJob": 500 }
+  ],
+  "yourco": {
+    "count": 0,
+    "note": "Anonymized aggregate of real completed Revenue Leak Snapshots — accumulates post-launch. Written by runtime/snapshot_intake.py.",
+    "byVertical": {}
+  }
+}

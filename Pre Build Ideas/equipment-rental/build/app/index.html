@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yard OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-calls"></section>
+  <section class="view" id="v-billing"></section>
+  <section class="view" id="v-damage"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Billing stops at the recorded
+off-rent call by construction, a damage charge requires the evidence pair, and the off-rent record
+can never be backdated.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Yard board'},{id:'calls',label:'Calls'},{id:'billing',label:'Billing integrity'},
+      {id:'damage',label:'Damage evidence'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,calls,billing,damage,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = d.config.revenue;
+  document.getElementById('v-board').innerHTML =
+    panel('The yard, counted', '',
+      `<div class="grid">
+        ${stat('Pickup queue', fmt.num(b.pickup_queue), `${b.queue_days} unit-days deployed, not earning`, b.pickup_queue?'alert':'')}
+        ${stat('Unhandled calls', fmt.num(b.calls_open), 'an off-rent call in the queue is money leaking')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.units_picked_up} · ${b.recovered.claims_sent} · ${b.recovered.waivers_issued}`,
+               'units picked up · claims sent · waivers issued — from the log')}</div>`) +
+    panel('Utilization by class', 'a missing denominator is refused, never zero-filled', table(
+      [{label:'Class'},{label:'Fleet',num:true},{label:'On rent',num:true},{label:'Rate',num:true}],
+      b.utilization, u=>`<td class="mono">${esc(u.cls)}</td>
+        <td class="num">${u.fleet??'—'}</td><td class="num">${u.on_rent??'—'}</td>
+        <td class="num">${u.rate!=null?fmt.pct(u.rate):blank(u._missing)}</td>`), true);
+}
+
+async function calls(){
+  const d = await API.get('/api/calls');
+  document.getElementById('v-calls').innerHTML =
+    `<div class="banner warn">An off-rent call stops the billing clock <b>at the call</b> — recording
+      it is R2 because delaying the record is the harm.</div>` +
+    panel('Inbound', '', table([{label:'When'},{label:'Transcript'},{label:'Label'},{label:''}],
+      d.rows, c=>`<td>${fmt.stamp(c.at)}</td><td>${esc(c.transcript)}</td>
+        <td>${c.label?pill(c.label, c.label==='off_rent'?'good':c.label==='breakdown'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handleCall('${c.id}')">Handle</button></td>`), true) +
+    `<div id="cout"></div>`;
+}
+async function handleCall(id){
+  const r = await API.post(`/api/calls/${id}/handle`);
+  document.getElementById('cout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body"><div class="why">${esc(s.why)}</div></div></div>`).join('');
+  calls();
+}
+
+async function billing(){
+  const d = await API.get('/api/rentals');
+  document.getElementById('v-billing').innerHTML =
+    `<div class="banner">Try billing the demo rental <b>through next week</b> after taking its
+      off-rent call (Calls tab) — the invoice clamps to the call and names the clamp.</div>` +
+    panel('Rentals', 'latest', table(
+      [{label:'Rental'},{label:'Class'},{label:'On rent'},{label:'Off-rent call'},{label:''}],
+      d.rows, r=>`<td class="mono">${esc(r.id)}${r.demo_tag?' '+pill(r.demo_tag,'brand'):''}</td>
+        <td>${esc(r.cls||'')}</td><td>${fmt.date(r.on_rent_at)}</td>
+        <td>${r.off_rent_called_at?fmt.stamp(r.off_rent_called_at):pill('still on rent','warn')}</td>
+        <td class="right"><button class="act" onclick="preview('${r.id}')">Invoice preview</button>
+        <button class="act" onclick="previewFuture('${r.id}')">Bill through +7d</button></td>`), true) +
+    `<div id="bout"></div>`;
+}
+async function preview(id, through){
+  const r = await API.post(`/api/rentals/${id}/invoice`, through?{through}:{});
+  document.getElementById('bout').innerHTML =
+    panel('Invoice preview', '', r._missing ? blank(r._missing) :
+      `<div class="grid">${stat('Days', fmt.num(r.days))}${stat('Amount', fmt.money(r.amount))}</div>
+       ${r.clamped?`<div class="banner warn" style="margin-top:10px">${esc(r.clamped)}</div>`:''}`);
+}
+function previewFuture(id){ const d=new Date(Date.now()+7*86400000).toISOString(); preview(id,d); }
+
+async function damage(){
+  document.getElementById('v-damage').innerHTML =
+    `<div class="banner warn">A damage charge requires the checkout AND check-in condition records.
+      Missing either, the system says <b>cannot assert damage</b> — a refusal, not a weaker claim.</div>` +
+    panel('Two demo cases', '', `
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="act primary" onclick="claim('rn_demo_evidence')">Claim WITH evidence pair</button>
+        <button class="act" onclick="claim('rn_demo_noevidence')">Claim MISSING checkout record</button>
+      </div><div id="dout" style="margin-top:12px"></div>`);
+}
+async function claim(id){
+  const r = await API.post(`/api/rentals/${id}/damage`);
+  document.getElementById('dout').innerHTML = r.assertable
+    ? panel('Assertable', r.note, `<div class="strong">${(r.new_damage||[]).map(x=>pill(x,'warn')).join(' ')}</div>
+        <div class="why">checkout ${r.evidence.checkout_photos} photos · checkin ${r.evidence.checkin_photos} photos</div>`)
+    : panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['queue_days','Pickup-queue unit-days','counted'],['median_day_rate','Median day rate','counted'],
+    ['rerent_share','Re-rent share','your number (0–1)'],['assertable_claims','Assertable damage claims','counted'],
+    ['avg_claim','Avg claim value','your number'],['dispute_hours_wk','Dispute hrs/wk','your number'],
+    ['office_rate','Office rate','your number'],['disputes_yr','Disputed invoices/yr','your history'],
+    ['avg_credit','Avg credit memo','your history']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.calls) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'manager'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

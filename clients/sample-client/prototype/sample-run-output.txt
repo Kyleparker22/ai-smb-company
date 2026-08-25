@@ -1,0 +1,109 @@
+[brain: Claude live]
+
+======================================================================================
+Sample Client — Installation Proposal Automation  ·  DRY RUN (sample data, nothing is sent)
+======================================================================================
+
+Proposal SC-2026-0488  ·  Robert & Amanda Chen  ·  Backyard paver patio + seating wall + landscape lighting
+Total $48,500.00  ·  window 2026-07-06 → 2026-07-17
+
+--------------------------------------------------------------------------------------
+① CLIENT DEPOSIT   tier=mid  →  35% of $48,500.00 = $16,975.00  (computed in code)
+--------------------------------------------------------------------------------------
+
+EMAIL DRAFT:
+Subject: Deposit Request — Your Backyard Patio Project
+
+Hi Robert and Amanda,
+
+Thank you for choosing Sample Client for your backyard paver patio, seating wall, and landscape lighting project. We're excited to get started!
+
+To reserve your spot on our schedule, we're requesting your deposit of $16,975.00, which represents 35% of the $48,500.00 project total.
+
+For your convenience, we accept the following payment methods:
+
+- Zelle
+- Check
+- Card
+
+Once your deposit is received, we'll confirm your start date and keep you updated every step of the way. Please don't hesitate to reach out with any questions.
+
+We look forward to bringing your vision to life!
+
+Warm regards,
+Sample Client
+
+SMS DRAFT:
+Hi Robert & Amanda! Your Sample Client deposit invoice of $16,975.00 is ready, and a detailed email is on its way. Thanks so much!
+
+⏳ awaiting CHARLENE's approval — nothing sends until she taps approve.
+
+--------------------------------------------------------------------------------------
+② SUPPLIER ORDERS   2 supplier(s)
+--------------------------------------------------------------------------------------
+
+→ Carolina Stone Supply:
+Subject: Material Order — Needed by 2026-07-06
+
+Hi Carolina Stone Supply,
+
+We'd like to place the following material order for a project starting 2026-07-06. Please note the split delivery routing below:
+
+Deliver to job site:
+- 14 pallets — Belgard Holland pavers (pallets)
+- 22 tons — Bulk paver base / screenings
+
+Deliver to shop:
+- 6 pallets — Seating-wall block + caps
+
+Please confirm availability of these items and that you can hit the 2026-07-06 delivery date.
+
+Thanks,
+Sample Client
+
+→ Volt Lighting (boxed):
+Subject: Material Order — Needed by 2026-07-06
+
+Hello Volt Lighting,
+
+We'd like to place the following order, needed by our project start date of 2026-07-06:
+
+- 9 units — Low-voltage lighting fixtures → deliver to shop
+- 1 box — Transformer + wire spool → deliver to shop
+
+Please confirm availability and the delivery date.
+
+Thank you,
+Sample Client
+
+⏳ awaiting CLIENT_OWNER's approval on supplier orders.
+
+--------------------------------------------------------------------------------------
+③ SUBCONTRACTOR NOTICES   1 sub item(s)
+--------------------------------------------------------------------------------------
+
+→ Precision Grading LLC (Excavation + subgrade grading):
+Subject: Job Notice – Excavation & Subgrade Grading at Birkdale Commons
+
+Hi Precision Grading LLC,
+
+We have an upcoming project we'd like to bring you in on:
+
+Scope: Excavation + subgrade grading
+Project window: 2026-07-06 → 2026-07-17
+Location: 412 Birkdale Commons Pkwy, Yourtown, ST 28078
+
+Please confirm your availability for that window and send over your rate for the work.
+
+Thanks, and we look forward to working with you.
+
+Sample Client
+
+⏳ awaiting CLIENT_OWNER's approval on sub notices.
+
+======================================================================================
+④ ALL-CLEAR GATE
+   Greenlit email to Charlene + Client Owner fires only when ALL of these confirm:
+     [ ] deposit received     [ ] all suppliers confirmed     [ ] all subs confirmed
+   Anything still open after the threshold is flagged daily. (Pending in this dry run.)
+======================================================================================

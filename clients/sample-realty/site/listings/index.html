@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listings — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:84px 0 72px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(34px,4.5vw,54px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:18px;font-style:italic;color:var(--on-dark-soft);margin-top:18px;max-width:52ch}
+  header.page .jump{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap}
+  header.page .jump a{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark);text-decoration:none;border:1px solid var(--line-dark);padding:10px 20px;border-radius:9999px}
+  header.page .jump a:hover{border-color:var(--red);color:var(--red)}
+
+  .sect{padding-top:76px}
+  .sect h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,36px);font-weight:400;margin-top:12px}
+  .sect h2 em{font-style:italic;color:var(--red)}
+  .sect .sublede{font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--ink-soft);margin-top:10px;max-width:60ch}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;padding-top:36px}
+  @media(max-width:840px){.grid{grid-template-columns:1fr}}
+  .card{position:relative;text-decoration:none;color:inherit;display:block}
+  .card .photo{position:relative;overflow:hidden}
+  .card .photo img{width:100%;height:330px;object-fit:cover;transition:transform 4s ease}
+  .card:hover .photo img{transform:scale(1.05)}
+  .card .photo:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18)}
+  .badge{position:absolute;top:16px;left:16px;z-index:2;font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:7px 14px;border-radius:9999px}
+  .badge.active{background:var(--red);color:#fff}
+  .badge.coming{background:var(--paper);color:var(--ink)}
+  .badge.lease{background:rgba(19,19,24,.82);color:var(--on-dark)}
+  .badge.sold{background:rgba(19,19,24,.82);color:var(--on-dark)}
+  .card .meta{padding:20px 4px 0}
+  .card h3{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400}
+  .card .loc{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+  .card .price{font-family:Didot,Georgia,serif;font-size:21px;margin-top:10px}
+  .card .price span{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--ink-soft)}
+  .card .facts{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;color:var(--ink-2);margin-top:6px}
+  .card .go{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin-top:12px;display:inline-block;border-bottom:2px solid var(--red);padding-bottom:3px}
+  .card:hover .go{color:var(--red)}
+  .card .note{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--ink-soft);margin-top:8px}
+  .card .oh{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-top:10px}
+
+  .cta{background:var(--warm);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:44px;min-height:330px}
+  .cta .mono{font-family:Didot,Georgia,serif;font-size:30px}
+  .cta .mono i{font-style:normal;color:var(--red)}
+  .cta h2{font-family:Didot,Georgia,serif;font-size:27px;font-weight:400;margin-top:16px;max-width:18ch}
+  .cta h2 em{font-style:italic;color:var(--red)}
+  .cta p{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;color:var(--ink-soft);margin-top:12px;max-width:34ch}
+  .cta a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--paper);text-decoration:none;padding:13px 26px;border-radius:9999px;margin-top:22px}
+  .cta a:hover{background:var(--red)}
+
+  .endpad{padding-bottom:96px}
+
+  .subhead{margin-top:64px;padding-top:8px}
+  .subhead h3{font-family:Didot,Georgia,serif;font-size:22px;font-weight:400}
+  .subhead h3 em{font-style:italic;color:var(--red)}
+  .subhead .note{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--ink-soft);margin-top:6px;max-width:64ch}
+  .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:26px}
+  @media(max-width:960px){.bgrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.bgrid{grid-template-columns:1fr}}
+  .bcard{background:var(--warm);border:1px solid var(--line);padding:22px 22px 20px}
+  .bcard .tag{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .bcard .tag i{font-style:normal;color:var(--red)}
+  .bcard h4{font-family:Didot,Georgia,serif;font-size:19px;font-weight:400;margin-top:10px}
+  .bcard .bloc{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px}
+  .bcard .bprice{font-family:Didot,Georgia,serif;font-size:16px;font-style:italic;margin-top:9px}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .tag{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;margin-top:12px;color:var(--on-dark-soft)}
+  footer .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;letter-spacing:.1em;color:rgba(247,245,240,.4);margin-top:18px}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · listing data &amp; photos via Canopy MLS, August 2026</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../services.html">Services</a>
+      <a href="../tools/mortgage.html">Mortgage</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Our Listings</div>
+    <h1>Homes we're representing <em>right now.</em></h1>
+    <div class="lede">Every listing gets the full production — staging, photography, drone, a cinematic tour, and everywhere the MLS reaches.</div>
+    <div class="jump">
+      <a href="#active">For Sale</a>
+      <a href="#lease">For Lease</a>
+      <a href="#sold">Recently Sold</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap endpad">
+
+  <div class="sect" id="active">
+    <div class="kicker">For Sale</div>
+    <h2>Active <em>listings.</em></h2>
+  </div>
+  <div class="grid" id="grid-active"></div>
+
+  <div class="sect" id="lease">
+    <div class="kicker">For Lease</div>
+    <h2>Available to <em>rent.</em></h2>
+    <div class="sublede">Managed by our dedicated property-management division — the same boutique attention, for owners and tenants.</div>
+  </div>
+  <div class="grid" id="grid-lease"></div>
+
+  <div class="sect" id="sold">
+    <div class="kicker">Sold &amp; Under Contract</div>
+    <h2>Results, <em>closed.</em></h2>
+    <div class="sublede">Homes we've represented to the closing table — on the listing side and the buyer side.</div>
+  </div>
+  <div class="grid" id="grid-sold">
+    <div class="card" data-static="1">
+      <div class="photo">
+        <div class="badge sold">Previously Represented</div>
+        <img src="../assets/home-brick.jpg" alt="Previously represented brick estate"/>
+      </div>
+      <div class="meta">
+        <h3>Brick Estate</h3>
+        <div class="loc">YourtownArea</div>
+        <div class="facts">Represented by The Sample Realty Team</div>
+      </div>
+    </div>
+    <div class="card" data-static="1">
+      <div class="photo">
+        <div class="badge sold">Previously Represented</div>
+        <img src="../assets/home-stucco.jpg" alt="Previously represented European-style estate"/>
+      </div>
+      <div class="meta">
+        <h3>European-Style Estate</h3>
+        <div class="loc">YourtownArea</div>
+        <div class="facts">Represented by The Sample Realty Team</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    <h3>Sold — we represented the <em>buyer.</em></h3>
+    <div class="note">Closed in the last two years with Sample Realty on the buyer's side. Photography coming soon — listing photos belong to the listing side, so these wait for our own.</div>
+  </div>
+  <div class="bgrid" id="grid-buyer"></div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="tag">We get you moving in the right direction!</div>
+    <div class="fine">Listing data &amp; photography: Canopy MLS, August 2026 · Listings by Sample Contact, Broker/Owner</div>
+  </div>
+</footer>
+
+<script src="../listings-data.js"></script>
+<script>
+(function(){
+  const L = window.PR_LISTINGS, R = window.PR_renderCard, base = "../";
+  const active = L.filter(l => l.status === "active" || l.status === "coming");
+  const lease  = L.filter(l => l.status === "lease");
+  const sold   = L.filter(l => l.status === "pending" || l.status === "sold");
+
+  const ctaSell =
+    '<div class="cta"><div class="mono">P<i>·</i>R</div>' +
+    '<h2>Your home could be <em>next.</em></h2>' +
+    '<p>Thinking about selling? It starts with a conversation — and a private listing presentation built for your home.</p>' +
+    '<a href="../index.html#contact">Start a conversation</a></div>';
+  const ctaPM =
+    '<div class="cta"><div class="mono">P<i>·</i>R</div>' +
+    '<h2>Own a rental? We\'ll <em>run it.</em></h2>' +
+    '<p>Our property-management division cares for your investment with the same attention as every listing we represent.</p>' +
+    '<a href="../services.html#management">Property management</a></div>';
+
+  document.getElementById("grid-active").innerHTML =
+    active.map(l => R(l, base)).join("") + ctaSell;
+  document.getElementById("grid-lease").innerHTML =
+    lease.map(l => R(l, base)).join("") + ctaPM;
+  document.getElementById("grid-sold").insertAdjacentHTML(
+    "afterbegin", sold.map(l => R(l, base)).join(""));
+
+  document.getElementById("grid-buyer").innerHTML =
+    (window.PR_BUYER_SOLDS || []).map(b =>
+      '<div class="bcard"><div class="tag">Sold <i>·</i> Represented the Buyer</div>' +
+      '<h4>' + b.address + '</h4>' +
+      '<div class="bloc">' + b.loc + '</div>' +
+      '<div class="bprice">Closed — ' + b.price + '</div></div>').join("");
+})();
+</script>
+<script src="../concierge.js" data-base="../"></script>
+
+</body>
+</html>

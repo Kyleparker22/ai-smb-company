@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>yourco · HQ visual refresh — pick a direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,560&display=swap" rel="stylesheet">
+<style>
+:root{--base:#232833;--surface:#2e3441;--hair:rgba(255,255,255,.08);--txt:#f4f5f9;--txt2:#c3c9d7;
+  --faint:#8f97ab;--brass:#d2ae74;--green:#7fc99a;--red:#e06a78;
+  --serif:"Fraunces",Georgia,serif;--sans:-apple-system,system-ui,"Inter",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--base);color:var(--txt);font-family:var(--sans);line-height:1.6}
+.wrap{max-width:940px;margin:0 auto;padding:56px 30px 90px}
+.tick{width:70px;height:6px;background:var(--brass);border-radius:1px;margin-bottom:20px}
+h1{font-family:var(--serif);font-weight:560;font-size:34px;letter-spacing:-.02em;margin:0 0 12px}
+.lede{color:var(--txt2);max-width:66ch;margin:0 0 8px;font-size:15px}
+.meta{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.04em;margin:0 0 40px}
+.diag{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:22px 24px;margin:0 0 40px}
+.diag h2{font-family:var(--serif);font-size:18px;font-weight:560;margin:0 0 10px}
+.diag ul{margin:0;padding-left:18px;color:var(--txt2);font-size:13.5px}
+.diag li{margin-bottom:7px}
+.diag code{font-family:var(--mono);font-size:12px;color:var(--brass)}
+.opt{display:block;text-decoration:none;color:inherit;border-top:1px solid var(--hair);padding:26px 0}
+.opt:hover h3{color:var(--brass)}
+.opt .n{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.opt h3{font-family:var(--serif);font-weight:560;font-size:25px;margin:6px 0 8px;letter-spacing:-.015em;
+  transition:color .2s}
+.opt p{color:var(--txt2);margin:0 0 12px;max-width:70ch;font-size:14px}
+.tags{display:flex;gap:7px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--faint);
+  border:1px solid var(--hair);border-radius:9999px;padding:3px 10px}
+.tag.keep{color:var(--green);border-color:rgba(127,201,154,.3)}
+.tag.risk{color:var(--red);border-color:rgba(224,106,120,.3)}
+.foot{border-top:1px solid var(--hair);margin-top:36px;padding-top:22px;color:var(--faint);font-size:12.5px;
+  max-width:74ch}
+.foot b{color:var(--txt2)}
+</style></head><body><div class="wrap">
+  <div class="tick"></div>
+  <h1>HQ visual refresh — pick a direction</h1>
+  <p class="lede">Three treatments of the <b>same screen, same real numbers</b> (snapshot 2026-08-13).
+     Only the design varies. Mockups only — nothing here is wired to the live HQ.</p>
+  <p class="meta">presented per brand/DESIGN.md §7 — "for hero-grade visuals present 2–3 concrete options before iterating live"</p>
+
+  <div class="diag">
+    <h2>The diagnosis</h2>
+    <ul>
+      <li><b>The direction isn't the problem.</b> You picked <i>Executive Terminal</i> in July over
+          Morning Paper and Mission Control. It's on-brand and it still is.</li>
+      <li><b>It was drawn for ~8 panels and now carries 65</b>, with one component doing every job:
+          <code>134 .panel boxes · 150 brass headings · 42 tables · 37 bordered notes</code>.</li>
+      <li><b>Brass lost its meaning.</b> DESIGN.md idiom 1 — <i>one brass detail per surface</i>.
+          It's currently on every heading, badge, tile value and note border.</li>
+      <li><b>Everything is a box in a box.</b> Idiom 5 — <i>hairline dividers, not boxes</i>.
+          HQ nests panel → grid → tile to show one number.</li>
+      <li><b>No banding.</b> Idiom 4 — <i>alternate bands so sections read as chapters</i>.
+          Every panel is the same surface on the same base, ~10% apart.</li>
+    </ul>
+    <p style="color:var(--faint);font-size:13px;margin:14px 0 0">All three are house rules HQ already
+       violates. The fix is compliance, not invention — which is why none of these options is a new look.</p>
+  </div>
+
+  <div class="diag" style="border-color:rgba(210,174,116,.35)">
+    <h2>Round 2 — the palette (2026-08-13, after the Founder: "still too much of the same colors")</h2>
+    <p style="color:var(--txt2);font-size:13.5px;margin:0 0 12px">Option 1 fixed <i>hierarchy</i> and kept the
+       palette. The deeper problem: <b>HQ never adopted the brand's actual colours.</b></p>
+    <ul>
+      <li>Ground is <code>#232833</code> neutral slate — the brand's is <code>#161B33</code> indigo,
+          a deep blue-violet. Warmer, richer, not grey.</li>
+      <li>Text is <code>#f4f5f9</code> cold blue-white — the brand's is <code>#F4EFE6</code> warm cream.
+          That coldness is most of the flatness.</li>
+      <li>Brass is <code>#d2ae74</code> — the brand's is <code>#B8965A</code>, a deeper bronze.</li>
+      <li><b>Two light grounds go completely unused</b> — <code>--cream</code> and
+          <code>--parchment</code> — while idiom 4 literally says <i>"alternate cream / parchment /
+          dark-indigo bands."</i> HQ is 100% dark.</li>
+      <li><code>--oxblood</code>, the reserved accent, appears nowhere.</li>
+    </ul>
+    <p style="color:var(--faint);font-size:13px;margin:14px 0 0">So the three below hold Option 1's
+       structure <b>exactly constant</b> — same markup, same copy, same numbers — and vary only the
+       palette. Every hex comes from DESIGN.md. None of this is invented colour; it is colour yourco
+       already owns and HQ ignored.</p>
+  </div>
+
+  <a class="opt" href="2026-08-13-1a-indigo.html">
+    <div class="n">Option 1A</div>
+    <h3>True Indigo</h3>
+    <p>The same dark dashboard, on the real palette. Indigo grounds instead of slate, warm cream
+       instead of cold white, bronze brass, oxblood on the charges. Same darkness — completely
+       different temperature.</p>
+    <div class="tags"><span class="tag keep">smallest change</span><span class="tag">on-brand at last</span>
+      <span class="tag">~2 hours</span></div>
+  </a>
+
+  <a class="opt" href="2026-08-13-1b-parchment.html">
+    <div class="n">Option 1B</div>
+    <h3>Parchment</h3>
+    <p>Light. Cream page, indigo type, parchment reference tier, brass accent, oxblood charges.
+       DESIGN.md's own "commissioned document" recipe pointed at a dashboard. The biggest departure
+       from what HQ looks like today.</p>
+    <div class="tags"><span class="tag">biggest visual change</span><span class="tag">reads best in daylight</span>
+      <span class="tag">~half a day</span><span class="tag risk">loses the terminal feel you picked</span></div>
+  </a>
+
+  <a class="opt" href="2026-08-13-1c-banded.html">
+    <div class="n">Option 1C</div>
+    <h3>Banded</h3>
+    <p>Idiom 4 taken literally — alternating full-bleed indigo and parchment bands. Dark for the lead
+       and the charges, light for the working tables where you actually read numbers. Scrolling reads
+       as chapters instead of a stack of boxes.</p>
+    <div class="tags"><span class="tag keep">most contrast per scroll</span><span class="tag">keeps the dark identity</span>
+      <span class="tag">~half a day</span></div>
+  </a>
+
+  <h2 style="font-family:var(--serif);font-size:20px;font-weight:560;margin:44px 0 0;color:var(--faint)">Round 1 — structure (for reference)</h2>
+  <a class="opt" href="2026-08-13-disciplined.html">
+    <div class="n">Option 1</div>
+    <h3>Disciplined</h3>
+    <p>Executive Terminal, corrected. Brass rationed to one element per view. Three panel tiers —
+       lead (no box), support (card), reference (hairline only). Notes and tables unboxed.
+       Same world, with hierarchy and air.</p>
+    <div class="tags"><span class="tag keep">lowest risk</span><span class="tag">keeps what you picked</span>
+      <span class="tag">~half a day</span><span class="tag">no new tokens</span></div>
+  </a>
+
+  <a class="opt" href="2026-08-13-chaptered.html">
+    <div class="n">Option 2</div>
+    <h3>Chaptered</h3>
+    <p>Everything in 1, plus banded grounds so each door reads as a chapter, the brass tick motif,
+       a lead question per chapter that answers itself in one sentence, a pull-quote for the single
+       most important line, and the one scroll-reveal DESIGN.md already specs.</p>
+    <div class="tags"><span class="tag">most visual variety</span><span class="tag">most editorial</span>
+      <span class="tag">~1–2 days</span><span class="tag risk">more scrolling</span></div>
+  </a>
+
+  <a class="opt" href="2026-08-13-dense.html">
+    <div class="n">Option 3</div>
+    <h3>Dense</h3>
+    <p>Mission Control revisited — the one you passed on in July, worth another look now there's
+       genuinely more data. No cards at all: ruled columns, a ticker strip, status as a 2px left
+       rule, ⌘K, everything above the fold. Bloomberg's trade — ugliness for speed.</p>
+    <div class="tags"><span class="tag">most data per screen</span><span class="tag">keyboard-first</span>
+      <span class="tag">~2 days</span><span class="tag risk">least "premium", hardest for Partner B to read cold</span></div>
+  </a>
+
+  <div class="foot">
+    <b>Round 2 recommendation: 1C, with 1A as the safe fallback.</b> 1C gives the most visual relief per scroll and keeps the dark identity you chose, and the light bands are where numbers are easiest to read. 1A is the two-hour version if you want to be on-brand before the 8/26 session without rethinking layout. 1B is the boldest and the one I would not ship first — it throws away the terminal feel you deliberately picked in July.<br><br><b>Round 1 recommendation (structure): 1, then borrow from 2.</b> Option 1 is most of the visual gain for a fraction
+    of the work, and it can't go wrong because it only removes things. Option 2's banding and tick are
+    worth adding once 1 is live and you've seen it for a week. Option 3 is the right answer if HQ becomes
+    a thing three partners read daily — but it's the wrong first impression for the 8/26 lock-in session,
+    where Partner B reads it cold.
+    <br><br>
+    <b>And the honest one:</b> the biggest visual improvement available isn't in any of these files —
+    it's having fewer panels. Restyling 65 is worth less than cutting to 40, which is what the
+    panel-usefulness audit starts proposing once it clears its 14-day floor.
+  </div>
+</div></body></html>

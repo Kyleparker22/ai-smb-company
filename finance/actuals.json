@@ -1,0 +1,57 @@
+{
+  "_readme": "MACHINE-READABLE ACTUALS — the handful of closed figures the KPI engine needs, and nothing else. Owner: Charles, updated at each monthly close. WHY THIS FILE EXISTS: every actual in this company lived in prose (runway.md, expenses.md, revenue.md), so no surface could compute a KPI without a human re-reading a memo — which is why nine KPIs went untracked rather than untrackable. WHY IT IS NOT A SECOND SOURCE OF TRUTH: runway.md remains the narrative record and the place the reasoning lives; this file carries only the numbers that document has already CONFIRMED, each with its own asOf and confidence, and runtime/consistency-check.py fails if a figure here no longer appears in runway.md. A number that is uncertain is recorded as uncertain — never restated on absence of evidence (learnings/ops/2026-08-07_absence-is-invisible-to-this-os). null means not known; it never means zero.",
+  "asOf": "2026-08-25",
+  "owner": "Charles",
+  "source": "finance/runway.md (snapshot table + History) · finance/readouts/ · loops/finance/",
+  "cash": {
+    "onHand": 0,
+    "asOf": "2026-08-05",
+    "confidence": "supplied",
+    "note": "the Founder supplied the figure directly; not a bank-statement pull. The company is cash-insolvent against its fixed obligations and operates to the extent the Founder personally funds charges as they arrive."
+  },
+  "burn": {
+    "monthlyFixed": 614.22,
+    "asOf": "2026-08-03",
+    "confidence": "last-confirmed",
+    "note": "MATERIALLY UNCERTAIN since 2026-08-17: five recurring renewals in the Aug 8-10 window ($370.49, 60% of fixed burn) produced no receipt and no failure notice, which points two opposite ways. Retained as the last CONFIRMED number and deliberately not restated on silence. One card-statement lookup settles it.",
+    "excludes": "API/token spend, usage-priced tools, and the founder's own time"
+  },
+  "revenue": {
+    "mrr": 0,
+    "ytd": 0,
+    "asOf": "2026-08-25",
+    "confidence": "confirmed",
+    "note": "Pre-revenue. finance/revenue.md carries no rows."
+  },
+  "months": [
+    {
+      "month": "2026-07",
+      "revenue": 0,
+      "cashOut": 557.15,
+      "closedOn": "2026-08-24",
+      "note": "$537.00 paid + $20.15 API in July; a further $83.98 failed to charge and is excluded from cash out because it never left."
+    },
+    {
+      "month": "2026-06",
+      "revenue": 0,
+      "cashOut": 405.73,
+      "closedOn": "2026-07-06",
+      "note": "Receipted; excludes the Anthropic top-up, amount still TBD (the largest standing unknown in the ledger)."
+    }
+  ],
+  "customers": {
+    "live": 0,
+    "firstGoLive": null,
+    "acquired": {},
+    "churned": {},
+    "note": "Counts and dates, by month, once there are any. firstGoLive is the date the retention and NRR clocks start — several KPIs cannot exist until it is set."
+  },
+  "salesAndMarketingSpend": {
+    "monthly": null,
+    "note": "NOT the same as the `marketing` category in expenses.md. CAC needs fully-loaded acquisition cost, and at solo-founder stage the dominant input is the Founder's unpaid time. Any CAC computed from cash alone is a floor, not a cost, and must be labelled as one."
+  },
+  "invoices": {
+    "_note": "Added 2026-08-25 and DELIBERATELY EMPTY — the same posture as agent_budgets in the registry: an instrument that exists before the first event, so the first invoice is measurable on the day it is issued rather than reconstructed from memory later. One row per invoice: {id, client, amount, issued, termsDays, paidOn}. `paidOn` null means outstanding, which is NOT the same as late — Harry's number counts invoices paid within `termsDays` of `issued`, and an invoice still inside its terms is neither. Owner: Harry (issues + chases), Charles (reports).",
+    "rows": []
+  }
+}

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — see your AI system work" />
+<meta property="og:description" content="Watch the agents we build handle the moments that usually slip — intake, lead response, booking, follow-up, support, dispatch, billing, and the guardrails that keep them safe. Ten examples, by type, in action." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — see your AI system work</title>
+<meta name="description" content="Watch the agents we build handle the moments that usually slip — intake, lead response, booking, follow-up, support, dispatch, billing, and the guardrails that keep them safe. Ten examples, by type, in action." />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  :root{
+    --bubble-them:#E9E4D8;
+    --bubble-emp:#161B33;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  /* nav */
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:26px}
+  .nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;font-size:17px;padding:13px 26px;border-radius:9999px;border:1px solid var(--brass);transition:background .15s,transform .1s;white-space:nowrap}
+  .pill:hover{background:var(--brass-bright)}.pill:active{transform:scale(.97)}.pill.sm{font-size:14px;padding:9px 18px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  /* hero */
+  .hero{text-align:center;padding:64px 0 26px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 22px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg);flex:none}
+  h1{font-family:"Fraunces",Georgia,serif;font-optical-sizing:auto;font-size:clamp(30px,5vw,44px);font-weight:560;letter-spacing:-.018em;line-height:1.08}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:600px;margin:14px auto 0}
+  /* selector */
+  .picker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:920px;margin:30px auto 8px;padding:0 20px}
+  .emp{display:flex;align-items:center;gap:9px;border:1px solid var(--hairline);background:#fff;border-radius:14px;padding:10px 14px;cursor:pointer;transition:.15s;text-align:left}
+  .emp:hover{border-color:var(--brass)}
+  .emp.active{border-color:var(--indigo);background:var(--indigo);color:var(--on-dark)}
+  .emp .chip{font-size:20px;line-height:1}
+  .emp .en{font-weight:650;font-size:14px}.emp .ev{font-size:11.5px;color:var(--pewter)}
+  .emp.active .ev{color:rgba(244,239,230,.7)}
+  /* stage */
+  .stage{display:grid;grid-template-columns:330px 1fr;gap:34px;align-items:start;max-width:920px;margin:26px auto 0;padding:0 20px}
+  @media(max-width:780px){.stage{grid-template-columns:1fr;gap:22px}}
+  .phone{background:var(--indigo);border-radius:34px;padding:13px;box-shadow:0 24px 60px rgba(22,27,51,.26);justify-self:center;width:330px}
+  .screen{background:#fbfaf7;border-radius:22px;height:540px;display:flex;flex-direction:column;overflow:hidden}
+  .pbar{background:#fff;border-bottom:1px solid #eee;padding:11px 16px;text-align:center}
+  .pbar .name{font-weight:650;font-size:15px;color:var(--indigo)}.pbar .who{font-size:11px;color:var(--pewter)}
+  .thread{flex:1;overflow-y:auto;padding:15px 13px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+  .msg{max-width:80%;padding:9px 13px;border-radius:18px;font-size:14px;line-height:1.4;animation:pop .25s ease}
+  .them{background:var(--bubble-them);color:#2a2a2a;align-self:flex-start;border-bottom-left-radius:5px}
+  .emp-b{background:var(--bubble-emp);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+  .stamp{font-size:10.5px;color:var(--pewter);align-self:center;margin:3px 0}
+  .sysline{align-self:center;font-size:11.5px;color:var(--brass);background:#fff;border:1px solid #ece5d6;padding:6px 12px;border-radius:20px;font-weight:600;text-align:center;animation:pop .25s ease}
+  .typing{align-self:flex-end;background:var(--bubble-emp);padding:11px 14px;border-radius:18px;border-bottom-right-radius:5px}
+  .typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#cdd0db;margin:0 1.5px;animation:blink 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+  @keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes slide{from{transform:translateX(10px);opacity:0}to{transform:none;opacity:1}}
+  .panel{padding-top:4px}
+  .play{display:inline-flex;align-items:center;gap:9px;background:var(--brass);color:var(--indigo);border:none;padding:13px 22px;border-radius:12px;font-size:15px;font-weight:650;cursor:pointer;transition:.15s;box-shadow:0 6px 16px rgba(184,150,90,.3)}
+  .play:hover{background:var(--brass-bright)}.play:disabled{opacity:.55;cursor:default;box-shadow:none}
+  .scn-title{font-size:19px;color:var(--indigo);font-weight:650;margin:20px 0 4px}
+  .scn-desc{color:var(--pewter);font-size:14px;margin-bottom:15px}
+  .notes{display:flex;flex-direction:column;gap:9px;min-height:90px}
+  .note{background:#fff;border-left:3px solid var(--brass);border-radius:8px;padding:10px 13px;font-size:13.5px;color:#2a2a2a;animation:slide .35s ease;box-shadow:0 2px 8px rgba(22,27,51,.05)}
+  .note b{color:var(--indigo)}
+  .closer{margin-top:22px;background:var(--indigo);color:var(--cream);border-radius:14px;padding:20px 22px;display:none}
+  .closer.show{display:block;animation:pop .4s ease}
+  .closer .big{font-size:16px;font-weight:600;line-height:1.45}
+  .closer .tag{margin-top:12px;color:var(--brass-bright);font-size:14px;font-weight:600}
+  /* cta */
+  .cta{text-align:center;padding:70px 0 30px}
+  .cta h2{font-family:"Fraunces",Georgia,serif;font-optical-sizing:auto;font-size:28px;font-weight:560;letter-spacing:-.012em}
+  .cta p{color:var(--ink-muted);max-width:560px;margin:12px auto 22px;font-size:16px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .ghost{background:transparent;color:var(--brass);border:1px solid var(--brass)}
+  /* footer */
+  footer{background:var(--parchment);padding:60px 0 52px;border-top:1px solid var(--hairline);margin-top:30px}
+  .lockup{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:18px}
+  .lockup .rule{height:1px;width:clamp(40px,12vw,96px);background:var(--brass)}
+  .lockup .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  .lockup .word{font-size:24px;font-weight:600;color:var(--indigo)}
+  .sig{text-align:center;font-size:15px;color:var(--indigo);margin-bottom:26px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;font-size:14px}
+  .fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{text-align:center;font-size:12px;color:var(--pewter);margin-top:24px}
+
+  /* See-it-work hub — tab bar + embedded views */
+  .hubtabs{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;max-width:560px;margin:26px auto 0;background:#fff;border:1px solid var(--hairline);border-radius:9999px;padding:5px;box-shadow:0 6px 20px rgba(22,27,51,.06)}
+  .hubtab{flex:1 1 auto;min-width:116px;border:0;background:transparent;color:var(--indigo);font-family:inherit;font-size:13.5px;font-weight:600;padding:10px 12px;border-radius:9999px;cursor:pointer;transition:background .18s,color .18s;white-space:nowrap}
+  .hubtab:hover{color:var(--brass)}
+  .hubtab.active{background:var(--indigo);color:var(--cream)}
+  .hubview[hidden]{display:none}
+  .embed-wrap{max-width:1040px;margin:4px auto 0;padding:0 6px}
+  .embed-frame{width:100%;border:0;display:block;min-height:600px;background:transparent;color-scheme:light}
+/* ===== PREMIUM POLISH (2026-06-22, Webb) — editorial type · material grain · tactility · section rhythm · scroll-reveal. Quiet-luxury (Luka watch-notes). Additive + reversible; degrades gracefully. ===== */
+h1,.hero h1,h2.sec,.close h2,.pullquote,.value h3,.ptier h3,.audit-card h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560}
+h1,.hero h1{letter-spacing:-.022em}
+h2.sec,.close h2{letter-spacing:-.016em}
+.pullquote,.value h3,.ptier h3,.audit-card h3{letter-spacing:-.012em;font-weight:560}
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E")}
+.tile,footer,footer.site{position:relative;z-index:1}
+.nav{z-index:20}
+.card,.ptier{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease;box-shadow:0 1px 2px rgba(22,27,51,.04)}
+.card:hover,.ptier:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(22,27,51,.10);border-color:rgba(184,150,90,.55)}
+.tile.dark .card{box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tile.dark .card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34);border-color:rgba(184,150,90,.5)}
+.demo-frame{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.demo-frame:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(22,27,51,.18)}
+.pill{box-shadow:0 1px 2px rgba(22,27,51,.08)}
+.pill:hover{box-shadow:0 10px 24px rgba(184,150,90,.34);transform:translateY(-1px)}
+.pill:active{transform:translateY(0) scale(.98)}
+.nav-links a:not(.pill){position:relative;padding-bottom:3px}
+.nav-links a:not(.pill)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.2,.7,.3,1)}
+.nav-links a:not(.pill):hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.tile + .tile{box-shadow:0 -1px 0 var(--hairline)}
+.tile.dark + .tile,.tile + .tile.dark,.tile.dark{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .tile:not(.hero) .eyebrow,.tile:not(.hero) h2.sec,.tile:not(.hero) .lede,.tile:not(.hero) .value,.tile:not(.hero) .ptier,.tile:not(.hero) .card,.tile:not(.hero) .moat .m,.tile:not(.hero) .audit-card,.tile:not(.hero) .pullquote,.tile:not(.hero) .demo-frame,.tile:not(.hero) .prose > *,.close h2,.close .ctas{animation:revealRise linear both;animation-timeline:view();animation-range:entry 8% entry 46%}
+  @keyframes revealRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+}}
+/* ===== /PREMIUM POLISH ===== */
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html" class="active">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=demos" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>See it work.</h1>
+    <p class="lede">Three ways: watch the agents handle a real moment, see the first agent of <i>your</i> OS live, or see the bigger production agents run end-to-end.</p>
+  </div></section>
+
+  <div class="hubtabs" role="tablist">
+    <button class="hubtab active" data-view="agents" type="button">Agents in action</button>
+    <button class="hubtab" data-view="yours" type="button">Your first agent &middot; live</button>
+    <button class="hubtab" data-view="production" type="button">Production work</button>
+  </div>
+
+  <div id="view-agents" class="hubview">
+  <div class="picker" id="picker"></div>
+
+  <div class="stage">
+    <div class="phone"><div class="screen">
+      <div class="pbar"><div class="name" id="bizName"></div><div class="who" id="whoLine"></div></div>
+      <div class="thread" id="thread"></div>
+    </div></div>
+    <div class="panel">
+      <button class="play" id="play">▶ &nbsp;Play</button>
+      <div class="scn-title" id="scnTitle"></div>
+      <div class="scn-desc" id="scnDesc"></div>
+      <div class="notes" id="notes"></div>
+      <div class="closer" id="closer"><div class="big" id="closerText"></div><div class="tag">We learn your business. AI does the work.</div></div>
+    </div>
+  </div>
+  </div><!-- /view-agents -->
+
+  <div id="view-yours" class="hubview" hidden>
+    <div class="embed-wrap"><iframe class="embed-frame" data-src="instant-employee.html?embed=1" title="See your agent, live" loading="lazy"></iframe></div>
+  </div>
+  <div id="view-production" class="hubview" hidden>
+    <div class="embed-wrap"><iframe class="embed-frame" data-src="demos-tier2.html?embed=1" title="Production work" loading="lazy"></iframe></div>
+  </div>
+
+  <section class="cta"><div class="wrap">
+    <h2>These are individual agents. Your AI OS runs them together.</h2>
+    <p>Each of these is one agent. Your AI OS runs the ones you need as one coordinated system — first capability live in 48 hours, operated by us. The audit decides which agents, and in what order. You own the outcome, never the tokens, models, or infrastructure.</p>
+    <div class="cta-row">
+      <a class="pill" href="audit.html">Start with the audit</a>
+      <a class="pill ghost" href="build-your-os.html">See your AI OS</a>
+    </div>
+    <p style="margin-top:34px;font-size:13.5px;color:var(--pewter)">Want more proof? <a href="try-to-break-it.html" style="color:var(--indigo)">Try to break it</a> · <a href="day-in-the-life.html" style="color:var(--indigo)">A day in the life</a> · <a href="timeline-48h.html" style="color:var(--indigo)">48 hours, documented</a></p>
+  </div></section>
+
+  <footer><div class="wrap">
+    <div class="lockup"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=demos">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const AGENTS = {
+  receptionist:{type:"Receptionist",icon:"📞",role:"Answers every call and text, qualifies the inquiry, books the next step — 24/7.",sub:"a missed call, after hours",
+    closer:"After hours, in under two minutes: captured, qualified, and booked. A $29 bot takes a message — this books the job.",
+    steps:[{stamp:"Tue 8:47 PM"},
+      {them:"Hi, do you have any availability this week? I called earlier but no one picked up."},
+      {emp:"Thanks for reaching out — sorry we missed you! I can help right now. Quick question so I point you to the right spot: what are you looking to get done, and what's your ZIP?"},
+      {note:"<b>⚡ Replied in seconds at 8:47pm</b> — while the competitor's voicemail sits unheard."},
+      {them:"Just need an estimate. 33704."},
+      {emp:"Perfect — you're in our service area. I've got Thursday 9am or Friday 1pm. Which works? (The owner's already been notified.)"},
+      {them:"Thursday works."},
+      {emp:"Booked — Thursday 9am. I've texted a confirmation and I'll send a reminder the day before. Anything else?"},
+      {sys:"✓ Appointment booked · ✓ Confirmation sent · ✓ Owner notified"},
+      {note:"<b>📅 Booked while the owner slept.</b> They wake up to a job on the calendar, not a missed call."}]},
+
+  lead:{type:"Lead Responder",icon:"⚡",role:"Replies to new leads in seconds, qualifies them, and books before they go cold.",sub:"an online lead, 11pm",
+    closer:"An online lead answered and booked in under a minute — instead of a voicemail a competitor returns first. Speed-to-lead is the whole game, and it never sleeps.",
+    steps:[{stamp:"11:02 PM"},
+      {them:"Hi — saw you online, is this still available?"},
+      {emp:"It is! Thanks for reaching out. Want to come take a look this week? And is this for you, or are you helping someone else? I can hold a couple of times right now."},
+      {note:"<b>⚡ Replies in seconds</b> to the lead that would've gone cold overnight."},
+      {them:"For me. This week works."},
+      {emp:"Great — I've got Saturday 11am or Sunday 2pm. Which is better, and the best name and number?"},
+      {them:"Saturday. Priya, 813-555-0177."},
+      {emp:"Booked — Sat 11am, Priya. I'll text the details and loop in your rep. Want me to send a few similar options too?"},
+      {sys:"✓ Booked · ✓ Confirmation sent · ✓ Lead logged"}]},
+
+  booker:{type:"Booker",icon:"📅",role:"Books from a text or DM, fills cancellations, and cuts no-shows with deposits and reminders.",sub:"a booking from a DM",
+    closer:"A booking captured from a one-line message, a deposit collected, and a reminder set — the front desk handled while you work.",
+    steps:[
+      {them:"hey do you have anything open this week? 🙏"},
+      {emp:"We do! I've got Thursday 1pm or Friday 10am. Which works for you?"},
+      {them:"Friday 10!"},
+      {emp:"Booked you for Friday 10am 🎉 I've sent a confirmation and a quick deposit link to hold the spot, and I'll remind you the day before."},
+      {note:"<b>✓ Deposit + reminder</b> — the two things that quietly kill no-shows, handled automatically."},
+      {them:"perfect, paid it"},
+      {emp:"All set — see you Friday!"},
+      {sys:"✓ Booked · ✓ Deposit collected · ✓ Reminder set"}]},
+
+  followup:{type:"Quote Follow-up",icon:"🔁",role:"Chases sent quotes and proposals until they're signed or declined.",sub:"a quote that went quiet",
+    closer:"The quote you'd have forgotten, followed up at the right moment — and turned into a yes. Most revenue is lost in the gap between 'sent' and 'signed.'",
+    steps:[{stamp:"4 days after the quote"},
+      {emp:"Hi Jordan — just following up on the estimate we sent Tuesday. Any questions I can answer, or would it help to lock in a start date?"},
+      {them:"Oh — meant to reply. Price works, just wasn't sure on timing."},
+      {emp:"Totally understand. We could start as early as next week or push it out — want me to pencil you in for either? Nothing's committed until you confirm."},
+      {them:"Next week works, let's do it."},
+      {emp:"Done — I've reserved next week and sent it to the owner to confirm. You'll have it in writing today."},
+      {note:"<b>🔁 Persistent, never pushy.</b> It follows up on every open quote so none slip through the cracks."},
+      {sys:"✓ Quote revived · ✓ Start date reserved · ✓ Owner notified"}]},
+
+  support:{type:"Support",icon:"📦",role:"Handles order status, returns, and routine tickets — and escalates the rest.",sub:"a 'where's my order' + a refund",
+    closer:"The routine support that floods the inbox, cleared instantly — and it knows exactly where to stop: money decisions go to a human.",
+    steps:[
+      {them:"where's my order? #20418, ordered 5 days ago"},
+      {emp:"Let me check #20418 — it shipped Tuesday and is out for delivery today 📦 You'll have it by this evening. Want the tracking link?"},
+      {note:"<b>✓ Resolves the #1 ticket</b> — 'where's my order' — in seconds."},
+      {them:"ok thanks. one item's the wrong size — can I exchange? and refund the shipping?"},
+      {emp:"Started the exchange and emailed a prepaid label 👍 On the shipping refund — that's a judgment call, so I've passed it to a teammate to handle right; they'll follow up shortly."},
+      {note:"<b>🛟 The approval gate.</b> It handles the exchange, but a refund — real money — routes to a human. By design."},
+      {sys:"✓ Tracking sent · ✓ Exchange started · ✓ Refund routed to a human"}]},
+
+  knowledge:{type:"Knowledge Q&A",icon:"💬",role:"Answers from your real business info — and admits it when it doesn't know.",sub:"a question it can — and can't — answer",
+    closer:"Deflects the easy questions instantly, and escalates the ones it shouldn't guess on. An honest 'let me get a person' is a feature, not a bug.",
+    steps:[
+      {them:"what time do you close on sundays?"},
+      {emp:"On Sundays we're open 10am–4pm 🙂 Anything else I can help with?"},
+      {note:"<b>✓ Instant, accurate answers</b> from your real info — the questions that interrupt the team all day."},
+      {them:"do you offer net-30 terms for businesses?"},
+      {emp:"We do work with business accounts — but I want to give you the exact current terms and I'm not 100% sure, so I'll have our accounts team confirm. Best email for that?"},
+      {note:"<b>🛟 The honesty gate.</b> It says 'I'm not sure, let me get a person' instead of inventing an answer on something that matters."},
+      {them:"dev@buildright.co"},
+      {emp:"Perfect — flagged for our accounts team to send the terms to dev@buildright.co today."},
+      {sys:"✓ Answered · ✓ Question routed · ✓ Logged"}]},
+
+  reputation:{type:"Reputation",icon:"⭐",role:"Asks happy customers for reviews at the right moment — and routes unhappy ones to a human.",sub:"right after a 5-star experience",
+    closer:"More reviews from the customers who loved you, and a complaint caught before it becomes a public one-star. Reputation on autopilot — gated where it matters.",
+    steps:[{stamp:"the day after the job"},
+      {emp:"Hi Dana — hope everything went great yesterday! Quick one: how was your experience, 1 to 5?"},
+      {them:"5! the team was awesome"},
+      {emp:"That makes our day 🙌 Would you mind sharing that in a quick Google review? Here's a one-tap link — takes about 20 seconds."},
+      {note:"<b>⭐ Asks at the peak moment</b> — right after a happy experience, when reviews actually happen."},
+      {them:"just left one!"},
+      {emp:"Thank you so much, Dana! 🙏"},
+      {sys:"✓ Review requested · ✓ 5-star captured · ✓ Logged"},
+      {note:"<b>🛟 And if it were a 2?</b> It wouldn't beg for a public review — it'd route the unhappy customer straight to a human to make it right first."}]},
+
+  dispatcher:{type:"Dispatcher",icon:"🚨",role:"Triages urgency, schedules the right slot, and notifies the team.",sub:"an urgent request, triaged",
+    closer:"A high-value emergency, triaged and dispatched same-day — the call a voicemail loses to whoever answers first.",
+    steps:[{stamp:"6:32 PM"},
+      {them:"this is urgent, can someone come today?? it just stopped and it's bad"},
+      {emp:"Sorry you're dealing with that — let's move fast. Is anyone there in a vulnerable spot (very young, elderly, a medical need)? And is it fully out or partly working?"},
+      {note:"<b>⚡ Triages urgency first</b> — real emergencies get prioritized, not queued behind routine jobs."},
+      {them:"fully out. my mother is 80 and lives with us"},
+      {emp:"Understood — I'm flagging this priority. I have someone who can come today 7–9pm. Want the evening slot? Best name and number?"},
+      {them:"yes, tonight. Sam, 727-555-0151"},
+      {emp:"Booked — today 7–9pm, priority. You'll get a text when they're en route. Hang in there, Sam."},
+      {sys:"✓ Priority dispatch booked · ✓ Team notified · ✓ Logged"}]},
+
+  billing:{type:"Billing & AR",icon:"🧾",role:"Drafts invoices and deposit requests, chases overdue accounts — every send approval-gated.",sub:"an invoice draft + a nudge",
+    closer:"The money work that slips when everyone's busy — drafted, chased, and reconciled — with every customer-facing send held for your one-tap approval.",
+    steps:[{stamp:"a job is marked complete"},
+      {emp:"Heads up — the Riverside project is marked done. I've drafted the final invoice ($2,480) and a thank-you note. It's waiting in your approvals to send."},
+      {note:"<b>🛟 Drafted, not sent.</b> Anything that asks a customer for money waits for your one-tap approval first."},
+      {stamp:"9 days later — still unpaid"},
+      {emp:"The Riverside invoice is 9 days out. I've drafted a friendly reminder — approve and I'll send it, or I can hold."},
+      {note:"<b>🔁 Chases the cash</b> you'd otherwise forget — politely, and on a schedule."},
+      {sys:"✓ Invoice drafted · ✓ Reminder queued · ✓ Awaiting your approval"}]},
+
+  guardrail:{type:"Safety-Gated Intake",icon:"🛟",role:"Screens sensitive requests, never gives advice it isn't qualified to, and escalates to a human.",sub:"knowing what NOT to answer",
+    closer:"It captures the lead and respects the line a generic chatbot crosses — never giving medical, legal, or financial advice it isn't qualified to give. That line is the difference between a tool and an employee.",
+    steps:[
+      {them:"I've got a real problem and need help — can you just tell me what I should do?"},
+      {emp:"I'm really sorry you're dealing with this. I can't give advice on something this important, but I can get you to the right person fast. A couple of quick questions to set up your consult?"},
+      {note:"<b>🛟 It won't freelance.</b> On anything medical, legal, or financial, it does not improvise an answer — full stop."},
+      {them:"ok. it started about two weeks ago"},
+      {emp:"Thank you — that's well within the window to discuss options. I have Thursday 2pm or Friday 10am with one of our specialists. Which works, and the best name and number?"},
+      {them:"Friday. Marcus, 813-555-0162"},
+      {emp:"Thanks, Marcus — I've requested Friday 10am and flagged it for the team; you'll get a confirmation shortly."},
+      {sys:"✓ Consult requested · ✓ Escalated to a human · ✓ No advice given"}]}
+};
+
+const picker=document.getElementById('picker'),thread=document.getElementById('thread'),notes=document.getElementById('notes'),
+  playBtn=document.getElementById('play'),bizName=document.getElementById('bizName'),whoLine=document.getElementById('whoLine'),
+  scnTitle=document.getElementById('scnTitle'),scnDesc=document.getElementById('scnDesc'),
+  closer=document.getElementById('closer'),closerText=document.getElementById('closerText');
+let current='receptionist',playing=false;
+
+Object.entries(AGENTS).forEach(([k,a])=>{
+  const b=document.createElement('button'); b.className='emp'+(k==='receptionist'?' active':''); b.dataset.k=k;
+  b.innerHTML=`<span class="chip">${a.icon}</span><span class="en">${a.type}</span>`;
+  b.onclick=()=>{ if(playing)return; current=k; [...picker.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); reset(); };
+  picker.appendChild(b);
+});
+
+function reset(){ const a=AGENTS[current]; thread.innerHTML=''; notes.innerHTML=''; closer.classList.remove('show');
+  bizName.textContent=a.type; whoLine.textContent=a.sub;
+  scnTitle.textContent=a.type; scnDesc.textContent=a.role; playBtn.disabled=false; playBtn.innerHTML='▶ &nbsp;Play'; }
+
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function add(cls,html){ const d=document.createElement('div'); d.className=cls; d.innerHTML=html; thread.appendChild(d); thread.scrollTop=thread.scrollHeight; return d; }
+
+async function play(){
+  if(playing)return; playing=true; reset(); playBtn.disabled=true; playBtn.innerHTML='● &nbsp;Playing…';
+  const e=AGENTS[current];
+  for(const step of e.steps){
+    if('stamp'in step){ add('stamp',step.stamp); await wait(450); continue; }
+    if('them'in step){ await wait(620); add('msg them',step.them); await wait(480); continue; }
+    if('emp'in step){ const t=add('typing','<span></span><span></span><span></span>');
+      await wait(850+Math.min(step.emp.length*11,1500)); t.remove(); add('msg emp-b',step.emp); await wait(480); continue; }
+    if('sys'in step){ await wait(450); add('sysline',step.sys); await wait(380); continue; }
+    if('note'in step){ const n=document.createElement('div'); n.className='note'; n.innerHTML=step.note; notes.appendChild(n); await wait(680); continue; }
+  }
+  closerText.textContent=e.closer; closer.classList.add('show');
+  playBtn.disabled=false; playBtn.innerHTML='↻ &nbsp;Replay'; playing=false;
+}
+playBtn.onclick=play;
+reset();
+</script>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.hubtab'));
+  var views={agents:document.getElementById('view-agents'),yours:document.getElementById('view-yours'),production:document.getElementById('view-production')};
+  function show(v){
+    if(!views[v])return;
+    tabs.forEach(function(t){t.classList.toggle('active',t.dataset.view===v);});
+    Object.keys(views).forEach(function(k){views[k].hidden=(k!==v);});
+    var fr=views[v].querySelector('iframe[data-src]');
+    if(fr&&!fr.getAttribute('src')) fr.setAttribute('src',fr.getAttribute('data-src'));
+    try{history.replaceState(null,'',v==='agents'?location.pathname:('#'+v));}catch(e){}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.view);});});
+  var h=(location.hash||'').replace('#','');
+  if(h==='yours'||h==='production') show(h);
+  window.addEventListener('message',function(e){
+    var hgt=e.data&&e.data.imHeight; if(!hgt)return;
+    document.querySelectorAll('.embed-frame').forEach(function(fr){ if(fr.contentWindow===e.source) fr.style.height=(hgt+10)+'px'; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Python dependencies.
+#
+# The core of this system is deliberately stdlib-only: the runtime, the consistency checks, the CRM
+# and the dashboards all run with nothing installed. Everything below is needed only by a specific
+# feature, so install what you actually use rather than all of it.
+#
+#   pip install -r requirements.txt        # everything
+#   pip install openpyxl                   # just the financial model
+
+# The financial model (finance/*.xlsx) — read/write the workbook
+openpyxl>=3.1
+
+# The Slack control surface — runtime/slack-agent-listener.py
+# Only needed once you wire Slack (SETUP/04). Skip until then.
+slack_sdk>=3.27
+
+# Calling a model directly from a script rather than through Claude Code.
+# Most of this system does NOT need it — loops run via the `claude` CLI.
+anthropic>=0.40
+
+# --- optional, one prototype only ---------------------------------------------------------------
+# pygrib is needed ONLY by clients/prospect-a/prototype/mrms_mesh.py (weather-grid decoding).
+# It needs system libraries (eccodes) and is genuinely annoying to install. Skip it unless you are
+# working on that specific prototype.
+# pygrib>=2.1

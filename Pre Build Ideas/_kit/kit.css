@@ -1,0 +1,154 @@
+/* Shared surface styling for the pre-build verticals.
+   One visual system across all ten so a client overlay changes the brand,
+   not the layout. Client-facing surfaces carry the CLIENT's name only —
+   there is deliberately no yourco mark anywhere in this file. */
+
+:root {
+  --ink: #16181d;
+  --ink-2: #4a5060;
+  --ink-3: #7b8496;
+  --line: #e3e6ec;
+  --line-2: #eef0f5;
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --brand: #2a3a8c;
+  --brand-soft: #eef1fb;
+  --good: #14795a;
+  --good-soft: #e6f4ef;
+  --warn: #9a6212;
+  --warn-soft: #fdf3e2;
+  --bad: #a32b23;
+  --bad-soft: #fdecea;
+  --blank: #8a91a2;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(20,24,35,.05), 0 8px 24px rgba(20,24,35,.05);
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------- chrome */
+
+header.top {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 24px;
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 10;
+}
+header.top h1 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -.01em; }
+header.top .sub { color: var(--ink-3); font-size: 13px; }
+header.top .spacer { flex: 1; }
+
+nav.tabs { display: flex; gap: 2px; padding: 0 24px; background: var(--card);
+           border-bottom: 1px solid var(--line); overflow-x: auto; }
+nav.tabs button {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  padding: 11px 14px; font: inherit; font-size: 14px; color: var(--ink-2);
+  cursor: pointer; white-space: nowrap;
+}
+nav.tabs button:hover { color: var(--ink); }
+nav.tabs button.on { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+
+main { padding: 22px 24px 64px; max-width: 1180px; margin: 0 auto; }
+section.view { display: none; }
+section.view.on { display: block; }
+
+/* ---------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  margin-bottom: 18px; overflow: hidden;
+}
+.panel > h2 {
+  margin: 0; padding: 13px 16px; font-size: 14px; font-weight: 650;
+  border-bottom: 1px solid var(--line-2); display: flex; gap: 10px; align-items: baseline;
+}
+.panel > h2 .note { font-weight: 400; color: var(--ink-3); font-size: 12.5px; }
+.panel .body { padding: 14px 16px; }
+.panel .body.flush { padding: 0; }
+
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+
+/* ---------------------------------------------------------------- stats */
+
+.stat { padding: 13px 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+.stat .k { font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; }
+.stat .v { font-size: 25px; font-weight: 640; letter-spacing: -.02em; margin-top: 4px; }
+.stat .f { font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
+.stat.alert { border-color: #f2c9c4; background: var(--bad-soft); }
+.stat.warn  { border-color: #f0dcb6; background: var(--warn-soft); }
+
+/* the refusal — the most important element in the system */
+.blank {
+  color: var(--blank); font-style: italic; font-weight: 400; font-size: 13.5px;
+  border-bottom: 1px dotted var(--blank); cursor: help;
+}
+.stat .v .blank { font-size: 15px; }
+
+/* ---------------------------------------------------------------- tables */
+
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th {
+  text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--ink-3); font-weight: 600; padding: 9px 14px; border-bottom: 1px solid var(--line);
+  background: #fbfbfd; position: sticky; top: 0;
+}
+td { padding: 10px 14px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tr.clickable:hover td { background: #fafbff; cursor: pointer; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+
+/* ---------------------------------------------------------------- bits */
+
+.pill {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: .01em;
+  background: var(--line-2); color: var(--ink-2); white-space: nowrap;
+}
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad  { background: var(--bad-soft);  color: var(--bad); }
+.pill.brand{ background: var(--brand-soft);color: var(--brand); }
+.pill.rung { font-family: var(--mono); font-size: 11px; }
+
+.why { color: var(--ink-3); font-size: 12.5px; }
+.mono { font-family: var(--mono); font-size: 12.5px; }
+.right { text-align: right; }
+.muted { color: var(--ink-3); }
+.strong { font-weight: 620; }
+
+button.act {
+  font: inherit; font-size: 13px; font-weight: 550; padding: 6px 12px;
+  border-radius: 8px; border: 1px solid var(--line); background: var(--card);
+  color: var(--ink); cursor: pointer;
+}
+button.act:hover { border-color: var(--ink-3); }
+button.act.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+button.act.primary:hover { filter: brightness(1.08); }
+button.act:disabled { opacity: .45; cursor: default; }
+
+.banner {
+  padding: 10px 14px; border-radius: 10px; font-size: 13px;
+  background: var(--brand-soft); color: var(--brand); border: 1px solid #d6ddf6;
+  margin-bottom: 16px;
+}
+.banner.warn { background: var(--warn-soft); color: var(--warn); border-color: #f0dcb6; }
+
+.log { font-family: var(--mono); font-size: 12px; }
+.log .at { color: var(--ink-3); }
+
+ul.reasons { margin: 6px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 12.5px; }
+ul.reasons li { margin: 2px 0; }
+
+footer.foot { color: var(--ink-3); font-size: 12px; padding: 18px 24px 40px; max-width: 1180px; margin: 0 auto; }

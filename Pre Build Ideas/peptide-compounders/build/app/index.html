@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Provenance OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-changes"></section>
+  <section class="view" id="v-batches"></section>
+  <section class="view" id="v-suppliers"></section>
+  <section class="view" id="v-complaints"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system never edits a batch
+record, never states that anything is compliant, and never assesses an adverse event — it captures,
+routes, and shows its reasoning.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'changes',label:'Rulebook'},{id:'batches',label:'Batch packets'},
+      {id:'suppliers',label:'Upstream'},{id:'complaints',label:'Complaints'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,changes,batches,suppliers,complaints,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.kind} · ${d.config.staff}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The business, counted','',
+      `<div class="grid">
+        ${stat('Unreviewed source changes', fmt.num(b.open_changes), 'published, nobody has read them', b.open_changes?'warn':'')}
+        ${stat('…that name your products', fmt.num(b.landing), 'flagged for a human read', b.landing?'alert':'')}
+        ${stat('Packets inspection-ready', val(b.readiness,'ready_rate',fmt.pct),
+          b.readiness._missing?'':`${b.readiness.ready} of ${b.readiness.batches} batches`)}
+        ${stat('Median review lag', val(b.review_lag,'median_days',d=>d+' d'), 'published → reviewed')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'release never leaves the R1 floor')}
+        ${stat('Adverse reports logged', fmt.num(b.complaints_open), 'captured, never assessed here', b.complaints_open?'alert':'')}</div>`) +
+    panel('What landed on your list','ranked by how many of your products it names',
+      table([{label:'Change'},{label:'Source'},{label:'Severity'},{label:'Your products'}],
+        b.top, c=>`<td>${esc(c.title)}</td><td>${esc(c.source||'')}</td>
+          <td>${pill(c.severity, c.severity==='high'?'bad':c.severity==='medium'?'warn':'')}</td>
+          <td>${c.affected_n?c.impact.affected.map(a=>esc(a.name)).join(', '):'<span class="f">none named</span>'}</td>`, true));
+}
+
+async function changes(){
+  const d = await API.get('/api/changes');
+  document.getElementById('v-changes').innerHTML =
+    `<div class="banner">${esc(d.scope)}</div>` +
+    d.rows.map(c=>panel(c.title, `${c.source} · ${c.severity} · published ${fmt.stamp(c.published_at)}`,
+      c.affected_n
+        ? `<div class="banner warn"><b>Names ${c.affected_n} of your products.</b></div>` +
+          table([{label:'Product'},{label:'Why it was flagged'}], c.impact.affected,
+            a=>`<td>${esc(a.name)}</td><td>${a.why.map(esc).join('; ')}</td>`, true)
+        : `<div class="f">${esc(c.impact.verdict)}</div>`)).join('');
+}
+
+async function batches(){
+  const d = await API.get('/api/batches');
+  document.getElementById('v-batches').innerHTML =
+    panel('Batch packets','a packet is complete only when every record exists AND the upstream certificate verified — never by omission',
+      table([{label:'Batch'},{label:'Lot'},{label:'Product'},{label:'Missing'},{label:'Upstream'},{label:''}],
+        d.rows, r=>`<td>${esc(r.batch)}</td><td>${esc(r.lot||'')}</td><td>${esc(r.sku||'')}</td>
+          <td>${r.records_missing.length?`<span class="pill bad">${r.records_missing.map(esc).join(', ')}</span>`:'<span class="pill good">complete</span>'}</td>
+          <td>${pill(r.supplier_coa, r.supplier_coa==='verified'?'good':'warn')}</td>
+          <td class="right"><button class="act${r.complete?' primary':''}" onclick="rel('${r.batch}')">Release lot</button></td>`, true)) +
+    `<div id="bout"></div>`;
+}
+async function rel(id){
+  const r = await API.post(`/api/batches/${id}/release`,{human:'qa.lead'});
+  document.getElementById('bout').innerHTML = panel('What happened','',
+    r.refused
+      ? `<div class="banner bad"><b>Refused — ${esc(r.refused)}.</b> ${esc(r.why||'')}
+         <ul>${(r.blockers||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`
+      : `<div class="banner good">Lot ${esc(r.lot)} released by ${esc(r.released_by)}. ${esc(r.note||'')}</div>`);
+  batches();
+}
+
+async function suppliers(){
+  const d = await API.get('/api/suppliers');
+  document.getElementById('v-suppliers').innerHTML =
+    panel('Upstream certificates','checked against what was actually received, not filed on trust',
+      table([{label:'Certificate'},{label:'Supplier'},{label:'Analyte'},{label:'State'},{label:''}],
+        d.rows, c=>`<td>${esc(c.id)}</td><td>${esc(c.supplier||'')}</td><td>${esc(c.analyte||'')}</td>
+          <td>${pill(c.state, c.state==='verified'?'good':c.state==='rejected'?'bad':'')}</td>
+          <td class="right"><button class="act" onclick="chk('${c.id}')">Check</button></td>`, true)) +
+    `<div id="sout"></div>`;
+}
+async function chk(id){
+  const r = await API.post(`/api/suppliers/${id}/verify`);
+  document.getElementById('sout').innerHTML = panel('Check result','',
+    r.ok ? `<div class="banner good">Verified — issuer ${esc(r.issuer)}, everything matches what was received.</div>`
+         : `<div class="banner bad"><b>Rejected.</b><ul>${r.problems.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+            <div class="f">${esc(r.note)}</div></div>`);
+  suppliers();
+}
+
+async function complaints(){
+  const d = await API.get('/api/complaints');
+  document.getElementById('v-complaints').innerHTML =
+    panel('Report something','try a health outcome, then a product fault',
+      `<div style="display:flex;gap:8px"><input id="cx" style="flex:1;font:inherit;padding:8px;
+        border:1px solid var(--line);border-radius:6px"
+        placeholder="e.g. I got a rash and shortness of breath after the injection">
+        <button class="act primary" onclick="sendCx()">Submit</button></div><div id="cxout"></div>`) +
+    panel('Logged reports','',
+      table([{label:'When'},{label:'Report'},{label:'Class'},{label:'Routed to'}],
+        d.rows, c=>`<td>${fmt.stamp(c.at)}</td><td>${esc(c.text)}</td>
+          <td>${pill(c.label, c.label==='adverse_event'?'bad':c.label==='product_quality'?'warn':'')}</td>
+          <td>${esc(c.route||'')}</td>`, true));
+}
+async function sendCx(){
+  const t=document.getElementById('cx').value.trim(); if(!t) return;
+  const r=await API.post('/api/complaints',{text:t});
+  document.getElementById('cxout').innerHTML =
+    `<div class="banner ${r.label==='adverse_event'?'bad':'warn'}" style="margin-top:10px">
+      Classified <b>${esc(r.label)}</b> — ${esc(r.why)}.
+      ${r.refused?`<br><b>${esc(r.refused)}.</b> Escalated to ${esc(r.escalated)}.
+      <div class="f" style="margin-top:6px">Reply sent: “${esc(r.reply)}”</div>`:''}</div>`;
+  complaints();
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi'+(Object.keys(roiIn).length?'?'+new URLSearchParams(roiIn):''));
+  const rec=d.recorded||{};
+  const f=[['packets_year','Packets per year','counted from your batch list'],
+           ['packet_hours','Hours per packet','yours'],
+           ['watch_hours_wk','Source-watching hours / week','yours'],
+           ['coa_minutes','Minutes per upstream certificate','yours'],
+           ['lots_year','Lots per year','counted'],
+           ['staff_rate','Staff hourly rate','yours'],
+           ['change_value','Value of catching a rule change early','you decide']];
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    panel('The question we refuse','',`<button class="act" onclick="ask()">Ask "are we compliant?"</button><div id="askout"></div>`) +
+    renderApprovals(ap.pending,'decide') + renderEval(ev.watcher) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function ask(){
+  const r=await API.post('/api/ask',{text:'are we compliant?'});
+  document.getElementById('askout').innerHTML =
+    `<div class="banner warn" style="margin-top:10px"><b>Refused, by class.</b> ${esc(r.reply)}
+     <div class="f" style="margin-top:6px">${esc(r.why)}</div></div>`;
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'qa.lead'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

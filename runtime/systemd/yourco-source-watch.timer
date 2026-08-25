@@ -1,0 +1,11 @@
+[Unit]
+Description=YourCo weekly source-watch — Fridays 07:30 (server-local time = ET)
+
+[Timer]
+# Server timezone should be America/New_York (see runtime/README.md) so this = 07:30 ET.
+# 30 min BEFORE brett-ideas (Fri 08:00) so the ideas drop can read this artifact as fresh signal.
+OnCalendar=Fri *-*-* 07:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

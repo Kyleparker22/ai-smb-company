@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Expiry — the things your business believes, and can&rsquo;t check</title>
+<meta name="description" content="Name three things your business runs on. We'll show you which ones you could actually verify today — and which are load-bearing and unmeasured. Free, no account, and we'll ask you again later if you want." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  .belief{border-top:1px solid var(--hairline);padding:26px 0}
+  .belief .idx{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-bottom:11px}
+  .belief label{display:block;font-size:16.5px;font-weight:600;margin-bottom:9px;line-height:1.4}
+  .belief .hint{display:block;font-weight:400;font-size:14.5px;color:var(--ink-muted);margin-top:4px;line-height:1.5}
+  .belief input[type=text]{width:100%;font:inherit;font-size:16.5px;color:var(--indigo);background:var(--cream);border:1px solid var(--hairline);border-radius:8px;padding:13px 16px}
+  .belief input[type=text]:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+  .howrow{margin-top:18px}
+  .howrow > span{display:block;font-size:15px;font-weight:600;margin-bottom:10px}
+  .opts{display:grid;gap:8px}
+  .opt{display:flex;gap:11px;align-items:flex-start;padding:12px 15px;border:1px solid var(--hairline);border-radius:8px;cursor:pointer;background:#FBF8F1;transition:border-color .12s,background .12s}
+  .opt:hover{border-color:var(--brass)}
+  .opt:has(input:checked){border-color:var(--brass);background:rgba(184,150,90,.1)}
+  .opt input{margin-top:4px;flex:none;accent-color:var(--brass)}
+  .opt span{font-size:15.5px;line-height:1.45}
+  .opt em{display:block;font-style:normal;font-size:13.5px;color:var(--ink-muted);margin-top:2px}
+
+  .result{display:none;margin-top:8px}
+  .rgroup{margin-top:40px}
+  .rgroup > h3{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.25}
+  .rgroup > p{font-size:16px;color:var(--ink-muted);margin-top:8px;line-height:1.55;max-width:64ch}
+  .ritem{padding:18px 0 18px 26px;border-top:1px solid var(--hairline);position:relative;font-size:17px;line-height:1.5}
+  .ritem::before{content:"";position:absolute;left:0;top:26px;width:9px;height:9px;border-radius:50%}
+  .ritem.checkable::before{background:#2F5D50}
+  .ritem.unmeasured::before{background:var(--brass)}
+  .ritem .why{display:block;font-size:14.5px;color:var(--ink-muted);margin-top:5px}
+  .verdict{margin-top:36px;padding:24px 28px;border:1px solid var(--brass);border-radius:10px;background:rgba(184,150,90,.09);font-size:17.5px;line-height:1.55;max-width:70ch}
+  .verdict strong{display:block;font-size:20px;font-weight:600;letter-spacing:-.02em;margin-bottom:9px}
+
+  .again{margin-top:44px;padding-top:32px;border-top:1px solid var(--hairline)}
+  .again .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+  .again input[type=email]{flex:1 1 300px;min-width:0;font:inherit;font-size:16px;color:var(--indigo);background:var(--cream);border:1px solid var(--hairline);border-radius:9999px;padding:13px 22px}
+  .again input[type=email]:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+  .again select{font:inherit;font-size:16px;color:var(--indigo);background:var(--cream);border:1px solid var(--hairline);border-radius:9999px;padding:13px 18px}
+  .again .fine{font-size:13.5px;color:var(--pewter);margin-top:12px;line-height:1.55;max-width:66ch}
+  .okmsg{display:none;margin-top:24px;padding:22px 26px;border:1px solid var(--brass);border-radius:10px;background:rgba(184,150,90,.09);font-size:17px;line-height:1.55;max-width:66ch}
+  .err{display:none;margin-top:14px;color:var(--oxblood);font-size:15px}
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+      <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=expiry" class="pill sm">Book a call</a></div>
+    </div>
+  </nav>
+
+  <section class="tile hero">
+    <div class="wrap narrow">
+      <div class="eyebrow">expiry</div>
+      <h1 style="font-size:clamp(36px,5.6vw,56px);line-height:1.05;font-weight:600;letter-spacing:-.03em;max-width:16ch">Every business runs on things nobody checks anymore.</h1>
+      <p class="lede">&ldquo;We get back to every quote within a day.&rdquo; &ldquo;We follow up twice before we drop a lead.&rdquo; &ldquo;Nobody waits more than a day for an answer.&rdquo; These were true when you said them. Some still are.</p>
+      <p class="lede">Name three of yours. We&rsquo;ll sort them into the ones you could verify this afternoon and the ones you couldn&rsquo;t — and the second list is the one worth looking at.</p>
+      <p class="lede" style="font-size:16px">No account, no score, nothing to download. It takes about two minutes.</p>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap narrow">
+      <form id="expiryForm">
+        <div id="beliefs"></div>
+        <button class="pill" type="submit" style="margin-top:26px">Sort them &rarr;</button>
+        <div class="err" id="formErr">Write at least one belief, and say how you&rsquo;d know if it stopped being true.</div>
+      </form>
+
+      <div class="result" id="result">
+        <div class="rgroup" id="gCheckable" hidden>
+          <h3>You could check these today.</h3>
+          <p>There&rsquo;s a number behind each one. If it slipped, you&rsquo;d find out by looking — which means these are decisions, not assumptions.</p>
+          <div id="listCheckable"></div>
+        </div>
+
+        <div class="rgroup" id="gUnmeasured" hidden>
+          <h3>These are load-bearing, and unmeasured.</h3>
+          <p>Not wrong — <em>unverifiable</em>. Your business is making decisions on them right now, and if one quietly stopped being true, nothing in your week would tell you. &ldquo;Someone would mention it&rdquo; and &ldquo;I&rsquo;d probably notice&rdquo; are how every one of these starts.</p>
+          <div id="listUnmeasured"></div>
+        </div>
+
+        <div class="verdict" id="verdict"></div>
+
+        <div class="again">
+          <h3 style="font-size:21px;font-weight:600;letter-spacing:-.02em">Want us to ask you again?</h3>
+          <p class="lede" style="margin-top:10px">This is the part that&rsquo;s actually useful. On a schedule you pick, we send one short email that quotes your own words back and asks whether they&rsquo;re still true. That&rsquo;s the whole email. No newsletter, no drip, no pitch attached.</p>
+          <form id="againForm">
+            <div class="row">
+              <input id="email" name="email" type="email" required placeholder="you@yourbusiness.com" aria-label="Your email" />
+              <select id="interval" name="interval_days" aria-label="How often to ask">
+                <option value="90">Ask me in 90 days</option>
+                <option value="180">Ask me in 6 months</option>
+                <option value="30">Ask me in 30 days</option>
+              </select>
+              <button class="pill" type="submit">Ask me again &rarr;</button>
+            </div>
+            <p class="fine">We keep your three sentences and your email so we can send that one message. Unsubscribe in a click, any time. Your beliefs aren&rsquo;t shared with anyone and aren&rsquo;t used to build a profile of your business.</p>
+          </form>
+          <div class="okmsg" id="againOk"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile dark">
+    <div class="wrap narrow">
+      <div class="eyebrow">why we built this</div>
+      <h2 class="sec" style="color:var(--on-dark)">The unmeasured list is what we&rsquo;re actually for.</h2>
+      <p class="lede">An audit is this exercise done properly: across the whole business, with your numbers instead of your memory, and with a dollar figure on each gap. What you just did in two minutes is the shape of it.</p>
+      <p class="lede">And it&rsquo;s the same rule the systems we build run on — they report what they can prove and name what they can&rsquo;t, rather than filling a gap with something that sounds right. <a class="tlink" href="proof.html">We hold our own website to it too &rarr;</a></p>
+      <div class="ctas" style="margin-top:32px;display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+        <a class="pill" href="audit.html">What the audit involves &rarr;</a>
+        <a class="tlink" href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=expiry">or book 30 min →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:48px 0;border-top:1px solid var(--hairline)">
+    <div class="wrap narrow" style="font-size:14px;color:var(--pewter)">
+      © 2026 yourco · <a class="tlink" href="index.html" style="font-size:14px">yourco.com</a> · <a class="tlink" href="privacy.html" style="font-size:14px">Privacy</a>
+    </div>
+  </footer>
+
+<script>
+/* Expiry.
+ *
+ * The sort happens entirely in the browser, before any email is asked for. The value has to land
+ * whether or not they hand over an address — a "result" held hostage behind a form is the pattern
+ * this tool is a rebuke of.
+ *
+ * The classification rule is the whole point and it is deliberately strict: only a number someone
+ * actually looks at counts as checkable. "Someone would tell me" and "I'd notice" feel like
+ * verification and are not — they are the exact mechanism by which a belief stays on the books
+ * years after it stopped being true. Saying so plainly is more useful than being generous.
+ */
+(function () {
+  'use strict';
+
+  var PROMPTS = [
+    { ph: 'We get back to every quote within a day.', hint: 'A promise you make to customers.' },
+    { ph: 'We follow up twice before we drop a lead.', hint: 'A rule about how work gets done.' },
+    { ph: 'Nobody on the team is underwater right now.', hint: 'Something you assume about the inside of the business.' }
+  ];
+
+  var HOWS = [
+    { v: 'number', label: 'There’s a number I look at', sub: 'A report, a dashboard, something I actually open' },
+    { v: 'told',   label: 'Someone would tell me', sub: 'A customer complains, or the team raises it' },
+    { v: 'notice', label: 'I’d probably notice', sub: 'It would feel different somehow' },
+    { v: 'no',     label: 'Honestly — I wouldn’t know', sub: 'Nothing would tell me either way' }
+  ];
+
+  var WHY = {
+    number: 'You have a number for this. Go look at it — that’s the difference.',
+    told:   'This depends on someone else raising it. People raise the loud problems; the quiet ones just continue.',
+    notice: 'Noticing is a slow instrument, and it drifts with you. By the time this feels different it has usually been untrue for a while.',
+    no:     'Nothing would tell you. This is running the business on the version of it that was true when you last checked.'
+  };
+
+  var wrap = document.getElementById('beliefs');
+  PROMPTS.forEach(function (p, i) {
+    var d = document.createElement('div');
+    d.className = 'belief';
+    d.innerHTML =
+      '<div class="idx">Belief ' + (i + 1) + (i ? ' <span style="color:var(--pewter);text-transform:none;letter-spacing:0;font-weight:400">— optional</span>' : '') + '</div>' +
+      '<label for="b' + i + '">Something your business runs on.' +
+        '<span class="hint">' + p.hint + '</span></label>' +
+      '<input type="text" id="b' + i + '" maxlength="160" placeholder="' + p.ph + '" />' +
+      '<div class="howrow"><span>How would you know if that stopped being true?</span><div class="opts">' +
+        HOWS.map(function (h) {
+          return '<label class="opt"><input type="radio" name="h' + i + '" value="' + h.v + '" />' +
+                 '<span>' + h.label + '<em>' + h.sub + '</em></span></label>';
+        }).join('') +
+      '</div></div>';
+    wrap.appendChild(d);
+  });
+
+  var collected = [];
+
+  function item(b, cls) {
+    var d = document.createElement('div');
+    d.className = 'ritem ' + cls;
+    var q = document.createElement('span');
+    q.textContent = '“' + b.text + '”';
+    d.appendChild(q);
+    var w = document.createElement('span');
+    w.className = 'why';
+    w.textContent = WHY[b.how];
+    d.appendChild(w);
+    return d;
+  }
+
+  document.getElementById('expiryForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    collected = [];
+    PROMPTS.forEach(function (_, i) {
+      var t = (document.getElementById('b' + i).value || '').trim();
+      var r = document.querySelector('input[name="h' + i + '"]:checked');
+      if (t && r) collected.push({ text: t.slice(0, 160), how: r.value });
+    });
+
+    var err = document.getElementById('formErr');
+    if (!collected.length) { err.style.display = 'block'; return; }
+    err.style.display = 'none';
+
+    var checkable = collected.filter(function (b) { return b.how === 'number'; });
+    var unmeasured = collected.filter(function (b) { return b.how !== 'number'; });
+
+    var lc = document.getElementById('listCheckable'), lu = document.getElementById('listUnmeasured');
+    lc.textContent = ''; lu.textContent = '';
+    checkable.forEach(function (b) { lc.appendChild(item(b, 'checkable')); });
+    unmeasured.forEach(function (b) { lu.appendChild(item(b, 'unmeasured')); });
+    document.getElementById('gCheckable').hidden = !checkable.length;
+    document.getElementById('gUnmeasured').hidden = !unmeasured.length;
+
+    var v = document.getElementById('verdict');
+    v.textContent = '';
+    var strong = document.createElement('strong');
+    var body = document.createElement('span');
+    if (!unmeasured.length) {
+      strong.textContent = 'All of them are checkable. That’s rare.';
+      body.textContent = 'You can verify everything you just told us, which means these are live decisions ' +
+        'rather than inherited assumptions. Worth asking whether the rest of the business is held to the ' +
+        'same standard as these three.';
+    } else if (!checkable.length) {
+      strong.textContent = 'None of these can be verified today.';
+      body.textContent = 'All ' + unmeasured.length + ' are load-bearing and unmeasured. That isn’t unusual ' +
+        'and it isn’t a failing — almost nothing in a small business is instrumented, because instrumenting ' +
+        'it has always cost more than it was worth. The question is only which of these you’d want to find ' +
+        'out about the week it changed, rather than the quarter after.';
+    } else {
+      strong.textContent = unmeasured.length + ' of ' + collected.length + ' are running unmeasured.';
+      body.textContent = 'You could check ' + checkable.length + ' this afternoon. The other ' +
+        unmeasured.length + ' your business is relying on with nothing behind ' +
+        (unmeasured.length === 1 ? 'it' : 'them') + '. That gap is where things go wrong quietly — ' +
+        'not with a crisis, but with a slow drift nobody has a reason to look at.';
+    }
+    v.appendChild(strong); v.appendChild(body);
+
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('againForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var payload = {
+      email: document.getElementById('email').value.trim(),
+      interval_days: parseInt(document.getElementById('interval').value, 10),
+      beliefs: collected,
+      source: 'expiry page'
+    };
+    /* Staged: runtime/expiry_intake.py exists but does not serve until launch. */
+    try {
+      await fetch('/api/expiry-intake', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      });
+    } catch (_) { /* no backend while staged */ }
+
+    var ok = document.getElementById('againOk');
+    var when = payload.interval_days === 30 ? '30 days'
+             : payload.interval_days === 180 ? 'six months' : '90 days';
+    ok.style.display = 'block';
+    ok.innerHTML = '<strong>Done.</strong> In ' + when + ' you’ll get one email with your own ' +
+      'sentences in it and one question: still true? Nothing else between now and then.';
+    this.style.display = 'none';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Product — built for Nick · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EAE1CD;--brass:#B8965A;--ink:#161B33;--muted:#6b6f83;--high:#3f7d5a;--line:rgba(22,27,51,.12)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.12}
+  .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .topbar{background:var(--indigo);color:var(--cream);padding:14px 0}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:20px} .mark .dot{color:var(--brass)}
+  .topbar .tag{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#b9bdd0}
+  .hero{background:var(--indigo);color:var(--cream);padding:38px 0 42px}
+  .hero h1{font-size:clamp(26px,4.4vw,42px);color:var(--cream);margin:12px 0 12px;max-width:20ch}
+  .hero h1 .a{color:var(--brass)}
+  .hero p{color:#d7dae6;max-width:66ch;font-size:17px}
+  section{padding:30px 0;border-bottom:1px solid var(--line)}
+  .sec{font-size:24px} .lede{color:#3a3f55;margin-top:6px;max-width:70ch}
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+  @media(max-width:760px){.flow{grid-template-columns:1fr 1fr}}
+  .step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+  .step .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .step h3{font-size:17px;margin:6px 0 5px}
+  .step p{font-size:13.5px;color:#3a3f55;margin:0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .cap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;gap:12px}
+  .cap .ic{font-size:20px;line-height:1.4}
+  .cap h4{margin:0 0 3px;font-family:Inter;font-size:14.5px;font-weight:600}
+  .cap p{margin:0;font-size:13px;color:#3a3f55}
+  .proof{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+  .pf{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;flex:1;min-width:190px}
+  .pf .n{font-family:Fraunces,serif;font-size:30px;font-weight:700} .pf.hi .n{color:var(--brass)}
+  .pf .l{font-size:12.5px;color:var(--muted);margin-top:5px}
+  .live{background:var(--parchment);border-radius:14px;padding:16px 18px;margin-top:16px;font-size:14px}
+  .live b{color:var(--indigo)}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .pill{display:inline-block;background:var(--brass);color:#20160a;font-weight:600;border-radius:999px;padding:11px 18px;text-decoration:none;font-size:14px}
+  .pill.ghost{background:transparent;border:1px solid var(--indigo);color:var(--indigo)}
+  footer{background:var(--indigo);color:#aeb3c9;padding:24px 0;font-size:12.5px} footer b{color:var(--cream)}
+</style>
+</head>
+<body>
+  <div class="topbar"><div class="wrap"><div class="mark">yourco<span class="dot">.</span></div><div class="tag">Sample Product · for Prospect A</div></div></div>
+
+  <section class="hero" style="border:none"><div class="wrap">
+    <div class="eyebrow">built for Prospect A · roofing · Florida</div>
+    <h1>Stop researching storms at&nbsp;11pm. <span class="a">Start beating everyone to the door.</span></h1>
+    <p>Today you cross-reference NOAA, HailTrace and the hail maps by hand, then text your roofers one by one — an hour a night, and you still chase the odd storm that turns out to be nothing. Sample Product does all of it, verified, in seconds — and runs the whole play from alert to closed job.</p>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="eyebrow">how it works — you only touch one step</div>
+    <h2 class="sec">Four steps. Your phone. One tap.</h2>
+    <div class="flow">
+      <div class="step"><div class="k">1 · Watch</div><h3>It watches, always.</h3><p>Every source you use, cross-checked the moment a storm hits Florida — day or night.</p></div>
+      <div class="step"><div class="k">2 · Verify</div><h3>The AI reads the reports.</h3><p>It confirms the storm is real and claim-grade — and filters the "pea-sized on social media" junk so you never chase a dud.</p></div>
+      <div class="step"><div class="k">3 · You approve</div><h3>One tap on your phone.</h3><p>A verified alert with the call pre-picked. You tap send — your crew knows in seconds, by person, area, or team.</p></div>
+      <div class="step"><div class="k">4 · Crew rolls</div><h3>Right door, with proof.</h3><p>Crews get an optimized route to the highest-value doors and a script with the NOAA report in hand.</p></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="eyebrow">what it does for you</div>
+    <h2 class="sec">The whole storm-chasing play, automated.</h2>
+    <div class="grid">
+      <div class="cap"><div class="ic">⚡</div><div><h4>First to the neighborhood</h4><p>Real-time alerts the instant a storm verifies. Speed is the whole game — this makes you first.</p></div></div>
+      <div class="cap"><div class="ic">🗓️</div><div><h4>Staged before it hits</h4><p>Tomorrow's severe risk flagged tonight, so crews are already positioned to canvass as it clears.</p></div></div>
+      <div class="cap"><div class="ic">🗺️</div><div><h4>The right doors, best route</h4><p>Crews get an optimized route straight to the highest-value, oldest-roof, owner-occupied homes first.</p></div></div>
+      <div class="cap"><div class="ic">🛡️</div><div><h4>No wasted trips</h4><p>The AI reads every report and rejects the false ones — your crews only roll on storms that are actually real.</p></div></div>
+      <div class="cap"><div class="ic">📄</div><div><h4>Claims that hold up</h4><p>Every storm comes with a NOAA-measured evidence packet — faster approvals, fewer denials, you get paid sooner.</p></div></div>
+      <div class="cap"><div class="ic">📈</div><div><h4>Smarter every storm</h4><p>It learns which storms actually convert and prioritizes them — and shows you exactly what it made you.</p></div></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="eyebrow">does it actually work?</div>
+    <h2 class="sec">Yes — we proved it on your own week.</h2>
+    <p class="lede">We ran it over the exact week you cross-referenced by hand. On free NOAA data alone it independently caught your big calls — Ocala 59mph, Port St Lucie 58, the Fort Myers tornado, Calhoun 1″ hail + 70mph — and stayed quiet the day you said nothing was worth traveling for. The 1.25″ hail days it missed are exactly why your HailTrace / hail-map sources plug in.</p>
+    <div class="proof">
+      <div class="pf hi"><div class="n">seconds</div><div class="l">what used to take an hour a night</div></div>
+      <div class="pf"><div class="n">$0.47</div><div class="l">cost per job sourced <span style="color:var(--high)">(vs $50–200 to buy a lead)</span></div></div>
+      <div class="pf"><div class="n">every storm</div><div class="l">arrives with claim-grade NOAA proof</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px">Dollar figures are from sample outcomes to show the shape — they go live once your crews log real doors and jobs. Every storm shown is real NOAA data.</p>
+  </div></section>
+
+  <section style="border:none"><div class="wrap">
+    <div class="eyebrow">what it takes to go live</div>
+    <h2 class="sec">Two things, and you're running.</h2>
+    <div class="live">
+      <b>1. Your roster</b> — your roofers' numbers and how you group them (person / area / team). <br>
+      <b>2. A texting line</b> — a business SMS number (we set up the carrier registration). <br>
+      <span style="color:var(--muted)">Optional, for pinpoint hail: your Xweather key + a property-data feed — turns "county" into exact streets and addresses.</span>
+    </div>
+    <div class="ctas">
+      <a class="pill" href="demo.html">See the live demo →</a>
+      <a class="pill ghost" href="roi.html">See the ROI →</a>
+    </div>
+  </div></section>
+
+  <footer><div class="wrap">
+    <b>Sample Product — built and operated by yourco.</b> You never touch the data, the models, or the infrastructure. We own the reliability and the verification; you get first-to-the-door speed, claims that hold up, and crews on the doors that pay. Every storm shown is real NOAA data; nothing texts without your tap.
+  </div></footer>
+</body>
+</html>

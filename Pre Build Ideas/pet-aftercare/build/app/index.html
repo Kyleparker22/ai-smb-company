@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-chain"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Every custody transfer requires the
+recorded tag verification — a transfer without it has no code path, and a chain gap reads HOLD,
+never assumed. Service levels change only by a human holding the family's recorded consent; a
+private pet shares a chamber with no one; family messages never read like shipping updates; and
+what happens after the policy clock is a human decision, made once. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'chain',label:'Chain of custody'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,chain,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${b.clinics} partner clinics · private / individual / communal`;
+  document.getElementById('v-board').innerHTML =
+    panel('The chain, counted', '',
+      `<div class="grid">
+        ${stat('In our care', fmt.num(b.in_care), 'every one tag-checked at every step')}
+        ${stat('Chains on HOLD', fmt.num(b.chains_on_hold), 'a gap reads HOLD, never assumed', b.chains_on_hold?'alert':'good')}
+        ${stat('Ready to come home', fmt.num(b.ready_to_come_home), 'the gentle ladder — grief is not chased', b.ready_to_come_home?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the identity worry reads first', b.messages_open?'bad':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor — every family word')}
+        ${stat('This week, counted', fmt.num(b.recovered.pets_home)+' home',
+               `${b.recovered.tag_checks_recorded} tag check(s) recorded · ${b.recovered.proofs_approved} proof(s) approved by families · ${b.recovered.reminders_sent} reminder(s) sent`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"How do I know these are really Max's ashes" is never answered with
+      comfort alone — the answer is the <b>verbatim chain of custody</b>, every transfer and tag
+      check quoted as written, and a human sends it. Family drafts are tone-checked structurally:
+      no "shipment", no "unit", no "processed" — ever.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='identity_worry'?'bad':m.label==='clinic_pickup_request'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function chain(){
+  const d = await API.get('/api/pets');
+  document.getElementById('v-chain').innerHTML =
+    `<div class="banner warn">Try to break it: a transfer without the tag check has <b>no code
+      path</b>; a wrong tag HOLDs; a private pet never enters a shared chamber load; a service
+      level never changes without the family's recorded consent; a name is never engraved without
+      the family's approved proof; and nothing final happens before the policy clock — or without
+      a person.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="xfer({tag:'WC-0902',by:'operator K. Alvarez'})">Transfer Biscuit: tag checked</button>
+      <button class="act" onclick="xfer({by:'operator K. Alvarez'})">Transfer: no tag check</button>
+      <button class="act" onclick="xfer({tag:'WC-9999',by:'operator K. Alvarez'})">Transfer: wrong tag</button>
+      <button class="act" onclick="demo('/api/loads/ld_demo_communal/add',{pet:'pt_demo_private'})">Mix Juniper (private) into a communal load</button>
+      <button class="act" onclick="demo('/api/pets/pt_demo_private/service-level',{level:'communal'})">Change service level, no consent</button>
+     </div><div style="margin:10px 0">
+      <button class="act" onclick="demo('/api/pets/pt_demo_proof/proof-approve',{})">Approve engraving proof as software</button>
+      <button class="act" onclick="demo('/api/pets/pt_demo_proof/proof-approve',{family:'Dana Nakamura',ref:'FA-1187'})">Approve as the family (records)</button>
+      <button class="act" onclick="demo('/api/pets/pt_demo_proof/disposition',{})">Final decision before the clock</button>
+      <button class="act" onclick="demo('/api/pets/pt_demo_aged/disposition',{})">Final decision, no human</button>
+      <button class="act" onclick="demo('/api/tone-check',{text:'Your unit has been processed and the shipment is ready for pickup.'})">Family draft with logistics language</button>
+     </div><div id="cout"></div>` +
+    panel(`The chain — ${d.total} pets, ${d.holds} on HOLD`,
+      'a HOLD is a fact on the record, not a judgment call', table(
+      [{label:'Pet'},{label:'Family'},{label:'Tag'},{label:'Service level'},{label:'At'},{label:'Chain'}],
+      d.rows, p=>`<td>${esc(p.name)} <span class="why">${esc(p.species||'')}</span>${p.demo_tag?' '+pill('demo','brand'):''}</td>
+        <td>${esc(p.family||'')}</td><td>${esc(p.tag)}</td>
+        <td>${pill(p.service_level, p.service_level==='private'?'warn':'')} <span class="why">${esc(p.election_ref||'')}</span></td>
+        <td>${esc(p.returned?'home':p.at||'')}</td>
+        <td>${p.chain_state==='HOLD'?pill('HOLD','bad')+` <span class="why">${esc(p.why||'')}</span>`:pill('intact','good')}</td>`), true);
+}
+async function xfer(body){ demo('/api/pets/pt_demo_transfer/transfer', body); }
+async function demo(url, body){
+  const r = await API.post(url, body);
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel(r.recorded?'Transfer recorded':r.approved?'Approved — the family\'s act':r.changed?'Changed with consent':r.done?'Decided by a human':'OK', '',
+        `<div class="strong">${esc(r.recorded?`${r.from} → ${r.to}, tag checked by ${r.tag_checked_by}`:r.approved?`"${r.text}" — approved by ${r.by} (${r.ref})`:r.note||r.why||JSON.stringify(r))}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['active_clinics','Active clinics','counted'],['clinic_avg_monthly','Avg revenue / clinic / mo','your number'],
+    ['retention_lift','Retention lift','your number (0–1)'],['pets_mo','Pets / month','your number'],
+    ['addon_price','Keepsake price','your number'],['attach_lift','Attach lift','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['wrong_ashes_value','The wrong-ashes file','yours or blank — never our number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

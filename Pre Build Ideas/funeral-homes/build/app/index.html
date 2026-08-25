@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arrangement OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-calls"></section>
+  <section class="view" id="v-quote"></section>
+  <section class="view" id="v-cases"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. A first call reaches the on-call
+director immediately; grief is never automated; every price is itemized from the recorded General
+Price List; and no upsell language is ever drafted toward a grieving family.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'calls',label:'Calls'},{id:'quote',label:'Quote desk'},
+      {id:'cases',label:'Cases & documents'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,calls,quote,cases,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.locations} locations · ~${d.config.cases_yr} cases/yr`;
+  document.getElementById('v-board').innerHTML =
+    panel('Today', '',
+      `<div class="grid">
+        ${stat('Unhandled calls', fmt.num(b.calls_open), 'a first call never waits', b.calls_open?'alert':'')}
+        ${stat('Open documents', fmt.num(b.open_documents), 'certificates, permits, assignments')}
+        ${stat('Pre-need contracts', fmt.num(b.preneed.contracts), esc(b.preneed.funding_note||`${b.preneed.funded_recorded} with funding recorded`))}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.documents_received} · ${b.recovered.chases_sent} · ${b.recovered.first_calls_paged}`,
+               'documents in · chases sent · first calls paged — from the log')}</div>`) +
+    panel('Date-sensitive documents', 'a service date depends on each', table(
+      [{label:'Case'},{label:'Document'},{label:'Needed by'},{label:'Days',num:true}],
+      b.dated_documents, r=>`<td class="mono">${esc(r.case)}</td><td>${esc(r.kind)}</td>
+        <td>${fmt.date(r.needed_by)}</td><td class="num strong">${r.days_left}</td>`), true);
+}
+
+async function calls(){
+  const d = await API.get('/api/calls');
+  document.getElementById('v-calls').innerHTML =
+    `<div class="banner warn">A first call pages the on-call director immediately. The system
+      captures logistics and says nothing else — compassion is not a template.</div>` +
+    panel('Calls', '', table([{label:'When'},{label:'Call'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='first_call'?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/calls/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">“${esc(s.said)}”</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function quote(){
+  const d = await API.get('/api/gpl');
+  document.getElementById('v-quote').innerHTML =
+    `<div class="banner">Every number comes itemized from the recorded GPL. Check items and quote —
+      then try an off-list item.</div>` +
+    panel('General Price List', '', table([{label:''},{label:'Item'},{label:'Price',num:true}],
+      d.rows, g=>`<td><input type="checkbox" class="gplitem" value="${esc(g.key)}"></td>
+        <td>${esc(g.label)}</td><td class="num">${fmt.money(g.price)}</td>`), true) +
+    `<div style="margin:10px 0"><button class="act primary" onclick="doQuote()">Quote selected</button>
+      <button class="act" onclick="offList()">Quote an off-list item</button></div><div id="qout"></div>`;
+}
+async function doQuote(){
+  const items=[...document.querySelectorAll('.gplitem:checked')].map(x=>x.value);
+  const r = await API.post('/api/quote', {items});
+  document.getElementById('qout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Quote', r.note, table([{label:'Item'},{label:'Price',num:true}], r.lines,
+        l=>`<td>${esc(l.item)}</td><td class="num">${fmt.money(l.price)}</td>`) +
+        `<div class="strong" style="margin-top:8px">Total: ${fmt.money(r.total)}</div>`, true);
+}
+async function offList(){
+  const r = await API.post('/api/quote', {items:['premium_package_x']});
+  document.getElementById('qout').innerHTML = panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`);
+}
+
+async function cases(){
+  const d = await API.get('/api/cases');
+  document.getElementById('v-cases').innerHTML =
+    panel('Active cases', 'documents typed and dated', d.rows.map(c=>
+      `<div class="panel"><h2>${esc(c.family)}<span class="note">${esc(c.case)}</span></h2><div class="body">
+        ${c.documents.map(x=>`${pill(x.kind, x.state==='received'?'good':'warn')}${x.days_left!=null?` <span class="why">${x.days_left}d — ${esc(x.label)}</span>`:''}`).join(' ')}
+       </div></div>`).slice(0,15).join(''));
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['preneed_inquiries','Pre-need inquiries','counted'],['conversion','Conversion','your history (0–1)'],
+    ['avg_contract','Avg pre-need contract','your number'],['cases_yr','Active cases','counted'],
+    ['hours_per_case','Document hrs/case','your number'],['staff_rate','Staff rate','your number'],
+    ['first_call_value','An answered 2am call','yours or blank'],
+    ['rule_value','Funeral Rule discipline','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'director'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

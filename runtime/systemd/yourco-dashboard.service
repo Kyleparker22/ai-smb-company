@@ -1,0 +1,17 @@
+[Unit]
+Description=YourCo dashboard — hosted on Tailscale, read-only aggregator (Atlas)
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+
+[Service]
+Type=simple
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+# Bind to the VPS's Tailscale IP only (never the public interface). Read-only — no git writes.
+ExecStart=/usr/bin/env bash -c 'DASH_HOST="$(tailscale ip -4 | head -1)" exec python3 /home/claudeops/yourco-os/dashboard/server.py'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

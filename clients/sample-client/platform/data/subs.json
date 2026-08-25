@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "note": "Sub directory + learned price bands. SAMPLE SEED — names from the 2026-08-06 meeting (Jonathan, Kenny); bands start from Client Owner's own numbers ('Kenny: two-twenty to two-fifty once the pad's set') and tighten automatically as real replies land. Contact fields stay empty until Client Owner provides them — nothing sends without the Founder/Client Owner anyway.",
+    "updated": "2026-08-07"
+  },
+  "subs": [
+    { "id": "jonathan", "name": "Jonathan",        "trade": "carpentry",  "covers": ["pergola", "deck"],   "contact": "", "band": { "unit": "$/sqft", "min": 58, "max": 74, "n": 3, "source": "sample seed — replies tighten this" }, "notes": "easy to get prices from (per meeting)" },
+    { "id": "kenny",    "name": "Kenny",           "trade": "concrete",   "covers": ["concrete", "pads"],  "contact": "", "band": { "unit": "$/sqft", "min": 2.20, "max": 2.50, "n": 4, "source": "Client Owner's own number in the meeting" }, "notes": "'as long as the concrete pad's set, he's anywhere from 2.20–2.50'" },
+    { "id": "mason",    "name": "Mason (stone)",   "trade": "masonry",    "covers": ["veneer", "stonework"],"contact": "", "band": { "unit": "$/sqft", "min": 24, "max": 34, "n": 2, "source": "sample seed" }, "notes": "" },
+    { "id": "plumber",  "name": "Plumber (gas)",   "trade": "plumbing",   "covers": ["gasline"],           "contact": "", "band": { "unit": "$/run",  "min": 1400, "max": 2200, "n": 3, "source": "sample seed" }, "notes": "licensed — required for fire features" },
+    { "id": "electric", "name": "Electrician",     "trade": "electrical", "covers": ["lighting", "outlets"],"contact": "", "band": { "unit": "$/job",  "min": 900, "max": 1800, "n": 2, "source": "sample seed" }, "notes": "" }
+  ]
+}

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redeploy OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-reqs"></section>
+  <section class="view" id="v-present"></section>
+  <section class="view" id="v-redeploy"></section>
+  <section class="view" id="v-creds"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system never rejects a candidate
+and never makes a hiring decision — it ranks with reasons, and a recruiter decides.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'The desk'},{id:'reqs',label:'Open reqs'},{id:'present',label:'Present'},
+      {id:'redeploy',label:'Redeploy'},{id:'creds',label:'Credentials'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,reqs,present,redeploy,creds,roi,trust})[w](); }
+
+async function present(){
+  document.getElementById('v-present').innerHTML =
+    `<div class="banner">The branded submittal: the candidate's <b>recorded source résumé</b>
+      re-rendered into the agency's template in seconds. A <b>reformat, never an enhancement</b> —
+      nothing appears that the source doesn't carry, candidate contact routes are withheld by
+      construction, and wording suggestions wait for a recruiter with the original beside each.</div>
+     <div style="margin-bottom:12px"><button class="act primary" onclick="renderPresent()">
+       Render the demo submittal</button></div><div id="prout"></div>`;
+}
+async function renderPresent(){
+  const r = await API.post('/api/submissions/sb_demo_present/present');
+  if(r.refused){ document.getElementById('prout').innerHTML = `<div class="banner warn">${esc(r.refused)}</div>`; return; }
+  const pol = r.polish||{};
+  document.getElementById('prout').innerHTML =
+    panel('The rendered submittal', esc(r.rendered.note),
+      `<div style="background:#fff;color:#1c1c1c;border:1px solid var(--line);border-radius:8px;padding:18px">${r.rendered.html}</div>
+       <style>.submittal h2{margin:.4em 0 .2em}.submittal h3{margin:.9em 0 .2em;font-size:13px;
+         text-transform:uppercase;letter-spacing:.05em}.submittal .brandbar{font-size:12px;opacity:.7}
+         .submittal .dates{opacity:.6;font-size:12px}.submittal .foot{margin-top:14px;font-size:12px;opacity:.6}
+         .submittal .job{margin:.25em 0}</style>`) +
+    panel('What was withheld', 'the scrub is reported, never silent',
+      `<div>${(r.rendered.scrubbed_fields||[]).map(f=>pill(f,'bad')).join(' ')||'nothing on file to withhold'}</div>
+       <div class="why" style="margin-top:8px">contact leaks found in the output by the provenance
+       audit: <b>${r.provenance.contact_leaks}</b> · unsourced claims: <b>${r.provenance.unsourced.length}</b></div>`) +
+    panel('Wording suggestions — drafted, never applied', esc(pol.note||''), table(
+      [{label:'Section'},{label:'The source says'},{label:'Suggested'},{label:''}],
+      pol.suggestions||[], s=>`<td>${esc(s.section)}</td><td class="why">${esc(s.original)}</td>
+        <td>${esc(s.suggested)}</td><td class="why">${esc(s.note)}</td>`, ), true);
+}
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.agency;
+  document.getElementById('cosub').textContent = `${d.config.people} people · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The desk', 'the database is the asset',
+      `<div class="grid">
+        ${stat('Open reqs', fmt.num(b.open_reqs))}
+        ${stat('Median time to submit', val(b.submit_speed,'median_hours', v=>v+'h'),
+          b.submit_speed._missing?'':`${b.submit_speed.n} reqs with a recorded submission`)}
+        ${stat('Assignments ending in 21 days', fmt.num(b.redeploy_due), 'the cheapest revenue in the building', b.redeploy_due?'warn':'')}
+        ${stat('Redeployment rate', val(b.redeploy_rate,'rate',fmt.pct),
+          b.redeploy_rate._missing?'':`${b.redeploy_rate.redeployed} of ${b.redeploy_rate.of} ended assignments`)}
+       </div>
+       <div class="grid" style="margin-top:14px">
+        ${stat('Credentials expiring / expired', fmt.num(b.credential_count), '', b.credential_count?'alert':'')}
+        ${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+       </div>`);
+}
+
+async function reqs(){
+  const d = await API.get('/api/reqs');
+  document.getElementById('v-reqs').innerHTML =
+    `<div class="banner warn">The system <b>ranks, it does not reject</b>. A blocked candidate is
+      shown with the blocker named — a missing certification, a commute over the line — and a
+      recruiter decides whether it matters.</div>` +
+    panel('Open reqs', `${d.open.length}`, table(
+      [{label:'Client'},{label:'Skills'},{label:'Site'},{label:'Rate',num:true},{label:'Opened'},{label:''}],
+      d.open, r=>`<td>${esc(r.client)}${r.demo_tag?' '+pill(r.demo_tag,'brand'):''}</td>
+        <td>${(r.skills||[]).map(s=>pill(s)).join(' ')}</td><td>${esc(r.geo)}</td>
+        <td class="num">$${r.pay_rate}</td><td>${fmt.stamp(r.opened_at)}</td>
+        <td class="right"><button class="act primary" onclick="sl('${r.id}')">Search the database</button></td>`), true) +
+    `<div id="slout"></div>`;
+}
+
+async function sl(id){
+  const r = await API.post(`/api/reqs/${id}/shortlist`);
+  document.getElementById('slout').innerHTML =
+    (r.gap ? `<div class="banner warn"><b>The honest answer:</b> ${esc(r.gap)}</div>` : '') +
+    panel(`Ranked from ${r.considered.toLocaleString()} on file`, esc(r.note),
+      table([{label:'Candidate'},{label:'Score',num:true},{label:'Why they rank here'}], r.ranked,
+        x=>`<td>${esc(x.candidate||x.candidate_id)}</td><td class="num strong">${x.score}</td>
+          <td><ul class="reasons">${(x.reasons||[]).map(y=>`<li>${esc(y)}</li>`).join('')}</ul></td>`), true) +
+    panel('Blocked — not rejected', 'the blocker is named so a recruiter can overrule it', table(
+      [{label:'Candidate'},{label:'What blocks them'}], r.blocked,
+      x=>`<td>${esc(x.candidate||x.candidate_id)}</td><td class="why">${esc(x.why)}</td>`), true);
+}
+
+async function redeploy(){
+  const d = await API.get('/api/redeploy');
+  document.getElementById('v-redeploy').innerHTML =
+    panel('Ending inside 21 days', `redeployment rate ${d.rate._missing?'—':fmt.pct(d.rate.rate)}`,
+      `<div class="grid">
+        ${stat('Due now', fmt.num(d.due.length))}
+        ${stat('Redeployment rate', val(d.rate,'rate',fmt.pct), d.rate._missing?'':`${d.rate.redeployed} of ${d.rate.of}`)}
+       </div>
+       <div style="margin-top:12px"><button class="act primary" onclick="sweepRedeploy()">Open the redeploys</button></div>`) +
+    panel('', '', table([{label:'Candidate'},{label:'Client'},{label:'Ends in',num:true},{label:'GM / wk',num:true},{label:'Why now'}],
+      d.due, x=>`<td class="mono">${esc(x.candidate_id)}</td><td>${esc(x.client||'')}</td>
+        <td class="num">${x.days_to_end}d</td><td class="num">${fmt.money(x.gm_per_week)}</td>
+        <td class="why">${esc(x.why)}</td>`), true) +
+    `<div id="rdout"></div>`;
+}
+async function sweepRedeploy(){
+  const r = await API.post('/api/redeploy/sweep');
+  document.getElementById('rdout').innerHTML =
+    `<div class="banner">${esc(r.note)}</div>` +
+    panel(`Opened ${r.opened}`, '', table(
+      [{label:'Candidate'},{label:'Ends in',num:true},{label:'Open reqs that fit'},{label:'Drafted for the recruiter'}],
+      r.rows, x=>`<td>${esc(x.candidate||'')}</td><td class="num">${x.days_to_end}d</td>
+        <td>${(x.matches||[]).map(m=>`<div>${esc(m.client)} <span class="why">score ${m.score}</span></div>`).join('')||'<span class="why">nothing open fits</span>'}</td>
+        <td class="why">${esc(x.body)}</td>`), true);
+}
+
+async function creds(){
+  const d = await API.get('/api/credentials');
+  document.getElementById('v-creds').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('Expiring and expired', `${d.n}`, table(
+      [{label:'Candidate'},{label:'Credential'},{label:'State'},{label:'Days left',num:true},{label:'Billing impact'}],
+      d.warned, w=>`<td>${esc(w.candidate||'')}</td><td>${esc(w.label||w.type)}</td>
+        <td>${pill(w.state, w.state==='expired'?'bad':'warn')}</td>
+        <td class="num">${w.days_left}</td>
+        <td class="why">${w.on_assignment?'<b>on assignment</b> — off site the day it lapses, billing stops':'not currently placed'}</td>`), true) +
+    panel('Unknowable', 'never assumed current', table([{label:'Candidate'},{label:'Credential'},{label:'Why'}],
+      d.unknown, u=>`<td>${esc(u.candidate||'')}</td><td>${esc(u.type)}</td><td class="why">${esc(u.why)}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['assignments_ending_month','Assignments ending / mo','counted'],
+    ['redeploy_points_gained','Redeploy points gained','your lift over today\'s rate'],
+    ['gm_per_week','GM per week','counted (median)'],
+    ['avg_duration_weeks','Avg duration (weeks)','your number'],
+    ['reqs_yr','Reqs / yr','counted'],['database_fill_rate','Database fill %','your number'],
+    ['sourcing_cost_per_req','Sourcing cost avoided / req','your number'],
+    ['lapses_per_year','Credential lapses / yr','your number'],
+    ['cost_per_lapse','Cost per lapse','billing gap + client remediation']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  const x = ev.excluded;
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') +
+    panel('The ranking explainability audit', esc(x.note),
+      `<div class="grid">
+        ${stat('Excluded factors tested', fmt.num(x.excluded_tested))}
+        ${stat('Clean score', x.scores.clean)}
+        ${stat('Poisoned score', x.scores.poisoned)}
+        ${stat('Influence detected', x.influence_detected?'YES':'none', 'must be none',
+          x.influence_detected?'alert':'')}
+       </div>
+       <div style="margin-top:12px"><div class="k">Permitted</div>
+        <div>${ev.permitted.map(p=>pill(p,'good')).join(' ')}</div>
+        <div class="k" style="margin-top:10px">Excluded by construction</div>
+        <div>${ev.excluded_list.map(p=>pill(p,'bad')).join(' ')}</div></div>`) +
+    renderEval(ev.shortlist) + renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'recruiter'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

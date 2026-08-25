@@ -1,0 +1,17 @@
+{
+  "_note": "Field outcomes per past storm — doors knocked, jobs closed, revenue. In production this is captured from the crew app + Nick's CRM. Seeded here so the learning loop and ROI dashboard run. avg_trip_cost + monthly_cost drive the ROI math.",
+  "avg_trip_cost": 400,
+  "monthly_cost": 30,
+  "storms": [
+    {"county": "Duval",      "date": "2026-05-08", "hazard": "wind",    "magnitude": 62,   "area": "Jacksonville",   "doors": 150, "jobs": 12, "revenue": 108000},
+    {"county": "Osceola",    "date": "2026-05-14", "hazard": "hail",    "magnitude": 1.25, "area": "Kissimmee",      "doors": 120, "jobs": 19, "revenue": 197000},
+    {"county": "Sumter",     "date": "2026-05-14", "hazard": "hail",    "magnitude": 1.5,  "area": "The Villages",   "doors": 90,  "jobs": 21, "revenue": 240000},
+    {"county": "Brevard",    "date": "2026-05-21", "hazard": "wind",    "magnitude": 58,   "area": "Melbourne",      "doors": 110, "jobs": 6,  "revenue": 51000},
+    {"county": "Lee",        "date": "2026-05-29", "hazard": "tornado", "magnitude": 0,    "area": "Fort Myers",     "doors": 80,  "jobs": 14, "revenue": 168000},
+    {"county": "Marion",     "date": "2026-06-03", "hazard": "hail",    "magnitude": 1.0,  "area": "Ocala",          "doors": 100, "jobs": 11, "revenue": 104000},
+    {"county": "Palm Beach", "date": "2026-06-09", "hazard": "wind",    "magnitude": 60,   "area": "West Palm Beach","doors": 130, "jobs": 9,  "revenue": 86000},
+    {"county": "Hillsborough","date":"2026-06-12", "hazard": "hail",    "magnitude": 1.25, "area": "Tampa",          "doors": 115, "jobs": 18, "revenue": 189000},
+    {"county": "Flagler",    "date": "2026-06-18", "hazard": "hail",    "magnitude": 1.25, "area": "Bunnell",        "doors": 70,  "jobs": 12, "revenue": 132000},
+    {"county": "St. Lucie",  "date": "2026-06-22", "hazard": "wind",    "magnitude": 59,   "area": "Port St. Lucie", "doors": 95,  "jobs": 7,  "revenue": 63000}
+  ]
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — which employee should you hire first?" />
+<meta property="og:description" content="Answer two questions and find out which digital employee to hire first — tailored to your business. 60 seconds." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — which employee should you hire first?</title>
+<meta name="description" content="Answer two questions and find out which digital employee to hire first — tailored to your business. 60 seconds." />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;--brass-bright:#D4B27A;
+    --pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);--hairline:rgba(22,27,51,.12);}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:54px 0 6px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 18px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:17px;max-width:540px;margin:13px auto 0}
+  .quiz{max-width:640px;margin:34px auto 0}
+  .step{display:none}.step.on{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .prog{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);font-weight:700;text-align:center;margin-bottom:10px}
+  .q{font-size:23px;font-weight:650;text-align:center;letter-spacing:-.015em;margin-bottom:22px}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{background:#fff;border:1px solid var(--hairline);border-radius:13px;padding:15px 18px;font-size:15.5px;cursor:pointer;text-align:left;transition:.14s;font-weight:550}
+  .opt:hover{border-color:var(--brass);transform:translateY(-1px);box-shadow:0 6px 16px rgba(22,27,51,.06)}
+  .opt .e{margin-right:10px}
+  .back{display:block;margin:18px auto 0;background:none;border:none;color:var(--pewter);font-size:13.5px;cursor:pointer;font-family:inherit}
+  .back:hover{color:var(--indigo)}
+  /* result */
+  .result{background:#fff;border:1px solid var(--hairline);border-radius:18px;overflow:hidden;box-shadow:0 16px 44px rgba(22,27,51,.1)}
+  .result .top{background:var(--indigo);color:var(--cream);padding:26px 28px;text-align:center}
+  .result .top .lab{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-bright);font-weight:700}
+  .result .top .nm{font-size:26px;font-weight:650;margin-top:6px}
+  .result .bd{padding:22px 28px}
+  .result .does{font-size:16px;color:#23293a;line-height:1.5}.result .does b{color:var(--indigo)}
+  .result .why{margin-top:14px;background:var(--parchment);border-left:3px solid var(--brass);border-radius:8px;padding:11px 14px;font-size:14px}
+  .result .acts{display:flex;gap:11px;flex-wrap:wrap;margin-top:20px}
+  .result .acts a{text-decoration:none;font-weight:650;font-size:14px;padding:11px 20px;border-radius:9999px}
+  .result .p1{background:var(--brass);color:var(--indigo)}.result .p2{background:transparent;color:var(--brass);border:1px solid var(--brass)}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:46px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="positioning.html">How it works</a>
+      <a href="demos.html">See it work</a><a href="pricing.html">Pricing</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>Which employee should you hire first?</h1>
+    <p class="lede">Two questions, sixty seconds. We'll point you at the one job to hand off first.</p>
+  </div></section>
+
+  <div class="quiz">
+    <div class="step on" id="s1">
+      <div class="prog">Question 1 of 2</div>
+      <div class="q">What hurts most right now?</div>
+      <div class="opts" id="o1"></div>
+    </div>
+    <div class="step" id="s2">
+      <div class="prog">Question 2 of 2</div>
+      <div class="q">What kind of business are you?</div>
+      <div class="opts" id="o2"></div>
+      <button class="back" onclick="show('s1')">← back</button>
+    </div>
+    <div class="step" id="s3">
+      <div class="result">
+        <div class="top"><div class="lab">Start here</div><div class="nm" id="rnm"></div></div>
+        <div class="bd">
+          <div class="does" id="rdoes"></div>
+          <div class="why" id="rwhy"></div>
+          <div class="acts">
+            <a class="p1" href="https://calendly.com/the Founder-yourco/30min">Book a call to build it →</a>
+            <a class="p2" href="demos.html">See one like it work</a>
+          </div>
+        </div>
+      </div>
+      <button class="back" onclick="restart()">↻ start over</button>
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="build-your-employee.html">Build yours</a><a href="org-chart.html">Your team</a><a href="https://calendly.com/the Founder-yourco/30min">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const PAIN=[
+  {e:"📞",t:"Missed calls & inquiries",rec:"intake"},
+  {e:"🧊",t:"Leads going cold before I follow up",rec:"followup"},
+  {e:"🗓️",t:"Scheduling chaos & no-shows",rec:"schedule"},
+  {e:"💬",t:"Answering the same questions all day",rec:"qa"},
+  {e:"🧾",t:"Chasing invoices / getting paid",rec:"invoicing"},
+  {e:"⭐",t:"Not enough reviews & referrals",rec:"reviews"},
+  {e:"😮‍💨",t:"Just too much on my plate",rec:"intake"}
+];
+const VERTS=[
+  {e:"🌿",t:"Home services / trades",cust:"homeowners"},
+  {e:"🦷",t:"Dental / medical / vet",cust:"patients"},
+  {e:"🏠",t:"Real estate / property",cust:"buyers"},
+  {e:"🍝",t:"Restaurant / hospitality",cust:"guests"},
+  {e:"💼",t:"Professional / financial",cust:"clients"},
+  {e:"📦",t:"Shop / e-commerce",cust:"customers"},
+  {e:"💅",t:"Beauty / fitness / wellness",cust:"clients"},
+  {e:"✨",t:"Something else",cust:"customers"}
+];
+const RECS={
+  intake:{nm:"An intake employee",does:c=>`Answers every inbound from your ${c} — call, text, or form — qualifies it, and books the appointment. Day or night.`,why:"It's where most businesses start: plug the leak at the front door first.",first:true},
+  followup:{nm:"A follow-up employee",does:c=>`Works every ${c.replace(/s$/,'')} who went quiet — politely, persistently — until they book or opt out.`,why:"You already paid to generate those leads. This stops them from leaking."},
+  schedule:{nm:"A scheduling & reminders employee",does:c=>`Runs the calendar for your ${c} — booking, reschedules, confirmations, reminders — without a double-book.`,why:"Fewer no-shows and zero scheduling back-and-forth."},
+  qa:{nm:"A front-desk Q&A employee",does:c=>`Answers the repetitive questions your ${c} ask all day, accurately — and escalates anything it shouldn't guess on.`,why:"Deflects the interruptions that eat your team's focus."},
+  invoicing:{nm:"An invoicing & collections employee",does:c=>`Sends invoices on schedule and chases what's overdue — tone-matched — with your okay on every send.`,why:"Cash in the door faster, no awkward chasing."},
+  reviews:{nm:"A reviews & referrals employee",does:c=>`Asks every happy ${c.replace(/s$/,'')} for a review after the job, and nudges for referrals — automatically.`,why:"More five-star proof compounds into more inbound."}
+};
+let pick={pain:null,vert:null};
+const o1=document.getElementById('o1'),o2=document.getElementById('o2');
+PAIN.forEach(p=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<span class="e">${p.e}</span>${p.t}`;
+  b.onclick=()=>{pick.pain=p.rec;show('s2');};o1.appendChild(b);});
+VERTS.forEach(v=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<span class="e">${v.e}</span>${v.t}`;
+  b.onclick=()=>{pick.vert=v.cust;result();};o2.appendChild(b);});
+function show(id){document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo({top:0,behavior:'smooth'});}
+function result(){const r=RECS[pick.pain]||RECS.intake;
+  document.getElementById('rnm').textContent=r.nm;
+  document.getElementById('rdoes').innerHTML=`${r.does(pick.vert)} <b>Live in 48 hours.</b>`;
+  document.getElementById('rwhy').innerHTML=`Why first: ${r.why}`;
+  show('s3');}
+function restart(){pick={pain:null,vert:null};show('s1');}
+</script>
+</body>
+</html>

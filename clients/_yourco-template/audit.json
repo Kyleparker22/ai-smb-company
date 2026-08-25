@@ -1,0 +1,22 @@
+{
+  "_comment": "AUDIT FINDINGS — Bella's diagnosis, structured so the CRM can show it on the client's record page. Written once at the Audit and amended only with a dated note; it is the BASELINE the outcomes ledger measures against, so rewriting it retroactively destroys every ROI claim built on it.",
+  "client": "",
+  "auditedOn": "",
+  "auditedBy": "Bella",
+  "summary": "",
+  "findings": [
+    {
+      "_example": "delete this row before the first real finding",
+      "id": "f1",
+      "pillar": "Sales",
+      "bottleneck": "Quotes take 6 weeks; deals cool and die in the gap",
+      "evidence": "Aspire export: median 42 days from site visit to priced quote across 31 jobs",
+      "annualCost": 165000,
+      "costBasis": "31 jobs/yr x $27.5k avg x 20% net x ~1 in 5 lost to the delay",
+      "confidence": "measured",
+      "proposedModule": "Same-Day Design Studio",
+      "status": "open"
+    }
+  ],
+  "_fields": "id (stable — outcomes link to it by findingId) · pillar (one of the 8) · bottleneck (the problem in their words) · evidence (what makes it true, re-derivable) · annualCost ($/yr — the baseline) · costBasis (the arithmetic, shown) · confidence: measured | estimated | stated (stated = they said it, we did not verify) · proposedModule · status: open | in build | solved"
+}

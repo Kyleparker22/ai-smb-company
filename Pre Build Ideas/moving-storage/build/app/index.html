@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Move OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-quotes"></section>
+  <section class="view" id="v-claims"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. No binding estimate without a
+recorded survey, final charges cannot exceed the estimate plus signed change orders, and delivery
+is never conditioned on extra payment.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'quotes',label:'Quotes & charges'},
+      {id:'claims',label:'Claims'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,quotes,claims,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.trucks} trucks · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The operation, counted', '',
+      `<div class="grid">
+        ${stat('Open claims', fmt.num(b.open_claims), 'each on its acknowledgment clock', b.open_claims?'warn':'')}
+        ${stat('Binding moves', fmt.num(b.binding_moves), `${b.surveyed} with a survey on file`)}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.acks_sent} · ${b.recovered.settlements_sent} · ${b.recovered.bindings_issued}`,
+               'acks sent · settlements sent · bindings issued — from the log')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A claim report starts its acknowledgment clock <b>at the report</b>
+      and is checked against the condition records immediately.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='claim_report'?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.clock?`<div class="strong">Acknowledge by ${fmt.date(s.clock.ack_due)} — ${esc(s.clock.label)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function quotes(){
+  const d = await API.get('/api/moves');
+  document.getElementById('v-quotes').innerHTML =
+    `<div class="banner warn">A binding estimate needs a recorded survey and inventory. Final
+      charges are the estimate plus <b>signed</b> change orders — an unsigned change order is a
+      conversation, not a charge.</div>` +
+    `<div style="margin:10px 0">
+      <button class="act" onclick="binding('mv_demo_nosurvey')">Issue binding WITHOUT survey</button>
+      <button class="act primary" onclick="binding('mv_demo_surveyed')">Issue binding WITH survey</button>
+      <button class="act" onclick="charges('mv_demo_surveyed')">Final charges (has an unsigned CO)</button>
+     </div><div id="qout"></div>` +
+    panel('Recent moves', '', table(
+      [{label:'Move'},{label:'Type'},{label:'Survey'},{label:'Estimate',num:true}],
+      d.rows, m=>`<td class="mono">${esc(m.id)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${pill(m.estimate_type||'—', m.estimate_type==='binding'?'good':'')}</td>
+        <td>${m.survey_id?pill('on file','good'):pill('none','warn')}</td>
+        <td class="num">${m.binding_amount?fmt.money(m.binding_amount):'—'}</td>`), true);
+}
+async function binding(id){
+  const r = await API.post(`/api/moves/${id}/binding`);
+  document.getElementById('qout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Drafted', '', `<div class="strong">binding estimate queued at R1 for a human to issue</div>`);
+}
+async function charges(id){
+  const r = await API.post(`/api/moves/${id}/charges`);
+  document.getElementById('qout').innerHTML = r._missing ? panel('Charges', '', blank(r._missing)) :
+    panel('Final charges', r.basis, `
+      <div class="grid">${stat('Total', fmt.money(r.total))}${stat('Estimate', fmt.money(r.estimate))}</div>
+      ${(r.signed_change_orders||[]).map(c=>`<div class="why">+ ${esc(c.desc)}: ${fmt.money(c.amount)} (signed)</div>`).join('')}
+      ${(r.excluded||[]).map(c=>`<div class="banner warn" style="margin-top:8px">EXCLUDED ${esc(c.desc)} ${fmt.money(c.amount)}: ${esc(c.why)}</div>`).join('')}`);
+}
+
+async function claims(){
+  const d = await API.get('/api/claims');
+  document.getElementById('v-claims').innerHTML =
+    `<div class="banner">${esc(d.rules._source)}</div>` +
+    `<div style="margin:10px 0">
+      <button class="act primary" onclick="settle('cm_demo_ok')">Assess claim WITH condition pair</button>
+      <button class="act" onclick="settle('cm_demo_norec')">Assess claim MISSING records</button>
+     </div><div id="clout"></div>` +
+    panel('Open claims', 'soonest clock first', table(
+      [{label:'Claim'},{label:'Item'},{label:'Filed'},{label:'Ack due'},{label:'Days',num:true}],
+      d.rows, c=>`<td class="mono">${esc(c.claim)}</td><td>${esc(c.item||'')}</td>
+        <td>${fmt.date(c.filed_at)}</td><td>${c.ack_due?fmt.date(c.ack_due):'—'}</td>
+        <td class="num ${(c.ack_days_left??99)<7?'strong':''}">${c.acknowledged?pill('ack’d','good'):c.ack_days_left}</td>`), true);
+}
+async function settle(id){
+  const r = await API.post(`/api/claims/${id}/settle`);
+  document.getElementById('clout').innerHTML = r.refused
+    ? panel('Cannot assess', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Assessable', r.note, `<div class="strong">${(r.new_damage||[]).map(x=>pill(x,'warn')).join(' ')||'no new damage'}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['binding_moves_yr','Binding moves','counted'],['margin_lift','Margin lift per move','your number'],
+    ['claims_yr','Claims','counted'],['hours_per_claim','Hrs per claim','your number'],
+    ['office_rate','Office rate','your number'],['disputes_yr','Moving-day disputes/yr','your history'],
+    ['avg_concession','Avg concession','your history'],['clamp_value','Never-overcharging worth','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+/* yourco app shell — brand palette per brand/DESIGN.md (indigo / cream / bronze).
+   Matches HQ's 1C refresh so moving between the shell and a mounted app is seamless. */
+:root{
+  --base:#161B33; --surface:#1c2240; --cream:#F4EFE6; --parchment:#EAE1CD;
+  --brass:#B8965A; --brass-bright:#D4B27A; --oxblood:#6B1E29;
+  --txt:#F4EFE6; --txt2:rgba(244,239,230,.78); --faint:rgba(244,239,230,.55);
+  --line:rgba(244,239,230,.14);
+  --serif:"Fraunces",Georgia,serif;
+  --sans:-apple-system,system-ui,"Inter",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--base);color:var(--txt);font-family:var(--sans);line-height:1.5;
+  /* iOS notch + home indicator */
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mark{font-family:var(--serif);font-size:22px;letter-spacing:-.02em}
+.mark span{color:var(--brass)}
+
+/* ── sign-in / message screens ─────────────────────────────────────────── */
+.is-auth{display:grid;place-items:center;min-height:100dvh}
+.auth{width:min(400px,92vw);text-align:center;padding:28px 0}
+.auth .sub{color:var(--txt2);margin:6px 0 22px;font-size:14px}
+.auth form{display:grid;gap:14px;text-align:left}
+.auth label{display:grid;gap:6px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.auth input{background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:13px 14px;color:var(--txt);font-size:16px;font-family:var(--sans)} /* 16px: iOS won't zoom */
+.auth input:focus{outline:2px solid var(--brass);outline-offset:1px}
+.auth button,.btn{background:var(--brass);color:#161B33;border:0;border-radius:10px;
+  padding:14px;font-weight:640;font-size:15px;cursor:pointer;font-family:var(--sans);
+  display:inline-block;text-align:center}
+.auth button:active,.btn:active{background:var(--brass-bright)}
+.err{background:rgba(107,30,41,.34);border:1px solid var(--oxblood);border-radius:9px;
+  padding:10px 12px;font-size:13.5px;margin:0 0 16px}
+.fine{color:var(--faint);font-size:12px;margin-top:20px;line-height:1.55}
+
+/* ── the shell ─────────────────────────────────────────────────────────── */
+.top{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.top .who{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint);
+  letter-spacing:.04em}
+.top .out{font-family:var(--mono);font-size:11px;color:var(--brass);letter-spacing:.06em}
+.grid{display:grid;gap:14px;padding:22px 20px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));max-width:900px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:22px;display:grid;gap:5px;transition:border-color .15s,transform .1s}
+.card:hover{border-color:var(--brass)}
+.card:active{transform:scale(.99)}
+.card .k{font-family:var(--serif);font-size:25px;letter-spacing:-.015em}
+.card .b{color:var(--txt2);font-size:13.5px}
+footer.fine{padding:0 20px 30px;max-width:900px}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr;padding:16px}
+  .card{padding:18px}
+  .top{padding:14px 16px}
+  .top .who{font-size:10px}
+}

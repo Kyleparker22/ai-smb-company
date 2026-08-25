@@ -1,0 +1,8 @@
+2026-07-05 — Put a validation checkpoint BEFORE manual buildout, not after
+
+Source: session-friction audit (`loops/_audit/2026-07-05_session-friction-audit.md`), Google Alerts intent-engine arc
+Pattern: ~40 messages of the Founder's manual labor (creating alerts vertical-by-vertical, pasting feed XML back one message at a time) were invested in a channel with zero validation checkpoint. Two weeks later: zero signal. A week after that the whole vertical funnel was parked and the feeds' disposition was never decided. The same arc in miniature: Sadie's loop shipped with two dead sources (keys never landed) and ran that way silently for weeks.
+Implication: Any buildout that consumes recurring human effort gets a pilot gate first — set up 2–3 units, define what signal counts as "working" and a check-date, and only scale past the pilot when the signal shows up. And batch the human labor: if the Founder must do N repetitive browser steps, emit the full checklist up front as one artifact, never one-unit-per-message ping-pong. A buildout with no committed artifact tracking done/next/status is not resumable and will be abandoned.
+Audience: all loop/channel builders (Reilly, Sadie, Kemba), the Founder (before committing a day to manual setup), Jim (abandoned-buildout detection)
+
+Triggers: agent:kemba, agent:reilly, agent:sadie, manual buildout, validation checkpoint, before building, skill:add-runtime-loop

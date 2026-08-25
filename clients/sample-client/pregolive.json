@@ -1,0 +1,17 @@
+{
+  "_readme": "Pre-go-live simulation adapter (runtime/pregolive.py). Names the callable the injected states are fired at. NOTE: this points at prototype/agent.py, the PARKED June installation-proposal concept — not the live Design Studio / Field-to-Quote engagement. It is used here because it is the only runnable client agent in the repo, so the harness is exercised against real code rather than a fixture. When the platform gets a parse entrypoint, repoint `module` at it.",
+  "module": "prototype/agent.py",
+  "callable": "parse_proposal",
+  "states": [
+    "empty",
+    "whitespace",
+    "truncated",
+    "no-numbers",
+    "wrong-domain",
+    "hostile-unicode",
+    "very-large",
+    "injection-canary",
+    "numbers-as-words",
+    "duplicate-fields"
+  ]
+}

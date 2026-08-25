@@ -1,0 +1,8 @@
+2026-07-20 — The "AI software runs itself" myth is a named sales objection
+
+Source: the Founder asked about Roy Lee/Interview Coder ("$40k/week, untouched 4 months, runs itself"); triaged in `decisions/2026-07-05_tool-triage.md` §Addendum 07-20
+Pattern: Viral founder posts claiming zero-maintenance AI products that print money are now ambient — prospects will arrive having seen them ("why pay a monthly retainer if AI runs itself?"). The verified anatomy of the flagship example: the claimant publicly admitted fabricating revenue numbers (Cluely, March 2026), his own self-reported stats carried ~35% monthly churn (userbase turns over every ~3 months), and the product decays under an active detection arms race. "Untouched for 4 months" = deferred decay masked by churn, not autonomy.
+Implication: Brett — keep this anatomy current in the competitive watch as the sell-against for the genre. Reilly/Michelle — when the objection surfaces, don't argue the specific claim; reframe: consumer app churn can hide decay for months, but a business OS breaks visibly at 2am, and the retainer buys the layer that catches it (eval + watchdog + rollback — autonomy *earned on evidence*, per the Autonomy Matrix, vs autonomy-by-neglect). Standing rule for all agents: founder-posted revenue screenshots are marketing until independently verified — never benchmark yourco's model or pricing against them.
+Audience: Brett (primary); Reilly, Michelle (objection handling); Polo (pricing conversations)
+
+Triggers: agent:brett, agent:michelle, objection handling, runs itself, autonomy objection, loop:advisor, loop:outreach-eval

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Your AI Audit — 10-minute intake — yourco</title>
+<meta name="description" content="A short intake so your yourco audit call starts warm. Tell us where time and revenue leak; we walk in already understanding your business." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  /* form styling — uses the site's brand vars; site.css has no form rules */
+  .form-wrap{max-width:680px}
+  .q{margin:22px 0}
+  .q label{display:block;font-weight:600;font-size:15.5px;margin-bottom:7px}
+  .q .hint{font-weight:400;color:var(--pewter,#6b6f80);font-size:13.5px}
+  .q input,.q textarea,.q select{width:100%;padding:12px 13px;border:1px solid #d9d3c5;border-radius:9px;font:inherit;background:#fff}
+  .q input:focus,.q textarea:focus,.q select:focus{outline:2px solid var(--brass);border-color:var(--brass)}
+  .q textarea{min-height:78px;resize:vertical}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .submit{margin-top:8px;cursor:pointer;border:0}
+  .ok{display:none;background:rgba(79,107,74,.1);border:1px solid rgba(79,107,74,.4);color:#33502f;border-radius:12px;padding:20px;margin-top:18px}
+  .staged{font-size:12.5px;color:var(--pewter,#6b6f80);margin-top:14px}
+  .jobrow{padding:14px 0 4px;border-bottom:1px solid rgba(0,0,0,.07)}
+  .jobrow:last-child{border-bottom:0}
+  .verdict{margin:2px 0 10px;font-size:13.5px;line-height:1.5;padding:9px 12px;border-radius:9px;
+    border-left:3px solid var(--brass);background:rgba(184,150,90,.09)}
+  .verdict b{display:block;font-size:14px;margin-bottom:1px}
+  .verdict.keep{border-left-color:#8a6d3b;background:rgba(138,109,59,.08)}
+  .verdict.skip{border-left-color:#9a9a9a;background:rgba(0,0,0,.035)}
+  @media(max-width:600px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=audit-intake" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="tile hero">
+    <div class="wrap narrow">
+      <div class="eyebrow">the audit · 10-minute intake</div>
+      <h1>Tell us where it hurts.</h1>
+      <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+      <p>A few quick questions so we walk into your call already understanding your business — and spend the call on the diagnosis, not the basics. No homework, no wrong answers.</p>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap narrow form-wrap">
+      <form id="intakeForm">
+        <div class="eyebrow">about you</div>
+        <div class="two">
+          <div class="q"><label>Your name</label><input name="name" required placeholder="Jordan Smith" /></div>
+          <div class="q"><label>Email</label><input name="email" type="email" required placeholder="you@business.com" /></div>
+        </div>
+        <div class="two">
+          <div class="q"><label>Business name</label><input name="company" required placeholder="YourCo Landscaping" /></div>
+          <div class="q"><label>Industry</label><input name="vertical" placeholder="Landscaping" /></div>
+        </div>
+        <div class="two">
+          <div class="q"><label>Team size</label><input name="team" placeholder="Just me / 5 / 20" /></div>
+          <div class="q"><label>Rough monthly revenue <span class="hint">(a band is fine)</span></label><input name="revenue" placeholder="$20k–50k/mo" /></div>
+        </div>
+
+        <div class="eyebrow" style="margin-top:30px">where it leaks</div>
+        <div class="q"><label>What do <em>you</em> (the owner) spend the most time on that isn't the actual work?<span class="hint"> The thing eating your day.</span></label><textarea name="time_sink"></textarea></div>
+        <div class="q"><label>What happens to a call or message that comes in while you're busy or after hours?</label><textarea name="missed"></textarea></div>
+        <div class="q"><label>What falls through the cracks when you're slammed?<span class="hint"> Follow-ups, quotes, scheduling, invoicing…</span></label><textarea name="cracks"></textarea></div>
+        <div class="q"><label>If you could wave a wand and fix <em>one</em> thing in your operation, what would it be?</label><textarea name="one_thing" required></textarea></div>
+
+        <div class="eyebrow" style="margin-top:30px">what you'd hand over</div>
+        <p class="hint" style="margin:-4px 0 16px">Name up to three jobs you'd like off your plate. Two questions each: how many hours a month it eats, and how bad it would be if it went wrong overnight with nobody watching. That second one decides what gets built behind an approval step — and what you should keep.</p>
+
+        <div id="jobs">
+          <div class="jobrow">
+            <div class="q"><label>Job 1<span class="hint"> e.g. chasing quotes that went quiet</span></label><input name="job1" placeholder="What is it?" /></div>
+            <div class="two">
+              <div class="q"><label>Hours a month<span class="hint"> rough</span></label><input name="job1_hours" type="number" min="0" step="1" placeholder="10" /></div>
+              <div class="q"><label>If it went wrong overnight</label><select name="job1_risk"><option value="">—</option><option value="low">Barely matters — we'd catch it</option><option value="high">Costly or embarrassing</option></select></div>
+            </div>
+            <div class="verdict" hidden></div>
+          </div>
+          <div class="jobrow">
+            <div class="q"><label>Job 2</label><input name="job2" placeholder="What is it?" /></div>
+            <div class="two">
+              <div class="q"><label>Hours a month</label><input name="job2_hours" type="number" min="0" step="1" /></div>
+              <div class="q"><label>If it went wrong overnight</label><select name="job2_risk"><option value="">—</option><option value="low">Barely matters — we'd catch it</option><option value="high">Costly or embarrassing</option></select></div>
+            </div>
+            <div class="verdict" hidden></div>
+          </div>
+          <div class="jobrow">
+            <div class="q"><label>Job 3</label><input name="job3" placeholder="What is it?" /></div>
+            <div class="two">
+              <div class="q"><label>Hours a month</label><input name="job3_hours" type="number" min="0" step="1" /></div>
+              <div class="q"><label>If it went wrong overnight</label><select name="job3_risk"><option value="">—</option><option value="low">Barely matters — we'd catch it</option><option value="high">Costly or embarrassing</option></select></div>
+            </div>
+            <div class="verdict" hidden></div>
+          </div>
+        </div>
+
+        <div class="eyebrow" style="margin-top:30px">the numbers (rough is fine)</div>
+        <div class="two">
+          <div class="q"><label>Leads / inquiries per month</label><input name="leads" placeholder="~120" /></div>
+          <div class="q"><label>Average job / customer value</label><input name="job_value" placeholder="$1,000" /></div>
+        </div>
+        <div class="q"><label>What tools do you already pay for?<span class="hint"> CRM, scheduling, phone, email, etc.</span></label><input name="tools" placeholder="Jobber, Google Calendar, …" /></div>
+
+        <button class="pill submit" type="submit">Send it →</button>
+        <div class="staged">Staged — at launch this lands in the CRM and books your audit call. Nothing is sent until launch.</div>
+      </form>
+      <div class="ok" id="okMsg"></div>
+    </div>
+  </section>
+
+<script>
+  /* The homepage asks one question. Carry the answer in rather than making them retype it. */
+  (function(){
+    var breaks = new URLSearchParams(location.search).get("breaks");
+    if(!breaks) return;
+    var f = document.querySelector('[name="one_thing"]');
+    if(!f || f.value) return;
+    f.value = breaks;
+    var q = f.closest(".q");
+    if(q){
+      var n = document.createElement("div");
+      n.className = "hint";
+      n.style.marginTop = "8px";
+      n.textContent = "Carried over from your answer on the home page — edit it if you'd put it differently.";
+      q.appendChild(n);
+    }
+  })();
+
+  /* Two questions sort the work: hours it eats, and what it costs if it goes wrong
+     unwatched. Shown live so the sorting is theirs, not ours — the "costly, and you
+     should keep it" verdict is the one that makes the other three worth believing. */
+  (function(){
+    var HIGH_HOURS = 5;   // stated in the copy below, never a hidden rule
+    function verdict(hours, risk){
+      var many = hours >= HIGH_HOURS;
+      if(risk === "high" && !many)
+        return ["keep", "Keep this one.",
+          "Under " + HIGH_HOURS + " hours a month and expensive when it slips — the time saved wouldn't be worth the risk carried. We'd tell you the same on the call."];
+      if(risk === "high" && many)
+        return ["", "Built, but you approve it.",
+          "Worth handing over, too costly to leave unwatched. It runs on its own and waits for your okay before anything leaves the building."];
+      if(many)
+        return ["", "Start here.",
+          "Hours back, and little to go wrong. This is the sort of thing we'd put live first."];
+      return ["skip", "Probably leave it.",
+        "Under " + HIGH_HOURS + " hours a month and low stakes — setting it up would cost more attention than it returns."];
+    }
+    document.querySelectorAll(".jobrow").forEach(function(row){
+      var hrs = row.querySelector('input[type="number"]'),
+          rsk = row.querySelector("select"),
+          out = row.querySelector(".verdict");
+      function paint(){
+        var h = parseFloat(hrs.value), r = rsk.value;
+        if(!r || isNaN(h)){ out.hidden = true; return; }
+        var v = verdict(h, r);
+        out.className = "verdict " + v[0];
+        out.innerHTML = "<b>" + v[1] + "</b>" + v[2];
+        out.hidden = false;
+      }
+      hrs.addEventListener("input", paint);
+      rsk.addEventListener("change", paint);
+    });
+  })();
+
+  document.getElementById("intakeForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(this).entries());
+    data.source = "audit-intake";
+    try{ await fetch("/api/audit-intake",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}); }
+    catch(_){ /* staged: no backend yet — still confirm */ }
+    const ok = document.getElementById("okMsg");
+    ok.style.display = "block";
+    ok.innerHTML = "<strong>Got it, "+(data.name||"")+".</strong> We'll review this and reach out to book your audit call. You're going to walk away knowing exactly where your biggest leak is — and what it's costing you.";
+    this.style.display = "none";
+    ok.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+</script>
+</body>
+</html>

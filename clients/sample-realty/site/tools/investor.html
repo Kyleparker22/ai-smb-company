@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Investor Analyzer — Buy It, We'll Run It · Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:76px 0 64px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(32px,4.2vw,50px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:54ch}
+
+  .tool{display:grid;grid-template-columns:.95fr 1.05fr;gap:56px;padding:72px 0 96px;align-items:start}
+  @media(max-width:900px){.tool{grid-template-columns:1fr}}
+  .panel h2{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400}
+  .panel h2 em{font-style:italic;color:var(--red)}
+  .prefill{margin-top:18px}
+  .prefill label{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .prefill select{width:100%;font-family:"Avenir Next",Avenir,sans-serif;font-size:14.5px;padding:13px 14px;background:#fff;border:1px solid var(--line);border-radius:4px}
+  .fields{margin-top:12px;display:grid;gap:16px}
+  .duo2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field label{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .field input{width:100%;font-family:"Avenir Next",Avenir,sans-serif;font-size:14.5px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:4px}
+  .field input:focus{outline:2px solid var(--red);outline-offset:-1px}
+  .hint{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--ink-soft);margin-top:4px}
+
+  .result{background:var(--ink);color:var(--on-dark);padding:40px 44px}
+  .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:18px;border-top:1px solid var(--line-dark)}
+  @media(max-width:640px){.metrics{grid-template-columns:1fr}}
+  .m{padding:22px 20px 24px 0}
+  .m+.m{padding-left:20px;border-left:1px solid var(--line-dark)}
+  @media(max-width:640px){.m+.m{padding-left:0;border-left:0;border-top:1px solid var(--line-dark)}}
+  .m b{font-family:Didot,Georgia,serif;font-size:30px;font-weight:400;display:block}
+  .m b.neg{color:#ff7a7c}
+  .m b.pos{color:var(--on-dark)}
+  .m span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--on-dark-soft);display:block;margin-top:6px;line-height:1.8}
+  .rows{margin-top:8px;border-top:1px solid var(--line-dark)}
+  .r{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid var(--line-dark);font-size:13.5px}
+  .r b{font-family:Didot,Georgia,serif;font-weight:400;white-space:nowrap}
+  .result .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.05em;color:rgba(247,245,240,.45);margin-top:18px;line-height:1.8}
+
+  .pmband{background:var(--warm);padding:88px 0}
+  .pmband .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:start}
+  @media(max-width:900px){.pmband .grid{grid-template-columns:1fr}}
+  .pmband h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3.2vw,40px);font-weight:400;line-height:1.15;margin-top:12px}
+  .pmband h2 em{font-style:italic;color:var(--red)}
+  .pmband .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:16px;max-width:54ch}
+  .pmband p.body{font-size:15px;color:var(--ink-2);margin-top:14px;max-width:60ch}
+  .loop{border-top:1px solid var(--line);margin-top:24px}
+  .lp{display:flex;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);font-size:14.5px;align-items:baseline}
+  .lp i{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red)}
+  .pmband .pull{margin-top:26px;padding-left:22px;border-left:2px solid var(--red);font-family:Didot,Georgia,serif;font-size:19px;font-style:italic;line-height:1.6}
+  .pmband a.go{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--paper);text-decoration:none;padding:14px 28px;border-radius:9999px;margin-top:26px}
+  .pmband a.go:hover{background:var(--red)}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine2{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:80ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · estimates only, not investment advice</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../services.html#management">Management</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">For Investors</div>
+    <h1>Buy it through us. <em>We'll run it.</em></h1>
+    <div class="lede">Run the numbers on any property — including our own listings — then hand it to the same team to manage. One broker, the whole loop.</div>
+  </div>
+</header>
+
+<div class="wrap tool">
+
+  <div class="panel">
+    <h2>The <em>deal.</em></h2>
+    <div class="prefill">
+      <label for="pf">Start from one of our listings</label>
+      <select id="pf">
+        <option value="custom">Enter my own numbers…</option>
+        <option value="hyde" selected>11264 Hyde Pointe Ct — $220,000 condo (active)</option>
+        <option value="sheldon">1210 Sheldon Brook Ln — $273,500 townhome (active)</option>
+        <option value="mattforest">9725 Mattforest Cir — $359,900 townhome (active)</option>
+      </select>
+      <div class="hint">Rent figures are editable estimates — our own comparable rental at 3524 Donovan Pl leases at $2,600/mo. We'll pull true rent comps for any address.</div>
+    </div>
+    <div class="fields">
+      <div class="duo2">
+        <div class="field"><label for="ip">Purchase price</label><input id="ip" type="text" inputmode="numeric" value="220,000"/></div>
+        <div class="field"><label for="idown">Down payment %</label><input id="idown" type="text" inputmode="decimal" value="25"/></div>
+      </div>
+      <div class="duo2">
+        <div class="field"><label for="irate">Rate %</label><input id="irate" type="text" inputmode="decimal" value="6.75"/></div>
+        <div class="field"><label for="irent">Monthly rent</label><input id="irent" type="text" inputmode="numeric" value="1,650"/></div>
+      </div>
+      <div class="duo2">
+        <div class="field"><label for="itax">Taxes / yr</label><input id="itax" type="text" inputmode="numeric" value="1,980"/></div>
+        <div class="field"><label for="iins">Insurance / yr</label><input id="iins" type="text" inputmode="numeric" value="900"/></div>
+      </div>
+      <div class="duo2">
+        <div class="field"><label for="ihoa">HOA / mo</label><input id="ihoa" type="text" inputmode="numeric" value="267"/></div>
+        <div class="field"><label for="ivac">Vacancy + maintenance %</label><input id="ivac" type="text" inputmode="decimal" value="8"/></div>
+      </div>
+      <div class="field"><label for="ipm">Property management % of rent</label><input id="ipm" type="text" inputmode="decimal" value="10"/>
+        <div class="hint">Set to 0 to self-manage — then read the section below anyway.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="kicker">The Verdict</div>
+    <div class="metrics">
+      <div class="m"><b id="mCap">—</b><span>Cap rate<br/>(unleveraged)</span></div>
+      <div class="m"><b id="mFlow">—</b><span>Cash flow<br/>per month</span></div>
+      <div class="m"><b id="mCoC">—</b><span>Cash-on-cash<br/>return</span></div>
+    </div>
+    <div class="rows" id="iRows"></div>
+    <div class="fine">Estimates for screening only — not investment, tax, or lending advice. Rents, rates, and expenses vary; verify everything before you offer. Investment-property loans typically price ~0.5–1pt above primary-residence rates.</div>
+  </div>
+
+</div>
+
+<section class="pmband" id="pm">
+  <div class="wrap grid">
+    <div>
+      <div class="kicker">The Closed Loop</div>
+      <h2>Most agents sell it and <em>wave goodbye.</em></h2>
+      <p class="lede">Sample Realty has a dedicated property-management division — so the team that found the deal is the team that runs it.</p>
+      <p class="body">That matters more than it sounds: the person estimating your rent has to collect it next year. Our numbers stay honest because we live with them — and our current rental listing at 3524 Donovan Place is proof the machine works end to end.</p>
+      <div class="pull">"Buy it through us and hand us the keys back at closing — marketing, tenants, maintenance, and the monthly statement are ours from there."</div>
+    </div>
+    <div>
+      <div class="loop">
+        <div class="lp"><i>i.</i>We source the deal — on-market, our own listings, or coming-soons</div>
+        <div class="lp"><i>ii.</i>Real rent comps before you offer — not wishful ones</div>
+        <div class="lp"><i>iii.</i>Negotiation &amp; closing, investor-eyed (SC 6% assessment warning included)</div>
+        <div class="lp"><i>iv.</i>Marketing, screening &amp; placement by our PM division</div>
+        <div class="lp"><i>v.</i>Rent, maintenance &amp; the 10pm calls — handled</div>
+        <div class="lp"><i>vi.</i>Owner statements, renewals, and the sell-or-hold call when it's time</div>
+      </div>
+      <a class="go" href="../index.html#contact">Talk to the whole loop</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine2">Sample Realty Home &amp; Land, LLC · Brokerage &amp; property management · Licensed in ST &amp; SC</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const num = el => parseFloat(String(el.value).replace(/[^0-9.]/g, "")) || 0;
+  const fmt = n => (n < 0 ? "−$" : "$") + Math.abs(Math.round(n)).toLocaleString("en-US");
+  const pct = n => (Math.round(n * 100) / 100).toFixed(2) + "%";
+
+  const PRESETS = {
+    hyde:      { ip:"220,000", irent:"1,650", itax:"1,980", iins:"900",   ihoa:"267" },
+    sheldon:   { ip:"273,500", irent:"1,900", itax:"2,050", iins:"1,000", ihoa:"170" },
+    mattforest:{ ip:"359,900", irent:"2,200", itax:"3,100", iins:"1,100", ihoa:"296" }
+  };
+  $("pf").addEventListener("change", e => {
+    const p = PRESETS[e.target.value];
+    if (p) { for (const k in p) $(k).value = p[k]; }
+    calc();
+  });
+
+  function calc(){
+    const price = num($("ip")), downPct = num($("idown"))/100, rate = num($("irate"))/100/12;
+    const rent = num($("irent")), tax = num($("itax"))/12, ins = num($("iins"))/12;
+    const hoa = num($("ihoa")), vacPct = num($("ivac"))/100, pmPct = num($("ipm"))/100;
+    const loan = price * (1 - downPct), n = 360;
+    const pi = (rate > 0) ? loan * rate / (1 - Math.pow(1 + rate, -n)) : loan / n;
+    const vac = rent * vacPct, pm = rent * pmPct;
+    const opex = tax + ins + hoa + vac + pm;                 /* w/o debt */
+    const noi = (rent - opex) * 12;
+    const flow = rent - opex - pi;
+    const cashIn = price * downPct + price * 0.03;           /* down + ~3% closing */
+    const cap = price ? noi / price * 100 : 0;
+    const coc = cashIn ? flow * 12 / cashIn * 100 : 0;
+
+    $("mCap").textContent = pct(cap);
+    $("mFlow").textContent = fmt(flow);
+    $("mFlow").className = flow >= 0 ? "pos" : "neg";
+    $("mCoC").textContent = pct(coc);
+    $("mCoC").className = coc >= 0 ? "pos" : "neg";
+    $("iRows").innerHTML =
+      '<div class="r"><span>Gross rent</span><b>' + fmt(rent) + " /mo</b></div>" +
+      '<div class="r"><span>Taxes + insurance + HOA</span><b>' + fmt(tax+ins+hoa) + " /mo</b></div>" +
+      '<div class="r"><span>Vacancy &amp; maintenance reserve</span><b>' + fmt(vac) + " /mo</b></div>" +
+      '<div class="r"><span>Property management</span><b>' + fmt(pm) + " /mo</b></div>" +
+      '<div class="r"><span>Debt service (P&amp;I, 30-yr)</span><b>' + fmt(pi) + " /mo</b></div>" +
+      '<div class="r"><span>Net operating income</span><b>' + fmt(noi) + " /yr</b></div>" +
+      '<div class="r"><span>Cash invested (down + ~3% closing)</span><b>' + fmt(cashIn) + "</b></div>";
+  }
+
+  ["ip","idown","irate","irent","itax","iins","ihoa","ivac","ipm"].forEach(id =>
+    $(id).addEventListener("input", () => { $("pf").value = "custom"; calc(); }));
+  calc();
+})();
+</script>
+
+</body>
+</html>

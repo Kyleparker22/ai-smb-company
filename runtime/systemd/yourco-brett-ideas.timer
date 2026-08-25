@@ -1,0 +1,11 @@
+[Unit]
+Description=YourCo weekly ideas drop — Fridays 08:00 (server-local time = ET)
+
+[Timer]
+# Server timezone should be America/New_York (see runtime/README.md) so this = 08:00 ET.
+# Friday morning, after the week's signal has accumulated.
+OnCalendar=Fri *-*-* 08:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

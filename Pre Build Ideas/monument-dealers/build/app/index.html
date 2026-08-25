@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stone OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-orders"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never approves a proof
+(the family approves, on the record, with a signature reference), never starts engraving without
+that record, never declares cemetery compliance beyond the recorded rulebook (no rules on record
+reads UNKNOWN), and never schedules a setting before the cemetery's recorded approval and the
+foundation cure — both date checks. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'orders',label:'Orders & proofs'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,orders,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.showrooms} showroom · serves ${d.config.cemeteries_served} cemeteries`;
+  document.getElementById('v-board').innerHTML =
+    panel('The pipeline, counted', '',
+      `<div class="grid">
+        ${stat('Active orders', fmt.num(b.active), Object.entries(b.by_stage).filter(([s])=>s!=='set').map(([s,n])=>`${s.replace('_',' ')} ${n}`).join(' · '))}
+        ${stat('Stalled', fmt.num(b.stalled), 'each names its blocker — or says unrecorded', b.stalled?'alert':'')}
+        ${stat('Proofs with the family', fmt.num(b.proofs_waiting_on_family), 'nothing is carved until they approve', b.proofs_waiting_on_family?'warn':'')}
+        ${stat('Open balances', fmt.money(b.open_balances), 'counted from the ledger', b.open_balances?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the proof change reads first', b.messages_open?'bad':'')}
+        ${stat('This week, counted', fmt.money(b.recovered.balance_cash),
+               `${b.recovered.balances_collected} balance(s) collected · ${b.recovered.proofs_family_approved} proof(s) family-approved · ${b.recovered.family_notes_sent} note(s) sent · ${b.recovered.monuments_set} set`)}</div>`) +
+    panel('Stalled orders name their blockers', '', table(
+      [{label:'Family'},{label:'Stage'},{label:'Days in stage',num:true},{label:'Clock',num:true},{label:'Blocker'}],
+      b.stalled_top, r=>`<td>${esc(r.family||'')}</td><td>${esc((r.stage||'').replace('_',' '))}</td>
+        <td class="num">${r.days_in_stage??'—'}</td><td class="num">${r.stage_clock_days??'—'}</td>
+        <td>${r.stalled?pill(r.blocker,(r.blocker||'').startsWith('unrecorded')?'bad':'warn'):'—'}</td>`), true);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The family correcting a date is the one message that can never be
+      mis-routed — granite is not reworked. A proof change holds engraving, records the
+      correction verbatim, and the corrected proof goes <b>back to the family</b>; software never
+      approves it.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='proof_change'?'bad':m.label==='balance'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function orders(){
+  const d = await API.get('/api/pipeline');
+  document.getElementById('v-orders').innerHTML =
+    `<div class="banner warn">Try it: approve the typo'd proof by software — refused; start
+      engraving without the family's record — refused; ask compliance at a cemetery with no
+      recorded rules — UNKNOWN; schedule a setting before the foundation cures — refused with
+      the dates named.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="approveSoft('pr_demo_typo')">Approve proof by software</button>
+      <button class="act" onclick="engrave('or_demo_typo')">Start engraving w/o approval</button>
+      <button class="act" onclick="approveFam('pr_demo_typo')">Record the family's approval (SIG-2211)</button>
+      <button class="act" onclick="compliance('or_demo_norules')">Compliance: no recorded rules</button>
+      <button class="act" onclick="compliance('or_demo_precure')">Compliance: rules cited</button>
+      <button class="act" onclick="setOrder('or_demo_precure')">Schedule setting pre-cure</button>
+      <button class="act" onclick="setOrder('or_demo_ready')">Schedule setting (cured)</button>
+     </div><div id="oout"></div>` +
+    panel('Active orders', esc(d.note), table(
+      [{label:'Family'},{label:'Deceased'},{label:'Stage'},{label:'Days',num:true},{label:'Blocker'}],
+      d.rows.slice(0,40), r=>`<td>${esc(r.family||'')}</td><td>${esc(r.deceased||'')}</td>
+        <td>${esc((r.stage||'').replace('_',' '))}</td><td class="num">${r.days_in_stage??'—'}</td>
+        <td>${r.stalled?pill(r.blocker,(r.blocker||'').startsWith('unrecorded')?'bad':'warn'):'—'}</td>`), true);
+}
+function oshow(html){ document.getElementById('oout').innerHTML = html; }
+async function approveSoft(id){
+  const r = await API.post(`/api/proofs/${id}/approve-software`);
+  oshow(panel('Refused', '', `<div class="banner warn">R0 — ${esc(r.reason||'')}</div>
+    <div class="why">no approvable row was created; this is a refusal, not a slow yes</div>`));
+}
+async function approveFam(id){
+  const r = await API.post(`/api/proofs/${id}/approve`,
+    {family_member:'Dana Merrow', signature_ref:'SIG-2211', staff:'owner'});
+  oshow(r.refused ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Family approval recorded', '', `<div class="strong">${esc(r.approval.by)} — signature ref ${esc(r.approval.signature_ref)}</div>
+      <div class="why">${esc(r.note)}</div>`));
+}
+async function engrave(id){
+  const r = await API.post(`/api/orders/${id}/engrave`);
+  oshow(r.refused ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Engraving queued', '', `<div class="strong">${esc(r.why)}</div>`));
+}
+async function setOrder(id){
+  const r = await API.post(`/api/orders/${id}/set`);
+  oshow(r.refused ? panel('Refused — the date checks', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Setting request drafted (R1)', '', `<div class="strong" style="white-space:pre-wrap">${esc(r.draft)}</div>
+      <div class="why">${esc(r.why)}</div>`));
+}
+async function compliance(id){
+  const r = await API.get(`/api/orders/${id}/compliance`);
+  if (r._missing) return oshow(panel('UNKNOWN', '', `<div class="banner warn">${esc(r._missing)}</div>`));
+  oshow(panel(`Compliance — ${esc(r.cemetery)}`, esc(r.source),
+    table([{label:'Rule'},{label:'Recorded'},{label:'This order'},{label:''}], r.checks,
+      c=>`<td>${esc(c.rule)}</td><td class="mono">${esc(JSON.stringify(c.recorded))}</td>
+        <td class="mono">${esc(JSON.stringify(c.order))}</td>
+        <td>${c.ok==null?pill('unchecked — not recorded','bad'):c.ok?pill('cites ok','good'):pill('conflicts','bad')}</td>`), true)
+    + `<div class="why" style="margin-top:8px">${esc(r.note)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['open_balances','Open balances','counted'],['collection_lift','Collection lift','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['extra_orders_season','Extra orders/season','your number'],['avg_margin','Avg margin per order','your number'],
+    ['remake_value','The remake file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

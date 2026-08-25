@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="Build your AI OS — yourco" />
+<meta property="og:description" content="Type your business and see the AI operating system we'd build for it — the coordinated set of agents, the smart place to start, and one piece of it working. Scoped for real in your audit." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>Build your AI OS — yourco</title>
+<meta name="description" content="Type your business and see the AI operating system we'd build for it — the coordinated set of agents, the smart place to start, and one piece of it working. Scoped for real in your audit." />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  /* OS-builder component (scoped .osb*) — brand hexes inline so it's robust regardless of site.css internals */
+  .osb-search{display:flex;gap:10px;max-width:600px;margin:8px auto 0;align-items:stretch}
+  .osb-search input{flex:1;min-width:0;border:1px solid rgba(22,27,51,.18);background:#fff;border-radius:9999px;padding:14px 22px;font-size:16px;color:#161B33;outline:none;transition:.15s;font-family:inherit;-webkit-appearance:none}
+  .osb-search input::placeholder{color:#9a9caa}
+  .osb-search input:focus{border-color:#B8965A;box-shadow:0 0 0 3px rgba(184,150,90,.15)}
+  .osb-search button{border:0;cursor:pointer}
+  .osb-egs{text-align:center;margin:13px auto 0;font-size:13px;color:#6E7180}
+  .osb-egs button{background:none;border:0;color:#B8965A;font-weight:600;cursor:pointer;font-size:13px;padding:0 1px;font-family:inherit;text-decoration:underline;text-underline-offset:2px}
+  .osb-egs button:hover{color:#161B33}
+  .osb-loading{text-align:center;padding:34px 0 24px;color:#6E7180}
+  .osb-spin{width:30px;height:30px;border-radius:50%;border:3px solid rgba(184,150,90,.25);border-top-color:#B8965A;margin:0 auto 14px;animation:osbspin .7s linear infinite}
+  @keyframes osbspin{to{transform:rotate(360deg)}}
+  .osb-loading b{color:#161B33}
+  @media(max-width:560px){.osb-search{flex-direction:column;border-radius:18px}.osb-search input,.osb-search button{width:100%;text-align:center}}
+  .osb-stage{margin-top:30px}
+  .osb-intro{text-align:center;max-width:640px;margin:0 auto 22px;color:rgba(22,27,51,.66);font-size:16px}
+  .osb-intro b{color:#161B33}
+  .osb-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:820px){.osb-board{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.osb-board{grid-template-columns:1fr}}
+  .osb-mod{background:#fff;border:1px solid rgba(22,27,51,.12);border-radius:13px;padding:14px 15px;position:relative;transition:.14s}
+  .osb-mod .pill-tag{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#6E7180}
+  .osb-mod h4{font-size:15.5px;font-weight:650;margin:3px 0 4px;color:#161B33}
+  .osb-mod p{font-size:13px;color:rgba(22,27,51,.62);line-height:1.45}
+  .osb-mod .badge{display:inline-block;margin-top:9px;font-size:11px;font-weight:700;color:#6E7180}
+  .osb-mod.start{border-color:#B8965A;box-shadow:0 6px 20px rgba(184,150,90,.18);cursor:pointer}
+  .osb-mod.start .pill-tag{color:#B8965A}
+  .osb-mod.start .badge{color:#161B33;background:#B8965A;border-radius:9999px;padding:3px 10px}
+  .osb-mod.start:hover{transform:translateY(-2px)}
+  .osb-mod.exp{opacity:.92}
+  .osb-mod.exp .badge{color:#6E7180}
+  /* the "watch one piece work" panel */
+  .osb-demo{margin-top:18px;background:#161B33;color:#F4EFE6;border-radius:16px;padding:22px 22px 24px;box-shadow:0 12px 34px rgba(22,27,51,.18)}
+  .osb-demo .dh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .osb-demo .dh .dot{width:34px;height:34px;border-radius:50%;background:#B8965A;color:#161B33;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+  .osb-demo .dh .dt{font-size:15px;font-weight:650}
+  .osb-demo .dh .ds{font-size:12px;color:rgba(244,239,230,.6)}
+  .osb-line{display:flex;gap:9px;margin:8px 0;font-size:14px;line-height:1.5}
+  .osb-line .who{flex:none;width:74px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#D4B27A;padding-top:2px}
+  .osb-line .txt{color:rgba(244,239,230,.92)}
+  .osb-line.ai .txt{background:rgba(244,239,230,.08);border:1px solid rgba(244,239,230,.14);border-radius:9px;padding:8px 11px}
+  .osb-note{text-align:center;color:#6E7180;font-size:12.5px;max-width:620px;margin:20px auto 0;font-style:italic}
+  .osb-legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:26px auto 0;max-width:780px}
+  .osb-legend span{font-size:11.5px;color:#6E7180;border:1px solid rgba(22,27,51,.12);border-radius:9999px;padding:4px 11px}
+  /* the "system works together" handoff relay */
+  .osb-flow{margin-top:18px;background:#161B33;color:#F4EFE6;border-radius:16px;padding:22px 24px 24px;box-shadow:0 12px 34px rgba(22,27,51,.18)}
+  .osb-flow .dh{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+  .osb-flow .dh .dot{width:34px;height:34px;border-radius:50%;background:#B8965A;color:#161B33;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+  .osb-flow .dh .dt{font-size:15px;font-weight:650}
+  .osb-flow .dh .ds{font-size:12px;color:rgba(244,239,230,.6)}
+  .flow-steps{list-style:none;margin:0;padding:0}
+  .fstep{position:relative;padding:0 0 2px 28px;margin-bottom:15px;opacity:0;animation:flowIn .5s ease forwards;animation-delay:calc(var(--i)*.3s)}
+  .fstep::before{content:"";position:absolute;left:5px;top:5px;width:10px;height:10px;border-radius:50%;background:#B8965A;box-shadow:0 0 0 4px rgba(184,150,90,.16)}
+  .fstep:not(:last-child)::after{content:"";position:absolute;left:9.5px;top:17px;bottom:-15px;width:1.5px;background:linear-gradient(#B8965A,rgba(184,150,90,.28))}
+  .fnode{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .fnode .fp{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#D4B27A}
+  .fnode .fn{font-size:15px;font-weight:650;color:#F4EFE6}
+  .fdid{font-size:13.5px;color:rgba(244,239,230,.82);margin-top:3px;line-height:1.45}
+  .fdid b{color:#F4EFE6}
+  .fpass{font-size:12px;color:rgba(244,239,230,.5);margin-top:6px}
+  .fpass b{color:#D4B27A;font-weight:600}
+  .fpass .farr{color:#B8965A;font-weight:700;margin-right:3px}
+  .fstep.final::before{background:#6B1E29;box-shadow:0 0 0 4px rgba(107,30,41,.28)}
+  @keyframes flowIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.fstep{animation:none;opacity:1}}
+
+  /* share row — the artifact the room you're not in actually needs */
+  .osb-share{margin-top:34px;padding:26px 28px;border:1px solid var(--brass);border-radius:10px;background:rgba(184,150,90,.08)}
+  .osb-share-h{font-size:19px;font-weight:600;letter-spacing:-.015em}
+  .osb-share p{font-size:15.5px;color:var(--ink-muted);margin-top:8px;line-height:1.55;max-width:62ch}
+  .osb-share-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  .osb-share-row input{flex:1 1 320px;min-width:0;font:inherit;font-size:14px;color:var(--ink-muted);background:var(--cream);border:1px solid var(--hairline);border-radius:8px;padding:11px 14px}
+  .osb-share-row button{font:inherit;font-size:15px;font-weight:600;color:var(--indigo);background:var(--brass);border:1px solid var(--brass);border-radius:9999px;padding:11px 22px;cursor:pointer}
+  .osb-share-row button:hover{background:var(--brass-bright)}
+  .osb-share-row a{color:var(--brass);font-weight:600;font-size:15px;text-decoration:none}
+  .osb-share-row a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+      <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html" class="active">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=build-your-os" class="pill sm">Book a call</a></div>
+    </div>
+  </nav>
+
+  <!-- hero -->
+  <section class="tile hero">
+    <div class="wrap narrow">
+      <div class="eyebrow">see it · your AI OS</div>
+      <h1>See the AI OS we&rsquo;d build for your business.</h1>
+      <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+      <p>Type what your business does. We&rsquo;ll sketch the system &mdash; the coordinated agents that run it &mdash; show you the smart place to start, and let you watch one piece work. The real version gets scoped in your audit.</p>
+    </div>
+  </section>
+
+  <!-- builder -->
+  <section class="tile parchment">
+    <div class="wrap">
+      <form class="osb-search" id="osbForm" autocomplete="off">
+        <input type="text" id="osbInput" placeholder="Type your business — e.g. HVAC, med spa, accounting firm&hellip;" aria-label="Your business" />
+        <button type="submit" class="pill">Build it &rarr;</button>
+      </form>
+      <div class="osb-egs">try: <button type="button" data-eg="dental practice">dental practice</button> &middot; <button type="button" data-eg="HVAC company">HVAC</button> &middot; <button type="button" data-eg="law firm">law firm</button> &middot; <button type="button" data-eg="coffee shop">coffee shop</button></div>
+      <div class="osb-stage" id="stage"></div>
+
+      <div class="osb-share" id="osbShare" hidden>
+        <div class="osb-share-h">Send this to whoever else decides.</div>
+        <p>You&rsquo;re probably not the only person who has to say yes. This link opens the same blueprint on its own page — no form, no login, nothing to sign up for. Send it to your partner, your CFO, your ops lead.</p>
+        <div class="osb-share-row">
+          <input id="osbShareLink" readonly aria-label="Shareable blueprint link" />
+          <button type="button" id="osbShareCopy">Copy link</button>
+          <a id="osbShareOpen" href="#" target="_blank" rel="noopener">Open it &rarr;</a>
+        </div>
+      </div>
+      <div class="osb-legend">
+        <span>The 8 building blocks of an yourco OS:</span>
+        <span>Intake</span><span>Sales</span><span>Marketing</span><span>Customer</span><span>Operations</span><span>Back Office</span><span>Company Brain</span><span>Training</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- honest note -->
+  <section class="tile">
+    <div class="wrap narrow prose">
+      <div class="eyebrow">how this becomes real</div>
+      <h2 class="sec">A blueprint, not a quote.</h2>
+      <p>This is an illustrative system for a business like yours. Your actual OS is scoped in the <a href="audit.html">audit</a> &mdash; we measure where your time and revenue really leak, then build it <b>one capability at a time</b> (first one live in 48 hours) and operate the whole thing. You never touch a token, a model, or a server.</p>
+    </div>
+  </section>
+
+  <!-- close -->
+  <section class="tile parchment close">
+    <div class="wrap">
+      <h2>every engagement starts with the audit.</h2>
+      <div class="ctas"><a class="pill" href="audit-intake.html">Start the 10-min audit &rarr;</a><a class="pill ghost" href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=build-your-os">Or book 30 min</a></div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="lockup" aria-label="yourco"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+      <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+      <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=build-your-os">Book a call</a></div>
+      <div class="fmeta">© 2026 yourco · yourco.com</div>
+    </div>
+  </footer>
+
+<script src="os-blueprint.js"></script>
+<script>
+/* Data + rendering live in os-blueprint.js — one source, shared with blueprint.html. */
+const stage=document.getElementById('stage'), form=document.getElementById('osbForm'), input=document.getElementById('osbInput');
+const OSB=window.OSBlueprint;
+
+function go(raw){ const q=OSB.clean(raw||''); if(!q) return;
+  const k=OSB.classify(q);
+  stage.innerHTML=`<div class="osb-loading"><div class="osb-spin"></div><p>Reading &ldquo;<b>${q}</b>&rdquo; and assembling the OS&hellip;</p></div>`;
+  setTimeout(()=>{ OSB.renderInto(stage,k,q); showShare(q); },850); }
+form.addEventListener('submit',e=>{e.preventDefault();go(input.value);});
+document.querySelectorAll('.osb-egs button').forEach(b=>b.onclick=()=>{input.value=b.dataset.eg;go(b.dataset.eg);});
+
+/* The room where this gets decided is usually one you're not in. Give that room the document. */
+function showShare(q){
+  const url=new URL('blueprint.html',location.href);
+  url.searchParams.set('b',q);
+  const box=document.getElementById('osbShare');
+  box.hidden=false;
+  const link=document.getElementById('osbShareLink');
+  link.value=url.toString();
+  document.getElementById('osbShareOpen').href=url.toString();
+  const btn=document.getElementById('osbShareCopy');
+  btn.onclick=async()=>{
+    try{ await navigator.clipboard.writeText(url.toString()); btn.textContent='Copied'; }
+    catch(_){ link.select(); btn.textContent='Press \u2318C to copy'; }
+    setTimeout(()=>{btn.textContent='Copy link';},2200);
+  };
+}
+
+OSB.renderInto(stage,'other','your business');
+</script>
+</body>
+</html>

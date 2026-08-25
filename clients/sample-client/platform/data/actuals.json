@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "note": "Completed-job history: quoted vs final, estimated vs actual crew-days. SAMPLE DATA shaped like what the Aspire export will provide (est-vs-actual per job is already in Aspire — Charlene enters labor weekly, moving to daily). When the real export lands, this file is replaced and every number below regenerates from truth. The engine tunes labor benchmarks + shows the accuracy scoreboard from THIS file + locally-entered jobs.",
+    "updated": "2026-08-07",
+    "sample": true
+  },
+  "jobs": [
+    { "id": "a01", "name": "Stonebridge patio + wall",     "closed": "2026-05-02", "quotedMid": 41800,  "final": 43900,  "estDays": 6.0,  "actDays": 6.8,  "access": 4 },
+    { "id": "a02", "name": "Myers Park courtyard",         "closed": "2026-05-09", "quotedMid": 88500,  "final": 96200,  "estDays": 12.0, "actDays": 14.5, "access": 8 },
+    { "id": "a03", "name": "Davidson walkway + steps",     "closed": "2026-05-16", "quotedMid": 18400,  "final": 17900,  "estDays": 3.0,  "actDays": 2.8,  "access": 2 },
+    { "id": "a04", "name": "Buffy-type paver patio",       "closed": "2026-05-27", "quotedMid": 90800,  "final": 93400,  "estDays": 13.0, "actDays": 13.6, "access": 3 },
+    { "id": "a05", "name": "Cornelius fire pit terrace",   "closed": "2026-06-03", "quotedMid": 36200,  "final": 38800,  "estDays": 5.0,  "actDays": 5.7,  "access": 5 },
+    { "id": "a06", "name": "Yourtown turf + beds",     "closed": "2026-06-10", "quotedMid": 27500,  "final": 26900,  "estDays": 4.0,  "actDays": 3.9,  "access": 2 },
+    { "id": "a07", "name": "Lake Norman outdoor kitchen",  "closed": "2026-06-21", "quotedMid": 124000, "final": 131500, "estDays": 16.0, "actDays": 17.8, "access": 6 },
+    { "id": "a08", "name": "Dilworth tiny-lot patio",      "closed": "2026-06-28", "quotedMid": 22800,  "final": 25100,  "estDays": 4.0,  "actDays": 5.1,  "access": 9 },
+    { "id": "a09", "name": "Wax haw retaining walls",      "closed": "2026-07-08", "quotedMid": 54500,  "final": 56100,  "estDays": 8.0,  "actDays": 8.5,  "access": 4 },
+    { "id": "a10", "name": "Ballantyne pergola + patio",   "closed": "2026-07-15", "quotedMid": 61200,  "final": 60400,  "estDays": 7.5,  "actDays": 7.3,  "access": 3 },
+    { "id": "a11", "name": "NoDa small yard refresh",      "closed": "2026-07-24", "quotedMid": 15900,  "final": 16800,  "estDays": 2.5,  "actDays": 2.9,  "access": 7 },
+    { "id": "a12", "name": "Hidden Cove-type terraces",    "closed": "2026-08-01", "quotedMid": 138500, "final": 144800, "estDays": 18.0, "actDays": 19.4, "access": 6 }
+  ]
+}

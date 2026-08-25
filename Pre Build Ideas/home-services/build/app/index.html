@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispatch OS</title>
+<link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+
+<header class="top">
+  <h1 id="co">…</h1>
+  <span class="sub" id="cosub"></span>
+  <span class="spacer"></span>
+  <button class="act" onclick="runAgents()">Run the sweeps</button>
+</header>
+
+<nav class="tabs"></nav>
+
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-calls"></section>
+  <section class="view" id="v-estimates"></section>
+  <section class="view" id="v-deferred"></section>
+  <section class="view" id="v-dispatch"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+
+<footer class="foot">
+  Demonstration build on synthetic data. Every figure is counted from this system's own event log
+  or shown blank with the reason it cannot be computed.
+</footer>
+
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Revenue at risk'},{id:'calls',label:'Live calls'},
+      {id:'estimates',label:'Estimates'},{id:'deferred',label:'Deferred work'},
+      {id:'dispatch',label:'Dispatch'},{id:'roi',label:'What it\'s worth'},
+      {id:'trust',label:'Trust & audit'}], load);
+
+async function load(which) {
+  which = which || 'board';
+  if (which === 'board') return board();
+  if (which === 'calls') return calls();
+  if (which === 'estimates') return estimates();
+  if (which === 'deferred') return deferred();
+  if (which === 'dispatch') return dispatch();
+  if (which === 'roi') return roi();
+  if (which === 'trust') return trust();
+}
+
+/* ------------------------------------------------------------------ board */
+async function board() {
+  const d = await API.get('/api/board');
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent =
+    `${d.config.trucks} trucks · ${d.config.employees} employees · diagnostic $${d.config.diagnostic_fee}`;
+  const r = d.at_risk, rec = d.recovered;
+  document.getElementById('v-board').innerHTML =
+    panel('Revenue at risk today', 'three leaks, counted',
+      `<div class="grid">
+        ${stat('Missed calls today', fmt.num(r.calls_today.missed),
+          'rang out or came in after hours', r.calls_today.missed > 3 ? 'alert' : '')}
+        ${stat('Value of those calls', val(r.missed_call_value, 'amount', fmt.money),
+          esc(r.missed_call_value.basis || r.missed_call_value._missing || ''))}
+        ${stat('Undecided estimates', val(r.undecided_estimates, 'amount', fmt.money),
+          r.undecided_estimates.n ? `${r.undecided_estimates.n} open · oldest ${r.undecided_estimates.oldest_days} days` : '')}
+        ${stat('Deferred work due now', fmt.money(r.deferred_due_now.amount),
+          `${r.deferred_due_now.n} in season, or safety items re-offered out of season on purpose`)}
+       </div>`) +
+    panel('Recovered this week', 'attribution is deliberately narrow',
+      `<div class="grid">
+        ${stat('Recovered', val(rec, 'amount', fmt.money),
+          rec._missing ? '' : `${rec.attributable} wins the log can attribute to a follow-up`)}
+        ${stat('Not claimed', rec._missing ? null : fmt.num(rec.unattributable),
+          'wins with no agent touch — your shop\'s own work, not ours')}
+        ${renderAutomation(r.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 approval floor')}
+       </div>
+       <div class="why" style="margin-top:10px">${esc(rec.basis || '')}</div>`) +
+    panel('Your average ticket', 'used by every dollar figure above',
+      `<div class="grid">
+        ${stat('Average', val(d.avg_ticket, 'amount', fmt.money), d.avg_ticket._missing ? '' : `${d.avg_ticket.n} invoiced jobs, 180 days`)}
+        ${stat('Median', d.avg_ticket.median ? fmt.money(d.avg_ticket.median) : null, 'the honest middle')}
+       </div>`);
+}
+
+/* ------------------------------------------------------------------ calls */
+async function calls() {
+  const d = await API.get('/api/calls');
+  document.getElementById('v-calls').innerHTML =
+    `<div class="banner">The emergency circuit is biased to over-trigger: an ambiguous or unreadable
+      report routes to a human, it is never assumed safe. A false alarm costs one phone call.</div>` +
+    panel('Unhandled right now', `${d.live.length} on the board · ${d.missed_today} missed today`,
+      table([{label:'When'},{label:'Caller'},{label:'What they said'},{label:'Read'},{label:''}],
+        d.live, c => `
+        <td>${fmt.stamp(c.at)}${c.demo_tag ? ' ' + pill(c.demo_tag,'brand') : ''}</td>
+        <td>${esc(c.customer||'')}<div class="why">${esc(c.zone||'')} · ${esc(c.channel)}</div></td>
+        <td>${esc(c.transcript)}</td>
+        <td>${c.preview.emergency ? pill('EMERGENCY','bad')
+              : c.preview.job_class ? pill(c.preview.job_class,'good') : pill('needs a question','warn')}
+            <div class="why">${esc(c.preview.why)}</div></td>
+        <td class="right"><button class="act primary" onclick="handle('${c.id}')">Answer it</button></td>`), true) +
+    `<div id="callout"></div>`;
+}
+
+async function handle(id) {
+  const r = await API.post(`/api/calls/${id}/handle`);
+  const s = (r.steps||[]).map(s => `
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said ? `<div class="strong">“${esc(s.said)}”</div>` : ''}
+      ${s.why ? `<div class="why" style="margin-top:6px">${esc(s.why)}</div>` : ''}
+      ${s.result ? `<div class="why" style="margin-top:6px">${s.result.executed
+        ? `executed at ${rungPill(s.result.rung)} — ${esc(s.result.rung ? '' : '')}`
+        : `held at ${rungPill(s.result.rung)} for a human — ${esc(s.result.reason||'')}`}</div>` : ''}
+      ${s.slot ? `<div class="why">offered ${esc(s.slot.tech_name)} at ${esc(s.slot.starts_at.slice(11,16))},
+        ${s.slot.drive_minutes}m drive, needs ${s.slot.needs_minutes}m, slot has ${s.slot.minutes_free}m free</div>` : ''}
+    </div></div>`).join('');
+  document.getElementById('callout').innerHTML = s;
+  calls();
+}
+
+/* ------------------------------------------------------------------ estimates */
+async function estimates() {
+  const d = await API.get('/api/estimates');
+  const ag = Object.entries(d.aging).map(([k,v]) => stat(k + ' days', fmt.money(v.amount), `${v.n} estimates`)).join('');
+  document.getElementById('v-estimates').innerHTML =
+    panel('Undecided', 'an estimate may not rest in “presented”',
+      `<div class="grid">${stat('Open value', val(d.undecided,'amount',fmt.money),
+        d.undecided.n ? `${d.undecided.n} open · oldest ${d.undecided.oldest_days} days` : '')}${ag}</div>`) +
+    panel('The ladder', 'bounded on purpose — five touches, then a human decision',
+      table([{label:'Day'},{label:'Channel'},{label:'What it is'}], d.ladder,
+        l => `<td class="num">${l.day}</td><td>${esc(l.channel)}</td><td class="why">${esc(l.note)}</td>`), true) +
+    panel('Open estimates', 'oldest first', table(
+      [{label:'Customer'},{label:'Scope'},{label:'Quoted'},{label:'Age'},{label:'Touches'},{label:'Due now'}],
+      d.rows, e => {
+        const age = Math.round((Date.now() - new Date(e.presented_at)) / 86400000);
+        return `<td>${esc(e.customer)}<div class="why">${esc(e.tech||'')}</div></td>
+        <td>${esc(e.scope)}</td><td class="num">${fmt.money(e.amount)}</td>
+        <td class="num">${age}d</td>
+        <td>${(e.touches||[]).map(t => pill(t.kind, t.sent_at ? 'good' : 'warn')).join(' ') || '<span class="why">none</span>'}</td>
+        <td>${(e.due||[]).map(x=>pill(x,'brand')).join(' ')}</td>`; }), true) +
+    panel('Why we lose', 'structured reasons — this is what next year\'s pricing conversation is built on',
+      table([{label:'Reason'},{label:'Count', num:true}], Object.entries(d.loss_reasons),
+        ([k,v]) => `<td>${esc(k.replace(/_/g,' '))}</td><td class="num">${v}</td>`), true);
+}
+
+/* ------------------------------------------------------------------ deferred */
+async function deferred() {
+  const d = await API.get('/api/deferred');
+  const c = d.campaign;
+  document.getElementById('v-deferred').innerHTML =
+    panel('This month\'s re-offer campaign', `month ${c.month} · staged, not sent`,
+      `<div class="grid">
+        ${stat('Due now', fmt.num(c.due.length), 'in season and past the cooling-off — plus safety items, which ignore the season')}
+        ${stat('Value', fmt.money(c.value), 'at the price book\'s typical amount')}
+        ${stat('Held back', fmt.num(c.held.length), 'each with a stated reason')}
+       </div>`) +
+    panel('Due', '', table([{label:'Customer'},{label:'Component'},{label:'Typical', num:true},{label:'Why now'}],
+      c.due, r => `<td>${esc(r.customer||'')}</td><td class="mono">${esc(r.component)}</td>
+        <td class="num">${fmt.money(r.value)}</td><td class="why">${esc(r.why)}</td>`), true) +
+    panel('Held back', 'a recommendation is never re-offered just because it exists',
+      table([{label:'Component'},{label:'Why not'}], c.held,
+        r => `<td class="mono">${esc(r.component)}</td><td class="why">${esc(r.why)}</td>`), true) +
+    panel('Notes that parsed to nothing', 'surfaced for a human — never discarded',
+      table([{label:'Job'},{label:'The note'}], d.parsing.unparsed_for_a_human,
+        u => `<td class="mono">${esc(u.job)}</td><td>${esc(u.note)}</td>`), true);
+}
+
+/* ------------------------------------------------------------------ dispatch */
+async function dispatch() {
+  const d = await API.get('/api/dispatch');
+  document.getElementById('v-dispatch').innerHTML =
+    `<div class="banner warn">${esc(d.note)}</div>` +
+    panel('Unassigned jobs', `${d.proposals.length} waiting on the dispatcher`,
+      table([{label:'Job'},{label:'Class'},{label:'Zone'},{label:'Ranked options'}], d.proposals,
+        p => `<td class="mono">${esc(p.job)}</td><td>${esc(p.class||'')}</td><td>${esc(p.zone||'')}</td>
+        <td>${(p.options||[]).map(o => `<div>${esc(o.tech)} · ${esc(o.starts.slice(11,16))}
+          <span class="why">${esc(o.why)}</span></div>`).join('') || '<span class="why">no option fits</span>'}</td>`), true);
+}
+
+/* ------------------------------------------------------------------ roi */
+let roiInputs = {};
+async function roi() {
+  const qs = new URLSearchParams(roiInputs).toString();
+  const d = await API.get('/api/roi' + (qs ? '?' + qs : ''));
+  const fields = [
+    ['missed_calls_wk','Missed calls / week','counted from your phone log'],
+    ['avg_ticket','Average ticket','counted from your invoiced jobs'],
+    ['recovered_book_rate','Booked % on recovered calls','your number — we do not have one'],
+    ['open_estimate_value','Open estimate value','counted from your undecided estimates'],
+    ['incremental_close_rate','Incremental close %','the lift over closing with no follow-up'],
+    ['deferred_count','Declined recommendations','counted from technician notes'],
+    ['deferred_avg','Typical deferred job','from the price book'],
+    ['reoffer_accept_rate','Re-offer accept %','your number'],
+    ['admin_hours_wk','Admin hours / week','your number'],
+    ['loaded_rate','Loaded staff rate','your number'],
+  ];
+  const recorded = d.recorded || {}, given = d.operator_supplied || {};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers', 'recorded values come from this system; the rest are yours to set',
+      `<div class="grid">${fields.map(([k,label,note]) => `
+        <div class="stat"><div class="k">${esc(label)}</div>
+          <input id="in_${k}" value="${recorded[k] ?? given[k] ?? ''}" placeholder="not set"
+            style="font:inherit;font-size:19px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+          <div class="f">${k in recorded ? '<span class="pill good">recorded</span> ' : ''}${esc(note)}</div>
+        </div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__roiFields = fields.map(f => f[0]);
+}
+function applyRoi() {
+  roiInputs = {};
+  (window.__roiFields||[]).forEach(k => {
+    const v = document.getElementById('in_'+k).value.trim();
+    if (v !== '') roiInputs[k] = v;
+  });
+  roi();
+}
+
+/* ------------------------------------------------------------------ trust */
+async function trust() {
+  const [ap, ev, au, evt] = await Promise.all([
+    API.get('/api/approvals'), API.get('/api/eval'),
+    API.get('/api/autonomy'), API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending, 'decide') +
+    renderEval(ev) +
+    renderAutonomy(au.matrix) +
+    renderEvents(evt.events, 60);
+}
+async function decide(id, ok) { await API.post(`/api/approvals/${id}/decide`, {approve: ok, human:'owner'}); trust(); }
+
+async function runAgents() { await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+
+load('board');
+</script>
+</body>
+</html>

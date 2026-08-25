@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Live alerts — Sample Product · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EAE1CD;--brass:#B8965A;--ink:#161B33;--muted:#6b6f83;--high:#3f7d5a;--line:rgba(22,27,51,.12)}
+  *{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.5}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;margin:0;line-height:1.15}
+  .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .topbar{background:var(--indigo);color:var(--cream);padding:14px 0}.topbar .wrap{display:flex;justify-content:space-between;align-items:center}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:20px}.mark .dot{color:var(--brass)} .topbar .tag{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#b9bdd0}
+  .hero{background:var(--indigo);color:var(--cream);padding:28px 0} .hero h1{color:#fff;font-size:clamp(24px,4vw,36px);margin:8px 0 6px} .hero h1 .a{color:var(--brass)} .hero p{color:#c7cbe0;max-width:60ch}
+  a.back{color:var(--brass);text-decoration:none;font-size:13px;font-weight:600}
+  .live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#b9bdd0;margin-top:14px}
+  .dotlive{width:9px;height:9px;border-radius:50%;background:#5fd08b;box-shadow:0 0 0 4px rgba(95,208,139,.18)}
+  section{padding:28px 0}
+  .lay{display:grid;grid-template-columns:340px 1fr;gap:28px} @media(max-width:760px){.lay{grid-template-columns:1fr}}
+  .phone{background:var(--indigo);border-radius:30px;padding:12px;box-shadow:0 20px 50px -18px rgba(22,27,51,.5)}
+  .screen{background:#0e1226;border-radius:20px;min-height:360px;padding:16px 14px;color:#e9ebf4}
+  .lock{font-size:12px;color:#9aa0bd;text-align:center;margin-bottom:14px}
+  .push{background:rgba(255,255,255,.09);border-radius:14px;padding:13px 14px;margin-bottom:10px}
+  .push .ap{font-size:11px;color:#b9bdd0;display:flex;justify-content:space-between;margin-bottom:5px}
+  .push .ti{font-weight:700;font-size:14px} .push .bo{font-size:13px;color:#cfd3e4;margin-top:2px}
+  .feedhd{font-size:13px;color:var(--muted);margin-bottom:12px}
+  .a{background:#fff;border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+  .a .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .a .co{font-family:Fraunces,serif;font-size:18px;font-weight:600} .a .tm{font-size:12px;color:var(--muted);white-space:nowrap}
+  .a .hz{font-weight:600;margin-top:3px} .a .sr{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .a .cta{font-size:12.5px;color:var(--high);font-weight:600;margin-top:6px}
+  footer{background:var(--indigo);color:#aeb3c9;padding:24px 0;font-size:12.5px}footer b{color:var(--cream)}
+</style>
+</head>
+<body>
+  <div class="topbar"><div class="wrap"><div class="mark">yourco<span class="dot">.</span></div><div class="tag">Sample Product · live alerts</div></div></div>
+  <div class="hero"><div class="wrap"><a class="back" href="index.html">← control tower</a>
+    <div class="eyebrow" style="margin-top:10px">real-time</div>
+    <h1>The moment a storm verifies, <span class="a">it's on your phone.</span></h1>
+    <p>No nightly research, no waiting for the morning. The watcher fires the second a storm clears verification — so your crew is first to the neighborhood.</p>
+    <div class="live"><span class="dotlive"></span><span id="livelbl">watching Florida</span></div></div></div>
+
+  <section><div class="wrap"><div class="lay">
+    <div><div class="phone"><div class="screen"><div class="lock">yourco Sample Product · lock screen</div><div id="pushes"></div></div></div></div>
+    <div><div class="feedhd" id="feedhd"></div><div id="feed"></div></div>
+  </div></div></section>
+
+  <footer><div class="wrap"><b>Every alert is real NOAA-verified data.</b> Detection time is when the storm's first report cleared verification. Dispatch stays approval-gated — an alert is a heads-up + a one-tap GO, never an auto-text.</div></footer>
+
+<script src="alerts_data.js"></script>
+<script>
+  function draw(){ const A=window.ALERTS; if(!A){return setTimeout(draw,60);}
+    const esc=s=>(s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const when=iso=>{ if(!iso)return ''; const d=new Date(iso); return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); };
+    const al=A.alerts||[];
+    document.getElementById('livelbl').textContent=`watching ${A.state||'FL'} · ${al.length} verified this window`;
+    document.getElementById('pushes').innerHTML = al.slice(0,3).map(a=>`
+      <div class="push"><div class="ap"><span>⚡ Sample Product</span><span>${when(a.detected)}</span></div>
+        <div class="ti">Verified: ${esc(a.county)} County</div>
+        <div class="bo">${esc(a.hazard)} · ${esc((a.sources||[]).join(' + '))}. Tap to dispatch — be first.</div></div>`).join('');
+    document.getElementById('feedhd').textContent=`Verified-storm feed — newest first`;
+    document.getElementById('feed').innerHTML = al.map(a=>`
+      <div class="a"><div class="top"><span class="co">${esc(a.county)} County</span><span class="tm">${when(a.detected)}</span></div>
+        <div class="hz">${esc(a.hazard)}</div>
+        <div class="sr">verified by ${esc((a.sources||[]).join(' + '))}</div>
+        <div class="cta">⚡ queued for your tap — first crew to the door wins</div></div>`).join('') || '<div class="feedhd">Quiet — nothing verified in the window.</div>';
+  } draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yourco — the Autonomy Standard v0</title>
+<!-- Staged public page for offerings/autonomy-standard/STANDARD-v0.md (Frontier #5).
+     Content is embedded verbatim from the .md (self-contained, no fetch) — when the standard
+     revises, update the .md first, then re-render this page to match. Same visual family as
+     offerings/trust-ledger/prototype/. -->
+<style>
+  :root {
+    --cream: #f6f3ec; --card: #fdfcf9; --ink: #23283d; --ink2: #5a5f75; --ink3: #8b8fa3;
+    --brass: #8a6d3b; --brass-soft: #f0e9db; --line: #e5e0d3;
+    --r1: #a33b2e; --r1-bg: #f7e9e6; --r2: #8a6100; --r2-bg: #f7efd9; --r3: #1a6f47; --r3-bg: #e6f2ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --cream: #16181f; --card: #1e212b; --ink: #ecedf2; --ink2: #a9adbd; --ink3: #7c8093;
+      --brass: #c9a86a; --brass-soft: #2b2618; --line: #2c3040;
+      --r1: #e08575; --r1-bg: #33211e; --r2: #d9ae4a; --r2-bg: #322a18; --r3: #57c48a; --r3-bg: #1c2f26;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--cream); color: var(--ink); font: 15.5px/1.62 Georgia, "Times New Roman", serif; padding: 34px clamp(16px, 5vw, 64px) 60px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .stagebar { background: var(--brass-soft); color: var(--brass); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; font: 12.5px/1.4 -apple-system, sans-serif; margin-bottom: 26px; }
+  .mark { font: 700 26px/1 -apple-system, "Segoe UI", sans-serif; letter-spacing: -.5px; }
+  .mark .dot { color: var(--brass); }
+  h1 { font-size: 32px; font-weight: 600; margin: 14px 0 6px; letter-spacing: -.3px; }
+  .version { font: 12px -apple-system, sans-serif; color: var(--ink3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+  .tagline { color: var(--ink2); font-size: 16.5px; font-style: italic; border-left: 3px solid var(--brass); padding: 4px 0 4px 16px; margin: 18px 0 8px; }
+  h2 { font-size: 13px; font-family: -apple-system, "Segoe UI", sans-serif; text-transform: uppercase; letter-spacing: .09em; color: var(--brass); margin: 40px 0 14px; }
+  p { margin: 0 0 14px; }
+  em { font-style: italic; }
+  strong { font-weight: 700; }
+  .badge { display: inline-block; font: 700 11px/1 -apple-system, sans-serif; padding: 4px 9px; border-radius: 999px; letter-spacing: .04em; white-space: nowrap; }
+  .badge.R1 { color: var(--r1); background: var(--r1-bg); }
+  .badge.R2 { color: var(--r2); background: var(--r2-bg); }
+  .badge.R3 { color: var(--r3); background: var(--r3-bg); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 14px; margin: 0 0 14px; }
+  th { text-align: left; font: 600 11.5px -apple-system, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: var(--ink3); padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  ul { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  .callout { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--brass); border-radius: 10px; padding: 16px 18px; margin: 26px 0 14px; }
+  .callout .lbl { display: block; font: 600 11px -apple-system, sans-serif; text-transform: uppercase; letter-spacing: .08em; color: var(--brass); margin-bottom: 8px; }
+  .foot { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink3); font-size: 13.5px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stagebar">STAGED PREVIEW — internal until launch. Version 0 publishes as a citable public document the day the company does.</div>
+  <div class="mark">yourco<span class="dot">.</span></div>
+  <h1>The Autonomy Standard</h1>
+  <p class="version">Version 0 · authored by yourco · 2026</p>
+  <p class="tagline">The rules by which an AI system earns the right to act without a human — written by an operator that runs its own business on these rules, published so anyone can hold us to them.</p>
+
+  <h2>Why a standard</h2>
+  <p>Every serious conversation about AI in a business arrives at the same question: <em>what is the AI allowed to do on its own?</em> Today that question is mostly answered by vibes — either blanket fear (&ldquo;a human reviews everything, forever&rdquo;) or blanket faith (&ldquo;it&rsquo;s autonomous, trust us&rdquo;). Both are wrong, and the second one is dangerous: an unproven agent acting unattended on high-stakes actions is how executive trust in AI gets destroyed — one wrong message sent to the wrong customer, unsupervised, on day one.</p>
+  <p>This standard replaces vibes with a rule: <strong>autonomy is earned per action, on evidence, and any incident sends it backward.</strong> The destination for every action is full autonomy — the human&rsquo;s routine time should trend to zero. But &ldquo;no human checkpoint&rdquo; never means &ldquo;no control.&rdquo; It means the control has migrated off the human and onto machinery that doesn&rsquo;t need one: evaluation gates, hard guardrails, anomaly watchdogs, reversibility, audit, and a kill switch the owner holds.</p>
+
+  <h2>The three rungs</h2>
+  <p>Every action an AI system can take sits on exactly one rung.</p>
+  <table aria-label="The three rungs">
+    <thead><tr><th>Rung</th><th>What happens</th><th>The control</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="badge R1">R1</span> <strong>Gated</strong></td>
+        <td>The AI produces the action; a human commits it.</td>
+        <td>The human. This is the floor for any unproven or irreversible action.</td>
+      </tr>
+      <tr>
+        <td><span class="badge R2">R2</span> <strong>Auto&nbsp;+&nbsp;notify, reversible</strong></td>
+        <td>The action fires automatically, is logged and notified, and remains <strong>undoable for a set window</strong>. The human may watch or undo, but needn&rsquo;t act.</td>
+        <td>Evaluation gate + reversibility + notification.</td>
+      </tr>
+      <tr>
+        <td><span class="badge R3">R3</span> <strong>Autonomous</strong></td>
+        <td>The action fires unattended; the human sees only exceptions.</td>
+        <td>Evaluation gate + hard guardrails (spend caps, rate caps, allow-lists) + anomaly watchdog + full audit + a kill switch the owner holds.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Purely observational work — reading, gathering, summarizing, with no action taken — is inherently safe and sits at R3 from the start. Everything that <em>does</em> something enters the ladder.</p>
+  <p>R2 is not a compromise rung; it is the load-bearing one. Most of the value of autonomy (the human stops spending time) arrives at R2, while the cost of an error stays bounded (undoable within the window). Many actions should live at R2 for a long time. Some should live there forever (§&nbsp;&ldquo;Ceilings&rdquo;).</p>
+
+  <h2>Per-action, not per-system</h2>
+  <p>A system is never &ldquo;autonomous.&rdquo; An <strong>action</strong> is at a rung. The same AI employee might hold R3 for organizing an inbox, R2 for booking calendar slots, and R1 for sending external email — simultaneously, correctly. Grading the system instead of the action is the root error of both the fear posture (one scary action gates everything) and the faith posture (one easy action licenses everything). Under this standard, every capability in a deployment is enumerated, and each carries: its current rung, its ceiling, and the evidence required to advance.</p>
+  <p>New and unproven actions <strong>start at R1.</strong> This is the hard rule from which the standard&rsquo;s credibility flows: <em>never start a high-stakes action above R1 on day one, before any evaluation track record exists.</em> The gated start is the proof step, not bureaucracy.</p>
+
+  <h2>Evidence: how an action climbs</h2>
+  <p>An action advances <strong>one rung at a time</strong>, and only on a <strong>streak</strong> — one green run is luck; a streak is reliability.</p>
+  <p><strong>The record.</strong> Advancement is grounded in an evaluation-versus-reality record: the action&rsquo;s outputs are evaluated on a recurring cadence against what actually happened in the real world (was the draft approved unchanged? did the booking conflict? did anyone complain?). The record is kept by a designated evaluation owner as a per-action <strong>streak ledger</strong> — counts of consecutive clean evaluation periods and real uses. The ledger holds counts only; it never holds the authority to promote.</p>
+  <p><strong>The thresholds.</strong> Where the accountable owner has not set stricter ones, yourco&rsquo;s operating defaults — the same thresholds we run internally — are:</p>
+  <ul>
+    <li><strong>R2 → R3 (reversible actions):</strong> 4 consecutive clean weekly evaluations, covering at least 10 real uses.</li>
+    <li><strong>R1 → R2 (external or higher-stakes actions):</strong> 8 consecutive clean weekly evaluations, covering at least 20 real uses.</li>
+  </ul>
+  <p><strong>Empty runs don&rsquo;t count.</strong> A clean week in which the action never actually fired advances nothing — the streak measures demonstrated reliability, not elapsed time. And streaks open at zero: prior good behavior that predates formal tracking is not retroactively counted. Start honest, not reconstructed.</p>
+  <p><strong>Promotion is a human decision.</strong> When a streak crosses its threshold, the evaluation owner recommends; the accountable owner — the business the system serves — decides. Never the evaluator, never the AI, never automatic. The owner may set thresholds higher than the defaults at any time, per action; they may not set them lower than &ldquo;a real streak of real uses.&rdquo;</p>
+
+  <h2>Incidents: how an action falls</h2>
+  <p>An <strong>incident</strong> is any action-execution failure with real-world effect or near-effect: a wrong send, a bad booking, a guardrail breach, an output that required emergency human correction.</p>
+  <ul>
+    <li><strong>Any incident resets the streak to zero.</strong> Not a deduction — a reset. The count restarts from the incident.</li>
+    <li>The incident gets a <strong>written post-incident record</strong> — what happened, why the controls didn&rsquo;t catch it, what changed — before the climb resumes. No write-up, no restart.</li>
+    <li>The accountable owner may additionally <strong>demote</strong> the action a rung or raise its threshold; severe incidents on high-stakes actions should be expected to.</li>
+    <li>Infrastructure failures in a different domain (a scheduler outage, a network fault) are logged and fixed but do not reset the streaks of actions that didn&rsquo;t misexecute — resets follow the failure&rsquo;s actual domain, so the ledger stays a measure of the action, not of the weather.</li>
+  </ul>
+
+  <h2>Ceilings: what may never advance</h2>
+  <p>Some actions have a ceiling below R3 <strong>by design</strong>, and no amount of clean evidence lifts it:</p>
+  <ul>
+    <li><strong>Destructive and irreversible actions</strong> — hard deletion of data, signing, filing, anything with no rollback path — remain gated (R1) permanently, or R2 at most under strong standing controls.</li>
+    <li><strong>Shell / arbitrary-code access</strong> for an operational agent remains denied where it would let the agent bypass every other control. A gate an agent can route around is not a gate.</li>
+    <li><strong>Regulated advice</strong> (medical, legal, financial) never exceeds draft-for-professional-review. The AI does not freelance in licensed domains.</li>
+    <li><strong>Messages sent in another party&rsquo;s legal name</strong> (e.g., to a business&rsquo;s own customers, where that business is the sender of record under law) cap at R2 — automatic but supervised and reversible — absent explicit, case-by-case exception with counsel.</li>
+    <li><strong>Movement of money</strong> caps at R2 with hard per-transaction and per-day limits as standing guardrails; never unattended without them.</li>
+  </ul>
+  <p>A capped ceiling is not a failure of the standard. It is the standard working: full autonomy is the default <em>trajectory</em>, not a universal endpoint, and the actions listed here are precisely the ones where a human&rsquo;s judgment or the law&rsquo;s structure is the control that works.</p>
+
+  <h2>What this asks of the operator</h2>
+  <p>Running this standard honestly requires machinery, not policy documents: recurring evaluation against reality, per-action guardrails, anomaly detection, reversibility windows, append-only audit of every action and every promotion, and a kill switch in the owner&rsquo;s hand. An operator who cannot show you the streak ledger, the evaluation record, and the audit trail is not running this standard — they are describing it.</p>
+  <p>That is the honest cost of the standard, and it is also the point: safe full autonomy is <em>expensive to fake and cheap to verify.</em> Ask for the ledger.</p>
+
+  <h2>Publication stance</h2>
+  <p>yourco authored this standard and <strong>runs it on yourco first.</strong> Our own internal AI operation is graded by these exact rules — our own send/delete/shell actions started gated, our own streak ledger opened at zero, our own promotions wait for the thresholds above. We do not ask any client to accept unattended autonomy that we have not first earned, by this standard&rsquo;s own arithmetic, on ourselves.</p>
+  <p>Version 0 is published at yourco&rsquo;s launch as a citable public document. We expect it to be argued with, and we will revise it in public — version-numbered, with changes logged. Numbers in this document are yourco&rsquo;s real operating thresholds, not aspirations; where we have no evidence yet, this document says nothing rather than something impressive.</p>
+
+  <div class="callout">
+    <span class="lbl">The standard in one sentence</span>
+    Every action starts gated, earns each rung on a streak of real, evaluated, incident-free use, falls back on any incident, and some actions never advance at all — with the evidence auditable and the kill switch in the owner&rsquo;s hand the whole way.
+  </div>
+
+  <div class="foot">yourco · the Autonomy Standard v0 · this document governs yourco&rsquo;s own operation and every system yourco operates for a client. Feedback and challenges are welcome — a standard that can&rsquo;t survive scrutiny isn&rsquo;t one.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Mortgage Calculator — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:76px 0 64px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(32px,4.2vw,50px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:52ch}
+
+  .calc{display:grid;grid-template-columns:.95fr 1.05fr;gap:56px;padding:72px 0 96px;align-items:start}
+  @media(max-width:900px){.calc{grid-template-columns:1fr}}
+
+  .panel h2{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400}
+  .panel h2 em{font-style:italic;color:var(--red)}
+  .fields{margin-top:26px;display:grid;gap:18px}
+  .field label{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .field input{width:100%;font-family:"Avenir Next",Avenir,sans-serif;font-size:15px;padding:13px 15px;background:#fff;border:1px solid var(--line);border-radius:4px;color:var(--ink)}
+  .field input:focus{outline:2px solid var(--red);outline-offset:-1px;border-color:transparent}
+  .duo2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .hint{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--ink-soft);margin-top:5px}
+
+  .result{background:var(--ink);color:var(--on-dark);padding:44px}
+  .result .kicker{color:var(--red)}
+  .result .big{font-family:Didot,Georgia,serif;font-size:clamp(48px,6vw,68px);line-height:1;margin-top:14px}
+  .result .big span{font-size:20px;font-style:italic;color:var(--on-dark-soft)}
+  .result .sub{font-family:Didot,Georgia,serif;font-size:13.5px;font-style:italic;color:var(--on-dark-soft);margin-top:10px}
+  .rows{margin-top:30px;border-top:1px solid var(--line-dark)}
+  .rows.locked{position:relative}
+  .rows.locked .r{filter:blur(5px);pointer-events:none}
+  .r{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid var(--line-dark);font-size:14px}
+  .r b{font-family:Didot,Georgia,serif;font-weight:400}
+  .r.total{font-family:Didot,Georgia,serif;font-size:17px}
+  .r.total b{color:var(--red)}
+  .lockover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
+  .lockover div{font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--on-dark);max-width:30ch}
+
+  .gate{margin-top:30px;border-top:1px solid var(--line-dark);padding-top:26px}
+  .gate .gt{font-family:Didot,Georgia,serif;font-size:19px}
+  .gate .gt em{font-style:italic;color:var(--red)}
+  .gate p{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--on-dark-soft);margin-top:8px;max-width:44ch}
+  .gate form{display:grid;gap:12px;margin-top:18px}
+  .gate input{font-family:"Avenir Next",Avenir,sans-serif;font-size:14px;padding:13px 15px;background:rgba(247,245,240,.06);border:1px solid var(--line-dark);color:var(--on-dark);border-radius:4px}
+  .gate input::placeholder{color:var(--on-dark-soft)}
+  .gate button{font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:var(--red);color:#fff;border:0;padding:14px 28px;border-radius:9999px;cursor:pointer;justify-self:start}
+  .gate button:hover{background:#c70004}
+  .gate .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.06em;color:rgba(247,245,240,.45);margin-top:4px}
+  .gate.done .gt,.gate.done p,.gate.done form{display:none}
+  .gate .thanks{display:none;font-family:Didot,Georgia,serif;font-size:16px;font-style:italic;color:var(--on-dark)}
+  .gate.done .thanks{display:block}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:74ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · estimates only, not a loan offer</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../services.html">Services</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Tools · Mortgage Calculator</div>
+    <h1>Know your number <em>before you fall in love.</em></h1>
+    <div class="lede">Estimate your true monthly payment — principal, interest, taxes, insurance, and HOA — on any home in the Carolinas.</div>
+  </div>
+</header>
+
+<div class="wrap calc">
+
+  <div class="panel">
+    <h2>The <em>numbers.</em></h2>
+    <div class="fields">
+      <div class="field">
+        <label for="price">Home price</label>
+        <input id="price" type="text" inputmode="numeric" value="435,000"/>
+        <div class="hint">Tip: try one of our active listings.</div>
+      </div>
+      <div class="duo2">
+        <div class="field">
+          <label for="down">Down payment</label>
+          <input id="down" type="text" inputmode="numeric" value="87,000"/>
+        </div>
+        <div class="field">
+          <label for="downPct">Down %</label>
+          <input id="downPct" type="text" inputmode="decimal" value="20"/>
+        </div>
+      </div>
+      <div class="duo2">
+        <div class="field">
+          <label for="rate">Interest rate (%)</label>
+          <input id="rate" type="text" inputmode="decimal" value="6.25"/>
+        </div>
+        <div class="field">
+          <label for="years">Loan term (years)</label>
+          <input id="years" type="text" inputmode="numeric" value="30"/>
+        </div>
+      </div>
+      <div class="duo2">
+        <div class="field">
+          <label for="tax">Property tax / yr</label>
+          <input id="tax" type="text" inputmode="numeric" value="3,900"/>
+          <div class="hint">≈0.9% of price in Mecklenburg Co.</div>
+        </div>
+        <div class="field">
+          <label for="ins">Insurance / yr</label>
+          <input id="ins" type="text" inputmode="numeric" value="1,800"/>
+        </div>
+      </div>
+      <div class="field">
+        <label for="hoa">HOA / month (if any)</label>
+        <input id="hoa" type="text" inputmode="numeric" value="0"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="kicker">Your Estimated Payment</div>
+    <div class="big" id="topline">$0<span> / mo</span></div>
+    <div class="sub" id="subline"></div>
+
+    <div class="rows locked" id="rows">
+      <div class="r"><span>Principal &amp; interest</span><b id="rPI">—</b></div>
+      <div class="r"><span>Property taxes</span><b id="rTax">—</b></div>
+      <div class="r"><span>Homeowner's insurance</span><b id="rIns">—</b></div>
+      <div class="r"><span>HOA</span><b id="rHoa">—</b></div>
+      <div class="r total"><span>Total monthly payment</span><b id="rTotal">—</b></div>
+      <div class="r"><span>Loan amount</span><b id="rLoan">—</b></div>
+      <div class="r"><span>Total interest over the loan</span><b id="rInt">—</b></div>
+      <div class="r"><span>Payoff date</span><b id="rPayoff">—</b></div>
+      <div class="lockover" id="lockover"><div>Your full breakdown — taxes, insurance, total interest, payoff date — is one step away.</div></div>
+    </div>
+
+    <div class="gate" id="gate">
+      <div class="gt">Unlock your full <em>breakdown.</em></div>
+      <p>We'll also send you our rate-shopping guide and connect you with the local lenders our buyers trust.</p>
+      <form id="leadForm">
+        <input id="leadName" placeholder="Name" required/>
+        <input id="leadContact" placeholder="Email or phone" required/>
+        <button type="submit">Show my full breakdown</button>
+        <div class="fine">Demo only — in production this reaches Kimi instantly, with your numbers attached. No spam, ever.</div>
+      </form>
+      <div class="thanks">Thank you — your full breakdown is unlocked below, and Kimi will follow up with the rate-shopping guide. <b>(Demo — no message actually sent.)</b></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine">Estimates for planning only — not a loan offer, rate quote, or lending advice. Your actual payment, rate, taxes, and insurance will vary. Sample Realty Home &amp; Land, LLC is a real estate brokerage, not a lender.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const num = el => parseFloat(String(el.value).replace(/[^0-9.]/g, "")) || 0;
+  const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
+
+  function syncDown(fromPct){
+    const p = num($("price"));
+    if (fromPct) $("down").value = Math.round(p * num($("downPct")) / 100).toLocaleString("en-US");
+    else if (p) $("downPct").value = (num($("down")) / p * 100).toFixed(1).replace(/\.0$/, "");
+  }
+
+  function calc(){
+    const price = num($("price")), down = num($("down"));
+    const loan = Math.max(0, price - down);
+    const r = num($("rate")) / 100 / 12, n = num($("years")) * 12;
+    const pi = (r > 0 && n > 0) ? loan * r / (1 - Math.pow(1 + r, -n)) : (n ? loan / n : 0);
+    const tax = num($("tax")) / 12, ins = num($("ins")) / 12, hoa = num($("hoa"));
+    const total = pi + tax + ins + hoa;
+    $("topline").innerHTML = fmt(total) + "<span> / mo</span>";
+    $("subline").textContent = "on " + fmt(price) + " with " + fmt(down) + " down · " +
+      $("rate").value + "% · " + $("years").value + "-year fixed";
+    $("rPI").textContent = fmt(pi);
+    $("rTax").textContent = fmt(tax);
+    $("rIns").textContent = fmt(ins);
+    $("rHoa").textContent = hoa ? fmt(hoa) : "$0";
+    $("rTotal").textContent = fmt(total);
+    $("rLoan").textContent = fmt(loan);
+    $("rInt").textContent = fmt(Math.max(0, pi * n - loan));
+    const d = new Date(); d.setMonth(d.getMonth() + n);
+    $("rPayoff").textContent = d.toLocaleDateString("en-US", {month:"long", year:"numeric"});
+  }
+
+  ["price","down","downPct","rate","years","tax","ins","hoa"].forEach(id =>
+    $(id).addEventListener("input", () => {
+      if (id === "downPct") syncDown(true);
+      if (id === "down") syncDown(false);
+      if (id === "price") syncDown(true);
+      calc();
+    }));
+
+  $("leadForm").addEventListener("submit", e => {
+    e.preventDefault();
+    /* Demo capture — production posts to the CRM/intake endpoint with the
+       visitor's numbers attached as lead context. */
+    try {
+      const leads = JSON.parse(localStorage.getItem("pr_mortgage_leads") || "[]");
+      leads.push({ name: $("leadName").value, contact: $("leadContact").value,
+                   price: $("price").value, at: new Date().toISOString() });
+      localStorage.setItem("pr_mortgage_leads", JSON.stringify(leads));
+    } catch (err) {}
+    $("rows").classList.remove("locked");
+    $("lockover").remove();
+    $("gate").classList.add("done");
+  });
+
+  calc();
+})();
+</script>
+
+</body>
+</html>

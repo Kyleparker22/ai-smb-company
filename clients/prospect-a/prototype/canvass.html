@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Where to knock — Sample Product · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EAE1CD;--brass:#B8965A;--ink:#161B33;--muted:#6b6f83;--high:#3f7d5a;--line:rgba(22,27,51,.12)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.14}
+  .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .topbar{background:var(--indigo);color:var(--cream);padding:14px 0}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:20px}.mark .dot{color:var(--brass)}
+  .topbar .tag{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#b9bdd0}
+  .hero{background:var(--indigo);color:var(--cream);padding:30px 0}
+  .hero h1{font-size:clamp(24px,4vw,38px);color:var(--cream);margin:8px 0 6px}
+  .hero .sub{color:#c7cbe0;font-size:15px}
+  section{padding:30px 0;border-bottom:1px solid var(--line)}
+  .sec{font-size:23px}
+  .lay{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;margin-top:16px}
+  @media(max-width:800px){.lay{grid-template-columns:1fr}}
+  .mapcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+  .mapcard svg{width:100%;height:auto;display:block}
+  .stop{fill:#c3c8d6;stroke:#fff;stroke-width:1.4}
+  .stoplbl{font-family:Inter;font-size:10px;fill:#7a7f95}
+  .top-m{fill:var(--brass);stroke:#fff;stroke-width:2}
+  .top-t{font-family:Inter;font-size:11px;font-weight:700;fill:#20160a;text-anchor:middle}
+  .routeln{stroke:var(--brass);stroke-width:1.4;stroke-dasharray:3 3;fill:none;opacity:.5}
+  .legend{font-size:12px;color:#3a3f55;margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
+  .legend i{width:12px;height:12px;border-radius:50%;display:inline-block;vertical-align:-1px;margin-right:5px}
+  .best h3{font-size:16px;margin-bottom:2px}
+  .bt{background:#fff;border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:12px;padding:13px 15px;margin-bottom:10px}
+  .bt .rank{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--brass);color:#20160a;font-weight:700;font-size:12px;align-items:center;justify-content:center;margin-right:8px}
+  .bt .addr{font-weight:600}
+  .bt .why{font-size:13px;color:#3a3f55;margin-top:5px}
+  .bt .why b{color:var(--indigo)}
+  .route{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 16px;margin-top:14px}
+  .rr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .rr:last-child{border-bottom:none} .rr .i{color:var(--muted);width:22px;font-variant-numeric:tabular-nums}
+  .rr .p{font-size:12px;color:var(--muted)}
+  .script{background:var(--indigo);color:#e9ebf4;border-radius:14px;padding:18px 20px;margin-top:16px;font-size:15px;line-height:1.6}
+  .script .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-bottom:8px}
+  footer{background:var(--indigo);color:#aeb3c9;padding:24px 0;font-size:12.5px}footer b{color:var(--cream)}
+  a.back{color:var(--brass);text-decoration:none;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+  <div class="topbar"><div class="wrap"><div class="mark">yourco<span class="dot">.</span></div><div class="tag">Sample Product · where to knock</div></div></div>
+
+  <div class="hero"><div class="wrap">
+    <a class="back" href="index.html">← control tower</a>
+    <div class="eyebrow" style="margin-top:12px">canvass plan</div>
+    <h1 id="title">—</h1>
+    <div class="sub" id="sub"></div>
+  </div></div>
+
+  <section><div class="wrap">
+    <div class="eyebrow">the plan</div>
+    <h2 class="sec">Knock the money doors first.</h2>
+    <div class="lay">
+      <div>
+        <div class="mapcard"><svg id="map" viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="legend"><span><i style="background:var(--brass)"></i>top targets — knock first</span><span><i style="background:#c3c8d6"></i>other doors on the route</span></div>
+        </div>
+        <div class="route" id="route"></div>
+      </div>
+      <div class="best">
+        <h3>★ Start here</h3>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Highest-ROI doors in the swath — older roofs, higher value, owner-occupied.</div>
+        <div id="top"></div>
+        <div class="script"><div class="k">door-knock script — NOAA proof in hand</div><span id="script"></span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <footer><div class="wrap">
+    <b>Demo swath + sample parcel data.</b> The impact area and street addresses come from a HailTrace/MESH swath + a property-records feed once connected; the routing and "knock-first" scoring (roof age × home value × owner-occupied) are the real logic. Every storm is real NOAA data.
+  </div></footer>
+
+<script src="canvass_data.js"></script>
+<script>
+  function draw(){
+  const C = window.CANVASS;
+  if(!C || !C.route){ return setTimeout(draw, 60); }
+  const esc = s => (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  document.getElementById('title').textContent = `${C.county} County — ${C.hazard||''}`;
+  document.getElementById('sub').textContent = `${C.date||''} · ${(C.route||[]).length} doors in the swath · ${(C.top_targets||[]).length} to hit first`;
+  document.getElementById('script').textContent = C.script||'';
+
+  const stops = C.route||[], topIds = new Set(C.top_targets||[]);
+  // project stops into the SVG box
+  const W=500,H=380,pad=34;
+  const lats=stops.map(s=>s.lat), lons=stops.map(s=>s.lon);
+  const la0=Math.min(...lats),la1=Math.max(...lats),lo0=Math.min(...lons),lo1=Math.max(...lons);
+  const px=lo=>pad+(lo1===lo0?0.5:(lo-lo0)/(lo1-lo0))*(W-2*pad);
+  const py=la=>pad+(la1===la0?0.5:(la1-la)/(la1-la0))*(H-2*pad);
+
+  // route path (order = nearest-neighbor)
+  let svg = '<path class="routeln" d="M'+stops.map(s=>px(s.lon).toFixed(1)+' '+py(s.lat).toFixed(1)).join(' L')+'"/>';
+  // rank number for top targets
+  const rankOf = {}; (C.top_targets||[]).forEach((id,i)=>rankOf[id]=i+1);
+  stops.forEach(s=>{
+    const x=px(s.lon),y=py(s.lat),isTop=topIds.has(s.id);
+    if(isTop){
+      svg+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13" class="top-m"><title>${esc(s.address)} — priority ${s.priority}</title></circle>`+
+           `<text class="top-t" x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}">${rankOf[s.id]}</text>`;
+    } else {
+      svg+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5" class="stop"><title>${esc(s.address)} — priority ${s.priority}</title></circle>`;
+    }
+  });
+  document.getElementById('map').innerHTML = svg;
+
+  // top targets list (ordered by priority)
+  const top = stops.filter(s=>topIds.has(s.id)).sort((a,b)=>b.priority-a.priority);
+  document.getElementById('top').innerHTML = top.map((s,i)=>{const p=s.property||{};return `
+    <div class="bt"><div><span class="rank">${i+1}</span><span class="addr">${esc(s.address)}</span></div>
+      <div class="why"><b>${p.roof_age}-yr roof</b> · <b>$${Math.round((p.home_value||0)/1000)}k</b> home · ${p.owner_occupied?'owner-occupied':'rental'} · priority ${s.priority}</div></div>`;}).join('');
+
+  // route list
+  document.getElementById('route').innerHTML = '<div class="rr" style="font-weight:600;border-bottom:1px solid var(--line)"><span>Optimized route — least driving</span><span class="p">'+stops.length+' stops</span></div>'+
+    stops.map((s,i)=>`<div class="rr"><span><span class="i">${i+1}.</span> ${esc(s.address)}${topIds.has(s.id)?' <span style="color:var(--brass)">★</span>':''}</span><span class="p">roof ${(s.property||{}).roof_age}yr · $${Math.round(((s.property||{}).home_value||0)/1000)}k</span></div>`).join('');
+  }
+  draw();
+</script>
+</body>
+</html>

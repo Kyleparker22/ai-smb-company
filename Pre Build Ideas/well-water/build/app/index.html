@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Well OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-systems"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never declares water
+safe — a recorded lab report speaks (id, date, result) or nothing does; never soothes a
+contamination worry; never claims "protected" past a consumable clock; and never prices a well
+without its recorded log. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'systems',label:'Systems'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,systems,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.rigs} rigs · ${d.config.service_contracts} service contracts`;
+  document.getElementById('v-board').innerHTML =
+    panel('The clocks, counted', '',
+      `<div class="grid">
+        ${stat('Due service book', fmt.money(b.due.value), `${b.due.count} component(s) at or past clock · ${b.due.unknown_clocks} unmeasured clock(s)`, b.due.count?'alert':'')}
+        ${stat('Overdue — never "protected"', fmt.num(b.due.overdue), fmt.money(b.due.overdue_value)+' on the books', b.due.overdue?'bad':'')}
+        ${stat('Permit date alerts', fmt.num(b.permit_alerts), 'DATE ALERTS, not legal advice', b.permit_alerts?'warn':'')}
+        ${stat('Lab reports pending', fmt.num(b.labs_pending), 'no verdict until the report lands')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the contamination worry reads first', b.messages_open?'bad':'')}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', fmt.money(b.recovered.renewal_value),
+               `${b.recovered.services_completed} service(s) · ${b.recovered.lab_reports_landed} lab report(s) · ${b.recovered.reminders_sent} reminder(s) sent`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"My water smells wrong" gets a procedure, not a reassurance:
+      recorded verbatim, a sampling visit to the top of the route, a human same-day — and the
+      only potability answer that exists is a <b>lab report, cited</b>. A dry house is a P1.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='contamination'?'bad':m.label==='no_water'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function systems(){
+  const [d, j] = await Promise.all([API.get('/api/systems'), API.get('/api/jobs')]);
+  document.getElementById('v-systems').innerHTML =
+    `<div class="banner warn">Try it: ask if the water is safe with a recorded report — the
+      report is cited verbatim; ask without one — refused, "we don't know yet, the lab does";
+      claim the 95-days-overdue UV lamp is protected — refused; quote the well with no
+      recorded log — refused, "we measure, then we price".</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="safe('we_demo_logged')">Water safe? (report on file)</button>
+      <button class="act" onclick="safe('we_demo_nolog')">Water safe? (no report)</button>
+      <button class="act" onclick="protect('sy_demo_overdue')">Claim "protected": UV 95d past clock</button>
+      <button class="act" onclick="quote('we_demo_nolog')">Quote: no well log</button>
+      <button class="act" onclick="quote('we_demo_logged')">Quote: recorded log</button>
+     </div><div id="sout"></div>` +
+    panel('The service book — due clocks', esc(d.note), table(
+      [{label:'Customer'},{label:'Component'},{label:'Days past clock',num:true},{label:'Ticket',num:true},{label:'Status'}],
+      d.rows.slice(0,30), r=>`<td>${esc(r.customer||'')}</td><td>${esc(r.component)}</td>
+        <td class="num">${r.days_over}</td><td class="num">${fmt.money(r.ticket)}</td>
+        <td>${pill(r.status, r.status==='OVERDUE'?'bad':'warn')}</td>`), true) +
+    panel('The job pipeline — county clocks as DATE ALERTS', esc(j.rules_source), table(
+      [{label:'Customer'},{label:'County'},{label:'Stage'},{label:'Clock'}],
+      j.rows, r=>`<td>${esc(r.customer||'')}</td><td>${esc(r.county)}</td><td>${pill(r.stage,'brand')}</td>
+        <td>${r.clock?`${r.clock.days_left}d left — <span class="why">${esc(r.clock.label)}</span>`:'—'}</td>`), true);
+}
+async function safe(id){
+  const r = await API.post(`/api/wells/${id}/safe`);
+  document.getElementById('sout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('The lab\'s answer, cited', '', `<div class="strong">${esc(r.answer)}</div>`);
+}
+async function protect(id){
+  const r = await API.post(`/api/systems/${id}/protected`);
+  document.getElementById('sout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Clocks current', '', `<div class="strong">${esc(r.why)}</div>`);
+}
+async function quote(id){
+  const r = await API.post(`/api/wells/${id}/quote`);
+  document.getElementById('sout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Quote drafted at R1', '', `<div class="strong">${esc(r.basis)}</div>
+        <div class="why">queued for a human — money never sends itself</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['due_service_value','Due service book','counted'],['renewal_rate','Renewal rate','your number (0–1)'],
+    ['overdue_service_value','Overdue on the books','counted'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['fine_exposure','Permit fine exposure','yours or blank — never our estimate']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

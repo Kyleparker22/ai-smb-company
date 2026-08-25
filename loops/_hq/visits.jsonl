@@ -1,0 +1,199 @@
+{"seq": 1, "ts": "2026-08-13T21:12:43", "kind": "visit", "door": "today", "panels": [], "on": "2026-08-13"}
+{"seq": 2, "ts": "2026-08-13T21:12:45", "kind": "visit", "door": "evidence", "panels": [], "on": "2026-08-13"}
+{"seq": 3, "ts": "2026-08-13T21:16:38", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 4, "ts": "2026-08-13T21:16:51", "kind": "visit", "door": "wbr", "panels": ["wbr", "prosecution"], "on": "2026-08-13"}
+{"seq": 5, "ts": "2026-08-13T21:17:00", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-13"}
+{"seq": 6, "ts": "2026-08-13T21:17:34", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 7, "ts": "2026-08-13T21:34:04", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 8, "ts": "2026-08-13T21:34:13", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 9, "ts": "2026-08-13T22:59:32", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 10, "ts": "2026-08-13T22:59:50", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 11, "ts": "2026-08-13T23:00:34", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-13"}
+{"seq": 12, "ts": "2026-08-13T23:01:53", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-13"}
+{"seq": 13, "ts": "2026-08-13T23:01:55", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-13"}
+{"seq": 14, "ts": "2026-08-13T23:04:16", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-13"}
+{"seq": 15, "ts": "2026-08-13T23:04:49", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-13"}
+{"seq": 16, "ts": "2026-08-13T23:05:27", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 17, "ts": "2026-08-13T23:05:30", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-13"}
+{"seq": 18, "ts": "2026-08-13T23:05:32", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-13"}
+{"seq": 19, "ts": "2026-08-13T23:05:33", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 20, "ts": "2026-08-13T23:05:35", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-13"}
+{"seq": 21, "ts": "2026-08-13T23:05:36", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-13"}
+{"seq": 22, "ts": "2026-08-13T23:05:38", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-13"}
+{"seq": 23, "ts": "2026-08-13T23:06:20", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-13"}
+{"seq": 24, "ts": "2026-08-13T23:06:34", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 25, "ts": "2026-08-13T23:06:36", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-13"}
+{"seq": 26, "ts": "2026-08-13T23:06:37", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-13"}
+{"seq": 27, "ts": "2026-08-13T23:06:39", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-13"}
+{"seq": 28, "ts": "2026-08-13T23:06:41", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 29, "ts": "2026-08-13T23:06:44", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-13"}
+{"seq": 30, "ts": "2026-08-13T23:06:46", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-13"}
+{"seq": 31, "ts": "2026-08-13T23:08:48", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 32, "ts": "2026-08-13T23:09:05", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-13"}
+{"seq": 33, "ts": "2026-08-13T23:09:07", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-13"}
+{"seq": 34, "ts": "2026-08-13T23:09:08", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-13"}
+{"seq": 35, "ts": "2026-08-13T23:09:10", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 36, "ts": "2026-08-13T23:09:12", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-13"}
+{"seq": 37, "ts": "2026-08-13T23:09:14", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-13"}
+{"seq": 38, "ts": "2026-08-13T23:09:15", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-13"}
+{"seq": 39, "ts": "2026-08-13T23:09:58", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 40, "ts": "2026-08-13T23:10:17", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-13"}
+{"seq": 41, "ts": "2026-08-13T23:10:18", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-13"}
+{"seq": 42, "ts": "2026-08-13T23:10:20", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-13"}
+{"seq": 43, "ts": "2026-08-13T23:10:22", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 44, "ts": "2026-08-13T23:10:24", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-13"}
+{"seq": 45, "ts": "2026-08-13T23:10:25", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-13"}
+{"seq": 46, "ts": "2026-08-13T23:10:27", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-13"}
+{"seq": 47, "ts": "2026-08-13T23:22:25", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-13"}
+{"seq": 48, "ts": "2026-08-13T23:22:52", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-13"}
+{"seq": 49, "ts": "2026-08-14T00:12:00", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-14"}
+{"seq": 50, "ts": "2026-08-14T00:20:17", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-14"}
+{"seq": 51, "ts": "2026-08-14T00:24:03", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-14"}
+{"seq": 52, "ts": "2026-08-14T00:24:04", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-14"}
+{"seq": 53, "ts": "2026-08-14T00:24:11", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-14"}
+{"seq": 54, "ts": "2026-08-14T00:24:13", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-14"}
+{"seq": 55, "ts": "2026-08-14T00:24:17", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-14"}
+{"seq": 56, "ts": "2026-08-14T00:24:22", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-14"}
+{"seq": 57, "ts": "2026-08-14T00:24:42", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-14"}
+{"seq": 58, "ts": "2026-08-17T18:07:27", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 59, "ts": "2026-08-17T18:20:30", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 60, "ts": "2026-08-17T18:21:27", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 61, "ts": "2026-08-17T18:21:42", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 62, "ts": "2026-08-17T18:21:46", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-17"}
+{"seq": 63, "ts": "2026-08-17T18:21:54", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 64, "ts": "2026-08-17T18:21:58", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-17"}
+{"seq": 65, "ts": "2026-08-17T18:22:07", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 66, "ts": "2026-08-17T18:22:11", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-17"}
+{"seq": 67, "ts": "2026-08-17T18:23:38", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 68, "ts": "2026-08-17T18:23:58", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 69, "ts": "2026-08-17T18:24:13", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 70, "ts": "2026-08-17T18:24:17", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-17"}
+{"seq": 71, "ts": "2026-08-17T18:24:25", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 72, "ts": "2026-08-17T18:24:29", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-17"}
+{"seq": 73, "ts": "2026-08-17T18:24:38", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 74, "ts": "2026-08-17T18:24:42", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-17"}
+{"seq": 75, "ts": "2026-08-17T18:26:03", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 76, "ts": "2026-08-17T18:26:21", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 77, "ts": "2026-08-17T18:26:25", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-17"}
+{"seq": 78, "ts": "2026-08-17T18:26:33", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 79, "ts": "2026-08-17T18:26:37", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-17"}
+{"seq": 80, "ts": "2026-08-17T18:26:46", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 81, "ts": "2026-08-17T18:26:50", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-17"}
+{"seq": 82, "ts": "2026-08-17T19:14:05", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-17"}
+{"seq": 83, "ts": "2026-08-17T19:14:11", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-17"}
+{"seq": 84, "ts": "2026-08-18T14:49:10", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 85, "ts": "2026-08-18T14:49:39", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 86, "ts": "2026-08-18T14:49:42", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 87, "ts": "2026-08-18T14:50:40", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 88, "ts": "2026-08-18T14:50:43", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 89, "ts": "2026-08-18T14:51:40", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 90, "ts": "2026-08-18T14:51:43", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 91, "ts": "2026-08-18T14:52:51", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 92, "ts": "2026-08-18T14:52:55", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 93, "ts": "2026-08-18T14:53:34", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 94, "ts": "2026-08-18T14:54:42", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-18"}
+{"seq": 95, "ts": "2026-08-18T14:56:32", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 96, "ts": "2026-08-18T14:58:43", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 97, "ts": "2026-08-18T14:58:48", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 98, "ts": "2026-08-18T14:59:00", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 99, "ts": "2026-08-18T14:59:01", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-18"}
+{"seq": 100, "ts": "2026-08-18T15:00:47", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 101, "ts": "2026-08-18T15:01:05", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 102, "ts": "2026-08-18T15:01:22", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 103, "ts": "2026-08-18T15:01:50", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-18"}
+{"seq": 104, "ts": "2026-08-18T15:02:31", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 105, "ts": "2026-08-18T15:03:35", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 106, "ts": "2026-08-18T15:03:49", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-18"}
+{"seq": 107, "ts": "2026-08-18T17:15:52", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 108, "ts": "2026-08-18T17:16:04", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-18"}
+{"seq": 109, "ts": "2026-08-18T17:16:20", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-18"}
+{"seq": 110, "ts": "2026-08-18T17:16:39", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-18"}
+{"seq": 111, "ts": "2026-08-18T17:17:16", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-18"}
+{"seq": 112, "ts": "2026-08-18T20:07:15", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-18"}
+{"seq": 113, "ts": "2026-08-18T20:07:43", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-18"}
+{"seq": 114, "ts": "2026-08-21T16:45:10", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-21"}
+{"seq": 115, "ts": "2026-08-21T16:46:28", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-21"}
+{"seq": 116, "ts": "2026-08-21T16:46:44", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-21"}
+{"seq": 117, "ts": "2026-08-21T16:54:12", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-21"}
+{"seq": 118, "ts": "2026-08-21T16:54:49", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-21"}
+{"seq": 119, "ts": "2026-08-21T16:54:50", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-21"}
+{"seq": 120, "ts": "2026-08-21T16:54:55", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-21"}
+{"seq": 121, "ts": "2026-08-21T16:54:57", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-21"}
+{"seq": 122, "ts": "2026-08-21T16:55:05", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-21"}
+{"seq": 123, "ts": "2026-08-21T16:55:07", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-21"}
+{"seq": 124, "ts": "2026-08-24T12:58:33", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 125, "ts": "2026-08-24T12:58:47", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-24"}
+{"seq": 126, "ts": "2026-08-24T12:58:49", "kind": "visit", "door": "skills", "panels": ["skills"], "on": "2026-08-24"}
+{"seq": 127, "ts": "2026-08-24T13:49:57", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 128, "ts": "2026-08-24T13:51:48", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 129, "ts": "2026-08-24T13:54:01", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 130, "ts": "2026-08-24T14:28:41", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-24"}
+{"seq": 131, "ts": "2026-08-24T20:50:06", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 132, "ts": "2026-08-24T20:51:19", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 133, "ts": "2026-08-24T20:52:41", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 134, "ts": "2026-08-24T20:52:52", "kind": "visit", "door": "search", "panels": ["search"], "on": "2026-08-24"}
+{"seq": 135, "ts": "2026-08-24T23:13:24", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 136, "ts": "2026-08-24T23:13:35", "kind": "visit", "door": "search", "panels": ["search"], "on": "2026-08-24"}
+{"seq": 137, "ts": "2026-08-24T23:15:44", "kind": "visit", "door": "search", "panels": ["search"], "on": "2026-08-24"}
+{"seq": 138, "ts": "2026-08-24T23:16:41", "kind": "visit", "door": "skills", "panels": ["skills"], "on": "2026-08-24"}
+{"seq": 139, "ts": "2026-08-24T23:18:28", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 140, "ts": "2026-08-24T23:18:29", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-24"}
+{"seq": 141, "ts": "2026-08-24T23:18:30", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-24"}
+{"seq": 142, "ts": "2026-08-24T23:18:31", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-24"}
+{"seq": 143, "ts": "2026-08-24T23:18:32", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-24"}
+{"seq": 144, "ts": "2026-08-24T23:18:33", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-24"}
+{"seq": 145, "ts": "2026-08-24T23:18:34", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-24"}
+{"seq": 146, "ts": "2026-08-24T23:18:35", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-24"}
+{"seq": 147, "ts": "2026-08-24T23:18:37", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-24"}
+{"seq": 148, "ts": "2026-08-24T23:18:41", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-24"}
+{"seq": 149, "ts": "2026-08-24T23:23:06", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-24"}
+{"seq": 150, "ts": "2026-08-24T23:23:21", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 151, "ts": "2026-08-24T23:23:22", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-24"}
+{"seq": 152, "ts": "2026-08-24T23:23:22", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-24"}
+{"seq": 153, "ts": "2026-08-24T23:23:23", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-24"}
+{"seq": 154, "ts": "2026-08-24T23:23:23", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-24"}
+{"seq": 155, "ts": "2026-08-24T23:23:24", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-24"}
+{"seq": 156, "ts": "2026-08-24T23:23:25", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-24"}
+{"seq": 157, "ts": "2026-08-24T23:23:26", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-24"}
+{"seq": 158, "ts": "2026-08-24T23:23:26", "kind": "visit", "door": "skills", "panels": ["skills"], "on": "2026-08-24"}
+{"seq": 159, "ts": "2026-08-24T23:23:27", "kind": "visit", "door": "search", "panels": ["search"], "on": "2026-08-24"}
+{"seq": 160, "ts": "2026-08-24T23:23:27", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-24"}
+{"seq": 161, "ts": "2026-08-24T23:23:51", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 162, "ts": "2026-08-24T23:24:00", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-24"}
+{"seq": 163, "ts": "2026-08-24T23:25:03", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 164, "ts": "2026-08-24T23:25:20", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-24"}
+{"seq": 165, "ts": "2026-08-24T23:25:20", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-24"}
+{"seq": 166, "ts": "2026-08-24T23:25:21", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-24"}
+{"seq": 167, "ts": "2026-08-24T23:25:22", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-24"}
+{"seq": 168, "ts": "2026-08-24T23:25:22", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-24"}
+{"seq": 169, "ts": "2026-08-24T23:25:23", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-24"}
+{"seq": 170, "ts": "2026-08-24T23:25:23", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-24"}
+{"seq": 171, "ts": "2026-08-24T23:25:24", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-24"}
+{"seq": 172, "ts": "2026-08-24T23:25:24", "kind": "visit", "door": "skills", "panels": ["skills"], "on": "2026-08-24"}
+{"seq": 173, "ts": "2026-08-24T23:25:25", "kind": "visit", "door": "search", "panels": ["search"], "on": "2026-08-24"}
+{"seq": 174, "ts": "2026-08-24T23:25:25", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-24"}
+{"seq": 175, "ts": "2026-08-24T23:26:34", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-24"}
+{"seq": 176, "ts": "2026-08-24T23:26:50", "kind": "visit", "door": "board", "panels": ["board"], "on": "2026-08-24"}
+{"seq": 177, "ts": "2026-08-24T23:26:51", "kind": "visit", "door": "clients", "panels": ["clients"], "on": "2026-08-24"}
+{"seq": 178, "ts": "2026-08-24T23:26:52", "kind": "visit", "door": "partners", "panels": ["governance", "lockin", "advocate", "partnerwork"], "on": "2026-08-24"}
+{"seq": 179, "ts": "2026-08-24T23:26:52", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-24"}
+{"seq": 180, "ts": "2026-08-24T23:26:53", "kind": "visit", "door": "model", "panels": ["model"], "on": "2026-08-24"}
+{"seq": 181, "ts": "2026-08-24T23:26:53", "kind": "visit", "door": "system", "panels": ["loops", "trust", "compliance", "reports"], "on": "2026-08-24"}
+{"seq": 182, "ts": "2026-08-24T23:26:54", "kind": "visit", "door": "wbr", "panels": ["whatchanged", "wbr", "prosecution", "panelaudit"], "on": "2026-08-24"}
+{"seq": 183, "ts": "2026-08-24T23:26:54", "kind": "visit", "door": "evidence", "panels": ["trustledger", "tripwires", "timemachine", "twin", "vacancies"], "on": "2026-08-24"}
+{"seq": 184, "ts": "2026-08-24T23:26:55", "kind": "visit", "door": "skills", "panels": ["skills"], "on": "2026-08-24"}
+{"seq": 185, "ts": "2026-08-24T23:26:55", "kind": "visit", "door": "search", "panels": ["search"], "on": "2026-08-24"}
+{"seq": 186, "ts": "2026-08-24T23:26:56", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-24"}
+{"seq": 187, "ts": "2026-08-25T08:53:13", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-25"}
+{"seq": 188, "ts": "2026-08-25T08:53:15", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-25"}
+{"seq": 189, "ts": "2026-08-25T08:54:07", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-25"}
+{"seq": 190, "ts": "2026-08-25T08:57:38", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-25"}
+{"seq": 191, "ts": "2026-08-25T08:58:11", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-25"}
+{"seq": 192, "ts": "2026-08-25T09:14:03", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-25"}
+{"seq": 193, "ts": "2026-08-25T09:14:25", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-25"}
+{"seq": 194, "ts": "2026-08-25T09:14:40", "kind": "visit", "door": "commercial", "panels": ["pipeline", "finance", "delivery", "scale"], "on": "2026-08-25"}
+{"seq": 195, "ts": "2026-08-25T09:31:29", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-25"}
+{"seq": 196, "ts": "2026-08-25T09:31:46", "kind": "visit", "door": "agents", "panels": ["agents"], "on": "2026-08-25"}
+{"seq": 197, "ts": "2026-08-25T09:48:44", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-25"}
+{"seq": 198, "ts": "2026-08-25T10:25:21", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-25"}
+{"seq": 199, "ts": "2026-08-25T11:58:30", "kind": "visit", "door": "today", "panels": ["overview", "goals"], "on": "2026-08-25"}

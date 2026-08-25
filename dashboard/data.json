@@ -1,0 +1,1500 @@
+{
+  "meta": {
+    "updated": "2026-01-01",
+    "owner": "",
+    "note": "TEMPLATE \u2014 placeholder dates. Run `python3 dashboard/refresh.py` and edit meta.updated when you fill in the hand-written half.",
+    "derivedAt": "2026-01-01T00:00:00"
+  },
+  "company": {
+    "stage": "",
+    "focus": [],
+    "metrics": {
+      "clients": 0,
+      "mrr": 0,
+      "cash": null,
+      "runwayMonths": null,
+      "loopsArmed": 0,
+      "loopsBuilt": 0
+    }
+  },
+  "flywheel": {
+    "state": "",
+    "note": "",
+    "stages": []
+  },
+  "agents": [],
+  "loops": [],
+  "compliance": [],
+  "scaleReadiness": {
+    "note": "",
+    "items": []
+  },
+  "quality": {
+    "note": ""
+  },
+  "trust": {
+    "posture": "",
+    "principle": "",
+    "autonomyRung": "",
+    "gate": {
+      "allow": [],
+      "deny": []
+    },
+    "eval": {
+      "framework": "",
+      "cadence": "",
+      "status": ""
+    },
+    "controls": []
+  },
+  "derived": {
+    "generatedAt": "2026-08-25 13:44",
+    "runtimeSwitch": {
+      "paused": null,
+      "since": null,
+      "evidence": "runtime/.paused is host-local and gitignored \u2014 it cannot be read from this machine",
+      "note": "Loop health below is derived from committed artifacts only. If loops look stale, check the switch on the runtime box before concluding anything is broken: ssh user@your-vps 'ls -l ~/yourco-os/runtime/.paused'"
+    },
+    "loops": [
+      {
+        "loop": "advisor",
+        "schedule": "*-*-01 08:00:00",
+        "cadence": "monthly",
+        "kind": "internal",
+        "lastArtifact": "2026-06-14",
+        "health": "stale",
+        "note": "72d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "aeo-geo",
+        "schedule": "Tue *-*-1..7 08:00:00",
+        "cadence": "monthly",
+        "kind": "internal",
+        "lastArtifact": "2026-07-07",
+        "health": "stale",
+        "note": "49d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "agent-registry",
+        "schedule": "Mon *-*-* 07:45:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "brand-audit",
+        "schedule": "Mon *-*-1..7 09:00:00",
+        "cadence": "monthly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "brett-ideas",
+        "schedule": "Fri *-*-* 08:00:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-06-17",
+        "health": "stale",
+        "note": "69d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "connector-spotter",
+        "schedule": "Mon-Fri *-*-* 09:10:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "consistency",
+        "schedule": "Mon *-*-* 07:35:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-08-25",
+        "health": "on-time",
+        "note": "0d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "content",
+        "schedule": "Fri *-*-* 07:00:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "crm-autolog",
+        "schedule": "Mon-Fri *-*-* 08:15:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "crm-hygiene",
+        "schedule": "Mon-Fri *-*-* 08:05:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "customer-health",
+        "schedule": "Wed *-*-* 07:00:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "demo-prep",
+        "schedule": "Mon-Fri *-*-* 09,13,17:00:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "untracked",
+        "note": "staged \u2014 deps pending; writes to clients/",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "eval-review",
+        "schedule": "Sun *-*-* 17:00:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-07-05",
+        "health": "stale",
+        "note": "51d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "evidence-sweep",
+        "schedule": "Sun *-*-* 16:30:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-08-07",
+        "health": "stale",
+        "note": "18d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "finance-close",
+        "schedule": "Mon *-*-1..7 08:30:00",
+        "cadence": "monthly",
+        "kind": "internal",
+        "lastArtifact": "2026-07-01",
+        "health": "stale",
+        "note": "55d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "finance",
+        "schedule": "Mon *-*-* 07:15:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-08-17",
+        "health": "on-time",
+        "note": "8d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "heartbeat",
+        "schedule": "*:0/15",
+        "cadence": "sub-hourly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "committed 2026-08-25, not yet enabled \u2014 host action: `sudo systemctl enable --now yourco-heartbeat.timer`. Until it runs, dashboard/uptime.py reads unmeasured, never 100%",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "inbox-signal",
+        "schedule": "Fri *-*-* 07:15:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "inbox-triage",
+        "schedule": "Mon-Fri *-*-* 06:45:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "initiative",
+        "schedule": "Mon-Fri *-*-* 08:45:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": "2026-08-20",
+        "health": "stale",
+        "note": "5d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "lineage-review",
+        "schedule": "Mon *-01,04,07,10-8..14 09:45:00",
+        "cadence": "quarterly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "melanie-briefing",
+        "schedule": "Mon-Fri *-*-* 07:45:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "timer installed 2026-07-06 (was never enabled for 3 weeks) \u2014 first fire Tue 07:45; 'never' clears itself after that run",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "monday-briefing",
+        "schedule": "Mon *-*-* 07:55:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-07-27",
+        "health": "stale",
+        "note": "29d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "open-loops-chaser",
+        "schedule": "Mon-Fri *-*-* 07:40:00",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": "2026-08-07",
+        "health": "stale",
+        "note": "18d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "pipeline-report",
+        "schedule": "Mon *-*-* 06:50:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "pricing-review",
+        "schedule": "Mon *-01,04,07,10-1..7 09:15:00",
+        "cadence": "quarterly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "runtime-alarm",
+        "schedule": "*-*-* *:00:00",
+        "cadence": "hourly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "untracked",
+        "note": "hourly alarm; alerts only, no artifact",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "sadie-intent",
+        "schedule": "Mon-Fri 09:30",
+        "cadence": "weekdays",
+        "kind": "internal",
+        "lastArtifact": "2026-06-11",
+        "health": "stale",
+        "note": "75d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "sales",
+        "schedule": "Mon *-*-* 07:00:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": "2026-06-07",
+        "health": "stale",
+        "note": "79d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "source-watch",
+        "schedule": "Fri *-*-* 07:30:00",
+        "cadence": "weekly",
+        "kind": "internal",
+        "lastArtifact": null,
+        "health": "never",
+        "note": "no artifact ever committed",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "storm-alerts",
+        "schedule": "*:3/20",
+        "cadence": "sub-hourly",
+        "kind": "client-infra",
+        "lastArtifact": null,
+        "health": "n/a",
+        "note": "client infra (Sample Product) \u2014 outside loop health",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "storm-publish",
+        "schedule": "*:0/20",
+        "cadence": "sub-hourly",
+        "kind": "client-infra",
+        "lastArtifact": null,
+        "health": "n/a",
+        "note": "client infra (Sample Product) \u2014 outside loop health",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      },
+      {
+        "loop": "watchdog",
+        "schedule": "*-*-* 08:15:00",
+        "cadence": "daily",
+        "kind": "internal",
+        "lastArtifact": "2026-08-16",
+        "health": "stale",
+        "note": "9d ago",
+        "lastRun": null,
+        "lastRunPaused": null,
+        "ranWithoutOutput": false
+      }
+    ],
+    "loopSummary": {
+      "built": 31,
+      "tracked": 29,
+      "onTime": 2,
+      "stale": 12,
+      "neverRan": 15,
+      "firedNoOutput": 0
+    },
+    "agentDetail": {
+      "atlas": {
+        "name": "Atlas",
+        "planned": false,
+        "role": "Ops / Analytics / Monitoring",
+        "trigger": "Scheduled (Mon 7:30 ET) + continuous watch",
+        "scope": "Agent health, eval status, watchdog signals, per-engagement cost rollup, cross-cutting signals; Monday Briefing as the surface",
+        "gate": "Never sends external; never directs agents; touching client tenant = must-approve",
+        "statusNote": "Live (v0) \u2014 first briefing 2026-06-08",
+        "recent": [
+          {
+            "date": "2026-08-16",
+            "what": "watchdog run",
+            "path": "loops/_watchdog/2026-08-16.md"
+          },
+          {
+            "date": "2026-07-27",
+            "what": "monday-briefing run",
+            "path": "loops/monday-briefing/2026-07-27.md"
+          },
+          {
+            "date": "2026-06-07",
+            "what": "monday-briefing run",
+            "path": "loops/monday-briefing/2026-06-07.md"
+          },
+          {
+            "date": "2026-06-07",
+            "what": "sales run",
+            "path": "loops/sales/2026-06-07.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "monday-briefing",
+            "cadence": "weekly",
+            "schedule": "Mon *-*-* 07:55:00",
+            "lastArtifact": "2026-07-27",
+            "health": "stale",
+            "note": "29d ago"
+          },
+          {
+            "loop": "runtime-alarm",
+            "cadence": "hourly",
+            "schedule": "*-*-* *:00:00",
+            "lastArtifact": null,
+            "health": "untracked",
+            "note": "hourly alarm; alerts only, no artifact"
+          },
+          {
+            "loop": "sales",
+            "cadence": "weekly",
+            "schedule": "Mon *-*-* 07:00:00",
+            "lastArtifact": "2026-06-07",
+            "health": "stale",
+            "note": "79d ago"
+          },
+          {
+            "loop": "watchdog",
+            "cadence": "daily",
+            "schedule": "*-*-* 08:15:00",
+            "lastArtifact": "2026-08-16",
+            "health": "stale",
+            "note": "9d ago"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "monday-briefing (weekly)",
+            "when": "Mon *-*-* 07:55:00",
+            "health": "stale"
+          },
+          {
+            "what": "runtime-alarm (hourly)",
+            "when": "*-*-* *:00:00",
+            "health": "untracked"
+          },
+          {
+            "what": "sales (weekly)",
+            "when": "Mon *-*-* 07:00:00",
+            "health": "stale"
+          },
+          {
+            "what": "watchdog (daily)",
+            "when": "*-*-* 08:15:00",
+            "health": "stale"
+          }
+        ]
+      },
+      "reilly": {
+        "name": "Reilly",
+        "planned": false,
+        "role": "Sales / Outbound Ops (SDR \u2014 sourcing + campaign-ops)",
+        "trigger": "the Founder names a vertical",
+        "scope": "Source (Outscraper/Vibe/SuperSearch \u2192 `runtime/sourcing.py`) \u2192 enrich \u2192 ICP/dedup/deliverability \u2192 create + stage the Instantly campaign (`runtime/instantly.py`) \u2192 reply/bounce feedback \u2192 CRM promotion (`runtime/promote.py`). Owns the suppression list + the outbound machine. Copy/messaging \u2192 Michelle (split 2026-06-15)",
+        "gate": "No send without the Founder's batch approval; never from primary domain",
+        "statusNote": "Active (v0) \u2014 landscaping locked; Vibe + Instantly connected; 20-lead batch sourced + campaign staged 2026-06-09; gated on warmup (~June 22) + 10DLC + batch approval",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "demo-prep",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 09,13,17:00:00",
+            "lastArtifact": null,
+            "health": "untracked",
+            "note": "staged \u2014 deps pending; writes to clients/"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "demo-prep (weekdays)",
+            "when": "Mon-Fri *-*-* 09,13,17:00:00",
+            "health": "untracked"
+          }
+        ]
+      },
+      "bella": {
+        "name": "Bella",
+        "planned": false,
+        "role": "Audit Lead (free diagnostic front door \u2014 2026-08-16)",
+        "trigger": "A cold/skeptical prospect opts into the Audit (intake form) / the Founder assigns",
+        "scope": "Runs the AI Audit end-to-end: review intake \u2192 diagnostic-call structure \u2192 4-axis bottleneck scoring (Money \u00d7 Frequency \u00d7 Owner-drain \u00d7 Fixability) \u2192 dollar-quantify #1 \u2192 map to recommended agents \u2192 produce the Audit Report \u2192 hand the converted engagement to Kimi. Owns `processes/audit-sop.md` + `clients/_yourco-template/audit-report/`",
+        "gate": "Report = drafts; the Founder approves before send; no fabricated numbers; honest-no-sell; never quotes unlocked pricing (Polo's)",
+        "statusNote": "Built \u2014 full Audit runbook + eval 2026-06-25 (`agents/bella/`); live at website launch",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "runs when: A cold/skeptical prospect opts into the Audit (intake form) / the Founder assigns",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "michelle": {
+        "name": "Michelle",
+        "planned": false,
+        "role": "Outbound Copy / Messaging",
+        "trigger": "Reilly (or the Founder) needs sequence/campaign copy for a vertical",
+        "scope": "Authors the cold-outbound messaging \u2014 the multi-touch sequence copy + subject/angle variants per vertical, applying `brand/writing-rules.md`; owns the copy methodology (`agents/reilly/copy-structure.md`), `processes/outbound/sequence-copy.md`, and the messaging in `industry-campaigns.md` / `proof-led-outbound-engine.md`. Demo-led, never pitch; pricing pulled from cold copy. Eval bar: positive-reply rate + brand/claims",
+        "gate": "Drafts only \u2014 Luka brand + Polo claims/pricing + the Founder approval before any send; never sends from any domain",
+        "statusNote": "Built \u2014 full copy SOP + eval 2026-06-25 (`agents/michelle/`); methodology + copy hers (authored under Reilly)",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "runs when: Reilly (or the Founder) needs sequence/campaign copy for a vertical",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "reed": {
+        "name": "Reed",
+        "planned": false,
+        "role": "Content Production (all formats)",
+        "trigger": "Asset request (Reilly/Katie/the Founder), per vertical/use-case",
+        "scope": "Produces ALL content assets from Katie's scripts \u2014 video (animated scenes Higgsfield \u2192 AI voiceover + assembly + captions Descript) AND rendered social visuals (carousels, Shorts covers). Registers each asset; full video + GIF preview for email embed. Katie scripts + posts; Reed produces. SOP: `processes/Reed-video-production.md`",
+        "gate": "No publish without the Founder's approval; animated GIF preview + link OK (image, not embedded video)",
+        "statusNote": "Live (v0) \u2014 first demo shipped + the Founder-approved 2026-06-09 (landscaping intake) via the Higgsfield + Descript pipeline. Animated-only stack (supersedes Canva). Production scope broadened to all content assets 2026-06-15. One open automation gap: AI-voice render still manual (see SOP)",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "runs when: Asset request (Reilly/Katie/the Founder), per vertical/use-case",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "charles": {
+        "name": "Charles",
+        "planned": false,
+        "role": "Finance",
+        "trigger": "Scheduled (Mon AM) + monthly close",
+        "scope": "Ledgers (system of record), finance pulse, cash/MRR/burn/runway, gap detection, monthly close + readout, tax-prep handoff, per-client cost-ledger roll-up (`log-build-cost`)",
+        "gate": "Reports/drafts only; any invoice/payment/filing = must-approve",
+        "statusNote": "\u2610 not built \u2014 weekly finance pulse runs on the runtime (`loops/finance/`, latest 2026-07-06); monthly close armed (`yourco-finance-close.timer`)",
+        "recent": [
+          {
+            "date": "2026-08-17",
+            "what": "finance run",
+            "path": "loops/finance/2026-08-17 2.md"
+          },
+          {
+            "date": "2026-08-17",
+            "what": "finance run",
+            "path": "loops/finance/2026-08-17.md"
+          },
+          {
+            "date": "2026-06-07",
+            "what": "finance run",
+            "path": "loops/finance/2026-06-07.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "finance-close",
+            "cadence": "monthly",
+            "schedule": "Mon *-*-1..7 08:30:00",
+            "lastArtifact": "2026-07-01",
+            "health": "stale",
+            "note": "55d ago"
+          },
+          {
+            "loop": "finance",
+            "cadence": "weekly",
+            "schedule": "Mon *-*-* 07:15:00",
+            "lastArtifact": "2026-08-17",
+            "health": "on-time",
+            "note": "8d ago"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "finance-close (monthly)",
+            "when": "Mon *-*-1..7 08:30:00",
+            "health": "stale"
+          },
+          {
+            "what": "finance (weekly)",
+            "when": "Mon *-*-* 07:15:00",
+            "health": "on-time"
+          }
+        ]
+      },
+      "brett": {
+        "name": "Brett",
+        "planned": false,
+        "role": "Advisor",
+        "trigger": "Monthly (1st) + on-demand",
+        "scope": "Strategic advisory: moat status, competitive/landscape scan, ranked recommendations, drift detection",
+        "gate": "Advisory only \u2014 reads/researches/recommends; takes no other action",
+        "statusNote": "\u2610 not built \u2014 monthly advisor memo (`loops/advisor/`, 2026-07-01) + weekly ideas loop (`loops/brett-ideas/`) run on the runtime",
+        "recent": [
+          {
+            "date": "2026-06-17",
+            "what": "brett-ideas run",
+            "path": "loops/brett-ideas/2026-06-17_ideas.md"
+          },
+          {
+            "date": "2026-06-14",
+            "what": "advisor run",
+            "path": "loops/advisor/2026-06-14_gtm-beachhead.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "advisor",
+            "cadence": "monthly",
+            "schedule": "*-*-01 08:00:00",
+            "lastArtifact": "2026-06-14",
+            "health": "stale",
+            "note": "72d ago"
+          },
+          {
+            "loop": "brett-ideas",
+            "cadence": "weekly",
+            "schedule": "Fri *-*-* 08:00:00",
+            "lastArtifact": "2026-06-17",
+            "health": "stale",
+            "note": "69d ago"
+          },
+          {
+            "loop": "inbox-signal",
+            "cadence": "weekly",
+            "schedule": "Fri *-*-* 07:15:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          },
+          {
+            "loop": "source-watch",
+            "cadence": "weekly",
+            "schedule": "Fri *-*-* 07:30:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "advisor (monthly)",
+            "when": "*-*-01 08:00:00",
+            "health": "stale"
+          },
+          {
+            "what": "brett-ideas (weekly)",
+            "when": "Fri *-*-* 08:00:00",
+            "health": "stale"
+          },
+          {
+            "what": "inbox-signal (weekly)",
+            "when": "Fri *-*-* 07:15:00",
+            "health": "never"
+          },
+          {
+            "what": "source-watch (weekly)",
+            "when": "Fri *-*-* 07:30:00",
+            "health": "never"
+          }
+        ]
+      },
+      "katie": {
+        "name": "Katie",
+        "planned": false,
+        "role": "Content / Social (scripting + distribution)",
+        "trigger": "Scheduled (Fri AM) + per-channel cadence",
+        "scope": "Scripts all content (written thought-leadership for LinkedIn/X/newsletter, carousel slide copy, video hooks/scripts, event-blast copy) applying `brand/writing-rules.md`, anchored on thesis/moat \u2192 hands scripts to Reed to produce \u2192 Katie posts/distributes to the social platforms (LinkedIn/X/IG/FB/YouTube). Owns the social distribution channel; seeds inbound. (Production of assets = Reed; site publishing = Webb.)",
+        "gate": "Drafts only; external publishing/posting = must-approve",
+        "statusNote": "\u2610 not built (drafting) \u2014 weekly content loop runs Fri on the runtime (`loops/content/`, latest 2026-07-03); actual posting stays launch-gated",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "content",
+            "cadence": "weekly",
+            "schedule": "Fri *-*-* 07:00:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "content (weekly)",
+            "when": "Fri *-*-* 07:00:00",
+            "health": "never"
+          }
+        ]
+      },
+      "mario": {
+        "name": "Mario",
+        "planned": false,
+        "role": "Answer-Engine Visibility (AEO/GEO)",
+        "trigger": "Monthly (1st Tue, 8am ET) once live; on-demand pre-launch",
+        "scope": "yourco's presence in AI answers (ChatGPT/Claude/Gemini/Perplexity/AI Overviews): the target query set, the citation audit, the cited-set + source map, interventions by leverage, a citation-presence score. Prescribes content (\u2192 Katie) + schema (\u2192 Webb). SOP: `processes/loops/aeo-geo.md`",
+        "gate": "Prescribes/drafts only \u2014 never publishes; external content + schema ship via Katie/Webb + the Founder approval",
+        "statusNote": "\u2610 not built 2026-07-06 \u2014 timer installed (monthly, 1st Tue 08:00 ET) + first runtime run completed same day (`loops/aeo-geo/2026-07-06.md`; flagged the closing \"operated\" wedge). History: the units sat never-installed on the host since June (loop silently dead after 06-14); watchdog row added so it can't die invisibly again",
+        "recent": [
+          {
+            "date": "2026-07-07",
+            "what": "aeo-geo run",
+            "path": "loops/aeo-geo/2026-07-07.md"
+          },
+          {
+            "date": "2026-07-06",
+            "what": "aeo-geo run",
+            "path": "loops/aeo-geo/2026-07-06 2.md"
+          },
+          {
+            "date": "2026-07-06",
+            "what": "aeo-geo run",
+            "path": "loops/aeo-geo/2026-07-06.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "aeo-geo",
+            "cadence": "monthly",
+            "schedule": "Tue *-*-1..7 08:00:00",
+            "lastArtifact": "2026-07-07",
+            "health": "stale",
+            "note": "49d ago"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "aeo-geo (monthly)",
+            "when": "Tue *-*-1..7 08:00:00",
+            "health": "stale"
+          }
+        ]
+      },
+      "luka": {
+        "name": "Luka",
+        "planned": false,
+        "role": "Brand Custodian",
+        "trigger": "On-demand + monthly (1st Mon AM)",
+        "scope": "Brand guidelines (visual/voice/tone rules); on-demand \"ship / ship-with-fixes / rework\" reviews; monthly drift audit; brand changelog",
+        "gate": "Reviews only \u2014 never publishes; guideline changes = in-loop; customer-facing = must-approve",
+        "statusNote": "\u2610 not built \u2014 monthly brand audit runs on the runtime (`loops/brand-audit/`, first run 2026-07-06); guidelines + `brand/DESIGN.md` live",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "brand-audit",
+            "cadence": "monthly",
+            "schedule": "Mon *-*-1..7 09:00:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "brand-audit (monthly)",
+            "when": "Mon *-*-1..7 09:00:00",
+            "health": "never"
+          }
+        ]
+      },
+      "polo": {
+        "name": "Polo",
+        "planned": false,
+        "role": "Pricing Strategist",
+        "trigger": "On-demand (per-vertical build) + quarterly (1st Mon of quarter, 8:30am ET)",
+        "scope": "Per-vertical pricing research and proposals; `/pricing/v0/<vertical>.md` canonical references; quarterly pricing review against close-rate/retention/margin data; Reilly's pre-campaign pricing gate",
+        "gate": "Proposes only \u2014 vertical pricing locks require the Founder approval; one-off prospect pricing = must-approve; external pricing communication = must-approve",
+        "statusNote": "\u2610 not built \u2014 quarterly pricing review runs on the runtime (`loops/pricing-review/`, 2026-Q3 done 2026-07-06); `/pricing/v0/` live",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "pricing-review",
+            "cadence": "quarterly",
+            "schedule": "Mon *-01,04,07,10-1..7 09:15:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "pricing-review (quarterly)",
+            "when": "Mon *-01,04,07,10-1..7 09:15:00",
+            "health": "never"
+          }
+        ]
+      },
+      "melanie": {
+        "name": "Melanie",
+        "planned": false,
+        "role": "Conductor / HQ interface (\"CEO in training\")",
+        "trigger": "Always-on (HQ + CRM) + weekday 07:45 briefing + weekday 08:45 initiative loop",
+        "scope": "The HQ dashboard voice/interface, the CRM shared brain (`dashboard/melanie.py` \u2014 locks, atomic writes, enrich, citations), the weekday morning briefing to Slack, and the entity-level initiative loop \u2014 originates up to 3 unscheduled moves/day from goals+state+learnings, acts within tier, escalates the rest (`decisions/2026-07-08_melanie-initiative-loop.md`)",
+        "gate": "Drafts/reads only; no external sends; may propose missions, never self-adopt them \u2014 goals.json is the Founder's; no command channel (conductor, not commanded)",
+        "statusNote": "\u2610 not built \u2014 HQ + CRM brain in daily use; briefing live; initiative loop staged 2026-07-08 (timer install pending)",
+        "recent": [
+          {
+            "date": "2026-08-20",
+            "what": "initiative run",
+            "path": "loops/initiative/2026-08-20_headless-gate-blocks-agentops-instrumentation.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "initiative",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 08:45:00",
+            "lastArtifact": "2026-08-20",
+            "health": "stale",
+            "note": "5d ago"
+          },
+          {
+            "loop": "melanie-briefing",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 07:45:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "timer installed 2026-07-06 (was never enabled for 3 weeks) \u2014 first fire Tue 07:45; 'never' clears itself after that run"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "initiative (weekdays)",
+            "when": "Mon-Fri *-*-* 08:45:00",
+            "health": "stale"
+          },
+          {
+            "what": "melanie-briefing (weekdays)",
+            "when": "Mon-Fri *-*-* 07:45:00",
+            "health": "never"
+          }
+        ]
+      },
+      "david": {
+        "name": "David",
+        "planned": false,
+        "role": "CRM / RevOps",
+        "trigger": "Scheduled (weekdays 08:05 hygiene + 08:15 autolog on the runtime; Granola sync 5\u00d7/day on the Mac) + on-demand",
+        "scope": "Owns `crm/` (companies, contacts, deals, activities, Referrals view), the hygiene automations (auto next-step, stale digest, closed-won ping), Gmail/Calendar autolog \u2192 pending, Granola meeting sync",
+        "gate": "Pending-activity confirm in the CRM UI is the approval gate; meeting-derived stage/value changes = suggest-only",
+        "statusNote": "\u2610 not built 2026-07-06 \u2014 timers armed on the runtime (first fires 2026-07-07); granola-crm-sync scheduled task live",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "crm-autolog",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 08:15:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          },
+          {
+            "loop": "pipeline-report",
+            "cadence": "weekly",
+            "schedule": "Mon *-*-* 06:50:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "crm-autolog (weekdays)",
+            "when": "Mon-Fri *-*-* 08:15:00",
+            "health": "never"
+          },
+          {
+            "what": "pipeline-report (weekly)",
+            "when": "Mon *-*-* 06:50:00",
+            "health": "never"
+          }
+        ]
+      },
+      "sadie": {
+        "name": "Sadie",
+        "planned": false,
+        "role": "Intent / Social listening",
+        "trigger": "Scheduled (daily 09:30 ET)",
+        "scope": "Daily intent sweep \u2014 YouTube comments + Bluesky + Reddit buying signals across target verticals \u2192 `loops/sadie/`; feeds the CRM Hot List two ways (wired 2026-07-20, `runtime/promote_intent.py`): signals matching existing CRM companies auto-attach as Hot List pills; unmatched prospect-grade signals promote to real rows only via the human-gated `promote-intent-signal` skill (identity + vendor check \u2014 never auto-create)",
+        "gate": "Read-only listening \u2014 surfacing only; turning a signal into outreach is Reilly's gated step",
+        "statusNote": "\u2610 not built \u2014 daily `yourco-sadie-intent.timer` on the runtime (`loops/sadie/`, latest 2026-07-06)",
+        "recent": [
+          {
+            "date": "2026-06-11",
+            "what": "sadie-intent run",
+            "path": "loops/sadie/2026-06-11 2.md"
+          },
+          {
+            "date": "2026-06-11",
+            "what": "sadie-intent run",
+            "path": "loops/sadie/2026-06-11.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "sadie-intent",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri 09:30",
+            "lastArtifact": "2026-06-11",
+            "health": "stale",
+            "note": "75d ago"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "sadie-intent (weekdays)",
+            "when": "Mon-Fri 09:30",
+            "health": "stale"
+          }
+        ]
+      },
+      "webb": {
+        "name": "Webb",
+        "planned": false,
+        "role": "Web Operations / Site Custodian (content + conversion)",
+        "trigger": "New vertical locked (build vertical page) / Katie publishes (Webb publishes to site) / new campaign needs landing page / monthly site review",
+        "scope": "`yourco.com` + `getteamyourco.com` + all marketing/landing pages (build + on-page); site SEO + analytics; Calendly booking flow; per-vertical landing pages; publishing Katie's editorial content to the site. Infra (hosting / DNS / uptime / domains) \u2192 Kemba \u2014 Webb owns the pages, not the plumbing",
+        "gate": "Drafts only \u2014 publish requires the Founder approval; tracking scripts = in-loop; any spend > $1 = in-loop",
+        "statusNote": "Active (v0) \u2014 v0 cold landing page BUILT 2026-06-09 (`agents/webb/pages/v0-landing/index.html`, CTAs \u2192 `getteamyourco.com` confirmed); pending deploy + `/book` redirect + Luka review + the Founder approval; operating docs (discovery/build/eval) completed 2026-06-25",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "runs when: New vertical locked (build vertical page) / Katie publishes (Webb publishes to site) / new campaign needs landing page / monthly site review",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "kolby": {
+        "name": "Kolby",
+        "planned": true,
+        "role": "QA / Eval Agent",
+        "trigger": "\u2705 LIVE (trigger fired \u2014 the weekly eval-review loop runs on the runtime: `runtime/prompts/eval-review.md`, artifacts `loops/eval-review/`; + owns the outbound pre-send eval gate, 2026-07-05: `runtime/instantly.py --eval-batch`; + demo/video credibility evals)",
+        "scope": "Independently runs the eval harnesses across all agents, scores outputs, flags drift/regressions, maintains the test sets",
+        "gate": "",
+        "statusNote": "Reports only \u2014 the moat's internal auditor",
+        "recent": [
+          {
+            "date": "2026-07-05",
+            "what": "eval-review run",
+            "path": "loops/eval-review/2026-07-05 2.md"
+          },
+          {
+            "date": "2026-07-05",
+            "what": "eval-review run",
+            "path": "loops/eval-review/2026-07-05.md"
+          },
+          {
+            "date": "2026-06-28",
+            "what": "eval-review run",
+            "path": "loops/eval-review/2026-06-28.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "eval-review",
+            "cadence": "weekly",
+            "schedule": "Sun *-*-* 17:00:00",
+            "lastArtifact": "2026-07-05",
+            "health": "stale",
+            "note": "51d ago"
+          },
+          {
+            "loop": "evidence-sweep",
+            "cadence": "weekly",
+            "schedule": "Sun *-*-* 16:30:00",
+            "lastArtifact": "2026-08-07",
+            "health": "stale",
+            "note": "18d ago"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "eval-review (weekly)",
+            "when": "Sun *-*-* 17:00:00",
+            "health": "stale"
+          },
+          {
+            "what": "evidence-sweep (weekly)",
+            "when": "Sun *-*-* 16:30:00",
+            "health": "stale"
+          }
+        ]
+      },
+      "pickle": {
+        "name": "Pickle",
+        "planned": true,
+        "role": "Marketing Artifacts Agent",
+        "trigger": "When there's a win to write up or sales collateral is needed (vertical one-pagers usable pre-revenue)",
+        "scope": "Designed static collateral: case studies, one-pagers, pitch decks, battlecards, visuals/infographics",
+        "gate": "",
+        "statusNote": "Publish/external use = must-approve. Distinct output from Reed (video) and Katie (editorial posts)",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "activates when: When there's a win to write up or sales collateral is needed (vertical one-pagers usable pre-revenue)",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "jim": {
+        "name": "Jim",
+        "planned": true,
+        "role": "Chief of Staff / Scheduling Agent",
+        "trigger": "\u2705 LIVE (trigger fired \u2014 weekday open-loops chaser + daily inbox-triage run on the runtime: `loops/open-loops/`, `loops/inbox-triage/`; calendar holds via the Slack command surface)",
+        "scope": "Manage the Founder's calendar, book/reschedule the calls other agents surface, inbox triage, meeting prep, the Needs-the Founder queue (feeds the HQ tile)",
+        "gate": "",
+        "statusNote": "External invites = in-loop. Jim = the Founder's time; Harry = back-office admin; Atlas = agent-ops monitoring",
+        "recent": [
+          {
+            "date": "2026-08-07",
+            "what": "open-loops-chaser run",
+            "path": "loops/open-loops/2026-08-07.md"
+          }
+        ],
+        "loops": [
+          {
+            "loop": "inbox-triage",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 06:45:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          },
+          {
+            "loop": "open-loops-chaser",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 07:40:00",
+            "lastArtifact": "2026-08-07",
+            "health": "stale",
+            "note": "18d ago"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "inbox-triage (weekdays)",
+            "when": "Mon-Fri *-*-* 06:45:00",
+            "health": "never"
+          },
+          {
+            "what": "open-loops-chaser (weekdays)",
+            "when": "Mon-Fri *-*-* 07:40:00",
+            "health": "stale"
+          }
+        ]
+      },
+      "ray": {
+        "name": "Ray",
+        "planned": true,
+        "role": "Legal / Contracts Agent",
+        "trigger": "When the first contract (NDA/MSA/SOW) is in flight",
+        "scope": "Review contracts, plain-English redlines, risk flags, draft standard agreements",
+        "gate": "",
+        "statusNote": "Advisory redlines; signing/sending = must-approve. Clusters with the first deal",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "activates when: When the first contract (NDA/MSA/SOW) is in flight",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "janice": {
+        "name": "Janice",
+        "planned": true,
+        "role": "Onboarding Agent",
+        "trigger": "Activates on first signed client",
+        "scope": "Onboard new clients: intake requirements/credentials, provision tenant access + mailboxes, stand up the engagement folder, kick off",
+        "gate": "",
+        "statusNote": "Built 2026-06-11 (`agents/janice/`, generalized any-vertical/type). Hands off to Kimi. Tenant access = must-approve. the Founder holds until first engagement hardens it.",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "Activates on first signed client",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "kimi": {
+        "name": "Kimi",
+        "planned": true,
+        "role": "Delivery Agent",
+        "trigger": "Activates when a deal nears close (core product)",
+        "scope": "Runs the engagement: discovery \u2192 48h build \u2192 go-live \u2192 weekly iteration; overlay on `yourco-template`, any vertical/employee type. Playbook: `processes/discovery-to-48h-build.md`",
+        "gate": "",
+        "statusNote": "Built 2026-06-11 (`agents/kimi/`, generalized). The thing YourCo sells. Receives the handoff from Janice. Client tenant = must-approve. the Founder holds until first engagement hardens it.",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "Activates when a deal nears close (core product)",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "kemba": {
+        "name": "Kemba",
+        "planned": true,
+        "role": "Platform / Template Engineer Agent (all infrastructure)",
+        "trigger": "After the first 1\u20132 engagements produce patterns to extract",
+        "scope": "Owns `yourco-template` (golden template) + the always-on runtime / agent execution environment (the substrate every agent runs on): extract reusable patterns, maintain eval/watchdog/approval scaffolding, own the headless runtime migration. + web infrastructure (hosting, DNS, uptime/monitoring, domains) \u2014 handed off from Webb 2026-06-15: infra is infra. Webb owns the pages; Kemba owns the plumbing they run on",
+        "gate": "",
+        "statusNote": "Kemba builds the template + runtime; Kimi uses it per client. DNS / hosting / domain changes = must-approve. Runtime plan: `/decisions/2026-06-09_always-on-runtime.md` (the Founder holds until Kemba is built). Template changes versioned + logged in `decisions/`. Agent Factory SOP deep-built 2026-06-25 (`agents/kemba/`) \u2014 the governed pipeline to build other internal agents (decide-if \u00b7 when \u00b7 research \u2192 scaffold \u2192 eval \u2192 register \u2192 wire), propose-and-scaffold under the Founder + Rafi + Kolby gates",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "activates when: After the first 1\u20132 engagements produce patterns to extract",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "rafi": {
+        "name": "Rafi",
+        "planned": true,
+        "role": "Compliance Agent",
+        "trigger": "\u2705 LIVE (trigger fired \u2014 owns the weekly agent-registry governance watchdog on the runtime, Mon 07:45: `loops/_governance/`; full compliance scope still activates with client data / procurement asks)",
+        "scope": "Regulatory + security compliance: control tracking, audit readiness, data-handling/privacy posture, policy upkeep across YourCo and client engagements. Owns the agent registry + reconciliation watchdog (the \"Vanta for our own agents\": `runtime/agent-registry.json` + `agent-registry-check.py` \u2014 drift detection vs the sanctioned baseline, surfaced in the Monday briefing; `decisions/2026-06-22_agent-registry-governance-watchdog.md`)",
+        "gate": "",
+        "statusNote": "Flags/reports only \u2014 remediation is the Founder's call. Distinct from Ray (legal agreements) and Kolby (agent-output quality)",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "agent-registry",
+            "cadence": "weekly",
+            "schedule": "Mon *-*-* 07:45:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "agent-registry (weekly)",
+            "when": "Mon *-*-* 07:45:00",
+            "health": "never"
+          }
+        ]
+      },
+      "kortney": {
+        "name": "Kortney",
+        "planned": true,
+        "role": "Customer Health / Support Agent",
+        "trigger": "Activates on first live client",
+        "scope": "Friction signals in live engagements, support triage, engagement-health watchdog",
+        "gate": "",
+        "statusNote": "Built 2026-06-11 (`agents/kortney/`, generalized any-vertical/type \u2014 per-type health model). Maps to the Wednesday customer-health loop (wired). Green light triggers Bird. Client-facing = must-approve.",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "customer-health",
+            "cadence": "weekly",
+            "schedule": "Wed *-*-* 07:00:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "customer-health (weekly)",
+            "when": "Wed *-*-* 07:00:00",
+            "health": "never"
+          }
+        ]
+      },
+      "bird": {
+        "name": "Bird",
+        "planned": true,
+        "role": "Expansion / Account Growth Agent + the connector program (incl. connector coaching \u2014 `crm/coach.py`, skill `run-coaching-session`)",
+        "trigger": "Activates on Kortney's first green light \u2014 or on the first connector onboarding, whichever comes first",
+        "scope": "Find + scope the 2nd/3rd use case inside live accounts; renewals and upsell \u2014 land-and-expand revenue. Plus the connector program: terms, enablement, deal registration, growth, and the 24\u201348h submission verification queue (`processes/partnerships/connector-console/` `/verify`)",
+        "gate": "",
+        "statusNote": "Built 2026-06-11 (`agents/bird/`, generalized). Pairs with Kortney; scopes \u2192 Kimi builds. Client-facing comms = must-approve; Polo-locked prices only. Connector scope widened 2026-08-11 (`decisions/2026-08-11_connector-program-v2.md`): connectors are now yourco's primary growth lever, and the verification queue is a promised SLA to someone waiting to be paid \u2014 not a background chore. Kori owns connector people-ops, Ray the papers, Charles the payouts.",
+        "recent": [],
+        "loops": [
+          {
+            "loop": "connector-spotter",
+            "cadence": "weekdays",
+            "schedule": "Mon-Fri *-*-* 09:10:00",
+            "lastArtifact": null,
+            "health": "never",
+            "note": "no artifact ever committed"
+          }
+        ],
+        "upcoming": [
+          {
+            "what": "connector-spotter (weekdays)",
+            "when": "Mon-Fri *-*-* 09:10:00",
+            "health": "never"
+          }
+        ]
+      },
+      "harry": {
+        "name": "Harry",
+        "planned": true,
+        "role": "Back-office Agent",
+        "trigger": "Activates post-revenue (first invoice)",
+        "scope": "Back-office execution: invoicing/AR, bookkeeping data entry, vendor/subscription admin, scheduling, document filing",
+        "gate": "",
+        "statusNote": "Built 2026-06-11 (`agents/harry/`, generalized any-engagement). Charles = reporting/close; Harry = transactional execution. Payments/invoices sent = must-approve.",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "Activates post-revenue (first invoice)",
+            "when": "",
+            "health": ""
+          }
+        ]
+      },
+      "kori": {
+        "name": "Kori",
+        "planned": true,
+        "role": "Internal People Manager (employees + contract partners; owns advisor coaching \u2014 `crm/coach.py`, skill `run-coaching-session`)",
+        "trigger": "Whichever comes first: yourco's first human hire OR the first connector onboarding (broadened 2026-08-07)",
+        "scope": "Onboard/manage the internal team, coordinate human+agent workflows, HR ops, recruiting \u2014 and connector people-ops: onboarding, provisioning (yourco email/Slack/console login), training progression, the ongoing people relationship (`processes/partnerships/connector-onboarding.md`)",
+        "gate": "",
+        "statusNote": "Connectors are independent contractors, treated like team (the Founder 2026-08-07) \u2014 Kori runs people-ops for them but the contractor line is preserved in every document; Bird keeps the program (terms, enablement, deal-reg, growth), Ray the papers, Charles the payouts. The role is named People Manager, not Employee Manager, deliberately: an internal doc reading \"the Employee Manager owns our contractors\" is exactly the sentence a reclassification claim would enjoy",
+        "recent": [],
+        "loops": [],
+        "upcoming": [
+          {
+            "what": "activates when: Whichever comes first: yourco's first human hire OR the first connector onboarding (broadened 2026-08-07)",
+            "when": "",
+            "health": ""
+          }
+        ]
+      }
+    },
+    "autonomy": [
+      {
+        "action": "Read / Glob / Grep / WebSearch",
+        "rung": "R3",
+        "ceiling": "R3"
+      },
+      {
+        "action": "File Write / Edit (in git)",
+        "rung": "R3",
+        "ceiling": "R3"
+      },
+      {
+        "action": "Slack post (agent channels + digest)",
+        "rung": "R3",
+        "ceiling": "R3"
+      },
+      {
+        "action": "Gmail read / search",
+        "rung": "R3",
+        "ceiling": "R3"
+      },
+      {
+        "action": "Calendar read",
+        "rung": "R3",
+        "ceiling": "R3"
+      },
+      {
+        "action": "Calendar create/update (the Founder's own holds)",
+        "rung": "R2",
+        "ceiling": "R3"
+      },
+      {
+        "action": "Gmail label / archive / mark-read",
+        "rung": "R2",
+        "ceiling": "R3"
+      },
+      {
+        "action": "Gmail send",
+        "rung": "R1 (gated)",
+        "ceiling": "R2"
+      },
+      {
+        "action": "Instantly batch send (outbound)",
+        "rung": "R1 (gated)",
+        "ceiling": "R2"
+      },
+      {
+        "action": "Delete / destroy",
+        "rung": "R1 (gated)",
+        "ceiling": "R1"
+      },
+      {
+        "action": "Bash (shell)",
+        "rung": "R1 (denied)",
+        "ceiling": "R1"
+      }
+    ],
+    "gates": {
+      "OtherVenture": "\ud83d\udd34 Open \u2014 blocking launch",
+      "counsel": {
+        "blockedHard": 8,
+        "awaitingCounsel": 3,
+        "notStarted": 9,
+        "cleared": 0,
+        "total": 20
+      }
+    },
+    "needsFounder": {
+      "date": "2026-08-07",
+      "items": [
+        {
+          "n": 1,
+          "sev": "\ud83d\udd34",
+          "name": "$0 cash + 0.0-month runway \u2014 the burn-triage decisions are unmade.",
+          "age": "2d"
+        },
+        {
+          "n": 2,
+          "sev": "\ud83d\udd34",
+          "name": "Runtime is DARK \u2014 the billing-death vector has now fired a THIRD time.",
+          "age": "**50d**"
+        },
+        {
+          "n": 3,
+          "sev": "\ud83d\udd34",
+          "name": "Warm-network outreach still not started.",
+          "age": "**55d**"
+        },
+        {
+          "n": 4,
+          "sev": "\ud83d\udd34",
+          "name": "10DLC registration reply",
+          "age": "**57d**"
+        },
+        {
+          "n": 5,
+          "sev": "\ud83d\udd34",
+          "name": "Legal suite \u2192 counsel (t_legal).",
+          "age": "**50d**"
+        },
+        {
+          "n": 6,
+          "sev": "\ud83d\udd34",
+          "name": "2FA sweep (t_2fa).",
+          "age": "**52d**"
+        },
+        {
+          "n": 7,
+          "sev": "\ud83d\udd34",
+          "name": "Sample Contact (d18 / t_hank) \u2014 the checkbox still contradicts every field.",
+          "age": "**49d**"
+        },
+        {
+          "n": 8,
+          "sev": "\ud83d\udd34",
+          "name": "Prospect A (d29) \u2014 rebooked but untouched.",
+          "age": "38d"
+        }
+      ],
+      "count": 14,
+      "seedCount": 18,
+      "total": 32,
+      "source": "via Jim's open-loops chaser"
+    },
+    "introSla": {
+      "referred": 0,
+      "waiting": 0,
+      "slaBlown": 0,
+      "medianRespBizDays": null,
+      "responded": 0
+    },
+    "watchdogs": {
+      "consistency": {
+        "status": "drift",
+        "count": 9,
+        "date": "2026-08-25"
+      },
+      "governance": {
+        "status": "missing"
+      }
+    },
+    "runway": {
+      "asOf": "2026-08-05",
+      "cash": "$0 \u2014 supplied by the Founder 2026-08-05",
+      "mrr": "$0",
+      "burn": null,
+      "cashTBD": false,
+      "daysSinceAsOf": 20,
+      "runwayMonths": null
+    },
+    "git": {
+      "commits7d": 4,
+      "loopCommits7d": 0,
+      "humanCommits7d": 4,
+      "lastCommit": "6adffaf 2026-08-25 The banner was not enough: rewrite CLAUDE.md and README as templates"
+    },
+    "source": "derived from runtime/systemd + loops/ artifacts + autonomy-matrix + gate trackers + open-loops queue + consistency/governance reports + finance/runway.md + git"
+  }
+}

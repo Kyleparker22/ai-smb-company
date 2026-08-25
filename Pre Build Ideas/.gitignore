@@ -1,0 +1,5 @@
+# Generated demo data and bytecode — every build regenerates its world from
+# seed.py, so the store is never committed (it is also large and synthetic).
+*/build/data/
+__pycache__/
+*.pyc

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — see your agent, right now" />
+<meta property="og:description" content="Give us your website. In under a minute, watch a real AI agent — built for your business, in your voice, working a real customer — with the reliability gate you can see. A taste of what we make live in 48 hours." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — see the first agent of your AI OS, live</title>
+<meta name="description" content="Give us your website. In under a minute, watch a real AI agent — built for your business, in your voice, working a real customer — with the reliability gate you can see. A taste of what we make live in 48 hours." />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  :root{
+    --green:#3f7d52;
+    --human:#5a6b8c;
+    --stop:#9c3a2c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:30;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px;border:none;cursor:pointer}
+  .pill:hover{background:var(--brass-bright)}
+  @media(max-width:780px){.nav-links a:not(.pill){display:none}}
+
+  .hero{text-align:center;padding:58px 0 8px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:240px;margin:0 auto 20px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(33px,5.4vw,52px);font-weight:650;letter-spacing:-.03em;line-height:1.04}
+  h1 .em{color:var(--brass)}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:600px;margin:16px auto 0}
+
+  .builder{max-width:600px;margin:32px auto 0}
+  .inrow{display:flex;gap:10px;background:#fff;border:1px solid var(--hairline);border-radius:14px;padding:8px;box-shadow:0 8px 30px rgba(22,27,51,.06)}
+  .inrow input{flex:1;border:none;outline:none;font-size:16px;padding:10px 12px;background:transparent;color:var(--indigo);font-family:inherit}
+  .inrow button{flex:none;background:var(--brass);color:var(--indigo);border:none;border-radius:10px;padding:0 20px;font-size:15px;font-weight:650;cursor:pointer;font-family:inherit}
+  .inrow button:hover{background:var(--brass-bright)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  .chips span{font-size:12.5px;color:var(--pewter)}
+  .chips button{background:transparent;border:1px solid var(--hairline);border-radius:9999px;padding:5px 13px;font-size:12.5px;color:var(--indigo);cursor:pointer;font-family:inherit}
+  .chips button:hover{border-color:var(--brass)}
+  .note{font-size:12.5px;color:var(--pewter);margin-top:16px}
+
+  /* generating */
+  .gen{max-width:560px;margin:34px auto 0;display:none}
+  .gen.show{display:block}
+  .gline{display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px solid var(--hairline);background:#fff;border-radius:12px;margin-bottom:8px;opacity:0;transform:translateY(6px);transition:.3s}
+  .gline.in{opacity:1;transform:none}
+  .gline .sp{flex:none;width:16px;height:16px;border:2px solid var(--hairline);border-top-color:var(--brass);border-radius:50%;animation:spin .7s linear infinite}
+  .gline.done .sp{border:none;animation:none}.gline.done .sp::after{content:"✓";color:var(--green);font-weight:800;font-size:15px}
+  .gline .t{font-size:14.5px;color:#2a3142}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* result */
+  .result{max-width:760px;margin:30px auto 0;display:none}
+  .result.show{display:block;animation:rise .5s ease}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .banner{background:rgba(184,150,90,.12);border:1px solid var(--brass);border-radius:12px;padding:12px 16px;font-size:13px;color:#7a6233;margin-bottom:18px;text-align:center;display:none}
+  .banner.show{display:block}
+  .ecard{background:var(--indigo);color:var(--cream);border-radius:16px 16px 0 0;padding:22px 24px;display:flex;align-items:center;gap:16px}
+  .ecard .av{flex:none;width:54px;height:54px;border-radius:50%;background:rgba(212,178,122,.18);display:flex;align-items:center;justify-content:center;font-size:28px}
+  .ecard .nm{font-size:22px;font-weight:650}.ecard .rl{font-size:13px;color:rgba(244,239,230,.72);margin-top:2px}
+  .ecard .for{margin-left:auto;text-align:right;font-size:11.5px;color:var(--brass-bright);max-width:210px}
+  .ground{background:#fbfaf7;border:1px solid var(--hairline);border-top:none;padding:13px 24px;font-size:13px;color:var(--ink-muted);font-style:italic}
+
+  .chat{background:#fff;border:1px solid var(--hairline);border-top:none;padding:18px 18px 8px}
+  .clabel{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pewter);text-align:center;margin-bottom:14px}
+  .bub{max-width:78%;padding:10px 14px;border-radius:16px;font-size:14.5px;line-height:1.42;margin-bottom:10px;opacity:0;transform:translateY(6px)}
+  .bub.in{opacity:1;transform:none;transition:.25s}
+  .bub.c{background:#eef0f4;color:#2a3142;border-bottom-left-radius:5px;margin-right:auto}
+  .bub.e{background:var(--brass);color:var(--indigo);border-bottom-right-radius:5px;margin-left:auto}
+  .bub.e b,.bub.c b{font-weight:700}
+  .typing{display:flex;gap:4px;padding:12px 16px;width:54px;margin-left:auto;margin-bottom:10px}
+  .typing span{width:7px;height:7px;border-radius:50%;background:var(--brass);opacity:.5;animation:bob 1s infinite}
+  .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+  @keyframes bob{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+  .panel{background:var(--indigo-deep);color:var(--cream);padding:20px 24px}
+  .panel h4{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:4px}
+  .panel .sub{font-size:12.5px;color:rgba(244,239,230,.6);margin-bottom:14px}
+  .check{display:flex;gap:11px;align-items:flex-start;padding:6px 0;font-size:14px;color:rgba(244,239,230,.92);opacity:0;transform:translateX(-6px)}
+  .check.in{opacity:1;transform:none;transition:.3s}
+  .check .ic{flex:none;font-size:14px;margin-top:1px;width:18px;text-align:center}
+  .deliver{background:var(--brass);color:var(--indigo);border-radius:0 0 16px 16px;padding:16px 24px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px}
+  .deliver .dl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.7}
+
+  .closer{max-width:760px;margin:22px auto 0;text-align:center;display:none}
+  .closer.show{display:block}
+  .closer .h{font-size:clamp(20px,3vw,26px);font-weight:650;letter-spacing:-.02em;max-width:22ch;margin:0 auto}
+  .closer p{color:var(--ink-muted);font-size:15px;margin:12px auto 20px;max-width:52ch}
+  .closer .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn2{background:transparent;border:1px solid var(--brass);color:var(--brass);text-decoration:none;font-weight:600;padding:10px 20px;border-radius:9999px;font-size:14px;cursor:pointer;font-family:inherit}
+  .capture{display:none;max-width:440px;margin:18px auto 0;text-align:left}
+  .capture.show{display:block;animation:rise .4s ease}
+  .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+  .capture input{width:100%;border:1px solid var(--hairline);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:#fff;color:var(--indigo)}
+  .capture input:focus{outline:none;border-color:var(--brass)}
+  .capture .full{grid-column:1/-1}
+  .csub{width:100%;background:var(--brass);color:var(--indigo);border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:650;cursor:pointer;font-family:inherit}
+  .csub:hover{background:var(--brass-bright)}
+  .cnote{font-size:12px;color:var(--pewter);text-align:center;margin-top:9px}.cnote a{color:var(--brass)}
+  .smsc{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--pewter);line-height:1.42;margin:4px 2px 10px;cursor:pointer}
+  .smsc input{margin-top:2px;flex:none}
+  .cdone{display:none;max-width:440px;margin:18px auto 0;background:rgba(63,125,82,.1);border:1px solid var(--green);border-radius:12px;padding:18px;text-align:center}
+  .cdone.show{display:block;animation:rise .4s ease}
+  .cdone .ct{font-size:15px;font-weight:650;color:var(--indigo)}.cdone p{font-size:13px;color:var(--ink-muted);margin:6px auto 0;max-width:40ch}
+  .cdone a{display:inline-block;margin:12px 5px 0;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:650;padding:9px 18px;border-radius:9999px;font-size:13.5px}
+  .staged{max-width:600px;margin:30px auto 0;display:none;text-align:center;background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:34px 28px}
+  .staged.show{display:block;animation:rise .5s ease}
+  .staged .lock{font-size:34px;margin-bottom:8px}
+  .staged .sh{font-size:21px;font-weight:650;letter-spacing:-.02em}
+  .staged p{font-size:14px;color:var(--ink-muted);margin:12px auto 20px;max-width:46ch;line-height:1.55}
+  .staged .srow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+  .staged .srow button{background:transparent;border:1px solid var(--hairline);border-radius:9999px;padding:8px 15px;font-size:13px;color:var(--indigo);cursor:pointer;font-family:inherit}
+  .staged .srow button:hover{border-color:var(--brass)}
+  .honest{max-width:680px;margin:30px auto 0;text-align:center;font-size:12.5px;color:var(--pewter);line-height:1.55}
+  .honest b{color:var(--indigo)}
+
+  footer{background:var(--parchment);padding:50px 0 46px;border-top:1px solid var(--hairline);margin-top:50px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:16px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:20px}
+
+/* ===== PREMIUM POLISH (2026-06-22, Webb) — editorial type · material grain · tactility · section rhythm · scroll-reveal. Quiet-luxury (Luka watch-notes). Additive + reversible; degrades gracefully. ===== */
+h1,.hero h1,h2.sec,.close h2,.pullquote,.value h3,.ptier h3,.audit-card h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560}
+h1,.hero h1{letter-spacing:-.022em}
+h2.sec,.close h2{letter-spacing:-.016em}
+.pullquote,.value h3,.ptier h3,.audit-card h3{letter-spacing:-.012em;font-weight:560}
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E")}
+.tile,footer,footer.site{position:relative;z-index:1}
+.nav{z-index:20}
+.card,.ptier{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease;box-shadow:0 1px 2px rgba(22,27,51,.04)}
+.card:hover,.ptier:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(22,27,51,.10);border-color:rgba(184,150,90,.55)}
+.tile.dark .card{box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tile.dark .card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34);border-color:rgba(184,150,90,.5)}
+.demo-frame{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.demo-frame:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(22,27,51,.18)}
+.pill{box-shadow:0 1px 2px rgba(22,27,51,.08)}
+.pill:hover{box-shadow:0 10px 24px rgba(184,150,90,.34);transform:translateY(-1px)}
+.pill:active{transform:translateY(0) scale(.98)}
+.nav-links a:not(.pill){position:relative;padding-bottom:3px}
+.nav-links a:not(.pill)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.2,.7,.3,1)}
+.nav-links a:not(.pill):hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.tile + .tile{box-shadow:0 -1px 0 var(--hairline)}
+.tile.dark + .tile,.tile + .tile.dark,.tile.dark{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .tile:not(.hero) .eyebrow,.tile:not(.hero) h2.sec,.tile:not(.hero) .lede,.tile:not(.hero) .value,.tile:not(.hero) .ptier,.tile:not(.hero) .card,.tile:not(.hero) .moat .m,.tile:not(.hero) .audit-card,.tile:not(.hero) .pullquote,.tile:not(.hero) .demo-frame,.tile:not(.hero) .prose > *,.close h2,.close .ctas{animation:revealRise linear both;animation-timeline:view();animation-range:entry 8% entry 46%}
+  @keyframes revealRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+}}
+/* ===== /PREMIUM POLISH ===== */
+/* embed mode — when iframed into the See-it-work hub */
+html.embed .nav,html.embed footer{display:none}
+html.embed body{background:transparent}
+html.embed body::after{display:none}
+html.embed .hero{padding-top:18px}
+</style>
+<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed');</script>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=instant-employee" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>See <span class="em">your</span> first agent.<br>Right now.</h1>
+    <p class="lede">Give us your website. In under a minute, watch a real AI agent — built for <i>your</i> business, in <i>your</i> voice, working a real customer. This is one agent: the on-ramp. The real engagement starts with an audit and builds the whole OS around it.</p>
+
+    <div class="builder">
+      <div class="inrow">
+        <input id="url" type="text" placeholder="yourbusiness.com" autocomplete="off" spellcheck="false" />
+        <button id="go">Build it →</button>
+      </div>
+      <div class="chips"><span>or preview an example:</span>
+        <button data-k="cutterslandscape.com">🌿 a landscaper</button>
+        <button data-k="plogsteinlaw.com">⚖️ a law firm</button>
+        <button data-k="crestlinerealty.com">🏡 real estate</button>
+        <button data-k="northside-dental.com">🦷 a dental office</button>
+        <button data-k="truelinehome.com">🔧 home services</button>
+        <button data-k="oliveandash.com">🍽️ a restaurant</button>
+        <button data-k="summitautogroup.com">🚙 auto</button>
+        <button data-k="lumen-aesthetics.com">💆 a med spa</button>
+        <button data-k="vitanafitness.com">🏋️ fitness</button>
+        <button data-k="marloweandco.com">🛍️ e-commerce</button>
+        <button data-k="northbridgewealth.com">📈 financial</button>
+        <button data-k="cedarcreekvet.com">🐾 veterinary</button>
+      </div>
+      <div class="note">No signup. Nothing sends. This is a taste of <b>one</b> task — the full build makes it live, integrated, and eval-gated in 48 hours.</div>
+    </div>
+  </div></section>
+
+  <div class="wrap">
+    <div class="gen" id="gen"></div>
+
+    <div class="result" id="result">
+      <div class="banner" id="banner"></div>
+      <div class="ecard"><div class="av" id="av"></div><div><div class="nm" id="nm"></div><div class="rl" id="rl"></div></div><div class="for" id="for"></div></div>
+      <div class="ground" id="ground"></div>
+      <div class="chat"><div class="clabel">a real customer · live, unscripted intake</div><div id="chat"></div></div>
+      <div class="panel">
+        <h4>The part no one else shows you</h4>
+        <div class="sub">Anyone can make an AI say something. Here's what yourco does underneath — visible, every time.</div>
+        <div id="checks"></div>
+      </div>
+      <div class="deliver"><span class="dl">Outcome</span><span id="deliver"></span></div>
+    </div>
+
+    <div class="staged" id="staged">
+      <div class="lock">🔒</div>
+      <div class="sh">Live generation switches on at launch.</div>
+      <p>We read <b id="stagedurl"></b> for real and build the agent on the spot — but that live, in-browser path is the one piece staged behind our launch. We won't fake it by showing you a different business's agent. In the meantime, watch a real one we've already built:</p>
+      <div class="srow">
+        <button data-k="cutterslandscape.com">🌿 a landscaper</button>
+        <button data-k="plogsteinlaw.com">⚖️ a law firm</button>
+        <button data-k="crestlinerealty.com">🏡 real estate</button>
+        <button data-k="northside-dental.com">🦷 a dental office</button>
+        <button data-k="lumen-aesthetics.com">💆 a med spa</button>
+      </div>
+      <a href="audit.html" class="pill">Want the whole system? Start with the audit →</a>
+    </div>
+
+    <div class="closer" id="closer">
+      <div class="h">That was a taste — of one piece of the system.</div>
+      <p>This ran on one task, in your browser, in under a minute. The real engagement starts with an audit, then a custom AI system — integrated with your phone, calendar, and CRM, held to eval gates and approval rules, first capability live in 48 hours.</p>
+      <div class="row">
+        <button class="pill" id="makereal">Make it real →</button>
+        <button class="btn2" id="again">↻ Try another business</button>
+      </div>
+      <form class="capture" id="capture">
+        <div class="cgrid">
+          <input id="cbiz" class="full" placeholder="Your business or website" autocomplete="off" />
+          <input id="cname" placeholder="Your name" autocomplete="off" />
+          <input id="cemail" type="email" placeholder="Email" autocomplete="off" />
+          <input id="cphone" class="full" placeholder="Phone (optional)" autocomplete="off" />
+        </div>
+        <label class="smsc"><input type="checkbox" id="csms" /> <span>I agree to receive text messages from YourCo about my request. Msg &amp; data rates may apply; msg frequency varies. Reply STOP to opt out, HELP for help. (Optional — not required.)</span></label>
+        <button type="submit" class="csub">Send → build mine</button>
+        <div class="cnote">Goes straight to the Founder — no spam. Prefer to talk? <a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=instant-employee">Book a call</a>.</div>
+      </form>
+      <div class="cdone" id="cdone"></div>
+    </div>
+
+    <div class="honest">
+      <b>Honest about what this is.</b> When live generation is on, this reads your real website and builds the agent on the spot. The reliability gates shown — never quoting a price it shouldn't, never giving advice it shouldn't, routing to a human before anything's promised — are the same ones we wire into every real build. We show the human steps; we don't hide them.
+    </div>
+  </div>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=instant-employee">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const BIZ={
+  "cutterslandscape.com":{real:true,name:"Cutters Landscaping & Pools",role:"Front desk & intake",emoji:"🌿",metro:"Austin, TX",
+    ground:"Knows your services, both metros, and that you quote on-site — never over text.",
+    steps:["Reading cutterslandscape.com","Learning the services — pool, hardscape, design, irrigation","Picking up the voice — premium, Aggie owned, “a cut above”","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","Do y'all build pools out in Round Rock?"],
+      ["e","We do — Cutters builds across the Austin metro, Round Rock included. We're Pool &amp; Hot Tub Alliance certified and Aggie owned &amp; operated, so you're in good hands. Is this a brand-new pool, or adding one to an existing yard?"],
+      ["c","New build, and maybe a patio too"],
+      ["e","Perfect — pool construction plus hardscaping and outdoor living, all design-to-build under one roof. With our limestone soil and Texas heat, the design details matter, and that's exactly what our team does best. Your first consultation is free and includes a property estimate. What days work for an on-site visit this week?"],
+      ["c","Thursday or Friday I'm off"],
+      ["e","I've got Thursday 10am or Friday 2pm with our Austin design team — which works?"],
+      ["c","Thursday 10"],
+      ["e","Booked: Thursday 10am, free on-site consultation with a property estimate. I'll text a confirmation now and a reminder Thursday morning. What's the best name and cell to put on it?"]],
+    checks:[["✅","Answered as <b>Cutters</b> — by name, in their premium voice"],
+      ["🧭","Routed to the right metro — the <b>Austin</b> team, not Dallas"],
+      ["✅","Offered only <b>real services</b> — pool, hardscape, outdoor living"],
+      ["📅","Booked a real <b>free consult + property estimate</b>"],
+      ["⛔","<b>Never quoted a price</b> — Cutters prices on-site. The gate holds."],
+      ["🧍","Lead + booking sent to Cutters to <b>confirm</b> before anything's promised"],
+      ["📊","Logged — source, service, metro, slot → a clean pipeline"]],
+    deliver:"Qualified lead — Round Rock · new pool + patio · Thu 10:00 consult · routed to Austin team"},
+
+  "northside-dental.com":{real:false,name:"Northside Dental",role:"Front desk & scheduling",emoji:"🦷",metro:"",
+    ground:"Captures the new patient and the insurance — and never crosses into clinical advice.",
+    steps:["Reading the practice site","Learning the services — cleanings, exams, new patients","Picking up the voice — warm, clear, reassuring","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","Hi, do you take new patients? My son needs a cleaning"],
+      ["e","We do — Northside is welcoming new patients, and we love seeing kids. Is this his first visit with us? And do you have dental insurance you'd like us to check?"],
+      ["c","First visit, yeah we have Delta Dental"],
+      ["e","Great — I'll note Delta Dental and we'll verify the benefits before the visit so there are no surprises. For a new young patient we book the cleaning and exam together. Are mornings or afternoons easier for you?"],
+      ["c","After school, like 4ish"],
+      ["e","I have Tuesday 4:00 or Thursday 4:15 this week — which works?"],
+      ["c","Tuesday"],
+      ["e","Booked — Tuesday 4:00, cleaning + exam, new patient. I'll text the new-patient forms to do ahead of time and a reminder the day before. What's the best name and number?"]],
+    checks:[["✅","Answered as <b>Northside Dental</b> — warm and clear"],
+      ["✅","Captured what matters — <b>new patient, a child, the insurer</b>"],
+      ["⛔","<b>Gave no clinical advice</b> — booked the visit, flagged the rest"],
+      ["🧍","Insurance verification <b>routed to staff</b> before the appointment"],
+      ["📋","New-patient <b>forms sent</b> automatically"],
+      ["📊","Logged — patient, insurer, reason, slot"]],
+    deliver:"New patient booked — pediatric cleaning + exam · Tue 4:00 · Delta Dental to verify · forms sent"},
+
+  "lumen-aesthetics.com":{real:false,name:"Lumen Aesthetics",role:"Front desk & consults",emoji:"💆",metro:"",
+    ground:"Books the consult and protects the brand — no medical prices, no medical promises.",
+    steps:["Reading the med-spa site","Learning the services — injectables, consults, memberships","Picking up the voice — warm, elevated, no-pressure","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","how much is botox?"],
+      ["e","Happy to help! At Lumen, pricing depends on the treatment areas and units, so our injector sets that at your complimentary consultation — that way you only pay for what you actually need. Have you had Botox before, or would this be your first time?"],
+      ["c","first time, for forehead lines"],
+      ["e","Lovely — forehead lines are one of the most common first treatments. The consult is free, with no pressure to book same-day. We have an injector available this week — would a morning or an evening suit you better?"],
+      ["c","evening"],
+      ["e","I have Wednesday 5:30 or Friday 6:00 — which works?"],
+      ["c","Friday 6"],
+      ["e","Booked — Friday 6:00, complimentary consultation for forehead lines. I'll text a confirmation and a few pre-consult notes. What name and cell should I use?"]],
+    checks:[["✅","Answered as <b>Lumen</b> — on-brand and warm"],
+      ["⛔","<b>Never quoted a medical price</b> — the injector sets that in person"],
+      ["⛔","<b>Promised no result, gave no medical advice</b> — that's the provider's call"],
+      ["🧍","Consultation <b>routed to a licensed injector</b>"],
+      ["📊","Logged — interest, first-timer, area, slot"]],
+    deliver:"Consult booked — first-time, forehead · Fri 6:00 · routed to injector · pre-consult notes sent"},
+
+  "plogsteinlaw.com":{real:true,name:"Plog & Stein P.C.",role:"Intake & consultation coordinator",emoji:"⚖️",metro:"Denver metro, CO",
+    ground:"Knows your practice areas and your counties — and will not give legal advice or skip the conflict check.",
+    steps:["Reading plogsteinlaw.com","Learning the practice — divorce, custody, support, since 1999","Picking up the voice — honest, logical, reassuring","Meeting a prospective client","Wiring the conflict check + the no-advice guardrail"],
+    chat:[["c","I think I need a divorce and we have two kids. I don't even know where to start."],
+      ["e","I'm so sorry you're going through this — it's a lot, and you don't have to have it figured out to take the first step. Plog &amp; Stein has focused only on family law since 1999, and divorce with children is exactly what the team handles every day. To get you to the right attorney, may I ask a couple of quick things? Which county are you in — Denver, Arapahoe, Douglas?"],
+      ["c","Arapahoe county"],
+      ["e","Thank you. And so we can check there's no conflict before we talk specifics, what is your spouse's full name? I'll have our team clear that ahead of your consultation."],
+      ["c","...do you really need that?"],
+      ["e","I understand. It's only so we can confirm the firm has no connection to the other side — that protects you. It stays confidential, goes straight to our staff, and never into a marketing list. You're welcome to give it when we confirm the appointment if you'd prefer."],
+      ["c","okay. it's Michael Reyes"],
+      ["e","Thank you. Your initial consultation is free. I'll set you with an attorney who handles Arapahoe County custody matters — would a morning or an afternoon be easier this week?"],
+      ["c","afternoons, after I drop the kids at school"],
+      ["e","Let's do an afternoon. I have Wednesday 1:30 or Thursday 2:00 — pending the conflict check, which works? And to be clear, I can't give legal advice on your situation — that's exactly what the attorney is there for."],
+      ["c","Wednesday 1:30"],
+      ["e","I'll request Wednesday 1:30, pending the conflict check, and text you a confirmation. What's the best name and number for you?"]],
+    checks:[["✅","Answered as <b>Plog &amp; Stein</b> — calm, “honest and logical,” in their voice"],
+      ["⛔","<b>Gave no legal advice</b> — that's the attorney's role, said plainly"],
+      ["🛡️","Ran a <b>conflict check first</b> — captured the opposing party, routed to staff to clear <i>before</i> booking"],
+      ["🧭","Captured the <b>county</b> — jurisdiction decides who handles it (Arapahoe)"],
+      ["⛔","<b>Quoted no fees, promised no outcome</b>"],
+      ["🔒","Kept it <b>confidential</b> — to staff, never a marketing list"],
+      ["🧍","Routed to an <b>attorney</b> for the consult · logged the matter type"]],
+    deliver:"Intake → consult requested — Arapahoe Co. divorce + custody · Wed 1:30 (pending conflict check) · routed to a family-law attorney · confidential"},
+
+  "crestlinerealty.com":{real:false,name:"Crestline Realty",role:"Front desk & buyer/seller intake",emoji:"🏡",metro:"",
+    ground:"Qualifies buyers and sellers and books the showing or listing consult — and never gives a home valuation it can't stand behind.",
+    steps:["Reading the brokerage site","Learning the service area + active listings","Picking up the voice — local, warm, professional","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","Hi, I saw your listing on Maple Ave — is it still available?"],
+      ["e","Hi! Yes, the Maple Ave home is still active — it's a great one. Are you hoping to tour it, or are you earlier in your search and getting to know the area?"],
+      ["c","I'd like to tour it. I might also need to sell my current place"],
+      ["e","Happy to set up both. For the tour, are you already working with an agent, or would you like one of ours to walk you through? And for your home, we can book a quick listing consult to talk timing and value."],
+      ["c","No agent yet. This weekend works"],
+      ["e","Perfect — I have Saturday 11am or Sunday 1pm for the Maple Ave tour with one of our buyer agents, and I'll pair you with someone who knows that neighborhood. Which works?"],
+      ["c","Saturday 11"],
+      ["e","Booked — Saturday 11am at Maple Ave. For your sale, I'll have a listing agent bring local comps to a separate, no-obligation consult. What's the best name and cell, and your current home's address?"]],
+    checks:[["✅","Answered as <b>Crestline</b> — local and warm"],
+      ["✅","Qualified the buyer — touring vs browsing, agent status"],
+      ["🏷️","Booked a <b>showing + a separate listing consult</b> from one chat"],
+      ["⛔","<b>Gave no home valuation</b> — the agent brings real comps in person"],
+      ["🧍","Paired with a <b>neighborhood agent</b> before promising anything"],
+      ["📊","Logged — buyer + seller lead, address, slot"]],
+    deliver:"Two leads from one chat — Maple Ave showing (Sat 11:00) + a listing consult · paired with a local agent"},
+
+  "oliveandash.com":{real:false,name:"Olive & Ash",role:"Reservations & events",emoji:"🍽️",metro:"",
+    ground:"Books tables and fields catering and private-event inquiries — and never confirms a private booking without the manager's okay.",
+    steps:["Reading the restaurant site","Learning the menu + private-dining options","Picking up the voice — warm, hospitable","Meeting a guest","Wiring the approval gate"],
+    chat:[["c","Do you have space for a party of 12 on Friday night?"],
+      ["e","Let me help! A party of 12 on Friday works — for that size we usually use our semi-private area. Is this a casual dinner, or a celebration where you'd want a set menu?"],
+      ["c","Birthday dinner — a set menu sounds nice"],
+      ["e","Lovely. For a birthday with a set menu we have a few per-person options. I'll hold the table now and have our events manager send the menu choices to confirm. About what time Friday, and any allergies in the group?"],
+      ["c","7pm, one person is gluten free"],
+      ["e","Got it — Friday 7pm, party of 12, one gluten-free guest noted. The table's held; our events manager will confirm the set menu and any deposit. What name and number should I put on it?"]],
+    checks:[["✅","Answered as <b>Olive &amp; Ash</b> — warm and on-brand"],
+      ["✅","Captured it all — party size, occasion, time, allergy"],
+      ["📅","<b>Held the table</b> immediately"],
+      ["⛔","Didn't finalize the private event or a deposit — routed to the manager"],
+      ["🧍","Events manager <b>confirms the menu</b> before it's promised"],
+      ["📊","Logged — reservation + an event lead"]],
+    deliver:"Reservation + event lead — party of 12, Fri 7:00, GF noted · table held · events manager to confirm"},
+
+  "summitautogroup.com":{real:false,name:"Summit Auto Group",role:"Sales & service intake",emoji:"🚙",metro:"",
+    ground:"Routes sales vs service and books test drives — and never quotes a trade-in or repair price sight-unseen.",
+    steps:["Reading the dealership site","Learning the inventory + service lines","Picking up the voice — helpful, no pressure","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","What's my 2019 Tacoma worth on trade?"],
+      ["e","Great question — trade value comes down to mileage and condition, so our team gives you a firm number after a quick look rather than a guess that changes later. Are you thinking of trading toward something specific on our lot?"],
+      ["c","Maybe a 4Runner if you have one"],
+      ["e","We do have 4Runners in stock. I can set you up for a test drive and a trade appraisal in the same visit, so you get real numbers on both. Are evenings or weekends better?"],
+      ["c","Saturday morning"],
+      ["e","Perfect — Saturday morning for a 4Runner test drive plus a Tacoma trade appraisal, with a sales consultant ready. What's the best name and cell, and your Tacoma's rough mileage so we're prepared?"]],
+    checks:[["✅","Answered as <b>Summit</b> — helpful, no pressure"],
+      ["🧭","Routed correctly — sales intent with a trade/appraisal need"],
+      ["🚗","Booked a <b>test drive + trade appraisal</b> together"],
+      ["⛔","<b>Quoted no trade or repair price sight-unseen</b>"],
+      ["🧍","Handed to a <b>sales consultant</b> with the context"],
+      ["📊","Logged — vehicle interest, trade, slot"]],
+    deliver:"Booked — Sat AM 4Runner test drive + Tacoma trade appraisal · sales consultant briefed"},
+
+  "vitanafitness.com":{real:false,name:"Vitana Fitness",role:"Membership & intake",emoji:"🏋️",metro:"",
+    ground:"Turns inquiries into booked intro sessions — and never gives medical or injury advice.",
+    steps:["Reading the studio site","Learning the classes + membership plans","Picking up the voice — encouraging, upbeat","Meeting a prospect","Wiring the approval gate"],
+    chat:[["c","How much is a membership? I'm trying to lose weight"],
+      ["e","Love that you're starting! Pricing depends on which plan fits your goals, so the best first step is a free intro session where a coach maps a plan with you — then you'll know exactly what's right. Have you trained at a gym before, or is this a fresh start?"],
+      ["c","Fresh start, and my knee is a little iffy"],
+      ["e","A great place to begin, and we'll take it at your pace. I'll note to have your coach plan around the knee — though anything medical we'd leave to your doctor, of course. Mornings or evenings better for a free intro this week?"],
+      ["c","Evenings"],
+      ["e","Great — I have Tuesday 6pm or Thursday 6:30 for your free intro with a coach. Which works, and what's the best name and number?"]],
+    checks:[["✅","Answered as <b>Vitana</b> — encouraging, on-brand"],
+      ["✅","Booked a <b>free intro</b> instead of quoting a number cold"],
+      ["⛔","<b>Gave no medical or injury advice</b> — flagged the knee to the coach, deferred to a doctor"],
+      ["🧍","Routed to a <b>coach</b> to build the plan"],
+      ["📊","Logged — goal, experience, slot"]],
+    deliver:"Free intro booked — weight-loss goal, knee flagged for the coach · Tue 6:00 · membership discussed in person"},
+
+  "truelinehome.com":{real:false,name:"TrueLine Home Services",role:"Dispatch & scheduling",emoji:"🔧",metro:"",
+    ground:"Triages urgent vs routine and dispatches the right tech — and never quotes a repair price before a tech sees it.",
+    steps:["Reading the company site","Learning the trades + service area","Picking up the voice — calm, dependable","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","My AC died and it's 98 degrees — I have a newborn"],
+      ["e","I'm sorry — that's a priority, and with a newborn at home I'll flag this urgent. We do same-day emergency calls. Quick triage: is the unit getting power and not cooling at all, or running but blowing warm?"],
+      ["c","Running but blowing warm air"],
+      ["e","Thanks — that helps the tech come prepared. I can get someone out today: a 2–4pm or 4–6pm window. The diagnostic visit has our standard trip fee, and the tech gives you a firm repair price on-site before any work. Which window?"],
+      ["c","2-4 please"],
+      ["e","Done — a tech is booked for 2–4pm today, flagged urgent, and they'll call before arrival. What's the best name, number, and the service address?"]],
+    checks:[["✅","Answered as <b>TrueLine</b> — calm and fast"],
+      ["🚨","Triaged urgency correctly — newborn + heat → <b>same-day</b>"],
+      ["🧰","Captured symptoms so the <b>tech arrives prepared</b>"],
+      ["⛔","<b>Quoted no repair price</b> — the tech prices on-site after diagnosis"],
+      ["🧍","Dispatched a <b>real tech</b> with a callback"],
+      ["📊","Logged — issue, urgency, address, window"]],
+    deliver:"Same-day urgent dispatch — AC blowing warm, newborn flagged · tech 2–4pm · on-site quote · callback set"},
+
+  "marloweandco.com":{real:false,name:"Marlowe & Co.",role:"Customer support",emoji:"🛍️",metro:"",
+    ground:"Answers order, shipping, and return questions — and never issues a refund outside your approval rules.",
+    steps:["Reading the store","Learning the catalog + the return policy","Picking up the voice — friendly, on-brand","Meeting a customer","Wiring the approval gate"],
+    chat:[["c","My order says delivered but I never got it"],
+      ["e","I'm sorry about that — let's sort it out. Can you share your order number or the email on the order? I'll pull up the carrier tracking and the delivery scan."],
+      ["c","Order #4821"],
+      ["e","Thanks — I see #4821, marked delivered yesterday to your address. Carriers sometimes scan early. Per our policy I'll open a claim with the carrier and queue either a reshipment or a refund for the team to approve. Did it ship to the right place — the address ending in …7th St?"],
+      ["c","Yes that's my address"],
+      ["e","Got it. I've opened the carrier claim and queued a reshipment for approval — you'll get an email once it's confirmed, usually same day. Anything else while I'm here?"]],
+    checks:[["✅","Answered as <b>Marlowe &amp; Co.</b> — calm and helpful"],
+      ["✅","Pulled the <b>real order + tracking</b>, confirmed the address safely"],
+      ["⛔","<b>Did not auto-issue a refund</b> — queued it for approval per policy"],
+      ["🔒","Showed only a <b>partial address</b> — protected the customer's data"],
+      ["🧍","Reship / refund <b>routed to the team</b> to approve"],
+      ["📊","Logged — order, issue, resolution path"]],
+    deliver:"Lost-package path — #4821 carrier claim opened · reshipment queued for approval · customer updated"},
+
+  "northbridgewealth.com":{real:false,name:"Northbridge Wealth",role:"Prospect intake",emoji:"📈",metro:"",
+    ground:"Qualifies prospects and books the intro — and never gives investment advice or promises a return.",
+    steps:["Reading the firm site","Learning the services + who they serve","Picking up the voice — professional, measured","Meeting a prospect","Wiring the no-advice guardrail"],
+    chat:[["c","I have about 200k to invest — can you help?"],
+      ["e","We'd be glad to explore that with you. To match you with the right advisor: is this primarily for retirement, growth, or income? And are the funds in a 401(k)/IRA or taxable savings?"],
+      ["c","Retirement mostly — it's in an old 401k"],
+      ["e","Helpful — a retirement focus, and an old 401(k) we might look at consolidating. I'll set an intro with an advisor who specializes in retirement planning. To be clear, I can't give investment advice or promise returns here — the advisor builds a real plan with you. Mornings or afternoons this week?"],
+      ["c","Afternoons"],
+      ["e","Great — Wednesday 2pm or Friday 3pm for a no-cost intro with a retirement advisor. Which works, and what's the best name and email?"]],
+    checks:[["✅","Answered as <b>Northbridge</b> — professional and measured"],
+      ["🧭","Qualified — goal, account type, amount"],
+      ["⛔","<b>Gave no investment advice, promised no returns</b> — said plainly"],
+      ["🧍","Routed to a <b>retirement-planning advisor</b>"],
+      ["📊","Logged — goal, account, slot · suitability noted"]],
+    deliver:"Qualified prospect — ~$200k, retirement, old 401(k) rollover · intro booked with a retirement advisor"},
+
+  "cedarcreekvet.com":{real:false,name:"Cedar Creek Vet",role:"Front desk & triage",emoji:"🐾",metro:"",
+    ground:"Books visits and triages urgency — and never diagnoses or gives medical advice over the phone.",
+    steps:["Reading the clinic site","Learning the services + hours","Picking up the voice — caring, calm","Meeting a pet owner","Wiring the no-diagnosis guardrail"],
+    chat:[["c","My dog ate something and is throwing up — what do I do?"],
+      ["e","I'm sorry, that's stressful — let's get him seen. I can't diagnose or advise over the phone, but I'll flag this for our team right now. Quick triage: is he alert and breathing normally, or lethargic or struggling? And do you know what he ate?"],
+      ["c","Alert but threw up twice. Maybe part of a chocolate bar"],
+      ["e","Thank you — possible chocolate plus vomiting is something we'd want to see today. I'll mark this urgent and have a tech ready. Can you come in within the hour, or should I check our nearest emergency partner if you're far?"],
+      ["c","I can come now"],
+      ["e","Great — come now and we'll have a tech meet you and flag it for the vet on arrival. Bring the wrapper if you can. What's your name, your dog's name, and a callback number?"]],
+    checks:[["✅","Answered as <b>Cedar Creek</b> — caring and calm"],
+      ["🚨","Triaged urgency — possible toxin + vomiting → <b>seen today</b>"],
+      ["⛔","<b>Did not diagnose or advise</b> — flagged to the medical team"],
+      ["🧍","Routed to a <b>tech/vet</b>, offered an ER partner if far"],
+      ["📊","Logged — symptoms, possible cause, callback"]],
+    deliver:"Urgent same-hour visit — vomiting + possible chocolate · flagged for the vet · ER partner offered as backup"}
+};
+const DEFAULT="cutterslandscape.com";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+let running=false;
+
+function norm(s){return (s||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/^www\./,"").replace(/\/.*$/,"");}
+
+let cur=null;  // the active business key, for the lead-capture handlers
+async function run(input){
+  if(running)return;
+  const key=norm(input);
+  if(!key){$("url").focus();return;}
+  running=true; cur=key;
+  const matched=BIZ[key];
+  // reset
+  ["result","closer","banner","staged"].forEach(i=>$(i).classList.remove("show"));
+  $("chat").innerHTML="";$("checks").innerHTML="";$("gen").innerHTML="";
+  // unmatched → honest "not live yet" state (never fake a different vertical)
+  if(!matched){
+    $("gen").classList.add("show");
+    for(const s of [`Checking ${key}…`,"Live generation isn't switched on yet…"]){
+      const d=document.createElement("div");d.className="gline";
+      d.innerHTML=`<span class="sp"></span><span class="t">${s}</span>`;
+      $("gen").appendChild(d);await wait(70);d.classList.add("in");await wait(560);d.classList.add("done");
+    }
+    await wait(300);$("gen").classList.remove("show");$("gen").innerHTML="";
+    $("stagedurl").textContent=key;
+    $("staged").classList.add("show");$("staged").scrollIntoView({behavior:"smooth",block:"center"});
+    running=false;return;
+  }
+  const showB=matched;
+  $("gen").classList.add("show");
+  // generating sequence
+  for(const s of showB.steps){
+    const d=document.createElement("div");d.className="gline";
+    d.innerHTML=`<span class="sp"></span><span class="t">${s}</span>`;
+    $("gen").appendChild(d);await wait(70);d.classList.add("in");await wait(620);
+    d.classList.add("done");
+  }
+  await wait(350);
+  $("gen").classList.remove("show");$("gen").innerHTML="";
+  // render employee
+  $("av").textContent=showB.emoji;$("nm").textContent=showB.role;
+  $("rl").textContent=`built for ${showB.name}`;
+  $("for").innerHTML=`an AI agent<br>for <b style="color:#fff">${showB.name}</b>${showB.metro?` · ${showB.metro}`:""}`;
+  $("ground").innerHTML=(showB.real?'<span style="color:var(--green);font-weight:600">Real business, scraped live. </span>':'<span style="color:#8a6f3c;font-weight:600">Illustrative sample. </span>')+showB.ground;
+  $("result").classList.add("show");
+  // chat
+  for(const [who,t] of showB.chat){
+    if(who==="e"){const ty=document.createElement("div");ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
+      $("chat").appendChild(ty);await wait(680);ty.remove();}
+    const d=document.createElement("div");d.className=`bub ${who}`;d.innerHTML=t;
+    $("chat").appendChild(d);await wait(40);d.classList.add("in");d.scrollIntoView({block:"nearest"});
+    await wait(who==="e"?560:440);
+  }
+  // checks
+  await wait(250);
+  for(const [ic,t] of showB.checks){
+    const d=document.createElement("div");d.className="check";
+    d.innerHTML=`<span class="ic">${ic}</span><span>${t}</span>`;
+    $("checks").appendChild(d);await wait(40);d.classList.add("in");await wait(260);
+  }
+  $("deliver").textContent=showB.deliver;
+  await wait(300);$("closer").classList.add("show");
+  running=false;
+}
+
+$("go").onclick=()=>run($("url").value||DEFAULT);
+$("url").addEventListener("keydown",e=>{if(e.key==="Enter")run($("url").value||DEFAULT);});
+document.querySelectorAll("[data-k]").forEach(btn=>btn.onclick=()=>{$("url").value=btn.dataset.k;run(btn.dataset.k);});
+$("again").onclick=()=>{$("url").value="";$("url").focus();["result","closer"].forEach(i=>$(i).classList.remove("show"));window.scrollTo({top:0,behavior:"smooth"});};
+
+// Lead capture — "make it real" → CRM. At launch the form POSTs to /api/capture → appends a
+// company+contact+deal (stage:prospect, source:"Instant Employee") to crm/data.json
+// (see crm/integrations/instant-employee-capture.md). Pre-launch working path: a structured
+// payload (inspectable) + a prefilled mailto to the Founder, so no lead is lost without a backend.
+const CAP=$("capture"),CDONE=$("cdone");
+$("makereal").onclick=()=>{const e=BIZ[cur]||{};$("cbiz").value=($("url").value||e.name||"");CAP.classList.add("show");$("cname").focus();CAP.scrollIntoView({behavior:"smooth",block:"center"});};
+CAP.addEventListener("submit",ev=>{
+  ev.preventDefault();const e=BIZ[cur]||{};
+  const lead={source:"Instant Employee (self-serve)",business:$("cbiz").value.trim(),name:$("cname").value.trim(),
+    email:$("cemail").value.trim(),phone:$("cphone").value.trim(),interest:e.role||"",
+    smsConsent:$("csms").checked};
+  if(!lead.name||!lead.email)return;
+  try{console.log("[yourco lead]",JSON.stringify(lead));window.__yourcoLeads=(window.__yourcoLeads||[]);window.__yourcoLeads.push(lead);}catch(_){}
+  const subj=encodeURIComponent(`New yourco lead — ${lead.business||lead.name}`);
+  const body=encodeURIComponent(`Source: ${lead.source}\nBusiness: ${lead.business}\nName: ${lead.name}\nEmail: ${lead.email}\nPhone: ${lead.phone}\nSMS consent: ${lead.smsConsent?"YES (opted in)":"no"}\nInterested in: ${lead.interest||"an AI agent"}`);
+  const mailto=`mailto:founder@yourco.example.com?subject=${subj}&body=${body}`;
+  CAP.classList.remove("show");
+  CDONE.innerHTML=`<div class="ct">Got it, ${esc(lead.name.split(" ")[0]||"there")} — your request is in.</div><p>the Founder will reach out about building ${lead.interest?("a "+esc(lead.interest)+" agent"):"your agent"} for ${esc(lead.business)||"your business"}.</p><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=instant-employee">Book a call →</a><a href="${esc(mailto)}" style="background:transparent;border:1px solid var(--brass);color:var(--brass)">Email it instead</a>`;
+  CDONE.classList.add("show");CDONE.scrollIntoView({behavior:"smooth",block:"center"});
+});
+</script>
+<script>if(document.documentElement.classList.contains('embed')){function rh(){try{parent.postMessage({imHeight:document.body.scrollHeight},'*');}catch(e){}}new ResizeObserver(rh).observe(document.body);addEventListener('load',rh);setTimeout(rh,400);setInterval(rh,1000);}</script>
+</body>
+</html>

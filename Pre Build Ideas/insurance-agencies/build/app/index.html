@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renewal OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-renewals"></section>
+  <section class="view" id="v-coi"></section>
+  <section class="view" id="v-crosssell"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system never quotes, never binds,
+and never gives a coverage opinion — material client communication is drafted for a licensed producer.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'The book'},{id:'renewals',label:'Renewals'},{id:'coi',label:'Certificates'},
+      {id:'crosssell',label:'Mono-line'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,renewals,coi,crosssell,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.agency;
+  document.getElementById('cosub').textContent = `${d.config.people} people · ${(d.config.producers||[]).length} producers · ${(d.config.carriers||[]).length} carriers`;
+  const byP = b.retention._missing ? '' : Object.entries(b.retention.by_producer).map(([k,v]) =>
+    `<tr><td>${esc(k)}</td><td class="num">${v.n}</td><td class="num">${v.rate==null?blank(v._missing):fmt.pct(v.rate)}</td></tr>`).join('');
+  document.getElementById('v-board').innerHTML =
+    panel('Retention is the business', 'counted from renewals that reached a terminal state',
+      `<div class="grid">
+        ${stat('Retention (12 mo)', val(b.retention,'rate',fmt.pct), b.retention._missing?'':`${b.retention.n} completed renewals`)}
+        ${stat('Premium at risk (90d)', fmt.money(b.at_risk_90.premium), `${b.at_risk_90.policies} policies · ${fmt.money(b.at_risk_90.commission)} commission`)}
+        ${stat('Mono-line share', val(b.mono_line,'share',fmt.pct), b.mono_line._missing?'':`${b.mono_line.mono} of ${b.mono_line.households_with_a_policy} households`)}
+        ${stat('COI turnaround', val(b.coi_turnaround,'median_hours', v=>v+'h'), b.coi_turnaround._missing?'':'median')}
+       </div>`) +
+    (byP ? panel('By producer','a producer under ten renewals is not rated — the number would be noise',
+      `<div class="scroll"><table><thead><tr><th>Producer</th><th class="num">Renewals</th><th class="num">Retention</th></tr></thead><tbody>${byP}</tbody></table></div>`, true) : '') +
+    panel('', '', `<div class="grid">${renderAutomation(b.automation)}
+      ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 approval floor')}</div>`);
+}
+
+async function renewals(){
+  const d = await API.get('/api/renewals');
+  document.getElementById('v-renewals').innerHTML =
+    `<div class="banner">${esc(d.note)} · ${d.quiet_handled} quiet renewals handled automatically so far.</div>` +
+    panel('Material — a producer owns these', `${d.total} in the next 90 days` + (d.truncated ? ` · ${d.truncated}` : ''),
+      table([{label:'Days out',num:true},{label:'Line'},{label:'Change',num:true},{label:'Cause'},{label:'Coverage moved'},{label:'Drafted call'},{label:''}],
+        d.material, m=>`<td class="num">${m.days_out}</td><td>${esc(m.line)}</td>
+          <td class="num strong">${m.delta_pct==null?blank('no expiring premium on file'):(m.delta_pct*100).toFixed(1)+'%'}</td>
+          <td>${pill(String(m.cause).replace(/_/g,' '), m.cause==='unknown'?'warn':'')}<div class="why">${esc(m.cause_note)}</div></td>
+          <td>${(m.coverage_changes||[]).map(c=>`<div class="why">${esc(c.field)}: ${esc(String(c.was))} → <b>${esc(String(c.now))}</b></div>`).join('')||'<span class="why">no</span>'}</td>
+          <td class="why">${esc(m.body)}</td>
+          <td class="right"><button class="act" onclick="remarket('${m.policy}')">Remarket</button></td>`), true) +
+    `<div id="rm"></div>`;
+}
+
+async function remarket(id){
+  const bare = await API.get(`/api/remarket/${id}?bare=1`);
+  const full = await API.get(`/api/remarket/${id}`);
+  const c = full.comparison, bc = bare.comparison;
+  document.getElementById('rm').innerHTML =
+    panel('Quote came back without a coverage schedule', 'the rule, not a setting',
+      `<div class="banner warn">${esc(bc._missing)}</div>
+       <div class="why">The premium was ${fmt.money(bare.submission.expiring_premium)} and the quote is cheaper.
+       It is still not shown, because a cheaper number with no coverage beside it is how an agency
+       ends up in an E&amp;O claim.</div>`) +
+    panel('Quote came back WITH its schedule', esc(c.note),
+      `<div class="grid">
+        ${stat('Current', fmt.money(c.current_premium))}
+        ${stat('Quoted', fmt.money(c.quoted_premium))}
+        ${stat('Difference', fmt.money(c.savings), 'read the coverage first')}
+       </div>` +
+      table([{label:'Coverage'},{label:'Current'},{label:'Quoted'}], c.coverage_differences,
+        x=>`<td>${esc(x.field)}</td><td>${esc(String(x.current))}</td><td class="strong">${esc(String(x.quoted))}</td>`));
+}
+
+async function coi(){
+  const d = await API.get('/api/coi');
+  document.getElementById('v-coi').innerHTML =
+    `<div class="banner warn">${esc(d.note)}</div>` +
+    panel('Issued', `${d.issued.length} routine certificates`, table(
+      [{label:'Holder'},{label:'Why it was routine'},{label:'Issued'}], d.issued,
+      i=>`<td>${esc(i.holder||'')}</td><td class="why">${esc(i.why)}</td>
+        <td>${i.executed?pill('issued at R2','good'):pill('held','warn')}</td>`), true) +
+    panel('Escalated — a human reads the policy', `${d.escalated.length} stopped`, table(
+      [{label:'Holder'},{label:'Requested language'},{label:'Why it stopped'}], d.escalated,
+      e=>`<td>${esc(e.holder||'')}</td><td>${esc(e.language||'(unreadable)')}</td>
+        <td>${(e.reasons||[]).map(r=>pill(r,'bad')).join(' ')}<div class="why">${esc(e.why)}</div></td>`), true);
+}
+
+async function crosssell(){
+  const d = await API.get('/api/crosssell');
+  document.getElementById('v-crosssell').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('Permitted factors', 'the scorer reads these and nothing else',
+      `<div>${d.permitted_factors.map(f=>pill(f,'brand')).join(' ')}</div>`) +
+    panel('Ranked', `${d.n} mono-line households`, table(
+      [{label:'Household'},{label:'Holds'},{label:'Gap'},{label:'Score',num:true},{label:'Why'}],
+      d.rows, r=>`<td>${esc(r.household)}</td><td class="num">${fmt.money(r.premium_total)}</td>
+        <td>${pill(r.gap||'—','brand')}</td><td class="num strong">${r.score}</td>
+        <td><ul class="reasons">${(r.why||[]).map(w=>`<li>${esc(w)}</li>`).join('')}</ul></td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['renewals_per_year','Renewals / year','counted from your book'],
+    ['retention_points_gained','Retention points gained','your number'],
+    ['avg_commission','Avg commission / policy','counted'],
+    ['persistency_years','Persistency years','COMPOUNDS — set to 1 for the one-year answer'],
+    ['flagged_increases_per_year','Flagged increases / yr','counted'],
+    ['save_rate','Save %','your number'],
+    ['mono_line_households','Mono-line households','counted'],
+    ['contact_rate','Contact %','your number'],['bind_rate','Bind %','your number'],
+    ['added_commission','Added commission / bind','your number'],
+    ['certs_wk','Certificates / wk','your number'],['minutes_each','Minutes each','your number'],
+    ['loaded_rate','Loaded CSR rate','your number']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide')+renderEval(ev)+renderAutonomy(au.matrix)+renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'producer'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

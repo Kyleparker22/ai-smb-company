@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo runtime watchdog — daily 08:15 ET (after the morning loops); alerts on any missed run
+
+[Timer]
+OnCalendar=*-*-* 08:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

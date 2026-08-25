@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Set up your AI employee — yourco</title>
+<meta name="description" content="A quick guided setup so yourco can build and connect your new AI employee — or book a 10-minute call and we'll walk you through it." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--brass:#B8965A;--ink:#15192e;--muted:#5b617a;--line:#e7e1d4}
+  .form-wrap{max-width:680px}
+  .q{margin:18px 0}
+  .q label{display:block;font-weight:600;font-size:15px;margin-bottom:6px}
+  .q .hint{font-weight:400;color:var(--muted);font-size:13px}
+  .q input,.q textarea{width:100%;padding:12px 13px;border:1px solid #d9d3c5;border-radius:9px;font:inherit;background:#fff}
+  .q input:focus,.q textarea:focus{outline:2px solid var(--brass);border-color:var(--brass)}
+  .q textarea{min-height:70px;resize:vertical}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .callbox{background:#faf7f0;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:18px 0}
+  .callbox h3{margin:0 0 6px;font-size:16px}
+  .callbox ul{margin:8px 0 0;padding-left:20px;color:var(--muted);font-size:13.5px}
+  .callbox .pill{margin-top:14px}
+  .submit{margin-top:10px;cursor:pointer;border:0}
+  .ok{display:none;background:rgba(79,107,74,.1);border:1px solid rgba(79,107,74,.4);color:#33502f;border-radius:12px;padding:20px;margin-top:18px}
+  .staged{font-size:12.5px;color:var(--muted);margin-top:14px}
+  @media(max-width:600px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="hire.html">Hire</a><a href="audit.html">The audit</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill sm">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="tile hero"><div class="wrap narrow">
+    <div class="eyebrow" id="eyebrow">setup · ~15 minutes</div>
+    <h1 id="title">Let's set up your AI employee.</h1>
+    <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+    <p id="intro">A few quick answers and we'll build it, connect it to your systems, and have it working in days. Prefer to talk it through? Book a 10-minute call below — either way, you're done in one sitting.</p>
+  </div></section>
+
+  <section class="tile parchment"><div class="wrap narrow form-wrap">
+
+    <!-- the call fallback (always visible up top) -->
+    <div class="callbox">
+      <h3>Rather walk through it on a quick call?</h3>
+      <p style="margin:0;color:var(--muted);font-size:14px">No problem — book a 10-minute setup call and we'll do it together. Have these handy:</p>
+      <ul id="haveHandy"></ul>
+      <a class="pill" href="https://calendly.com/the Founder-yourco/30min">Book a 10-min setup call →</a>
+    </div>
+
+    <form id="obForm">
+      <div class="eyebrow">about you</div>
+      <div class="two">
+        <div class="q"><label>Your name</label><input name="name" required placeholder="Jordan Smith" /></div>
+        <div class="q"><label>Email</label><input name="email" type="email" required placeholder="you@business.com" /></div>
+      </div>
+      <div class="two">
+        <div class="q"><label>Business name</label><input name="company" required placeholder="YourCo Outdoor" /></div>
+        <div class="q"><label>Phone</label><input name="phone" placeholder="(555) 123-4567" /></div>
+      </div>
+      <div class="q" style="margin-top:2px">
+        <label style="font-weight:400;font-size:13px;display:flex;gap:8px;align-items:flex-start">
+          <input type="checkbox" name="sms_consent" value="yes" style="width:auto;margin-top:3px" />
+          <span>Text me too (optional): I agree to receive SMS/RCS text messages from yourco about setting up my employee. Message frequency varies; message &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of any purchase. See our <a href="sms-terms.html" target="_blank" rel="noopener">SMS Terms</a> &amp; <a href="privacy.html" target="_blank" rel="noopener">Privacy</a>.</span>
+        </label>
+      </div>
+
+      <div class="eyebrow" style="margin-top:26px">setting up your <span id="empName">employee</span></div>
+      <div id="needs"></div>
+
+      <button class="pill submit" type="submit">Submit setup →</button>
+      <div class="staged">Staged — at launch this kicks off your build and lands in yourco's CRM. Nothing is processed until launch.</div>
+    </form>
+    <div class="ok" id="okMsg"></div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap">yourco · we build it and run it · <a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a></div></footer>
+
+<script src="hire-config.js"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const slug = (new URLSearchParams(location.search).get("e")||"").toLowerCase();
+  const H = window.YOURCO_HIRE || {employees:[]};
+  const E = (H.employees||[]).find(e=>e.slug===slug);
+
+  if(!E){
+    document.body.innerHTML = '<div style="max-width:620px;margin:80px auto;font:16px/1.6 -apple-system,Helvetica,Arial,sans-serif;padding:0 24px;color:#15192e">'
+      + '<a href="index.html" style="font-weight:700;color:#161B33;text-decoration:none">yourco.</a>'
+      + '<h1 style="margin-top:20px">Pick an employee to set up.</h1>'
+      + '<p style="color:#5b617a"><a href="hire.html" style="color:#B8965A;font-weight:600">See the ready-to-hire roster →</a></p></div>';
+  } else {
+    document.title = `Set up your ${E.name} — yourco`;
+    $("eyebrow").textContent = `setup · ${E.name} · ~15 minutes`;
+    $("title").textContent = `Let's set up your ${E.name}.`;
+    $("empName").textContent = E.name;
+    $("haveHandy").innerHTML = (E.haveHandy||[]).map(x=>`<li>${x}</li>`).join("");
+    $("needs").innerHTML = (E.needs||[]).map(n=>{
+      const field = n.type==="textarea"
+        ? `<textarea name="${n.k}" placeholder="${n.placeholder||''}"></textarea>`
+        : `<input name="${n.k}" type="text" placeholder="${n.placeholder||''}" />`;
+      return `<div class="q"><label>${n.label}</label>${field}</div>`;
+    }).join("");
+
+    $("obForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(this).entries());
+      data.source = "hire-onboarding";
+      data.employee = E.slug; data.employeeName = E.name;
+      // TCPA: record explicit SMS/RCS opt-in + the disclosure shown + a timestamp (proof of consent)
+      const smsConsent = data.sms_consent === "yes";
+      data.sms_consent = smsConsent;
+      data.consent = smsConsent ? { channel: "sms/rcs", ts: new Date().toISOString(), text: "I agree to receive SMS/RCS text messages from yourco about setting up my employee. Msg frequency varies; msg & data rates may apply. STOP to opt out, HELP for help. Consent not a condition of purchase.", page: "hire-onboarding" } : null;
+      try{ fetch("/api/hire-onboarding",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}); }
+      catch(_){ /* staged */ }
+      const ok = $("okMsg");
+      ok.style.display="block";
+      ok.innerHTML = "<strong>You're all set, "+(data.name||"")+".</strong> We've got what we need to build your "+E.name+". We'll connect it to your systems and have it working in days — we'll be in touch the moment it's ready to go live for your approval.";
+      this.style.display="none";
+      ok.scrollIntoView({behavior:"smooth",block:"center"});
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5fd8">
+<title>Job · Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+
+<div class="bar"><div class="bar-in" style="max-width:560px">
+  <div class="logo"><span class="mark">◈</span><span>Work order</span></div>
+  <div class="grow"></div>
+  <span class="pill mute" id="who"></span>
+</div></div>
+
+<main class="mob" style="max-width:560px" id="main">
+  <div class="empty"><div class="big">◈</div>Loading job…</div>
+</main>
+
+<script src="/app.js"></script>
+<script>
+/* The vendor's whole surface is this one page, keyed by the link token —
+   no account, no password, no app to install. A tradesperson in a crawlspace
+   gets: what's wrong, what to bring, how to get in, and four buttons. */
+let TOKEN = new URLSearchParams(location.search).get('t') || location.hash.slice(1);
+let J = null, PHOTOS = [];
+
+async function load() {
+  if (!TOKEN) { $('#main').innerHTML = '<div class="empty">No job token in the link.</div>'; return; }
+  const r = await fetch('/api/job/' + encodeURIComponent(TOKEN));
+  if (!r.ok) { $('#main').innerHTML = '<div class="empty"><div class="big">?</div>Unknown or expired job link.</div>'; return; }
+  J = await r.json();
+  render();
+}
+
+function render() {
+  const q = J.request, tri = J.triage || {};
+  $('#who').textContent = J.vendor || '';
+  const done = q.status === 'resolved';
+  $('#main').innerHTML = `
+  <div style="padding:18px 0 12px">
+    <div class="row" style="gap:6px;margin-bottom:8px">
+      <span class="pill ${esc(q.priority)}">${esc(q.priority)}</span>
+      <span class="pill mute">${esc(STATUS_LABEL[q.status] || q.status)}</span>
+      ${q.vendor_accepted ? '<span class="pill ok">accepted</span>' : ''}
+    </div>
+    <h1 style="font-size:21px">${esc(q.title)}</h1>
+    <div class="muted small">${esc(J.property || '')} · Unit ${esc(J.unit || '')} · ${esc(J.address || '')}</div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px"><div class="card-b">
+    <div class="small" style="color:var(--ink-2)">${esc(q.description)}</div>
+    ${tri.likely_cause ? `<div class="small" style="margin-top:9px"><strong>Likely cause:</strong> ${esc(tri.likely_cause)}</div>` : ''}
+    ${(tri.parts_to_bring || []).length ? `<div class="small" style="margin-top:5px"><strong>Bring:</strong> ${esc(tri.parts_to_bring.join(', '))}</div>` : ''}
+    <div class="row wrap-r" style="gap:6px;margin-top:10px">
+      <span class="pill mute">entry: ${esc(String(q.entry_permission || '').replace(/_/g, ' '))}</span>
+      ${q.pets ? '<span class="pill warn">pets on site</span>' : ''}
+      ${q.entry_notes ? `<span class="pill mute">${esc(q.entry_notes)}</span>` : ''}
+      ${q.quote ? `<span class="pill brand">approved quote $${esc(q.quote)}</span>` : ''}
+    </div>
+  </div></div>
+
+  ${J.history?.length ? `<div class="card" style="margin-bottom:12px"><div class="card-b">
+    <div class="small" style="font-weight:620;margin-bottom:7px">This unit's history</div>
+    ${J.history.map(h => `<div class="tiny mono muted" style="padding:2px 0">${esc(h)}</div>`).join('')}
+  </div></div>` : ''}
+
+  ${done ? `
+  <div class="card" style="margin-bottom:12px"><div class="card-b">
+    <div class="small" style="font-weight:620;margin-bottom:9px">Job complete — invoice</div>
+    ${q.invoice_amount
+      ? `<div class="small muted">Invoice on file: $${esc(q.invoice_amount)}. ${
+          q.quote ? 'It is matched against the approved quote automatically.' : ''}</div>`
+      : `<label class="f" for="inv">Invoice amount ($)</label>
+         <input class="in" id="inv" type="number" inputmode="decimal" placeholder="e.g. ${esc(q.quote || 250)}">
+         <button class="btn lg primary" style="margin-top:11px" onclick="act('invoice', {amount: $('#inv').value})">
+           Submit invoice</button>
+         <div class="hint">Within 10% of the approved quote it clears automatically;
+           beyond that a person reviews the difference before it is paid.</div>`}
+  </div></div>` : `
+  <div class="card"><div class="card-b" style="display:flex;flex-direction:column;gap:10px">
+    ${!q.vendor_accepted ? `<button class="btn lg primary" onclick="act('accept', {})">Accept this job</button>` : ''}
+    <div>
+      <label class="f" for="win">Schedule a window</label>
+      ${(J.availability?.windows || []).length ? `
+      <div class="small" style="margin-bottom:6px">Resident can do${J.availability.state === 'stale'
+          ? ' <span class="pill warn tiny">stale — reconfirm</span>' : ''}:</div>
+      <div class="chips" style="flex-wrap:wrap;margin-bottom:8px">
+        ${J.availability.windows.map(w =>
+          `<button class="chip" onclick="act('schedule', {window: this.dataset.w})" data-w="${esc(w)}">${esc(w)}</button>`).join('')}
+      </div>
+      <div class="hint" style="margin-bottom:8px">${J.availability.state === 'fresh'
+        ? "Pick one and it's confirmed instantly — you both already said yes. Anything else below is a proposal the resident answers."
+        : esc(J.availability.note)}</div>` : ''}
+      ${J.proposed_window ? `<div class="pill warn" style="margin-bottom:8px">Proposed to the
+        resident: ${esc(J.proposed_window)} — waiting on their yes; nothing is booked yet</div>` : ''}
+      <div class="row" style="gap:8px">
+        <input class="in" id="win" placeholder="e.g. Tue Aug 19, 9–12" value="${esc(q.scheduled_for || '')}">
+        <button class="btn" onclick="act('schedule', {window: $('#win').value})">Set</button>
+      </div>
+    </div>
+    ${q.status !== 'in_progress' ? `<button class="btn lg" onclick="act('start', {})">I'm on site — start work</button>` : ''}
+    ${q.status !== 'in_progress' ? `
+    <div>
+      <div class="row" style="gap:8px">
+        <input class="in" id="dreason" placeholder="Can't take it? Tell us why (optional)">
+        <button class="btn danger" onclick="act('decline', {reason: $('#dreason').value})">Decline</button>
+      </div>
+      <div class="hint">A fast no is a good answer — the job moves to the next vendor
+        immediately and this link closes.</div>
+    </div>` : ''}
+    <div class="sep"></div>
+    <div>
+      <label class="f">Complete with proof <span class="muted" style="font-weight:400">— required</span></label>
+      <div class="photo-drop" onclick="$('#file').click()">
+        <div style="font-size:22px;margin-bottom:4px">📷🎥</div>
+        <div class="small">After photo(s) or a short video — proof is what closes the job</div>
+      </div>
+      <input type="file" id="file" accept="image/*,video/mp4,video/quicktime,video/webm" capture="environment" multiple hidden>
+      <div class="thumbs" id="thumbs"></div>
+      <input class="in" id="note" placeholder="What you did, parts used" style="margin-top:9px">
+      <button class="btn lg primary" style="margin-top:10px"
+              onclick="PHOTOS.length ? act('complete', {note: $('#note').value, photos: PHOTOS.map(p => ({media_type: p.media_type, data: p.data}))})
+                                     : toast('Attach a photo or video first — proof is what closes the job')">
+        Mark complete</button>
+      <div class="hint">The resident is asked in 48h whether it's actually fixed —
+        a reopen comes back to you, so the photo or video protects you too.
+        Video up to 60MB.</div>
+    </div>
+  </div></div>`}
+  <div class="hint" style="text-align:center;margin-top:14px">${esc(J.note || '')}</div>`;
+  wire();
+}
+
+function wire() {
+  const f = $('#file');
+  if (f) f.onchange = e => {
+    [...e.target.files].slice(0, 6 - PHOTOS.length).forEach(file => {
+      const isVideo = file.type.startsWith('video/');
+      if (isVideo && file.size > 60 * 1024 * 1024)
+        return toast(`${file.name} is over the 60MB video cap — trim it or take a shorter clip`);
+      if (!isVideo && file.size > 8 * 1024 * 1024)
+        return toast(`${file.name} is over the 8MB photo cap`);
+      const rd = new FileReader();
+      rd.onload = () => {
+        PHOTOS.push({ media_type: file.type, data: rd.result.split(',')[1], url: rd.result,
+                      video: isVideo });
+        $('#thumbs').innerHTML = PHOTOS.map(p => p.video
+          ? `<video src="${p.url}" muted playsinline style="width:96px;height:96px;object-fit:cover;border-radius:8px"></video>`
+          : `<img src="${p.url}" alt="proof photo">`).join('');
+      };
+      rd.readAsDataURL(file);
+    });
+  };
+}
+
+async function act(action, body) {
+  const r = await fetch(`/api/job/${encodeURIComponent(TOKEN)}/${action}`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body || {})
+  });
+  const j = await r.json();
+  if (!r.ok) return toast(j.error || 'Something went wrong');
+  if (j.closed) {
+    $('#main').innerHTML = `<div class="empty" style="padding-top:10vh"><div class="big">✓</div>
+      <div style="max-width:420px;margin:0 auto">${esc(j.note || 'This job link is closed.')}</div></div>`;
+    return;
+  }
+  J = j.job; PHOTOS = [];
+  render();
+  let msg = {accept: 'Accepted — thank you', schedule: 'Window set',
+             start: 'Marked in progress', complete: 'Complete. Nice work.',
+             invoice: 'Invoice submitted'}[action] || 'Done';
+  if (action === 'schedule')
+    msg = J?.request?.scheduled_for === (body?.window || '').trim()
+      ? 'Confirmed — the resident already offered that window'
+      : 'Proposed — the resident will be asked; nothing is booked until they say yes';
+  toast(msg);
+}
+
+load();
+</script>
+</body>
+</html>

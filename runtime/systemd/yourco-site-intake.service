@@ -1,0 +1,18 @@
+[Unit]
+Description=YourCo site form intake (audit-intake + rep-intake -> CRM + Slack) — LAUNCH-GATED, do not enable pre-launch
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+# At launch: reverse-proxy the public site's /api/audit-intake + /api/rep-intake here.
+# REGISTER in runtime/agent-registry.json sanctioned_daemons_no_timer the day this is enabled.
+ExecStart=/usr/bin/env python3 /home/claudeops/yourco-os/runtime/site_intake.py --serve 8797
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

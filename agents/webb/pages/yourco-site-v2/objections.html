@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — the honest answers" />
+<meta property="og:description" content="The questions every smart buyer asks about a custom AI OS — answered straight, no spin. Is it just ChatGPT? What if it messes up? Who owns my data? What does it cost?" />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — the honest answers</title>
+<meta name="description" content="The questions every smart buyer asks about a custom AI OS — answered straight, no spin. Is it just ChatGPT? What if it messes up? Who owns my data? What does it cost?" />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:56px 0 8px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 18px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(31px,5.2vw,50px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:600px;margin:14px auto 0}
+  .qa{max-width:740px;margin:36px auto 0}
+  .item{background:#fff;border:1px solid var(--hairline);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+  .item h2{font-size:18.5px;font-weight:650;line-height:1.25;margin-bottom:9px}
+  .item h2::before{content:"Q";display:inline-flex;width:24px;height:24px;border-radius:6px;background:var(--indigo);color:var(--brass-bright);font-size:13px;align-items:center;justify-content:center;margin-right:10px;vertical-align:2px}
+  .item p{font-size:15px;color:#2a3142;line-height:1.55}.item p b{color:var(--indigo)}
+  .item p a{color:var(--brass);text-decoration:none;font-weight:600}.item p a:hover{text-decoration:underline}
+  .closer{max-width:740px;margin:34px auto 0;text-align:center;background:var(--indigo);color:var(--cream);border-radius:16px;padding:30px 28px}
+  .closer h2{font-size:24px;color:var(--cream)}.closer p{color:rgba(244,239,230,.8);max-width:520px;margin:10px auto 0}
+  .closer .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  .closer a{text-decoration:none;font-weight:650;padding:12px 24px;border-radius:9999px;font-size:14.5px}
+  .closer .p1{background:var(--brass);color:var(--indigo)}.closer .p2{background:transparent;color:var(--brass-bright);border:1px solid rgba(212,178,122,.5)}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:46px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+
+/* ===== PREMIUM POLISH (2026-06-22, Webb) — editorial type · material grain · tactility · section rhythm · scroll-reveal. Quiet-luxury (Luka watch-notes). Additive + reversible; degrades gracefully. ===== */
+h1,.hero h1,h2.sec,.close h2,.pullquote,.value h3,.ptier h3,.audit-card h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560}
+h1,.hero h1{letter-spacing:-.022em}
+h2.sec,.close h2{letter-spacing:-.016em}
+.pullquote,.value h3,.ptier h3,.audit-card h3{letter-spacing:-.012em;font-weight:560}
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E")}
+.tile,footer,footer.site{position:relative;z-index:1}
+.nav{z-index:20}
+.card,.ptier{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease;box-shadow:0 1px 2px rgba(22,27,51,.04)}
+.card:hover,.ptier:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(22,27,51,.10);border-color:rgba(184,150,90,.55)}
+.tile.dark .card{box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tile.dark .card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34);border-color:rgba(184,150,90,.5)}
+.demo-frame{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.demo-frame:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(22,27,51,.18)}
+.pill{box-shadow:0 1px 2px rgba(22,27,51,.08)}
+.pill:hover{box-shadow:0 10px 24px rgba(184,150,90,.34);transform:translateY(-1px)}
+.pill:active{transform:translateY(0) scale(.98)}
+.nav-links a:not(.pill){position:relative;padding-bottom:3px}
+.nav-links a:not(.pill)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.2,.7,.3,1)}
+.nav-links a:not(.pill):hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.tile + .tile{box-shadow:0 -1px 0 var(--hairline)}
+.tile.dark + .tile,.tile + .tile.dark,.tile.dark{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .tile:not(.hero) .eyebrow,.tile:not(.hero) h2.sec,.tile:not(.hero) .lede,.tile:not(.hero) .value,.tile:not(.hero) .ptier,.tile:not(.hero) .card,.tile:not(.hero) .moat .m,.tile:not(.hero) .audit-card,.tile:not(.hero) .pullquote,.tile:not(.hero) .demo-frame,.tile:not(.hero) .prose > *,.close h2,.close .ctas{animation:revealRise linear both;animation-timeline:view();animation-range:entry 8% entry 46%}
+  @keyframes revealRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+}}
+/* ===== /PREMIUM POLISH ===== */
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=objections" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>The honest answers.</h1>
+    <p class="lede">The questions every smart buyer asks. Here's the straight version — no spin.</p>
+  </div></section>
+
+  <div class="qa">
+    <div class="item"><h2>Isn't this just ChatGPT with a wrapper?</h2>
+      <p>The model is a commodity — anyone can call one. What you're buying is the <b>reliability layer</b>: grounding in your business, eval gates, watchdogs, approval flows, and someone accountable for keeping it good. The wrapper is the easy 20%. Making it trustworthy enough to run inside your business is the product.</p></div>
+
+    <div class="item"><h2>What if it messes up with my customer?</h2>
+      <p>Anything customer-facing is <b>drafted for your approval</b> until you've seen enough to trust it. It earns autonomy in stages, against real performance — and before it ever goes live, we <b>red-team it</b> to try to break it. It's built to escalate when it's unsure, not to wing it. <a href="try-to-break-it.html">Try to break one yourself →</a></p></div>
+
+    <div class="item"><h2>Who owns my data? Is it safe?</h2>
+      <p><b>You do.</b> Your AI OS runs in your tenant; we access through scoped connectors. We don't sell your data, don't train foundation models on it, and there's a data-processing agreement (and a HIPAA BAA for healthcare). Least-privilege access, encryption, and an approval gate on anything destructive.</p></div>
+
+    <div class="item"><h2>What does it actually cost?</h2>
+      <p>A fixed fee to build your system, plus a monthly retainer that covers it <b>and all the infrastructure</b> — tokens, models, hosting. You never see a usage bill. We share exact numbers on a call once we know the job; pricing isn't a cold-email thing, because it depends on what you're handing off.</p></div>
+
+    <div class="item"><h2>How is this different from a $29 receptionist app?</h2>
+      <p>A $29 app is a <b>tool you run yourself</b> — you set it up, you babysit it, you're accountable when it fumbles. We're a <b>managed AI OS</b>: built, run, and improved for you, in your tenant, accountable when it matters. Different thing — and it's the part that was costing you money.</p></div>
+
+    <div class="item"><h2>What if I want to stop?</h2>
+      <p>Month-to-month after a short initial term. You keep your data and your work product; the license ends. No lock-in games, no hostage data.</p></div>
+
+    <div class="item"><h2>Do I need to be technical?</h2>
+      <p>No — that's the whole point. You never touch tokens, models, or infrastructure. You approve outcomes. We own everything that makes it work.</p></div>
+
+    <div class="item"><h2>Will it sound like a robot, or off-brand?</h2>
+      <p>It speaks in <b>your</b> voice, approved by you before go-live, and held to a brand standard. The goal is that your customers can't tell they're not talking to your best front-office person.</p></div>
+
+    <div class="item"><h2>Won't this be obsolete in a year, the way AI keeps changing?</h2>
+      <p>The opposite — because we run the stack, AI getting better is <b>your dividend</b>. When models improve (and they do, fast), we swap them in underneath and your system just gets better at the same price. A tool you buy today depreciates as AI advances; a system operated for you <b>appreciates</b>. The churn is our problem, on purpose.</p></div>
+  </div>
+
+  <div class="closer wrap">
+    <h2>Still skeptical? Good.</h2>
+    <p>That's the right instinct for something that touches your customers. So don't take our word for it — attack one, or watch one work.</p>
+    <div class="acts"><a class="p1" href="try-to-break-it.html">Try to break it →</a><a class="p2" href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=objections">Book a call</a></div>
+    <p style="margin-top:30px;font-size:13.5px;color:var(--pewter)">Go deeper: <a href="compare.html" style="color:var(--indigo)">Compare your options</a> · <a href="reliability.html" style="color:var(--indigo)">The reliability layer</a> · <a href="glass-box.html" style="color:var(--indigo)">The glass box</a> · <a href="manifesto.html" style="color:var(--indigo)">Manifesto</a> · <a href="eval-gated-seal.html" style="color:var(--indigo)">Eval-Gated</a></p>
+  </div>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=objections">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+</body>
+</html>

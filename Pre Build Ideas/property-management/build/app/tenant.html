@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5fd8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Home · Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in" style="max-width:520px">
+    <div class="logo"><span class="mark">◈</span><span id="propName">Home</span></div>
+    <div class="grow"></div>
+    <button class="btn ghost sm" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+  </div>
+</div>
+
+<main class="mob" id="main"><div class="empty"><div class="big">◈</div>Loading your home…</div></main>
+
+<nav class="tabbar" role="tablist">
+  <button role="tab" data-tab="home" aria-selected="true"><span class="ic">⌂</span>Home</button>
+  <button role="tab" data-tab="new"><span class="ic">＋</span>Request</button>
+  <button role="tab" data-tab="msgs"><span class="ic">✉</span>Messages</button>
+  <button role="tab" data-tab="lease"><span class="ic">⎘</span>Lease</button>
+</nav>
+
+<div class="scrim" id="scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
+
+<script src="/app.js"></script>
+<script>
+let S = null, TAB = 'home', PHOTOS = [], ANSWERS = {};
+const AVAIL_CHIPS = ['Weekday mornings (8-12)', 'Weekday afternoons (12-5)',
+                     'Weekday evenings (5-8)', 'Weekends'];
+
+async function load() {
+  const id = new URLSearchParams(location.search).get('id') || '';
+  S = await API.get('/bootstrap?role=tenant' + (id ? '&id=' + encodeURIComponent(id) : ''));
+  $('#propName').textContent = S.property?.name || 'Home';
+  render();
+}
+
+$$('.tabbar button').forEach(b => b.onclick = () => {
+  TAB = b.dataset.tab;
+  $$('.tabbar button').forEach(x => x.setAttribute('aria-selected', x === b));
+  render(); scrollTo(0, 0);
+});
+
+function render() { $('#main').innerHTML = ({ home, new: neu, msgs, lease })[TAB](); wire(); }
+
+/* ------------------------------------------------------------------ home */
+function home() {
+  const open = S.requests.filter(r => r.status !== 'resolved');
+  const done = S.requests.filter(r => r.status === 'resolved');
+  const unrated = done.filter(r => !r.tenant_rating && r.resolution_kind !== 'deflected').slice(0, 1);
+
+  return `
+  <div style="padding:18px 0 12px">
+    <h1>Hi ${esc((S.tenant.name || '').split(' ')[0])}</h1>
+    <div class="muted small">${esc(S.property?.name || '')} · Unit ${esc(S.unit?.label || '')}</div>
+  </div>
+
+  ${open.filter(r => r.proposed_window).map(r => `
+    <div class="card" style="margin-bottom:13px;border-color:color-mix(in srgb,var(--brand) 40%,transparent)">
+      <div class="card-b">
+        <div class="small" style="font-weight:620;margin-bottom:3px">Does this time work?</div>
+        <div class="muted small" style="margin-bottom:8px">${esc(r.title)}</div>
+        <div class="small" style="margin-bottom:11px">The crew proposed
+          <strong>${esc(r.proposed_window.window || r.proposed_window)}</strong> — a window you
+          hadn't offered, so nothing is booked until you say so.</div>
+        <div class="row" style="gap:7px">
+          <button class="btn sm primary grow" onclick="answerProposal('${r.id}',true)">Works for me</button>
+          <button class="btn sm grow" onclick="answerProposal('${r.id}',false)">Doesn't work</button>
+        </div>
+      </div>
+    </div>`).join('')}
+
+  ${unrated.map(r => `
+    <div class="card" style="margin-bottom:13px;border-color:color-mix(in srgb,var(--brand) 40%,transparent)">
+      <div class="card-b">
+        <div class="small" style="font-weight:620;margin-bottom:3px">Did we actually fix it?</div>
+        <div class="muted small" style="margin-bottom:11px">${esc(r.title)}</div>
+        <div id="rev_${r.id}">
+        <div class="row" style="gap:7px">
+          <button class="btn sm primary grow" onclick="showReview('${r.id}')">Yes, all good</button>
+          <button class="btn sm danger grow" onclick="stillBroken('${r.id}')">Still broken</button>
+        </div>
+        </div>
+      </div>
+    </div>`).join('')}
+
+  <button class="btn lg primary" onclick="go('new')" style="margin-bottom:16px">＋ New maintenance request</button>
+
+  ${open.length ? `<h2 style="margin:4px 0 10px">Open (${open.length})</h2>
+    ${open.map(reqCard).join('')}` : `
+    <div class="card" style="margin-bottom:16px"><div class="empty" style="padding:30px 18px">
+      <div class="big">✓</div>Nothing open right now.
+      <div class="small" style="margin-top:6px">Something not right? Tell us — it takes about 20 seconds.</div>
+    </div></div>`}
+
+  ${done.length ? `<h2 style="margin:20px 0 10px">History</h2>
+    ${done.slice(0, 8).map(reqCard).join('')}` : ''}
+
+  <div class="card" style="margin-top:18px;background:var(--p1-soft);border-color:color-mix(in srgb,var(--p1) 30%,transparent)">
+    <div class="card-b">
+      <div class="small" style="font-weight:620;color:var(--p1)">Emergency?</div>
+      <div class="small muted" style="margin:5px 0 10px">
+        Flooding, no heat, gas smell, no power, or you can't secure your door — call, don't type.
+        Filing it here works too, and it routes as an emergency immediately.
+      </div>
+      <a class="btn sm" href="tel:${esc(S.emergency_line || '')}">Call ${esc(S.emergency_line || '')}</a>
+    </div>
+  </div>`;
+}
+
+function reqCard(r) {
+  const sla = r.sla_state === 'breached' ? '<span class="pill bad"><span class="dot"></span>Late — we know</span>'
+    : r.sla_state === 'at_risk' ? '<span class="pill warn"><span class="dot"></span>Running close</span>' : '';
+  return `<div class="card" style="margin-bottom:11px" onclick="detail('${r.id}')">
+    <div class="card-b">
+      <div class="spread" style="align-items:flex-start;margin-bottom:11px">
+        <div class="stack grow">
+          <strong style="font-size:14.5px">${esc(r.title)}</strong>
+          <span class="tiny muted">${esc(ago(r.submitted_at))}${r.vendor ? ' · ' + esc(r.vendor) : ''}</span>
+        </div>
+        <div class="row" style="gap:5px">${sla}
+          <span class="pill ${esc(r.priority)}">${esc(r.priority_label || r.priority)}</span></div>
+      </div>
+      ${tracker(r.status, r.resolution_kind)}
+      ${r.scheduled_for ? `<div class="small" style="margin-top:11px;color:var(--brand);font-weight:560">
+        📅 ${esc(r.scheduled_for)}</div>` : ''}
+    </div></div>`;
+}
+
+/* ------------------------------------------------------------- new request */
+function neu() {
+  return `
+  <div style="padding:18px 0 14px"><h1>What's wrong?</h1>
+    <div class="muted small">Describe it how you'd tell a friend. A photo helps us send the
+      right person with the right part — so it gets fixed the first time.</div></div>
+
+  <div class="card"><div class="card-b" style="display:flex;flex-direction:column;gap:16px">
+    <div>
+      <label class="f" for="desc">Tell us what's happening</label>
+      <textarea class="in" id="desc" placeholder="e.g. the kitchen sink is leaking under the cabinet and the floor is getting wet"></textarea>
+    </div>
+
+    <div>
+      <label class="f">Add a photo <span class="muted" style="font-weight:400">— optional, but it speeds things up a lot</span></label>
+      <div class="photo-drop" onclick="$('#file').click()">
+        <div style="font-size:24px;margin-bottom:5px">📷</div>
+        <div class="small">Take a photo or choose one</div>
+      </div>
+      <input type="file" id="file" accept="image/*" capture="environment" multiple hidden>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <div>
+      <label class="f">A couple of quick questions</label>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        ${q('water_spreading', 'Is water spreading or still running?')}
+        ${q('habitability', "Can't use something you need — heat, water, a toilet, the stove?")}
+        ${q('vulnerable_occupant', 'Is there an infant, an elderly person, or someone with a medical need at home?')}
+      </div>
+      <div class="hint">Any "yes" moves you to the front of the queue automatically.</div>
+    </div>
+
+    <div>
+      <label class="f">Can we come in if you're out?</label>
+      <div class="chips" id="entry">
+        <button class="chip" data-v="anytime" aria-pressed="false">Yes, anytime</button>
+        <button class="chip" data-v="appointment" aria-pressed="true">Only when I'm home</button>
+        <button class="chip" data-v="call_first" aria-pressed="false">Call me first</button>
+      </div>
+      <input class="in" id="entryNotes" placeholder="Gate code, dog in the yard, where the shutoff is…" style="margin-top:10px">
+    </div>
+
+    <div id="availBlock">
+      <label class="f">When could a crew come?
+        <span class="muted" style="font-weight:400">— pick what usually works</span></label>
+      <div class="chips" id="avail" style="flex-wrap:wrap">
+        ${AVAIL_CHIPS.map(a => `<button class="chip" data-v="${a}" aria-pressed="false">${a}</button>`).join('')}
+      </div>
+      <input class="in" id="availOther" placeholder='Or exact times — e.g. Tue 9–12, Thu after 4' style="margin-top:10px">
+      <div class="hint">One visit instead of three phone calls — the crew books straight into a
+        window you offered. You can always change it later.</div>
+    </div>
+
+    <button class="btn lg primary" id="submitBtn" onclick="submitReq()">Submit request</button>
+    <div class="hint" style="text-align:center">
+      You'll get a status the moment it's triaged — usually within a minute, day or night.
+    </div>
+  </div></div>`;
+}
+
+const q = (k, label) => `
+  <div class="spread" style="gap:12px">
+    <span class="small grow">${esc(label)}</span>
+    <div class="chips" data-q="${k}">
+      <button class="chip" data-v="1" aria-pressed="false">Yes</button>
+      <button class="chip" data-v="0" aria-pressed="false">No</button>
+    </div>
+  </div>`;
+
+function wire() {
+  const f = $('#file');
+  if (f) f.onchange = e => {
+    [...e.target.files].slice(0, 4 - PHOTOS.length).forEach(file => {
+      const rd = new FileReader();
+      rd.onload = () => {
+        PHOTOS.push({ media_type: file.type, data: rd.result.split(',')[1], url: rd.result });
+        $('#thumbs').innerHTML = PHOTOS.map((p, i) =>
+          `<img src="${p.url}" alt="attached photo ${i + 1}">`).join('');
+      };
+      rd.readAsDataURL(file);
+    });
+  };
+  $$('[data-q] .chip').forEach(c => c.onclick = () => {
+    const grp = c.closest('[data-q]');
+    grp.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === c));
+    ANSWERS[grp.dataset.q] = c.dataset.v === '1';
+    updateAvail();
+  });
+  $$('#entry .chip').forEach(c => c.onclick = () => {
+    $$('#entry .chip').forEach(x => x.setAttribute('aria-pressed', x === c));
+    updateAvail();
+  });
+  $$('#avail .chip').forEach(c => c.onclick = () =>
+    c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true'));
+  updateAvail();
+}
+
+/* Availability is only asked when it can matter: an "anytime" resident's
+   availability is irrelevant, and an emergency's entry is now — any "yes" on
+   the urgency questions hides the block rather than slowing the report. */
+function updateAvail() {
+  const block = $('#availBlock');
+  if (!block) return;
+  const entry = $('#entry .chip[aria-pressed="true"]')?.dataset.v || 'appointment';
+  const urgent = Object.values(ANSWERS).some(Boolean);
+  block.style.display = (entry === 'anytime' || urgent) ? 'none' : '';
+}
+
+async function submitReq() {
+  const desc = $('#desc').value.trim();
+  if (desc.length < 8) return toast('Tell us a little more so we send the right person');
+  $('#submitBtn').disabled = true;
+  try {
+    const res = await API.post('/requests', {
+      tenant_id: S.tenant.id, description: desc,
+      photos: PHOTOS.map(p => ({ media_type: p.media_type, data: p.data })),
+      answers: ANSWERS,
+      entry_permission: $('#entry .chip[aria-pressed="true"]')?.dataset.v || 'appointment',
+      entry_notes: $('#entryNotes').value.trim(),
+      availability_windows: ($('#availBlock')?.style.display === 'none') ? [] :
+        [...$$('#avail .chip[aria-pressed="true"]').map(c => c.dataset.v),
+         $('#availOther')?.value.trim()].filter(Boolean)
+    });
+    PHOTOS = []; ANSWERS = {};
+    S = await API.get('/bootstrap?role=tenant&id=' + encodeURIComponent(S.tenant.id));
+    if (res.self_fix) selfFixSheet(res);
+    else { TAB = 'home'; syncTabs(); render(); toast('Sent. We\'re on it.'); }
+  } catch (e) {
+    toast(e.message || 'Something went wrong');
+  } finally { const b = $('#submitBtn'); if (b) b.disabled = false; }
+}
+
+/* The deflection moment. Framed as "here's 90 seconds that might save you a
+   day of waiting" — never as a barrier, and always with a one-tap way out. */
+function selfFixSheet(res) {
+  const f = res.self_fix, r = res.request;
+  $('#sheetBody').innerHTML = `
+    <div style="padding:2px 2px 8px">
+      <span class="pill brand">Worth trying first</span>
+      <h2 style="margin:11px 0 6px">${esc(f.title)}</h2>
+      <div class="muted small">About ${Math.round(f.seconds / 60)} minutes. If it works you're
+        fixed today instead of waiting for a visit — and we've logged the request either way.</div>
+      <ol style="padding-left:19px;margin:15px 0;display:flex;flex-direction:column;gap:9px">
+        ${f.steps.map(s => `<li class="small">${esc(s)}</li>`).join('')}
+      </ol>
+      <div class="row" style="gap:8px;flex-direction:column">
+        <button class="btn lg primary" onclick="fixedIt('${r.id}')">That worked — close it</button>
+        <button class="btn lg" onclick="stillBroken('${r.id}')">Didn't work — send someone</button>
+      </div>
+      <div class="hint" style="text-align:center;margin-top:11px">
+        Either way, your request stays on file. You won't have to explain it twice.</div>
+    </div>`;
+  openSheet();
+}
+
+/* ------------------------------------------------------------------ misc */
+function msgs() {
+  return `<div style="padding:18px 0 14px"><h1>Messages</h1>
+    <div class="muted small">Updates about your unit. We message you before you have to chase us.</div></div>
+    ${S.messages.length ? S.messages.map(m => `
+      <div class="card" style="margin-bottom:11px"><div class="card-b">
+        <div class="spread" style="margin-bottom:7px">
+          <strong style="font-size:14.5px">${esc(m.subject)}</strong>
+          <span class="tiny muted">${esc(ago(m.at))}</span></div>
+        <div class="small" style="white-space:pre-wrap;color:var(--ink-2)">${esc(m.body)}</div>
+      </div></div>`).join('')
+      : '<div class="card"><div class="empty"><div class="big">✉</div>No messages yet.</div></div>'}`;
+}
+
+function lease() {
+  const d = S.lease_days_left, u = S.unit || {};
+  const band = d == null ? 'mute' : d < 60 ? 'warn' : 'ok';
+  return `<div style="padding:18px 0 14px"><h1>Your lease</h1></div>
+  <div class="card"><div class="card-b" style="display:flex;flex-direction:column;gap:13px">
+    <div class="spread"><span class="muted small">Unit</span>
+      <strong>${esc(S.property?.name || '')} · ${esc(u.label || '')}</strong></div>
+    <div class="spread"><span class="muted small">Rent</span>
+      <strong class="num">${esc(money(u.rent))}/mo</strong></div>
+    <div class="spread"><span class="muted small">Term</span>
+      <strong>${esc(dateOnly(u.lease?.start))} → ${esc(dateOnly(u.lease?.end))}</strong></div>
+    <div class="spread"><span class="muted small">Time left</span>
+      <span class="pill ${band}">${d == null ? 'no lease on file' : d + ' days'}</span></div>
+    <div class="sep"></div>
+    <div class="small muted">
+      ${d != null && d < 90
+        ? "Your renewal window is open. Your manager will send terms — nothing you need to do yet."
+        : "We'll reach out about renewal about 90 days before this ends."}
+    </div>
+  </div></div>
+
+  <div class="card" style="margin-top:13px"><div class="card-b" style="display:flex;flex-direction:column;gap:11px">
+    <div class="small" style="font-weight:620">Rent</div>
+    <div class="spread"><span class="muted small">Balance</span>
+      <span class="pill ${(S.rent?.balance || 0) > 0 ? 'warn' : 'ok'}">${
+        (S.rent?.balance || 0) > 0 ? esc(money(S.rent.balance)) + ' due' : 'paid up'}</span></div>
+    <div class="spread"><span class="muted small">Deposit held for you</span>
+      <strong class="small num">${esc(money(S.rent?.deposit_held))}</strong></div>
+    ${(S.rent?.recent_payments || []).map(p => `<div class="spread">
+      <span class="tiny muted">${esc((p.at || '').slice(0, 10))} · ${esc(p.method)}</span>
+      <span class="tiny num">${esc(money(p.amount))}</span></div>`).join('')}
+    <div class="hint">${esc(S.rent?.note || '')}</div>
+  </div></div>
+
+  <div class="card" style="margin-top:13px"><div class="card-b">
+    <div class="small" style="font-weight:620;margin-bottom:6px">Your maintenance record</div>
+    <div class="muted small">${S.requests.length} request${S.requests.length === 1 ? '' : 's'} on file ·
+      ${S.requests.filter(r => r.status === 'resolved').length} resolved.
+      This history stays with your unit, so whoever comes next already knows what's been done.</div>
+  </div></div>`;
+}
+
+/* ---------------------------------------------------------------- actions */
+async function detail(id) {
+  const r = await API.get('/requests/' + id);
+  $('#sheetBody').innerHTML = `
+    <div style="padding:2px 2px 8px">
+      <div class="row" style="gap:6px;margin-bottom:9px">
+        <span class="pill ${esc(r.priority)}">${esc(r.priority_label || r.priority)}</span>
+        <span class="pill mute">${esc(STATUS_LABEL[r.status] || r.status)}</span></div>
+      <h2 style="margin-bottom:5px">${esc(r.title)}</h2>
+      <div class="muted small" style="margin-bottom:15px">Filed ${esc(ago(r.submitted_at))}</div>
+      ${tracker(r.status, r.resolution_kind)}
+      <div class="sep"></div>
+      ${r.vendor ? `<div class="spread" style="margin-bottom:9px"><span class="muted small">Who's coming</span>
+        <strong class="small">${esc(r.vendor)}</strong></div>` : ''}
+      ${r.scheduled_for ? `<div class="spread" style="margin-bottom:9px"><span class="muted small">When</span>
+        <strong class="small">${esc(r.scheduled_for)}</strong></div>` : ''}
+      ${(r.photos || []).length ? `<div class="thumbs" style="margin:11px 0">${
+        r.photos.filter(p => p.file).map(p => `<img src="/photos/${esc(p.file)}" alt="your photo">`).join('')}</div>` : ''}
+      ${r.status === 'resolved' && (r.proof_photos || []).filter(p => p.file).length ? `
+        <div class="small" style="font-weight:620;margin:9px 0 5px">What the crew finished</div>
+        <div class="thumbs" style="margin-bottom:9px">${r.proof_photos.filter(p => p.file).map(p =>
+          (p.kind === 'video' || /\\.(mp4|mov|webm)$/.test(p.file))
+            ? `<video src="/photos/${esc(p.file)}" controls muted playsinline
+                 style="width:150px;height:110px;object-fit:cover;border-radius:8px"></video>`
+            : `<img src="/photos/${esc(p.file)}" alt="completed work">`).join('')}</div>` : ''}
+      ${r.status === 'resolved' ? (r.tenant_rating ? `
+        <div class="sep"></div>
+        <div class="small muted">You rated this ${'★'.repeat(r.tenant_rating)}${'☆'.repeat(5 - r.tenant_rating)} — thank you.</div>` : `
+        <div class="sep"></div>
+        <div class="small" style="font-weight:620;margin-bottom:9px">Is it actually fixed?</div>
+        <div id="rev_${r.id}">
+        <div class="row" style="gap:8px">
+          <button class="btn sm primary grow" onclick="showReview('${r.id}')">Yes</button>
+          <button class="btn sm danger grow" onclick="stillBroken('${r.id}')">No — reopen</button>
+        </div>
+        </div>`) : ''}
+    </div>`;
+  openSheet();
+}
+
+async function fixedIt(id) {
+  await API.post('/requests/' + id + '/status',
+    { status: 'resolved', resolution_kind: 'deflected', note: 'Resident resolved with guided fix',
+      actor: 'tenant:' + S.tenant.id });
+  await refresh('Nice — closed out. No visit needed.');
+}
+
+async function answerProposal(id, ok) {
+  await API.post('/requests/' + id + '/schedule', { accept_proposed: ok });
+  await refresh(ok ? 'Booked — they\'ll see you then.'
+                   : 'No problem — nothing was booked. They\'ll offer another time.');
+}
+
+async function stillBroken(id) {
+  await API.post('/requests/' + id + '/feedback',
+    { still_broken: true, comment: 'Resident reports it is not fixed' });
+  await refresh("Reopened. We're sending someone — you don't need to re-explain it.");
+}
+
+async function rate(id, n) {
+  await API.post('/requests/' + id + '/feedback', { rating: n });
+  await refresh('Thanks — that rating goes on the vendor\'s record.');
+}
+
+/* The review ask: "yes it's fixed" opens stars + an optional line, not an
+   auto-5. The rating genuinely feeds the vendor scorecard, so it has to be
+   the resident's number, not the button's. */
+const STARS = {};
+function showReview(id) {
+  const el = document.getElementById('rev_' + id);
+  if (!el) return;
+  el.innerHTML = `
+    <div class="small" style="font-weight:620;margin-bottom:6px">Great — how did the crew do?</div>
+    <div id="stars_${id}" style="font-size:27px;letter-spacing:4px;cursor:pointer;user-select:none">
+      ${[1,2,3,4,5].map(n => `<span data-n="${n}" onclick="pickStar('${id}',${n})" style="opacity:.32">★</span>`).join('')}
+    </div>
+    <input class="in" id="revc_${id}" placeholder="Anything worth knowing? (optional)" style="margin-top:9px">
+    <button class="btn sm primary" style="margin-top:9px" onclick="sendReview('${id}')">Send review</button>
+    <div class="hint">Your rating decides who we send next time — it goes on the crew's record.</div>`;
+}
+function pickStar(id, n) {
+  STARS[id] = n;
+  document.querySelectorAll('#stars_' + id + ' span').forEach(s =>
+    s.style.opacity = +s.dataset.n <= n ? '1' : '.32');
+}
+async function sendReview(id) {
+  if (!STARS[id]) return toast('Tap a star first');
+  await API.post('/requests/' + id + '/feedback',
+    { rating: STARS[id], comment: (document.getElementById('revc_' + id)?.value || '').trim() });
+  await refresh('Thank you — your review is on the crew\'s record.');
+}
+
+async function refresh(msg) {
+  closeSheet();
+  S = await API.get('/bootstrap?role=tenant&id=' + encodeURIComponent(S.tenant.id));
+  TAB = 'home'; syncTabs(); render();
+  if (msg) toast(msg);
+}
+
+const go = t => { TAB = t; syncTabs(); render(); scrollTo(0, 0); };
+const syncTabs = () => $$('.tabbar button').forEach(x =>
+  x.setAttribute('aria-selected', x.dataset.tab === TAB));
+const openSheet = () => { $('#sheet').classList.add('on'); $('#scrim').classList.add('on'); };
+const closeSheet = () => { $('#sheet').classList.remove('on'); $('#scrim').classList.remove('on'); };
+
+load();
+</script>
+</body>
+</html>

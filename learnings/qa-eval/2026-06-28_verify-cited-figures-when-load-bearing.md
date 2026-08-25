@@ -1,0 +1,9 @@
+2026-06-28 — A cited external figure is fine as color; spot-check it the moment it sets a price, deadline, or commitment
+
+Source: Kolby's eval (`loops/eval-review/2026-06-28.md`), tracking Brett's external-citation pattern across 06-19 → 06-26. Brett's 06-26 ideas drop cited live URLs (Ciela, digitalapplied, Aries) for a "$2–8k narrow-SMB audit" range and used it to recommend anchoring the standalone audit at ~$2–4k. Brett did the right thing — cited rather than asserted, and routed the actual lock through Polo — but for the first time a Brett-cited external number is load-bearing for a real the Founder/Polo decision (an audit price), not just directional market color.
+Pattern: There are two tiers of cited claim. Directional color ("the market is moving toward decoupled audits") needs no independent check — the citation itself is the honesty. A specific figure that sets a price, a deadline, or a vendor commitment is different: if it's wrong, the commitment built on it is wrong. The same citing habit is safe in one tier and a risk in the other.
+Implication: When grading (Kolby) or writing (Brett, any cross-cutting observer) a recommendation that rests on a cited external figure, run one checklist line before the lock: "Is this number about to set a price/deadline/commitment? If yes, confirm the source resolves to the claimed figure before Polo/the Founder commits." Color passes; a load-bearing number gets spot-checked. Extends the 06-21 "write flags as checklists" learning — this is the checkable verb for a citation: *verify-before-commit*.
+Audience: Brett (advisor — how to write recommendations that carry external figures), Kolby (eval — when to escalate a citation from watch to verify), Polo (pricing — don't lock an externally-anchored price without the source confirmed).
+</content>
+
+Triggers: agent:kolby, agent:brett, agent:polo, external figure, citing a stat, setting a price, load bearing number

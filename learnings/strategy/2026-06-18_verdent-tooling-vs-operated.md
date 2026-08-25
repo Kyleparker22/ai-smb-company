@@ -1,0 +1,26 @@
+# Learning — Verdent confirms the tooling-vs-operated line (don't compete on "hands-off")
+
+**Date:** 2026-06-18 · **Type:** competitive datapoint / thesis confirmation · **Surfaced by:** the Founder reviewing a Verdent marketing writeup
+
+## What it is
+Verdent (verdent.ai — desktop/VS Code/JetBrains coding agent) is selling the **same outcome-not-features language yourco uses** — "a mini CTO on your computer," "you say *what*, Verdent does the *how*," "you run the business." Plan → Code → Verify loop, parallel agents in isolated git worktrees, a Verifier that gates the build, 76.1% single-attempt SWE-bench. The hook: "I approved zero steps and closed my laptop."
+
+## The pattern (why this *confirms* our thesis rather than threatens it)
+1. **Tool sold to a builder ≠ operated outcome sold to a non-builder.** Verdent hands the *tool* to someone who can read a plan and run `pnpm`. yourco delivers an *operated outcome* to an SMB owner who never touches tokens, models, or infra. Same words, opposite buyer. This is exactly the carve-out in CLAUDE.md (self-serve parked because it deletes the moat; yourco Care works *because* it's operated).
+2. **Their own safety footnotes mark where the moat starts.** The writeup admits the "walk away / zero approvals" story holds *only because v1 is local, deterministic, no-keys, read-only* — and that hygiene "only matters once you add live mode + a token." That's the tell: the unattended-autonomy pitch evaporates the moment the agent touches real credentials, money, or irreversible actions. Reliability + eval + approval + enterprise trust — the layer Verdent's footnotes punt on — is precisely yourco's margin.
+3. **Benchmarks ≠ production trust.** 76.1% SWE-bench is "writes good code," not "operate unattended against a client's messy, stateful, credentialed systems." Don't let a benchmark number into our own positioning as if it settled the trust question — that question is what we sell *against*.
+
+## Implication for future runs
+- **Don't compete on "fast / hands-off" for low-stakes demos** — that's tooling's home court and the wrong fight. yourco's differentiation only shows on high-stakes, credentialed, approval-gated work (Sample Client's deposit/supplier drafts; yourco Care's medical guardrails). Demos should foreground the *gate and the trust*, not the speed.
+- **Steal the content format, not the claim.** The writeup's shape is excellent demand-gen: one small, genuinely-runnable artifact + the exact prompt + a "now take it live" upgrade path. That's a tighter version of our Revenue Leak Snapshot motion — proof-by-doing in one command. Worth a model for Katie/Reed: ship something real that works in one step, then show the upgrade. Respects Reed's credibility gate because the artifact is real, not mocked.
+
+## Update 2026-07-06 (Mario, AEO/GEO run) — "operated" is now claimed by direct SMB agencies, not just tools
+The pattern jumped lanes. In a category WebSearch sweep, direct done-for-you SMB automation agencies now sell the exact "operated" language: **Octopus Builds** — "architect, deploy, and **operate** AI automation running in production, connected to CRM, compliant with policies"; **Cohevo** — a "**Business OS Setup**." So the differentiation can no longer rest on "operated / done-for-you" — competitors say it now. The wedge has to move one layer deeper to the thing they still don't name: **eval gates + approval flow + a reliability standard you can see pass**, backed by concrete proof (Sample Client's approval-gated deposit drafts), not adjectives. Applied in `loops/aeo-geo/2026-07-06.md` intervention #1. Watch whether these agencies start naming eval/approval next — if they do, proof-by-demo becomes the only differentiator left.
+
+## Update 2026-07-07 (Mario, AEO/GEO run) — the trigger fired: proof-by-demo is now the only wedge left
+The 2026-07-06 update said "watch whether they start naming eval/approval next." One day later they do. A WebSearch of `octopusbuilds.com` returns their own site copy: *"human approval gates where needed,"* *"observability, evals, human handoff, and uptime,"* *"auditability, data isolation, and policy enforcement from the first sprint."* So the wedge can no longer rest on *naming* the moat layer — the strongest done-for-you competitor names all of it. The differentiation now has to be **shown, not said**: a public, citable surface that demonstrates the moat running (an eval gate passing, an approval log, the audit-first motion, Sample Client as the worked case) — the thing competitors claim but don't show an answer engine. Applied in `loops/aeo-geo/2026-07-07.md` intervention #1. This raises the stakes on landing a real, citable client outcome (Sample Client) — if competitors also start showing proof, real outcomes are the last moat.
+
+## Read this at Step 0
+Brett (advisor) and the Founder on positioning/competitive turns; Katie/Reed on content-format turns; Mario on AEO/GEO category runs. Related: `decisions/2026-06-16_two-motions-productized-employees.md`, `decisions/2026-06-16_audit-first-os-as-product.md`, `learnings/strategy/2026-06-12_client-facing-gap.md`.
+
+Triggers: skill:tool-triage, agent:brett, competitor, tooling versus operated, hands off claim

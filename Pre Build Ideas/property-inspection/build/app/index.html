@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspect OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-findings"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Findings are append-only — nothing
+is ever softened, edited, or deleted, and every request to do so is preserved verbatim. The report
+releases to the paying client; repair costs and buy/walk advice never come from software.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'findings',label:'The register'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,findings,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.inspectors} inspectors · ${d.config.revenue}`;
+  const refs = Object.entries(b.referrals.by_source||{}).map(([k,v])=>`${k}: ${v}`).slice(0,3).join(' · ');
+  document.getElementById('v-board').innerHTML =
+    panel('The book, counted', '',
+      `<div class="grid">
+        ${stat('Reports in write-up', fmt.num(b.reports_open), `${b.reports_overdue} past the 24h window`, b.reports_overdue?'alert':'')}
+        ${stat('Soften requests', fmt.num(b.soften_requests), 'refused + preserved verbatim — the defense file', b.soften_requests?'warn':'')}
+        ${stat('Referrals by source', refs||'—', 'counted from records')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.reports_delivered} · ${b.recovered.soften_requests_refused} · ${b.recovered.bookings_confirmed}`,
+               'reports delivered · soften requests refused · bookings confirmed')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"Can you leave that out?" is <b>refused and preserved verbatim</b> —
+      the request itself becomes part of the record. The report goes to the paying client first,
+      always. Repair costs are the trades' numbers, never ours.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='soften_request'?'bad':m.label==='early_copy_request'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function findings(){
+  const d = await API.get('/api/inspections/in_demo/findings');
+  document.getElementById('v-findings').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="revise()">Revise a finding (both versions stay)</button>
+     </div><div id="fout"></div>` +
+    panel('Register — 412 Maple St', 'current view; history below', table(
+      [{label:'Finding'},{label:'Severity'},{label:'Recorded'},{label:''}],
+      d.current, f=>`<td>${esc(f.text)}</td>
+        <td>${pill(f.severity, f.severity==='major'?'bad':'warn')}</td>
+        <td>${fmt.stamp(f.at)}</td>
+        <td>${f.supersedes?pill('revision of '+f.supersedes,'brand'):''}</td>`), true) +
+    panel('Full history', 'nothing is ever gone', table(
+      [{label:'Id'},{label:'Finding'},{label:'Supersedes'}],
+      d.history, f=>`<td class="mono">${esc(f.id)}</td><td>${esc(f.text)}</td>
+        <td class="mono">${esc(f.supersedes||'—')}</td>`), true);
+}
+async function revise(){
+  const d = await API.get('/api/inspections/in_demo/findings');
+  if(!d.current.length){document.getElementById('fout').innerHTML='<div class="why">no findings on the demo file yet — add via API</div>';return;}
+  const f = d.current[0];
+  await API.post(`/api/findings/${f.id}/revise`,{text:f.text+' — re-inspected: corrected and verified',severity:'minor',actor:'inspector'});
+  findings();
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['inspections_mo','Inspections last 30d','counted'],['avg_fee','Avg inspection fee','your number'],
+    ['referral_lift','Referral lift from turnaround','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['defense_value','The unaltered-findings file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

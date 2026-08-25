@@ -1,0 +1,56 @@
+{
+  "generatedAt": "2026-08-13T22:23:32",
+  "generatedOn": "2026-08-13",
+  "isModel": true,
+  "label": "Nobody observed the version of yourco that did not build this. Every row below states the assumption it rests on, and the ones we refuse to model are listed too.",
+  "subject": "yourco",
+  "rows": [
+    {
+      "metric": "Actions taken with no human present",
+      "actual": 233,
+      "without": 0,
+      "unit": "actions",
+      "assumption": "Every one is an action a scheduled job took on its own, recorded at the time. Without the OS the count is zero by definition \u2014 there is nothing to take them. This row is the least modelled thing on the page.",
+      "isModel": true,
+      "lowerIsBetter": false
+    },
+    {
+      "metric": "Recurring reviews actually produced",
+      "actual": 252,
+      "without": 0,
+      "unit": "artifacts",
+      "assumption": "Each is a dated artifact written by a scheduled run \u2014 a review that happened and left a document. The counterfactual is zero rather than 'fewer': A solo founder does not run this many separate review cadences by hand. The model does not assume the same work happening slower; it assumes most of it does not happen at all, which is what actually occurs in a one-person company. That is an assumption about human behaviour, not a measurement, and it is the load-bearing one on this page.",
+      "isModel": true,
+      "lowerIsBetter": false
+    },
+    {
+      "metric": "Review cadences running on a schedule",
+      "actual": 30,
+      "without": 0,
+      "unit": "scheduled jobs",
+      "assumption": "Read from the sanctioned registry. Without the OS a solo founder keeps some of these in their head and drops the rest; the model does not pretend to know which, so it states zero scheduled and says the difference is judgement, not arithmetic.",
+      "isModel": true,
+      "lowerIsBetter": false
+    }
+  ],
+  "excluded": [
+    {
+      "metric": "Hours of founder time saved",
+      "why": "No time study exists, so there is no measured minutes-per-action to multiply by. yourco's own trust ledger already refuses to convert recorded actions into hours for this reason, and this page will not do quietly what that module refuses to do openly. It is the number we would most like to show you and the one we have least right to."
+    },
+    {
+      "metric": "Money saved",
+      "why": "No pre-OS baseline was captured. A baseline cannot be reconstructed after the fact \u2014 which is exactly why a client's is captured at discovery, before anything is built."
+    },
+    {
+      "metric": "Clients, revenue, pipeline",
+      "why": "yourco is pre-revenue. There is no version of this comparison that is not zero on both sides, so it is left off rather than dressed up."
+    }
+  ],
+  "notes": [
+    "The action record runs 2026-06-07 to 2026-08-07 across 29 distinct loops.",
+    "The oldest surviving loop artifact is dated 2026-06-07."
+  ],
+  "keyAssumption": "A solo founder does not run this many separate review cadences by hand. The model does not assume the same work happening slower; it assumes most of it does not happen at all, which is what actually occurs in a one-person company. That is an assumption about human behaviour, not a measurement, and it is the load-bearing one on this page.",
+  "honestLimit": "What this can show is work that demonstrably happened without a person. What it cannot show is what that work was worth \u2014 and the gap between those two is not a gap we are allowed to fill with an estimate."
+}

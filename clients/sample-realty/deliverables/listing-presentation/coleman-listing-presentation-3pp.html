@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Listing Presentation (Compact) — 2304 Highland Forest Dr · Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.16);
+    --field:#131318; --on-dark:#FFFFFF; --on-dark-soft:rgba(255,255,255,.93); --line-dark:rgba(255,255,255,.3);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:#e6e4df;line-height:1.55}
+
+  .sheet{width:8.5in;height:11in;background:var(--paper);margin:0 auto;position:relative;overflow:hidden;page-break-after:always}
+  @media screen{.sheet{margin:26px auto;box-shadow:0 10px 40px rgba(0,0,0,.22)}}
+  @media print{@page{size:letter;margin:0} body{background:#fff} .sheet{margin:0}}
+
+  .kicker{font-family:"Avenir Next",Avenir,Futura,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--red)}
+  .pagenum{position:absolute;left:0;right:0;bottom:.42in;text-align:center;font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--ink-soft)}
+
+  /* ═══ COVER ═══ */
+  .cover{background:var(--field);color:var(--on-dark)}
+  .cover .inner{position:absolute;inset:.55in;border:1px solid var(--line-dark);padding:.65in .7in;display:flex;flex-direction:column}
+  .cover .monogram{font-family:Didot,Georgia,serif;font-size:30px;letter-spacing:.06em}
+  .cover .monogram i{font-style:normal;color:var(--red)}
+  .cover .firmline{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:8px}
+  .cover .mid{margin:auto 0;position:relative;top:.7in}
+  .cover .photoband{display:none}
+  body.has-photo .cover .photoband{display:block;position:relative;margin:.3in 0 .05in}
+  body.has-photo .cover .photoband img{width:100%;height:2.45in;object-fit:cover;object-position:center 62%;display:block}
+  body.has-photo .cover .photoband:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px var(--line-dark)}
+  body.has-photo .cover .addr-num{font-size:96px;margin-top:10px}
+  body.has-photo .cover .addr-st{font-size:28px}
+  body.has-photo .cover .div{margin:24px 0 18px}
+  .cover .inner > div:first-child{text-align:center}
+  .cover .pre,.cover .addr-num,.cover .addr-st,.cover .locality{text-align:center}
+  .cover .pre{font-family:Didot,Georgia,serif;font-size:16px;font-style:italic;color:var(--on-dark-soft)}
+  .cover .addr-num{font-family:Didot,Georgia,serif;font-size:112px;line-height:1;margin-top:16px}
+  .cover .addr-st{font-family:Didot,Georgia,serif;font-size:33px;font-style:italic;font-weight:400;margin-top:2px}
+  .cover .locality{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:18px}
+  .cover .div{width:100%;height:1px;background:var(--line-dark);margin:32px 0 22px}
+  .cover .prepared{display:flex;justify-content:space-between;align-items:baseline}
+  .cover .prep-l .lab{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;color:var(--on-dark-soft)}
+  .cover .prep-l .names{font-family:Didot,Georgia,serif;font-size:27px;margin-top:6px}
+  .cover .facts{font-family:Didot,Georgia,serif;font-size:13.5px;font-style:italic;color:var(--on-dark-soft);text-align:right;line-height:2}
+  .cover .foot{display:flex;justify-content:space-between;align-items:baseline;font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--on-dark-soft)}
+
+  /* ═══ PAGE 2 · FIRM + TEAM ═══ */
+  .page{padding:.68in .95in 0}
+  .page h2{font-family:Didot,Georgia,serif;font-size:29px;font-weight:400;line-height:1.16;margin-top:10px}
+  .page h2 em{font-style:italic;color:var(--red)}
+  .open{font-family:Didot,Georgia,serif;font-size:16px;font-style:italic;line-height:1.6;color:var(--ink-2);margin-top:14px}
+  .page p.body{font-size:13px;line-height:1.75;color:var(--ink-2);margin-top:12px}
+  .desigline{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);line-height:2;text-align:center}
+  .desigline i{color:var(--red);font-style:normal;padding:0 5px}
+  .teamblock{margin-top:20px}
+  .teamblock .photo{position:relative}
+  .teamblock .photo img{width:100%;height:2.9in;object-fit:cover;object-position:center 30%;display:block;filter:grayscale(1) contrast(1.04)}
+  .teamblock .photo:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px var(--line)}
+  .teamblock .cap{margin-top:10px;text-align:center;font-family:Didot,Georgia,serif;font-size:12.5px;font-style:italic;color:var(--ink-soft);line-height:1.8}
+  .teamblock .cap b{font-weight:400;color:var(--ink)}
+
+  /* ═══ PAGE 3 · PRICING + MARKETING + CLOSE ═══ */
+  .sec2{margin-top:4px}
+  .prow{display:flex;gap:.5in;align-items:flex-start;margin-top:12px}
+  .stats{display:flex;gap:.55in;flex:0 0 auto}
+  .mstat .n{font-family:Didot,Georgia,serif;font-size:46px;line-height:1}
+  .mstat .n i{font-style:normal;color:var(--red)}
+  .mstat .u{font-family:Didot,Georgia,serif;font-size:10.5px;font-style:italic;color:var(--ink-soft);margin-top:4px;line-height:1.5}
+  .steps{flex:1}
+  .step{display:flex;gap:12px;margin-bottom:7px;align-items:baseline}
+  .step .sn{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--red);min-width:.22in;text-align:right}
+  .step .tx{font-size:11.5px;line-height:1.55;color:var(--ink-2)}
+  .step .tx b{font-family:Didot,Georgia,serif;font-weight:400;font-size:13px}
+  .divider{height:1px;background:var(--line);margin:20px 0 16px}
+  .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px .45in;margin-top:12px}
+  .mitem{font-size:11.5px;line-height:1.6;color:var(--ink-soft)}
+  .mitem b{font-family:Didot,Georgia,serif;font-weight:400;font-size:13.5px;color:var(--ink);display:block}
+  .synd{margin-top:14px;text-align:center;font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--ink-2)}
+  .closeband{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  .closeband .q{font-family:Didot,Georgia,serif;font-size:17.5px;line-height:1.5;text-align:center}
+  .closeband .q em{font-style:italic;color:var(--red)}
+  .sigcol{position:absolute;left:.95in;right:.95in;bottom:.8in;text-align:center}
+  .sigcol .nm{font-family:Didot,Georgia,serif;font-size:19px;font-style:italic}
+  .sigcol .rl{font-family:Didot,Georgia,serif;font-size:10.5px;font-style:italic;color:var(--ink-soft);margin-top:5px;line-height:1.75}
+  .sigcol .dash{width:.4in;height:1px;background:var(--red);margin:11px auto}
+  .sigcol .ct{font-family:Didot,Georgia,serif;font-size:11px;font-style:italic;color:var(--ink-2)}
+  .sigcol .ct b{font-style:normal;color:var(--red);font-weight:400;letter-spacing:.05em}
+  .sigcol .tag{margin-top:9px;font-family:Didot,Georgia,serif;font-size:11px;font-style:italic;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<!-- ═══ 1 · COVER ═══ -->
+<section class="sheet cover">
+  <div class="inner">
+    <div>
+      <div class="monogram">P<i>·</i>R</div>
+      <div class="firmline">Sample Realty Home &amp; Land, LLC</div>
+    </div>
+    <div class="mid">
+      <div class="photoband"><img src="cover-house.jpg" alt="2304 Highland Forest Drive"/></div>
+      <div class="pre">A listing presentation for the home at</div>
+      <div class="addr-num">2304</div>
+      <div class="addr-st">Highland Forest Drive</div>
+      <div class="locality">Yourtown &nbsp;·&nbsp; Your State &nbsp;·&nbsp; 28173</div>
+      <div class="div"></div>
+      <div class="prepared">
+        <div class="prep-l">
+          <div class="lab">Prepared for</div>
+          <div class="names">Gwynne &amp; Scott Coleman</div>
+        </div>
+        <div class="facts">
+          Five bedrooms · Five and one-half baths<br/>
+          6,049 square feet · Built 2005 · 0.44 acres
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>Sample Contact · Broker / Owner</span>
+      <span>704 · 575 · 0714</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2 · THE FIRM + THE TEAM ═══ -->
+<section class="sheet">
+  <div class="page">
+    <div class="kicker">The Boutique Difference</div>
+    <h2>Specialized attention, from listing <em>to closing.</em></h2>
+    <p class="open">Sample Realty Home &amp; Land is a boutique real estate firm — our team offers you specialized attention on all the details of the entire transaction.</p>
+    <p class="body">We communicate with you throughout the whole process. We don't hand you off to a "transaction team" in a large office that doesn't know anything about your home — and boutique doesn't mean a smaller stage: your home reaches the same broad markets that every agent at every large firm reaches.</p>
+    <p class="body">Kimi has over 24 years of real estate experience as the Broker and Owner of Sample Realty Home &amp; Land — licensed in both North and South Carolina, with in-depth knowledge of the Yourtownand surrounding markets, and a business built entirely on referrals. Behind her stands The Sample Realty Team, with 70+ years of combined experience.</p>
+    <div class="desigline">Realtor® <i>·</i> Owner / Broker-in-Charge <i>·</i> Accredited Staging Professional <i>·</i> Investment Specialist <i>·</i> Property Management Division <i>·</i> Certified Short Sale Buyer <i>·</i> Certified Military Residential Specialist</div>
+    <div class="teamblock">
+      <div class="photo"><img src="team-photo.jpg" alt="The Sample Realty Team"/></div>
+      <div class="cap"><b>The Sample Realty Team</b>, from left to right — Colleen Stabile, Christy Lathrop, Emily Smaldone, Sample Contact, Kristi Graff, Sue Brock, and Sample Contact</div>
+    </div>
+  </div>
+  <div class="pagenum">2</div>
+</section>
+
+<!-- ═══ 3 · PRICING + MARKETING + CLOSE ═══ -->
+<section class="sheet">
+  <div class="page">
+    <div class="sec2">
+      <div class="kicker">Our Pricing Strategy</div>
+      <p class="open" style="margin-top:10px">We are no longer in that crazy seller's market — this balanced, strategic market makes pricing extremely important.</p>
+      <div class="prow">
+        <div class="stats">
+          <div class="mstat"><div class="n">3<i>.</i>9</div><div class="u">months of supply<br/>Yourtownregion</div></div>
+          <div class="mstat"><div class="n">2<i>.</i>3</div><div class="u">months of supply<br/>Marvin</div></div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="sn">i.</div><div class="tx"><b>We preview the competition</b> — the market you're actually competing in, not just the comps on paper.</div></div>
+          <div class="step"><div class="sn">ii.</div><div class="tx"><b>A very in-depth Broker Price Opinion</b> and comparable-sales report, specifically for your property.</div></div>
+          <div class="step"><div class="sn">iii.</div><div class="tx"><b>We review the market with you</b> — pricing is a decision we make together, never for you.</div></div>
+          <div class="step"><div class="sn">iv.</div><div class="tx"><b>We make the first days count</b> — that's usually when interest is highest.</div></div>
+          <div class="step"><div class="sn">v.</div><div class="tx"><b>We keep researching</b> — updating and adjusting strategy if the market calls for it.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="kicker">Our Marketing Strategy</div>
+    <div class="mgrid">
+      <div class="mitem"><b>Staging first</b>Decluttered and prepared — an Accredited Staging Professional is on the team — so buyers focus on the quality of your home.</div>
+      <div class="mitem"><b>Photography, video &amp; drone</b>Professional photography and video, including drone, with tours on the MLS and every site it feeds.</div>
+      <div class="mitem"><b>The right words</b>Deliberate MLS keywords earn your property the most views from searching buyers and agents.</div>
+      <div class="mitem"><b>Presence at the curb</b>Top-level signage on all of our luxury homes.</div>
+      <div class="mitem"><b>Every showing, reported back</b>All feedback communicated — you always know how the market is responding.</div>
+      <div class="mitem"><b>Security &amp; scheduling</b>Supra lockboxes for the highest level of security; CSS scheduling reaches you by email, text, or phone.</div>
+    </div>
+    <div class="synd">Your home, everywhere buyers look — Realtor.com · Zillow · Trulia · HomeFinder · and many more, through the MLS</div>
+
+    <div class="closeband">
+      <div class="q">You will never be handed off to someone who doesn't know <em>your home</em> — or <em>your transaction.</em></div>
+    </div>
+  </div>
+  <div class="sigcol">
+    <div class="nm">Sample Contact</div>
+    <div class="rl">Broker / Owner · Sample Realty Home &amp; Land, LLC<br/>The Sample Realty Team · Licensed in ST &amp; SC</div>
+    <div class="dash"></div>
+    <div class="ct"><b>704 · 575 · 0714</b> &nbsp;·&nbsp; KimiParkerRealtor@gmail.com &nbsp;·&nbsp; SampleRealtyteam.com</div>
+    <div class="tag">We get you moving in the right direction!</div>
+  </div>
+  <div class="pagenum">3</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Resources — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:76px 0 64px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(32px,4.2vw,50px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:54ch}
+  header.page .jump{display:flex;gap:18px;margin-top:28px;flex-wrap:wrap}
+  header.page .jump a{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark);text-decoration:none;border:1px solid var(--line-dark);padding:10px 18px;border-radius:9999px}
+  header.page .jump a:hover{border-color:var(--red);color:var(--red)}
+
+  section{padding:88px 0}
+  section.alt{background:var(--warm)}
+  h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1.15;margin-top:12px}
+  h2 em{font-style:italic;color:var(--red)}
+  .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:16px;max-width:58ch}
+
+  .steps{border-top:1px solid var(--line);margin-top:34px}
+  .step{display:flex;gap:22px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .step .n{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);font-size:15px;min-width:30px}
+  .step div b{font-family:Didot,Georgia,serif;font-weight:400;font-size:17.5px;display:block}
+  .step div p{font-size:13.5px;color:var(--ink-soft);margin-top:4px;line-height:1.7;max-width:70ch}
+
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;margin-top:8px}
+  @media(max-width:900px){.cols2{grid-template-columns:1fr}}
+
+  .check{border-top:1px solid var(--line);margin-top:30px}
+  .ck{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--ink-2);align-items:baseline}
+  .ck i{font-style:normal;color:var(--red);font-family:Didot,Georgia,serif}
+
+  .faq{margin-top:34px;border-top:1px solid var(--line)}
+  details{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:19px 0;font-family:Didot,Georgia,serif;font-size:18.5px}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"+";font-family:Didot,Georgia,serif;color:var(--red);font-size:22px;flex:0 0 auto}
+  details[open] summary:after{content:"−"}
+  details .a{padding:0 0 20px;font-size:14.5px;color:var(--ink-2);max-width:72ch}
+  details .a p+p{margin-top:10px}
+
+  .utable{margin-top:34px;border-top:1px solid var(--line)}
+  .u{display:grid;grid-template-columns:1.1fr .9fr 1fr;gap:18px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:baseline}
+  @media(max-width:700px){.u{grid-template-columns:1fr;gap:4px}}
+  .u .s{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  .u .p{font-family:Didot,Georgia,serif;font-size:16px}
+  .u .d{font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;color:var(--ink-soft)}
+
+  .gloss{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:0 44px;border-top:1px solid var(--line)}
+  @media(max-width:800px){.gloss{grid-template-columns:1fr}}
+  .g{padding:15px 0;border-bottom:1px solid var(--line)}
+  .g b{font-family:Didot,Georgia,serif;font-weight:400;font-size:16.5px}
+  .g b i{font-style:italic;color:var(--red)}
+  .g p{font-size:13.5px;color:var(--ink-soft);margin-top:4px;line-height:1.7}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:76px 0}
+  .ctaband h2{color:inherit}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:26px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .tag{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;margin-top:12px;color:var(--on-dark-soft)}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo, not the live site</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../services.html">Services</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Tools · Resources</div>
+    <h1>Guides and answers for <em>every step of the move.</em></h1>
+    <div class="lede">Everything our clients ask, written down — buying, selling, moving, and the words your contract uses.</div>
+    <div class="jump">
+      <a href="#buyers">Buyer's Roadmap</a>
+      <a href="#sellers">Seller's Checklist</a>
+      <a href="#moving">Moving &amp; Utilities</a>
+      <a href="#glossary">Plain-English Glossary</a>
+    </div>
+  </div>
+</header>
+
+<section id="buyers">
+  <div class="wrap">
+    <div class="kicker">For Buyers</div>
+    <h2>The buyer's roadmap, start to <em>keys.</em></h2>
+    <p class="lede">Seven steps, in order. Most buyers go from first call to closing table in 60–90 days once they find the home.</p>
+    <div class="steps">
+      <div class="step"><div class="n">i.</div><div><b>The first conversation</b><p>Wants, needs, neighborhoods, timeline, and what a comfortable monthly payment actually looks like — run your numbers with our <a href="mortgage.html" style="color:var(--red)">mortgage calculator</a> first if you like.</p></div></div>
+      <div class="step"><div class="n">ii.</div><div><b>Pre-approval</b><p>A short call with a trusted local lender. In this market, an offer without a pre-approval letter is a letter to Santa. Takes a day or two; costs nothing.</p></div></div>
+      <div class="step"><div class="n">iii.</div><div><b>The search</b><p>You'll see every MLS match the moment it lists. We tour on your schedule and give you the honest read — including "walk away from this one."</p></div></div>
+      <div class="step"><div class="n">iv.</div><div><b>The offer</b><p>Price is only one lever. Due diligence fee, earnest money, timelines, and terms win houses too — we structure all of it to win without over-risking.</p></div></div>
+      <div class="step"><div class="n">v.</div><div><b>Due diligence</b><p>Your inspection window. Home, pest, HVAC, radon as needed; we negotiate repairs or credits from the findings. This is where your agent earns it.</p></div></div>
+      <div class="step"><div class="n">vi.</div><div><b>The countdown</b><p>Appraisal, loan clear-to-close, insurance bound, utilities scheduled, final walkthrough. We chase every deadline so nothing slips.</p></div></div>
+      <div class="step"><div class="n">vii.</div><div><b>Closing day</b><p>Sign with the attorney, funds disburse, deed records — then the keys are yours. Expect about an hour at the table.</p></div></div>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>What's "due diligence" in a Your State contract?</summary>
+        <div class="a"><p>NC gives buyers a negotiated inspection window bought with a <b>due diligence fee</b> — paid to the seller, nonrefundable, credited at closing. Until the deadline you can walk for any reason and keep your earnest money. Setting the fee and the deadline well is a strategy call we make together, house by house.</p></div>
+      </details>
+      <details>
+        <summary>How much do I really need for a down payment?</summary>
+        <div class="a"><p>Not 20%. Conventional loans go to 3% down, FHA 3.5%, VA and USDA to zero for those who qualify — and down-payment-assistance programs exist across the Carolinas. 20% avoids mortgage insurance, but waiting years to save it often costs more than the insurance would. Run scenarios with a lender early.</p></div>
+      </details>
+      <details>
+        <summary>What does it cost me to have a buyer's agent?</summary>
+        <div class="a"><p>Compensation is agreed in writing up front in your buyer agency agreement, and in many transactions the seller's side offers compensation that covers some or all of it. We'll walk you through exactly how it works before you sign anything.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="sellers">
+  <div class="wrap">
+    <div class="kicker">For Sellers</div>
+    <h2>The pre-listing <em>checklist.</em></h2>
+    <div class="cols2">
+      <div>
+        <p class="lede">Two weeks of light preparation is routinely worth more than the cost of doing it. Here's where we focus before the photographer arrives.</p>
+        <div class="check">
+          <div class="ck"><i>·</i>Declutter — closets, counters, garage; less is more on camera</div>
+          <div class="ck"><i>·</i>Deep clean like it's a hotel — windows included</div>
+          <div class="ck"><i>·</i>Touch-up paint: scuffs, trim, and any bold walls to neutral</div>
+          <div class="ck"><i>·</i>Fix the little things — dripping taps, sticking doors, dead bulbs</div>
+          <div class="ck"><i>·</i>Curb appeal: fresh mulch, edged lawn, cleared walkway, new doormat</div>
+          <div class="ck"><i>·</i>Staging consult with our Accredited Staging Professional — included</div>
+          <div class="ck"><i>·</i>Gather docs: survey, permits, HOA info, utility costs, warranty items</div>
+          <div class="ck"><i>·</i>Plan for pets &amp; valuables during showings</div>
+        </div>
+      </div>
+      <div>
+        <div class="faq" style="margin-top:6px;border-top:1px solid var(--line)">
+          <details>
+            <summary>How do you decide the list price?</summary>
+            <div class="a"><p>A comparative market analysis built from actual closed sales around your home — adjusted for condition, lot, and timing — plus what we're seeing at showings this month. Priced right, homes sell faster <i>and</i> for more; our own listings have sold over asking and gone under contract in days.</p></div>
+          </details>
+          <details>
+            <summary>What happens after we list?</summary>
+            <div class="a"><p>The full production: staging, photography and drone, the cinematic tour, deliberate MLS keywords, and launch everywhere the MLS reaches. Then CSS-scheduled showings with every piece of feedback reported back to you, and strategy adjusted in real time. The step-by-step is on our <a href="../services.html#selling" style="color:var(--red)">Services page</a>.</p></div>
+          </details>
+          <details>
+            <summary>Should we renovate before selling?</summary>
+            <div class="a"><p>Usually no — big renovations rarely return their cost at sale. Paint, lighting, landscaping, and deep cleaning almost always do. We'll walk your home and tell you honestly which short list is worth it.</p></div>
+          </details>
+          <details>
+            <summary>Can we sell and buy at the same time?</summary>
+            <div class="a"><p>Yes — it's the most common move we manage. Coordinated closings, negotiated possession dates, or a short leaseback bridge the gap. We run both timelines side by side so you're never homeless or paying two mortgages longer than planned.</p></div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="moving">
+  <div class="wrap">
+    <div class="kicker">Moving &amp; Utilities</div>
+    <h2>Set up before the truck <em>arrives.</em></h2>
+    <p class="lede">Who to call in the Yourtownarea — start utilities 2 weeks out, and schedule internet first; installers book up.</p>
+    <div class="utable">
+      <div class="u"><div><div class="s">Electricity</div><div class="p">Duke Energy</div></div><div class="d">Most of the Yourtownregion, ST &amp; SC</div><div class="d">Start service online · same-week</div></div>
+      <div class="u"><div><div class="s">Natural Gas</div><div class="p">Piedmont Natural Gas</div></div><div class="d">Yourtownmetro</div><div class="d">Transfers take a few days</div></div>
+      <div class="u"><div><div class="s">Water · Yourtown</div><div class="p">YourtownWater</div></div><div class="d">Mecklenburg County</div><div class="d">Order 3+ business days ahead</div></div>
+      <div class="u"><div><div class="s">Water · Union Co.</div><div class="p">Union County Water</div></div><div class="d">Yourtown, Marvin, Weddington</div><div class="d">In-person or online start</div></div>
+      <div class="u"><div><div class="s">Water · Lancaster Co.</div><div class="p">Lancaster County Water &amp; Sewer</div></div><div class="d">Indian Land &amp; Fort Mill area, SC</div><div class="d">Deposit may apply</div></div>
+      <div class="u"><div><div class="s">Internet</div><div class="p">Spectrum · AT&amp;T Fiber · Google Fiber</div></div><div class="d">Availability varies by street</div><div class="d">Book install 2–3 weeks out</div></div>
+      <div class="u"><div><div class="s">Trash &amp; Recycling</div><div class="p">City / county service or HOA hauler</div></div><div class="d">Depends on your address</div><div class="d">We'll tell you which at closing</div></div>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>The 4-week countdown checklist</summary>
+        <div class="a">
+          <p><b>4 weeks out</b> — book movers or truck; start decluttering; begin a box-a-day.</p>
+          <p><b>2 weeks out</b> — USPS mail forwarding; start utilities at the new address; transfer school records; refill prescriptions.</p>
+          <p><b>1 week out</b> — confirm movers; pack an "open first" box (chargers, meds, coffee, sheets, tools); defrost the freezer.</p>
+          <p><b>Closing week</b> — final walkthrough, funds ready with the attorney, IDs in hand; update your license and voter registration (NCDMV / SCDMV) after the move.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Recommended pros — our little black book</summary>
+        <div class="a"><p>Inspectors, lenders, closing attorneys, painters, handymen, landscapers, and movers we trust with our own clients, vetted over 24 years. Ask and we'll match you to the right one for the job — no kickbacks, just people who show up.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="glossary">
+  <div class="wrap">
+    <div class="kicker">Plain-English Glossary</div>
+    <h2>The words your contract <em>uses.</em></h2>
+    <div class="gloss">
+      <div class="g"><b><i>Due diligence fee</i></b><p>NC: money paid to the seller for the right to inspect and walk away. Nonrefundable; credited at closing.</p></div>
+      <div class="g"><b><i>Earnest money</i></b><p>Your good-faith deposit, held in trust and credited at closing — refundable before the due diligence deadline (NC).</p></div>
+      <div class="g"><b><i>Escrow</i></b><p>Money held by a neutral party — your deposit before closing, or the tax/insurance account your lender keeps after.</p></div>
+      <div class="g"><b><i>Contingency</i></b><p>A condition that must be met for the contract to close — financing and appraisal are the common ones.</p></div>
+      <div class="g"><b><i>CMA</i></b><p>Comparative market analysis — what your home is worth, built from actual nearby closed sales.</p></div>
+      <div class="g"><b><i>Clear to close</i></b><p>The lender's final sign-off. After this, it's just signatures and keys.</p></div>
+      <div class="g"><b><i>Excise / transfer tax</i></b><p>The state's tax on a sale — ST $1 per $500 of price; SC $1.85 per $500 (deed recording fee).</p></div>
+      <div class="g"><b><i>Title insurance</i></b><p>One-time policy protecting your ownership against anything the title search missed. Cheap; worth it.</p></div>
+      <div class="g"><b><i>Appraisal</i></b><p>The lender's independent value check. Comes in low? That's a negotiation — and we've run it many times.</p></div>
+      <div class="g"><b><i>Under contract / pending</i></b><p>Offer accepted, working toward closing. "UCNS" on the MLS means under contract, no showings.</p></div>
+      <div class="g"><b><i>Seller concessions</i></b><p>Costs the seller agrees to pay on the buyer's behalf — a common negotiating lever.</p></div>
+      <div class="g"><b><i>Leaseback</i></b><p>The seller rents the home back from the buyer briefly after closing — handy when you're selling and buying at once.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">Didn't find your answer?</div>
+    <h2>Ask us anything — that's the <em>boutique part.</em></h2>
+    <a href="../index.html#contact">Start a conversation</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="tag">We get you moving in the right direction!</div>
+  </div>
+</footer>
+
+</body>
+</html>

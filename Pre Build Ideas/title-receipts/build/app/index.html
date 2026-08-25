@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipt OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-coverage"></section>
+  <section class="view" id="v-packets"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. A wire change is never acted on
+from the message (callback to the recorded number, always); a control with no drill reads
+UNTESTED, never "in place"; the renewal packet cannot render without its exceptions list; and
+nothing here promises a premium — underwriters price; we evidence.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'coverage',label:'Coverage year'},
+      {id:'packets',label:'Packets'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,coverage,packets,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.offices} offices · ~${d.config.closings_mo} closings/mo · ${d.config.production}`;
+  const wk = b.week;
+  document.getElementById('v-board').innerHTML =
+    panel('The coverage year, counted', 'from the append-only control ledger — demo fixtures excluded',
+      `<div class="grid">
+        ${stat('Wires released', fmt.num(b.wires_moved), `${b.chains_complete} complete chains`)}
+        ${stat('Callback verifications', fmt.num(b.verifications), 'to the recorded number, always')}
+        ${stat('Blocked attempts', fmt.num(b.blocked_attempts), 'each one a receipt')}
+        ${stat('Exceptions', fmt.num(b.exceptions), 'wires that moved with a gap — honestly listed', b.exceptions?'warn':'good')}
+       </div>
+       <div class="grid" style="margin-top:14px">
+        ${stat('Untested controls', fmt.num(b.untested_controls.length), b.untested_controls.length?esc(b.untested_controls.join(', '))+' — UNTESTED, never "in place"':'all controls drilled this period', b.untested_controls.length?'alert':'good')}
+        ${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', fmt.num(wk.verifications + wk.dual_controls + wk.blocked_attempts + wk.drills_run),
+               `${wk.verifications} verification(s) · ${wk.dual_controls} dual-control · ${wk.blocked_attempts} blocked · ${wk.drills_run} drill(s) · ${wk.wire_signals_caught} wire signal(s) caught`)}
+       </div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A wire-change email gets a procedure, not a reply: recorded
+      <b>verbatim</b> in the control ledger, verified by a human calling the <b>recorded number on
+      file — never the one in the email</b>, and never acted from the message. Try "Act on it" —
+      it refuses.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='wire_change'?'bad':m.label==='insurer_info'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button>
+        <button class="act" onclick="actOn('${m.id}')">Act on it</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="banner warn" style="white-space:pre-wrap"><b>${esc(s.said)}</b></div>`:''}
+      ${s.callback_path?`<div class="why">${esc(s.callback_path)}</div>`:''}
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+async function actOn(id){
+  const r = await API.post(`/api/messages/${id}/act-on-change`);
+  document.getElementById('mout').innerHTML =
+    panel('Refused — R0', '', `<div class="banner warn">${esc(r.reason||'refused')}</div>
+      <div class="why">not queued for approval — there is no button that overrides this</div>`);
+}
+
+async function coverage(){
+  const [cov, led, chain] = await Promise.all([API.get('/api/coverage'), API.get('/api/ledger'),
+    API.get('/api/wires/wr_demo_chain/chain')]);
+  const drills = Object.entries(cov.drills).map(([c,d])=>`<tr><td class="mono">${esc(c)}</td>
+    <td>${d.status==='UNTESTED'?pill('UNTESTED','bad'):pill(d.status,'good')}</td>
+    <td class="why">${esc(d.note||`last drill ${fmt.date(d.last_drill)} · ${d.drills_this_period} this period`)}</td></tr>`).join('');
+  document.getElementById('v-coverage').innerHTML =
+    panel('A verification chain, end-to-end', 'demo wire — the receipts the controls leave behind',
+      table([{label:'When'},{label:'Receipt'},{label:'Detail'}], chain.entries, e=>`
+        <td>${fmt.stamp(e.at)}</td><td>${pill(e.kind, e.kind==='wire_change_request'?'warn':'good')}</td>
+        <td class="why">${esc(e.detail.verbatim||e.detail.number_called_ref&&('called by '+e.detail.who_called+' — '+e.detail.number_called_ref)||(e.detail.human_a?e.detail.human_a+' + '+e.detail.human_b:'')||JSON.stringify(e.detail))}</td>`), true) +
+    panel('The exceptions list', 'every wire that moved with any gap in its chain — the honest column that makes the rest credible',
+      cov.exceptions.length ? table([{label:'Wire'},{label:'Released'},{label:'Gap'}], cov.exceptions,
+        x=>`<td class="mono">${esc(x.wire)}</td><td>${fmt.date(x.released_at)}</td>
+            <td>${x.gaps.map(g=>pill(g,'bad')).join(' ')}</td>`)
+      : `<div class="muted">none this period</div>`, true) +
+    panel('Drill record', 'a control with no drill behind it is a claim, not a control',
+      `<div class="scroll"><table><thead><tr><th>Control</th><th>Status</th><th></th></tr></thead>
+       <tbody>${drills}</tbody></table></div>
+       <div style="margin-top:10px"><button class="act" onclick="attest('positive_pay')">Attest positive_pay as "in place"</button></div>
+       <div id="cout"></div>`) +
+    panel('The control ledger', 'append-only — a correction is a new entry, never an edit',
+      table([{label:'When'},{label:'Kind'},{label:'Wire'},{label:'Detail'}], led.rows, e=>`
+        <td>${fmt.stamp(e.at)}${e.demo_tag?' '+pill('demo','brand'):''}</td>
+        <td>${pill(e.kind, e.kind==='correction'?'warn':e.kind==='blocked_attempt'?'bad':'')}</td>
+        <td class="mono">${esc(e.wire_id||'—')}</td>
+        <td class="why">${esc(e.detail.verbatim||e.detail.vector||e.detail.why||(e.detail.who_called?e.detail.who_called+' — '+e.detail.number_called_ref:'')||(e.detail.human_a?e.detail.human_a+' + '+e.detail.human_b:'')||(e.detail.control?e.detail.control+' → '+e.detail.result:'')||'')}</td>`), true);
+}
+async function attest(c){
+  const r = await API.post(`/api/controls/${c}/attest`);
+  document.getElementById('cout').innerHTML = r.refused
+    ? `<div class="banner warn"><b>Refused — R0.</b> ${esc(r.why)} · status: ${esc(r.status.status)}</div>`
+    : `<div class="banner">${esc(r.why)}</div>`;
+}
+
+async function packets(){
+  document.getElementById('v-packets').innerHTML =
+    `<div class="banner warn">Two drafts, both R1 — a human sends. The renewal packet cannot
+      render without its exceptions list; the realtor one-pager carries zero client data by
+      construction; and neither contains a premium promise anywhere: <b>underwriters price; we
+      evidence</b>.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="drawPacket('renewal')">Draft the renewal packet</button>
+      <button class="act primary" onclick="drawPacket('realtor')">Draft the realtor one-pager</button>
+     </div><div id="pout"></div>`;
+}
+async function drawPacket(kind){
+  const r = await API.post(`/api/packets/${kind}`);
+  const text = r.packet || r.proof;
+  document.getElementById('pout').innerHTML =
+    panel(kind==='renewal'?'Renewal packet — drafted at R1':'Realtor one-pager — drafted at R1',
+      kind==='renewal'?'counted year · exceptions listed · drill record incl UNTESTED':'counts only — scrub-checked against every recorded name, file number, and amount',
+      `<div class="strong mono" style="white-space:pre-wrap">${esc(text)}</div>
+       <div class="why" style="margin-top:8px">queued for a human: approval ${esc((r.gate&&r.gate.approval)||'—')}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['premium_before','Premium last year','your invoice'],['premium_after','Premium at renewal','your invoice — blank until it happens'],
+    ['referral_closings_mo','Referred closings/mo','your count'],['avg_fee','Average fee','your number'],
+    ['audit_prep_hours_yr','Audit-prep hrs/yr','your number'],['staff_rate','Staff rate','your number'],
+    ['breach_exposure','The breach that didn\'t happen','yours or blank']];
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','the premium delta is counted at renewal from your own invoices — never promised',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consult OS</title>
+<link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+
+<header class="top">
+  <h1 id="co">…</h1>
+  <span class="sub" id="cosub"></span>
+  <span class="spacer"></span>
+  <button class="act" onclick="runAgents()">Run the sweeps</button>
+</header>
+
+<nav class="tabs"></nav>
+
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-consults"></section>
+  <section class="view" id="v-plans"></section>
+  <section class="view" id="v-cadence"></section>
+  <section class="view" id="v-funnel"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+
+<footer class="foot">Demonstration build on synthetic records. No real patient data, and no clinical
+question is ever answered by this system.</footer>
+
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Today'},{id:'inbox',label:'Inbox'},{id:'consults',label:'Consults'},
+      {id:'plans',label:'Undecided plans'},{id:'cadence',label:'Cadence'},{id:'funnel',label:'Funnel'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+
+async function load(w) {
+  w = w || 'board';
+  ({board, inbox, consults, plans, cadence, funnel, roi, trust})[w]();
+}
+
+async function board() {
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.practice;
+  document.getElementById('cosub').textContent =
+    `${(d.config.locations||[]).join(' · ')} · consult $${d.config.consult_fee}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The corridor today', 'inquiry → consult → decision → next visit',
+      `<div class="grid">
+        ${stat('Unanswered inquiries', fmt.num(b.unanswered_inquiries), 'sitting in a channel right now',
+          b.unanswered_inquiries > 3 ? 'alert' : '')}
+        ${stat('Median response time', val(b.latency,'median_minutes', v => v + ' min'),
+          b.latency._missing ? '' : esc(b.latency.note))}
+        ${stat('No-show rate', val(b.no_show_rate,'rate',fmt.pct),
+          b.no_show_rate._missing ? '' : `${b.no_show_rate.no_shows} of ${b.no_show_rate.of} consults, 90 days`)}
+        ${stat('Undecided plans', val(b.undecided_plans,'amount',fmt.money),
+          b.undecided_plans.n ? `${b.undecided_plans.n} open · oldest ${b.undecided_plans.oldest_days} days` : '')}
+       </div>`) +
+    panel('The quiet money', 'patients drifting past their own interval',
+      `<div class="grid">
+        ${stat('Drifting', fmt.num(b.drift.n), 'past interval, not yet lapsed')}
+        ${stat('Annual value at stake', fmt.money(b.drift.annual_value), esc(b.drift.basis))}
+        ${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 approval floor')}
+       </div>`);
+}
+
+async function inbox() {
+  const d = await API.get('/api/inquiries');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">Anything medical is routed to a licensed injector <b>unanswered</b> —
+      dosing, units, candidacy, contraindications, outcomes. Hedged wording ("not sure, I have a
+      condition") routes too. Watching it refuse is the point.</div>` +
+    panel('Unanswered', `${d.live.length} waiting · median response ${d.latency._missing ? '—' : d.latency.median_minutes + ' min'}`,
+      table([{label:'When'},{label:'Channel'},{label:'Message'},{label:'Read'},{label:''}], d.live,
+        i => `<td>${fmt.stamp(i.at)}${i.demo_tag?' '+pill(i.demo_tag,'brand'):''}</td>
+          <td class="why">${esc(i.channel)}${i.after_hours?' · after hours':''}</td>
+          <td>${esc(i.text)}<div class="why">${esc(i.patient_name||'')}</div></td>
+          <td>${i.read.tier==='urgent_clinical'?pill('URGENT — injector now','bad')
+               :i.read.tier==='clinical'?pill('clinical — routed','warn')
+               :i.read.service?pill(i.read.service,'good'):pill('needs a question','')}
+            <div class="why">${esc(i.read.why)}</div></td>
+          <td class="right"><button class="act primary" onclick="answer('${i.id}')">Handle</button></td>`), true) +
+    `<div id="out"></div>`;
+}
+
+async function answer(id) {
+  const r = await API.post(`/api/inquiries/${id}/answer`);
+  document.getElementById('out').innerHTML = (r.steps||[]).map(s => `
+    <div class="panel"><h2>${esc(s.action)}${s.urgent?' '+pill('URGENT','bad'):''}</h2><div class="body">
+      ${s.said?`<div class="strong">“${esc(s.said)}”</div>`:''}
+      ${s.refused?`<div class="banner warn" style="margin-top:10px">Refused: ${esc(s.refused)}</div>`:''}
+      ${s.why?`<div class="why">${esc(s.why)}</div>`:''}
+      ${s.result?`<div class="why">${s.result.executed?`executed at ${rungPill(s.result.rung)}`
+        :`held at ${rungPill(s.result.rung)} — ${esc(s.result.reason||'')}`}</div>`:''}
+    </div></div>`).join('');
+  inbox();
+}
+
+async function consults() {
+  const d = await API.get('/api/consults');
+  document.getElementById('v-consults').innerHTML =
+    panel('Booked', `${d.upcoming.length} upcoming · no-show rate ${d.no_show_rate._missing?'—':fmt.pct(d.no_show_rate.rate)}`,
+      table([{label:'Patient'},{label:'Service'},{label:'When'},{label:'Ladder'},{label:''}], d.upcoming,
+        c => `<td>${esc(c.patient_name||'')}</td><td>${esc(c.service)}</td>
+          <td>${fmt.stamp(c.starts_at)}</td>
+          <td>${(c.touches||[]).map(t=>pill(t.kind, t.sent?'good':'warn')).join(' ')||'<span class="why">none yet</span>'}</td>
+          <td class="right"><button class="act" onclick="cancel('${c.id}')">Simulate a cancellation</button></td>`), true) +
+    panel('The show-up ladder', 'a deposit, a frame, a confirm, a morning-of', table(
+      [{label:'Offset'},{label:'Channel'},{label:'What it is'}], d.ladder,
+      l => `<td class="num">${l.offset_h}h</td><td>${esc(l.channel)}</td><td class="why">${esc(l.note)}</td>`), true) +
+    `<div id="fill"></div>`;
+}
+
+async function cancel(id) {
+  const r = await API.post(`/api/consults/${id}/cancel`);
+  document.getElementById('fill').innerHTML =
+    panel('Chair freed — ranked refill', esc(r.note),
+      table([{label:'Patient'},{label:'Why they are ranked here'},{label:'Travel'},{label:'Wave'}],
+        r.ranked, (p,i) => `<td>${esc(p.patient)}</td><td class="why">${esc(p.why)}</td>
+          <td class="num">${p.distance_min}m</td><td>${i<3?pill('wave 1','good'):''}</td>`), true);
+}
+
+async function plans() {
+  const d = await API.get('/api/plans');
+  document.getElementById('v-plans').innerHTML =
+    panel('Undecided', 'a plan may not rest in “thinking about it”',
+      `<div class="grid">${stat('Open value', val(d.undecided,'amount',fmt.money),
+        d.undecided.n?`${d.undecided.n} open · oldest ${d.undecided.oldest_days} days`:'')}</div>`) +
+    panel('The ladder', 'four touches, then a recorded decision', table(
+      [{label:'Day'},{label:'Channel'},{label:'What it is'}], d.ladder,
+      l=>`<td class="num">${l.day}</td><td>${esc(l.channel)}</td><td class="why">${esc(l.note)}</td>`), true) +
+    panel('Open plans', 'the injector\'s captured objection drives the copy', table(
+      [{label:'Patient'},{label:'Plan'},{label:'Value',num:true},{label:'Objection'},{label:'Touches'},{label:'Due'}],
+      d.rows, p=>`<td>${esc(p.patient)}<div class="why">${esc(p.provider||'')}</div></td>
+        <td>${esc(p.summary)}</td><td class="num">${fmt.money(p.amount)}</td>
+        <td>${pill(String(p.objection||'—').replace(/_/g,' '))}</td>
+        <td>${(p.touches||[]).map(t=>pill(t.kind,t.sent_at?'good':'warn')).join(' ')||'<span class="why">none</span>'}</td>
+        <td>${(p.due||[]).map(x=>pill(x,'brand')).join(' ')}</td>`), true) +
+    panel('Why they decline', 'structured, because it is the only way to price better next year',
+      table([{label:'Reason'},{label:'Count',num:true}], Object.entries(d.decline_reasons),
+        ([k,v])=>`<td>${esc(k.replace(/_/g,' '))}</td><td class="num">${v}</td>`), true);
+}
+
+async function cadence() {
+  const d = await API.get('/api/cadence');
+  document.getElementById('v-cadence').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('Drifting', `${d.n} past their own interval, ranked by their own annual value`, table(
+      [{label:'Patient'},{label:'Last treatment'},{label:'Interval'},{label:'Days since'},{label:'State'},{label:'Annual value',num:true}],
+      d.drifting, r=>`<td>${esc(r.patient)}<div class="why">${esc(r.last_note||'')}</div></td>
+        <td>${esc(r.service)}</td><td class="num">${r.interval}d</td>
+        <td class="num">${r.days_since}d</td>
+        <td>${pill(r.state, r.state==='drifting'?'warn':'')}</td>
+        <td class="num">${fmt.money(r.annual_value)}</td>`), true) +
+    panel('Not flagged', 'refusing to guess at a clock that does not exist', table(
+      [{label:'Patient'},{label:'Why not'}], d.not_flagged,
+      r=>`<td>${esc(r.patient)}</td><td class="why">${esc(r.why)}</td>`), true);
+}
+
+async function funnel() {
+  const d = await API.get('/api/funnel');
+  const stages = ['inquiry','responded','booked','showed','treated','rebooked'];
+  document.getElementById('v-funnel').innerHTML =
+    `<div class="banner warn">${esc(d.note)}</div>` +
+    panel('By source', `${d.window_days} days`, table(
+      [{label:'Channel'},...stages.map(s=>({label:s,num:true})),{label:'Cost / booked consult'}],
+      Object.entries(d.by_source), ([ch,row])=>`<td>${esc(ch)}</td>
+        ${stages.map(s=>`<td class="num">${row[s]}</td>`).join('')}
+        <td>${val(d.cost_per_booked[ch],'cost_per_booked',fmt.money)}</td>`), true);
+}
+
+let roiInputs = {};
+async function roi() {
+  const d = await API.get('/api/roi?' + new URLSearchParams(roiInputs));
+  const f = [['after_hours_inquiries_wk','After-hours inquiries / wk','counted from your channels'],
+    ['incremental_book_rate','Incremental book %','your number'],
+    ['avg_first_treatment','Avg first treatment','counted (median) from your treatments'],
+    ['show_rate','Show rate','counted from your consults'],
+    ['consults_wk','Consults / wk','counted'],
+    ['no_show_points_recovered','No-show points recovered','your delta, not a target'],
+    ['undecided_plan_value','Undecided plan value','counted from your open plans'],
+    ['incremental_close_rate','Incremental close %','your number'],
+    ['drifting_patients','Drifting patients','counted'],
+    ['avg_annual_value','Their avg annual value','counted from their own cadence'],
+    ['drift_recovery_rate','Drift recovery %','your number — we do not have one'],
+    ['desk_hours_wk','Front-desk hours / wk','your number'],
+    ['loaded_rate','Loaded rate','your number']];
+  const rec = d.recorded||{}, giv = d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system; the rest are yours',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+       <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f = f.map(x=>x[0]);
+}
+function applyRoi(){ roiInputs={}; (window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiInputs[k]=v;}); roi(); }
+
+async function trust() {
+  const [ap, ev, au, evt] = await Promise.all([API.get('/api/approvals'), API.get('/api/eval'),
+    API.get('/api/autonomy'), API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') +
+    renderEval(ev.clinical) +
+    panel('Urgent complications, checked separately', 'an average is not safety',
+      `<div class="grid">
+        ${stat('Expected urgent', fmt.num(ev.urgent.expected_urgent))}
+        ${stat('Caught', fmt.num(ev.urgent.caught), '', ev.urgent.missed.length?'alert':'')}
+        ${stat('Missed', fmt.num(ev.urgent.missed.length), ev.urgent.missed.join(' · '),
+          ev.urgent.missed.length?'alert':'')}
+       </div>`) +
+    renderAutonomy(au.matrix) +
+    renderEvents(evt.events, 60);
+}
+async function decide(id, ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'frontdesk'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

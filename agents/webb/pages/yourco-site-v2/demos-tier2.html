@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — see production work (Tier 2)" />
+<meta property="og:description" content="Tier-2 agents don't just answer — they produce. Watch one run its whole pipeline: copy, research, coordination, publishing, reporting — with the human steps named honestly." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — see production work (Tier 2)</title>
+<meta name="description" content="Tier-2 agents don't just answer — they produce. Watch one run its whole pipeline: copy, research, coordination, publishing, reporting — with the human steps named honestly." />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  :root{
+    --green:#3f7d52;
+    --human:#5a6b8c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:54px 0 4px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 18px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:17px;max-width:620px;margin:13px auto 0}
+  .picker{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:920px;margin:26px auto 0}
+  .emp{display:flex;align-items:center;gap:8px;border:1px solid var(--hairline);background:#fff;border-radius:13px;padding:9px 13px;cursor:pointer;transition:.15s;text-align:left}
+  .emp:hover{border-color:var(--brass)}.emp.active{border-color:var(--indigo);background:var(--indigo);color:var(--cream)}
+  .emp .chip{font-size:18px}.emp .en{font-weight:650;font-size:13.5px}.emp .ev{font-size:11px;color:var(--pewter)}.emp.active .ev{color:rgba(244,239,230,.7)}
+  .stage{max-width:680px;margin:28px auto 0}
+  .ehead{background:var(--indigo);color:var(--cream);border-radius:14px 14px 0 0;padding:18px 22px;display:flex;align-items:center;gap:14px}
+  .ehead .av{flex:none;width:46px;height:46px;border-radius:50%;background:rgba(212,178,122,.18);display:flex;align-items:center;justify-content:center;font-size:24px}
+  .ehead .nm{font-size:20px;font-weight:650}.ehead .rl{font-size:12.5px;color:rgba(244,239,230,.7)}
+  .ehead .rep{margin-left:auto;font-size:11.5px;color:var(--brass-bright);text-align:right;max-width:200px}
+  .pipe{background:#fbfaf7;border:1px solid var(--hairline);border-top:none;border-radius:0 0 14px 14px;padding:16px;min-height:200px}
+  .pstep{display:flex;gap:12px;align-items:flex-start;padding:9px 4px;opacity:0;transform:translateX(10px)}
+  .pstep.in{opacity:1;transform:none;transition:.3s}
+  .pstep .badge{flex:none;font-size:10.5px;font-weight:700;letter-spacing:.03em;border-radius:6px;padding:3px 8px;white-space:nowrap;margin-top:1px}
+  .badge.a{background:rgba(184,150,90,.16);color:#8a6f3c}
+  .badge.h{background:rgba(90,107,140,.16);color:var(--human)}
+  .badge.g{background:rgba(63,125,82,.14);color:var(--green)}
+  .pstep .l{font-size:14px;color:#2a3142;line-height:1.4}
+  .play{display:block;margin:20px auto 0;background:var(--brass);color:var(--indigo);border:none;padding:12px 24px;border-radius:12px;font-size:15px;font-weight:650;cursor:pointer}
+  .play:hover{background:var(--brass-bright)}.play:disabled{opacity:.55}
+  .closer{max-width:680px;margin:18px auto 0;background:var(--indigo);color:var(--cream);border-radius:14px;padding:20px 24px;text-align:center;display:none}
+  .closer.show{display:block;animation:pop .4s ease}@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .closer .big{font-size:16px;font-weight:600}.closer .big b{color:var(--brass-bright)}
+  .closer a{display:inline-block;margin-top:14px;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:650;padding:10px 22px;border-radius:9999px;font-size:14px}
+  .legend{text-align:center;font-size:12px;color:var(--pewter);margin-top:20px}
+  .legend b{color:var(--indigo)}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:46px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+
+/* ===== PREMIUM POLISH (2026-06-22, Webb) — editorial type · material grain · tactility · section rhythm · scroll-reveal. Quiet-luxury (Luka watch-notes). Additive + reversible; degrades gracefully. ===== */
+h1,.hero h1,h2.sec,.close h2,.pullquote,.value h3,.ptier h3,.audit-card h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560}
+h1,.hero h1{letter-spacing:-.022em}
+h2.sec,.close h2{letter-spacing:-.016em}
+.pullquote,.value h3,.ptier h3,.audit-card h3{letter-spacing:-.012em;font-weight:560}
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E")}
+.tile,footer,footer.site{position:relative;z-index:1}
+.nav{z-index:20}
+.card,.ptier{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease;box-shadow:0 1px 2px rgba(22,27,51,.04)}
+.card:hover,.ptier:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(22,27,51,.10);border-color:rgba(184,150,90,.55)}
+.tile.dark .card{box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tile.dark .card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34);border-color:rgba(184,150,90,.5)}
+.demo-frame{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.demo-frame:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(22,27,51,.18)}
+.pill{box-shadow:0 1px 2px rgba(22,27,51,.08)}
+.pill:hover{box-shadow:0 10px 24px rgba(184,150,90,.34);transform:translateY(-1px)}
+.pill:active{transform:translateY(0) scale(.98)}
+.nav-links a:not(.pill){position:relative;padding-bottom:3px}
+.nav-links a:not(.pill)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.2,.7,.3,1)}
+.nav-links a:not(.pill):hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.tile + .tile{box-shadow:0 -1px 0 var(--hairline)}
+.tile.dark + .tile,.tile + .tile.dark,.tile.dark{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .tile:not(.hero) .eyebrow,.tile:not(.hero) h2.sec,.tile:not(.hero) .lede,.tile:not(.hero) .value,.tile:not(.hero) .ptier,.tile:not(.hero) .card,.tile:not(.hero) .moat .m,.tile:not(.hero) .audit-card,.tile:not(.hero) .pullquote,.tile:not(.hero) .demo-frame,.tile:not(.hero) .prose > *,.close h2,.close .ctas{animation:revealRise linear both;animation-timeline:view();animation-range:entry 8% entry 46%}
+  @keyframes revealRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+}}
+/* ===== /PREMIUM POLISH ===== */
+/* embed mode — when iframed into the See-it-work hub */
+html.embed .nav,html.embed footer{display:none}
+html.embed body{background:transparent}
+html.embed body::after{display:none}
+html.embed .hero{padding-top:14px}
+</style>
+<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed');</script>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=demos-tier2" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>See production work.</h1>
+    <p class="lede">Tier-2 agents don't just answer — they <i>produce</i>. Pick one and watch it run its whole pipeline. The human steps are named honestly: we don't pretend the agent shoots the photos.</p>
+  </div></section>
+
+  <div class="wrap"><div class="picker" id="picker"></div></div>
+
+  <div class="stage">
+    <div class="ehead"><div class="av" id="av"></div><div><div class="nm" id="nm"></div><div class="rl" id="rl"></div></div><div class="rep" id="rep"></div></div>
+    <div class="pipe" id="pipe"></div>
+    <button class="play" id="play">▶ Run the pipeline</button>
+    <div class="closer" id="closer"><div class="big" id="ctext"></div><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=demos-tier2">Hire this one →</a></div>
+  </div>
+  <p class="legend"><b>🤖 agent</b> = the agent does it · <b>🧍 human</b> = a person (you or a vendor) does it, coordinated by the agent · <b>✅ your okay</b> = gated for your approval</p>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=demos-tier2">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const A=(l)=>({t:'a',l}),H=(l)=>({t:'h',l}),G=(l)=>({t:'g',l});
+const AGENTS={
+  listings:{type:"Listing & Catalog Marketer",icon:"🏷️",rl:"Turns your products, properties, or inventory into published, found marketing.",rep:"replaces a copywriter + SEO + social manager",steps:[
+    A("Syncs new items from your store / MLS / inventory feed"),A("Writes listing copy + SEO from the real data, in your voice"),
+    A("Pulls supporting context — comps, specs, market (sources cited)"),A("Publishes the listings + 'just listed / just arrived' social"),
+    A("Captures the inbound, books the showings or demos"),A("Sends a weekly report: views, inquiries, what's converting")]},
+  campaign:{type:"Campaign Manager",icon:"📣",rl:"Plans and runs your marketing — calendar, promos, and full campaigns across channels.",rep:"replaces a marketing coordinator + content + email",steps:[
+    A("Builds the weekly content calendar"),A("Designs a promo / challenge campaign: landing, social, email, SMS"),
+    G("You approve → it publishes + sends"),A("Nurtures trial / lead signups toward the sale"),
+    A("Reports on reach, signups, and what to run next")]},
+  proposal:{type:"Proposal Builder",icon:"📝",rl:"Turns a scope into a branded estimate and proposal, then chases it to a decision.",rep:"replaces a proposal writer + estimating admin",steps:[
+    H("Your estimator does the site visit / scoping (notes, photos)"),A("Builds a line-item estimate from your price book"),
+    A("Drafts a branded good / better / best proposal"),G("You approve → it sends + preps the e-sign"),
+    A("Chases the proposal until there's a decision"),A("On signature, kicks off scheduling")]},
+  packet:{type:"Document Packet",icon:"📂",rl:"Turns an intake into a clean document packet — summary, engagement letter, checklist.",rep:"replaces a paralegal's / coordinator's drafting",steps:[
+    A("Synthesizes the intake into a matter / case summary"),H("Flags + the conflict check is run"),
+    G("Drafts the engagement letter from your template"),H("A licensed professional reviews"),
+    A("Sends the document checklist, collects + files"),A("Schedules kickoff, nudges missing items"),
+    A("(Never gives legal advice — ever)")]},
+  reviewprep:{type:"Review-Prep Analyst",icon:"📊",rl:"Assembles a branded review packet and plain-English summary from the data — for a human to act on.",rep:"replaces an analyst's prep time",steps:[
+    A("Pulls the account's holdings / history + market context"),G("Builds a branded review packet + plain-English summary"),
+    H("The licensed advisor makes the actual recommendation"),A("Schedules the review, collects documents"),
+    G("Sends the recap you approve"),A("(No advice, no fabricated numbers — ever)")]},
+  reactivation:{type:"Reactivation Engine",icon:"🔄",rl:"Wins back lapsed customers, members, and patients with the right sequence at the right time.",rep:"replaces a retention / recall coordinator",steps:[
+    A("Finds the overdue / lapsed list from your records"),G("Drafts the win-back sequence (email + SMS) per segment"),
+    H("Anyone clinical or sensitive is escalated, not messaged"),A("Runs the sequence, books the return"),
+    A("Reports who came back, and the revenue recovered")]},
+  reputation:{type:"Reputation Manager",icon:"⭐",rl:"Earns reviews from happy customers at the right moment and drafts every response.",rep:"replaces a reputation / community manager",steps:[
+    A("Triggers a review request at the peak moment (post-job / post-visit)"),A("Routes anyone unhappy to a human first — never to a public review"),
+    G("Drafts replies to every review for your approval"),A("Reports the rating trend + response time")]},
+  reporting:{type:"Progress Reporter",icon:"🗂️",rl:"Turns project and PM data into weekly client reports and change orders.",rep:"replaces PM reporting + admin",steps:[
+    A("Builds the weekly client progress report from PM data"),H("Pulls in the site / status photos"),
+    A("Drafts change-orders from a scope change + rate sheet"),G("You approve → it sends updates + change orders"),
+    A("Flags risks and deadlines before they slip")]}
+};
+let cur='listings',playing=false,timer=null;
+const picker=document.getElementById('picker'),pipe=document.getElementById('pipe'),playBtn=document.getElementById('play'),
+  closer=document.getElementById('closer');
+Object.entries(AGENTS).forEach(([k,a])=>{const b=document.createElement('button');b.className='emp'+(k==='listings'?' active':'');
+  b.innerHTML=`<span class="chip">${a.icon}</span><span class="en">${a.type}</span>`;
+  b.onclick=()=>{if(playing)return;cur=k;[...picker.children].forEach(c=>c.classList.remove('active'));b.classList.add('active');load();};picker.appendChild(b);});
+const BADGE={a:'🤖 agent',h:'🧍 human',g:'✅ your okay'};
+function load(){const e=AGENTS[cur];
+  document.getElementById('av').textContent=e.icon;document.getElementById('nm').textContent=e.type;
+  document.getElementById('rl').textContent=e.rl;document.getElementById('rep').textContent=e.rep;
+  pipe.innerHTML='';closer.classList.remove('show');playBtn.disabled=false;playBtn.innerHTML='▶ Run the pipeline';}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function play(){if(playing)return;playing=true;load();playBtn.disabled=true;playBtn.innerHTML='● Running…';
+  const e=AGENTS[cur];let agent=0;
+  for(const s of e.steps){
+    const d=document.createElement('div');d.className='pstep';
+    d.innerHTML=`<span class="badge ${s.t}">${BADGE[s.t]}</span><span class="l">${s.l}</span>`;
+    pipe.appendChild(d);await wait(60);d.classList.add('in');
+    if(s.t==='a')agent++;await wait(720);}
+  document.getElementById('ctext').innerHTML=`<b>${e.steps.length} steps, one accountable agent.</b> ${e.rep.charAt(0).toUpperCase()+e.rep.slice(1)}.`;
+  closer.classList.add('show');playBtn.disabled=false;playBtn.innerHTML='↻ Replay';playing=false;}
+playBtn.onclick=play;
+load();
+</script>
+<script>if(document.documentElement.classList.contains('embed')){function rh(){try{parent.postMessage({imHeight:document.body.scrollHeight},'*');}catch(e){}}new ResizeObserver(rh).observe(document.body);addEventListener('load',rh);setTimeout(rh,400);setInterval(rh,1000);}</script>
+</body>
+</html>

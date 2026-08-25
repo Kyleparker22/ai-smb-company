@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-coverage"></section>
+  <section class="view" id="v-incidents"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Incident narratives are append-only
+and verbatim — a request to adjust one is refused and becomes part of the record. A post fills
+only with a credential-matched guard, and use-of-force questions go to a human supervisor.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'coverage',label:'Coverage & gates'},
+      {id:'incidents',label:'Incidents'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,coverage,incidents,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.guards} guards · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The posts, counted', '',
+      `<div class="grid">
+        ${stat('Open posts', fmt.num(b.open_posts), 'credential-matched candidates proposed', b.open_posts?'alert':'')}
+        ${stat('Credentials expiring 45d', fmt.num(b.creds_expiring), 'expiry drops a guard from fill lists by construction', b.creds_expiring?'warn':'')}
+        ${stat('Incidents on register', fmt.num(b.incidents), 'append-only, verbatim')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.posts_filled} · ${b.recovered.incidents_recorded} · ${b.recovered.credential_alerts}`,
+               'posts filled · incidents recorded · credential alerts')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/reports');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An incident goes in <b>verbatim and append-only</b>; the supervisor
+      brief is logistics only. A callout opens the post NOW.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='incident'?'bad':m.label==='callout'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/reports/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function coverage(){
+  const d = await API.get('/api/coverage');
+  document.getElementById('v-coverage').innerHTML =
+    `<div class="banner warn">Try it: fill the armed courthouse post with the guard whose card
+      expired five days ago — refused with the lapse named; the clean guard queues at R1.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="fill('ps_demo_armed','gd_demo_expired')">Fill: expired card</button>
+      <button class="act primary" onclick="fill('ps_demo_armed','gd_demo_clean')">Fill: credentials match</button>
+     </div><div id="cout"></div>` +
+    panel('Open posts', 'only credential-matched guards appear — the gate built these lists', table(
+      [{label:'Site'},{label:'When'},{label:'Required'},{label:'Qualified candidates'}],
+      d.rows, p=>`<td>${esc(p.site)}</td><td>${fmt.stamp(p.when)}</td>
+        <td>${(p.required||[]).map(c=>pill(c,'warn')).join(' ')}</td>
+        <td>${(p.candidates||[]).map(c=>esc(c.name)).join(', ')||'—'}</td>`), true);
+}
+async function fill(post, guard){
+  const r = await API.post(`/api/posts/${post}/fill`,{guard_id:guard});
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Fill drafted', '', `<div class="strong">queued at R1</div>`);
+}
+
+async function incidents(){
+  const d = await API.get('/api/incidents');
+  document.getElementById('v-incidents').innerHTML =
+    `<div class="banner warn">Try it: ask to soften the fight narrative — refused, and the request
+      itself lands in the record.</div>
+     <div style="margin:10px 0"><button class="act" onclick="adjust()">Client asks to adjust the narrative</button></div>
+     <div id="iout"></div>` +
+    panel('Incident register', 'append-only, verbatim', table(
+      [{label:'When'},{label:'Guard'},{label:'Narrative'},{label:''}],
+      d.rows, i=>`<td>${fmt.stamp(i.at)}</td><td class="mono">${esc(i.guard_id||'')}</td>
+        <td>${esc(i.narrative)}</td>
+        <td>${i.supersedes?pill('correction of '+i.supersedes,'brand'):''}</td>`), true);
+}
+async function adjust(){
+  const d = await API.get('/api/incidents');
+  if(!d.rows.length){document.getElementById('iout').innerHTML='<div class="why">no incidents yet — handle the demo incident first</div>';return;}
+  const r = await API.post(`/api/incidents/${d.rows[0].id}/adjust`,
+    {requester:'Riverside Corporate PM', request:'can you soften the part about the police being called'});
+  document.getElementById('iout').innerHTML =
+    panel('Refused + logged', '', `<div class="banner warn">${esc(r.refused)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['lapses_caught','Credential lapses caught','counted'],
+    ['exposure_per_lapse','Exposure per lapse','your number'],
+    ['open_posts_mo','Open posts/mo','your number'],['avg_shift_bill','Avg shift bill','your number'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['incident_value','The unedited file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protocol OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-cycle"></section>
+  <section class="view" id="v-silent"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system gives no clinical advice,
+never changes a dose, never interprets a lab result, and can never contact a patient who stopped for
+a medical reason.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'cycle',label:'The cycle'},
+      {id:'silent',label:'Quiet after a change'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,cycle,silent,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.kind} · ${d.config.staff}`;
+  document.getElementById('v-board').innerHTML =
+    panel('Retention, counted — this is where the money is','not the funnel',
+      `<div class="grid">
+        ${stat('Lapsing', fmt.num(b.lapsing), 'past due by two weeks or more', b.lapsing?'alert':'')}
+        ${stat('Overdue', fmt.num(b.overdue), 'past their own interval', b.overdue?'warn':'')}
+        ${stat('Due this week', fmt.num(b.due), 'off their own protocol interval')}
+        ${stat('Continuation rate', val(b.continuation,'rate',fmt.pct),
+          b.continuation._missing?'':`${b.continuation.continuing} of ${b.continuation.started} starts`)}
+       </div>
+       <div class="grid" style="margin-top:14px">
+        ${stat('Quiet after a dose change', fmt.num(b.silent), 'a person calls — never an automated nudge', b.silent?'warn':'')}
+        ${stat('Labs resulted, unreviewed', fmt.num(b.labs_waiting), 'the quietest liability', b.labs_waiting?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'triage never queues an urgent one')}
+        ${stat('Permanently un-contactable', fmt.num(b.excluded), 'outside every sweep by construction')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'every patient message is R1')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An urgent signal reaches a clinician <b>immediately</b> with:
+      “${esc(d.instruction)}” Clinical questions route <b>unanswered</b>.</div>` +
+    panel('Messages','',table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='urgent'?'bad':m.label==='clinical'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`, true)) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  const s = r.steps[0]||{};
+  document.getElementById('mout').innerHTML = panel('What happened','',
+    `<div class="banner ${r.classification.label==='urgent'?'bad':r.classification.label==='clinical'?'warn':''}">
+      <b>${esc(r.classification.label)}</b> — ${esc(r.classification.why)}.
+      ${s.said?`<br>Said verbatim: “${esc(s.said)}”`:''}
+      ${s.refused?`<br><b>${esc(s.refused)}</b>`:''}</div>`);
+  inbox();
+}
+
+async function cycle(){
+  const d = await API.get('/api/cycle');
+  document.getElementById('v-cycle').innerHTML =
+    `<div class="banner">${d.excluded} patients are <b>permanently outside this list</b> — stopped for
+     a medical reason, adverse event, opted out, transferred or deceased. The sweep does not filter
+     them out; it never loads them.</div>` +
+    panel('Who is due, off their own interval','',
+      table([{label:'Patient'},{label:'Protocol'},{label:'State'},{label:'Days'},{label:'Cycles'},{label:''}],
+        d.rows, r=>`<td>${esc(r.name||r.patient)}</td><td>${esc(r.protocol||'')}</td>
+          <td>${r._missing?blank(r._missing):pill(r.state, r.state==='lapsing'?'bad':r.state==='overdue'?'warn':r.state==='due'?'':'good')}</td>
+          <td>${r.days==null?'—':r.days}</td><td>${r.cycles??'—'}</td>
+          <td class="right"><button class="act" onclick="nudge('${r.patient}')">Draft nudge</button></td>`, true)) +
+    `<div id="cout"></div>`;
+}
+async function nudge(id){
+  const r = await API.post(`/api/cycle/${id}/nudge`);
+  document.getElementById('cout').innerHTML = panel('What happened','',
+    r.refused
+      ? `<div class="banner bad"><b>Refused — ${esc(r.refused)}</b> (status: ${esc(r.status)}).<br>${esc(r.why)}</div>`
+      : `<div class="banner">Draft queued at the approval gate. ${esc(r.why||'')}
+         <div style="margin-top:8px;padding:10px;background:var(--bg2);border-radius:6px">${esc(r.draft)}</div>
+         <div class="f" style="margin-top:6px">${esc(r.note)}</div></div>`);
+}
+
+async function silent(){
+  const d = await API.get('/api/silent');
+  document.getElementById('v-silent').innerHTML =
+    `<div class="banner warn">These patients had a dose change and have not been heard from since.
+     This list carries <b>no message draft on purpose</b> — it is a prompt for a person to call.</div>` +
+    panel('Quiet since a change','',
+      table([{label:'Patient'},{label:'Protocol'},{label:'Changed'},{label:'Days quiet'},{label:'What to do'}],
+        d.rows, r=>`<td>${esc(r.name)}</td><td>${esc(r.protocol||'')}</td>
+          <td>${fmt.stamp(r.changed)}</td><td>${r.days_quiet}</td><td>${esc(r.action)}</td>`, true));
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi'+(Object.keys(roiIn).length?'?'+new URLSearchParams(roiIn):''));
+  const rec=d.recorded||{};
+  const f=[['lapsing_count','Lapsing patients','counted from their own intervals'],
+           ['silent_count','Quiet after a change','counted'],
+           ['cycle_value','Value of a cycle','median of recorded refills'],
+           ['recovery_rate','Recovery rate (0–1)','yours, not ours'],
+           ['inbox_hours_wk','Inbox + refill-chasing hours / week','yours'],
+           ['staff_rate','Staff hourly rate','yours'],
+           ['urgent_value','Value of fast urgent routing','you decide']];
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt,ex]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events'),API.get('/api/excluded')]);
+  document.getElementById('v-trust').innerHTML =
+    panel('The two things it refuses','',
+      `<button class="act" onclick="ask()">Ask "should I double my dose?"</button>
+       <button class="act" onclick="dose()">Try to change a dose</button><div id="askout"></div>`) +
+    panel('Permanently un-contactable', esc(ex.why),
+      table([{label:'Patient'},{label:'Status'}], ex.rows,
+        r=>`<td>${esc(r.name)}</td><td>${pill(r.status,'bad')}</td>`, true)) +
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function ask(){
+  const r=await API.post('/api/ask',{text:'should I double my dose?'});
+  document.getElementById('askout').innerHTML =
+    `<div class="banner warn" style="margin-top:10px"><b>Refused, by class.</b> ${esc(r.reply)}
+     <div class="f" style="margin-top:6px">${esc(r.why)}</div></div>`;
+}
+async function dose(){
+  const r=await API.post('/api/dose',{});
+  document.getElementById('askout').innerHTML =
+    `<div class="banner bad" style="margin-top:10px"><b>Refused.</b> ${esc(r.why)}</div>`;
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'frontdesk'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

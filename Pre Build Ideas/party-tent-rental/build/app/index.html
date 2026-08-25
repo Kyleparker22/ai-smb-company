@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marquee OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-wind"></section>
+  <section class="view" id="v-deposits"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never makes the weather
+call — it states the recorded forecast against the recorded rated wind limit, and a human decides
+install, hold, or strike, on the record. Reservations draw from counted stock or the waitlist; no
+code path oversells. An install without the recorded 811 locate ticket is refused, and a deposit
+is never touched without both recorded condition checks. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Weekend board'},{id:'inbox',label:'Inbox'},
+      {id:'wind',label:'Wind & installs'},{id:'deposits',label:'Deposits & permits'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,wind,deposits,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.crews} install crews`;
+  const wk = (b.weekends||[]).map(w=>panel(`Weekend of ${w.weekend}`,
+      w.full.length?`at capacity: ${w.full.join(', ')}`:'capacity remains',
+      table([{label:'Item'},{label:'Stock',num:true},{label:'Reserved',num:true},{label:'Available',num:true}],
+        w.rows, r=>`<td>${esc(r.name||r.item)}</td><td class="num">${r.stock}</td>
+          <td class="num">${r.reserved}</td>
+          <td class="num">${r.available<=0&&r.reserved?pill('0 — full','bad'):r.available}</td>`), true)).join('');
+  document.getElementById('v-board').innerHTML =
+    panel('The weekend, counted', esc(b.capacity_note),
+      `<div class="grid">
+        ${stat('Wind flags', fmt.num(b.wind_flags), 'forecast vs rated limit — a human owns the call', b.wind_flags?'bad':'')}
+        ${stat('Permit clocks unfiled', fmt.num(b.permits_unfiled), 'DATE ALERTS, not legal advice', b.permits_unfiled?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the weather worry reads first', b.messages_open?'warn':'')}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('This week, counted', fmt.num(b.recovered.bookings_confirmed)+' booked',
+               `${b.recovered.replies_sent} replies sent · ${b.recovered.deposit_actions_sent} deposit action(s) · ${b.recovered.permit_alerts} permit alert(s)`)}</div>`) + wk;
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The wind worry on a booked event reads <b>first</b>. The reply states
+      the recorded forecast against the recorded rated limit and names the person who makes the
+      call — it never reassures. Booking requests reserve from counted stock or waitlist honestly.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='weather_worry'?'bad':m.label==='deposit_ask'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      ${s.result&&s.result.status?`<div class="why">reservation: ${esc(s.result.status)} — ${esc(s.result.why||'')}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function wind(){
+  const d = await API.get('/api/bookings/bk_demo_gust/wind');
+  document.getElementById('v-wind').innerHTML =
+    `<div class="banner warn">Try it: ask software to make the weather call — refused at R0, no
+      approve button exists. Reserve a third 40x60 on the full weekend — waitlisted, the count
+      unchanged. Send the crew without the 811 ticket — refused; the ticket is a wall.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="weatherProbe()">Make the weather call (software) — refused</button>
+      <button class="act" onclick="weatherHuman()">Record the crew chief's call: hold</button>
+      <button class="act" onclick="oversell()">Reserve a 3rd 40x60 (stock: 2) — waitlists</button>
+      <button class="act" onclick="install('bk_demo_no811')">Install without the 811 ticket — refused</button>
+      <button class="act" onclick="install('bk_demo_gust')">Install with the ticket on record</button>
+     </div><div id="wout"></div>` +
+    panel(`Saturday's 40x60 — ${esc(d.customer||'')}`, esc(d.wind&&d.wind.note||''),
+      `<div class="strong">${esc(d.wind&&d.wind.summary||'')}</div>
+       ${d.weather_call?`<div class="why">recorded call: <b>${esc(d.weather_call.decision)}</b> by ${esc(d.weather_call.by)} at ${fmt.stamp(d.weather_call.at)}</div>`
+                       :`<div class="why">no human call recorded yet — the flag stands until a person owns it</div>`}`);
+}
+async function weatherProbe(){
+  const r = await API.post('/api/bookings/bk_demo_gust/weather-call',{});
+  document.getElementById('wout').innerHTML =
+    panel('Refused — R0', '', `<div class="banner warn">${esc(r.reason||'')}</div>
+      <div class="why">recorded as a refusal; there is no approval row and no approve button for this action</div>`);
+}
+async function weatherHuman(){
+  const r = await API.post('/api/bookings/bk_demo_gust/weather-call',
+    {human:'crew_chief_dana', decision:'hold', note:'re-check the 6am forecast before load-out'});
+  document.getElementById('wout').innerHTML =
+    panel('Human call recorded', '', `<div class="strong">${esc(r.decision)} — by ${esc(r.by)}</div>
+      <div class="why">${esc(r.wind||'')}</div>`);
+  wind();
+}
+async function oversell(){
+  const cap = await API.get('/api/capacity');
+  const w2 = (cap.weekends||[])[1]||(cap.weekends||[])[0];
+  const r = await API.post('/api/bookings/reserve',
+    {customer:'Walk-in (demo)', event_date:w2.weekend, items:{tent_40x60:1}, demo_tag:'demo'});
+  document.getElementById('wout').innerHTML =
+    panel(`Reservation: ${r.status||'—'}`, '', `<div class="banner ${r.status==='confirmed'?'':'warn'}">${esc(r.why||r.refused||'')}</div>
+      <div class="why">the stock count did not move — a waitlisted booking holds nothing</div>`);
+}
+async function install(id){
+  const r = await API.post(`/api/bookings/${id}/install`,{});
+  document.getElementById('wout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Checklist cleared', '', `<div class="strong">${esc(r.why)}</div><div class="why">${esc(r.note||'')}</div>`);
+}
+
+async function deposits(){
+  const p = await API.get('/api/permits');
+  document.getElementById('v-deposits').innerHTML =
+    `<div class="banner warn">Try it: settle the deposit with both condition records — the
+      arithmetic drafts at R1; settle the one missing its return record — refused, the missing
+      record named.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="dep('bk_demo_dep_full')">Settle: damage on return ($150)</button>
+      <button class="act" onclick="dep('bk_demo_dep_partial')">Settle: missing return record — refused</button>
+      <button class="act" onclick="dep('bk_demo_dep_clean')">Settle: clean return, full refund</button>
+     </div><div id="dout"></div>` +
+    panel('Tent-permit clocks', esc(p.rules_source), table(
+      [{label:'Customer'},{label:'Event'},{label:'Municipality'},{label:'Tent sqft',num:true},{label:'Permit'}],
+      p.rows, r=>`<td>${esc(r.customer||'')}</td><td>${esc(r.event_date||'')}</td>
+        <td>${esc(r.municipality||'')}</td><td class="num">${r.tent_sqft}</td>
+        <td>${r._missing?pill('unmeasured','warn')+` <span class="why">${esc(r._missing)}</span>`
+             :r.permit==='NOT FILED'?pill(`DATE ALERT — ${r.days_left}d to deadline`, r.days_left<0?'bad':'warn')
+             :r.permit==='filed'?pill('filed '+(r.permit_ref||''),'good'):esc(r.permit)}</td>`), true);
+}
+async function dep(id){
+  const r = await API.post(`/api/bookings/${id}/deposit`);
+  document.getElementById('dout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel(`Drafted — ${esc(r.action)}`, '', `<div class="strong">${esc(r.math.basis)}</div>
+        <div class="why">out record ${esc(r.math.evidence.out)} (${r.math.evidence.out_photos} photos) ·
+        return record ${esc(r.math.evidence['return'])} (${r.math.evidence.return_photos} photos) —
+        queued at R1 for a human</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['idle_weekend_value','Idle weekend value','counted'],
+    ['utilization_lift','Utilization lift','your number (0–1)'],
+    ['disputes_yr','Deposit disputes/yr','your number'],['avg_dispute','Avg dispute','your number'],
+    ['permit_fine_value','Permit fine exposure','yours or blank'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

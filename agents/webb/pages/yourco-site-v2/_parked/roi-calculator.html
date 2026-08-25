@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — what could an employee recover?" />
+<meta property="og:description" content="Pick an outcome, enter your own numbers, and see what a digital employee could recover — revenue, time, or conversions. Your math, conservative defaults, nothing made up." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — what could an employee recover?</title>
+<meta name="description" content="Pick an outcome, enter your own numbers, and see what a digital employee could recover — revenue, time, or conversions. Your math, conservative defaults, nothing made up." />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;--brass-bright:#D4B27A;
+    --pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);--hairline:rgba(22,27,51,.12);--green:#3f7d52;}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:56px 0 4px}
+  .gate{display:flex;align-items:center;gap:10px;justify-content:center;max-width:230px;margin:0 auto 20px}
+  .gate .line{height:1px;background:var(--brass);flex:1}.gate .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  h1{font-size:clamp(31px,5.2vw,50px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:580px;margin:14px auto 0}
+  .calc{max-width:860px;margin:30px auto 0}
+  .modes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+  .mode{background:#fff;border:1px solid var(--hairline);border-radius:12px;padding:11px 18px;font-size:14.5px;cursor:pointer;font-weight:600;transition:.14s}
+  .mode:hover{border-color:var(--brass)}.mode.on{background:var(--indigo);color:var(--cream);border-color:var(--indigo)}
+  .panel{display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:start}
+  @media(max-width:780px){.panel{grid-template-columns:1fr}}
+  .inputs{background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:22px 24px}
+  .field{margin-bottom:18px}.field:last-child{margin-bottom:0}
+  .field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px}
+  .field .hintl{color:var(--pewter);font-weight:400}
+  .field .row{display:flex;align-items:center;gap:10px}
+  .field .pre{color:var(--pewter);font-size:16px}
+  .field input[type=number]{flex:1;border:1px solid var(--hairline);border-radius:10px;padding:11px 13px;font-size:16px;font-family:inherit;outline:none;width:100%}
+  .field input:focus{border-color:var(--brass)}
+  .field .suf{color:var(--pewter);font-size:14px}
+  .field input[type=range]{width:100%;accent-color:var(--brass)}
+  .rangeval{font-size:13px;color:var(--indigo);font-weight:600;float:right}
+  .result{background:var(--indigo);color:var(--cream);border-radius:16px;padding:26px 24px;text-align:center;position:sticky;top:74px}
+  .result .lab{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:rgba(244,239,230,.6);margin-bottom:8px}
+  .result .big{font-size:clamp(36px,7vw,52px);font-weight:700;letter-spacing:-.02em;color:var(--brass-bright);line-height:1}
+  .result .per{font-size:14px;color:rgba(244,239,230,.7);margin-top:4px}
+  .result .yr{font-size:15px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(244,239,230,.16)}
+  .result .yr b{color:var(--brass-bright)}
+  .result .sentence{font-size:13.5px;color:rgba(244,239,230,.82);margin-top:16px;line-height:1.45}
+  .result a{display:inline-block;margin-top:18px;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:650;padding:11px 22px;border-radius:9999px;font-size:14px}
+  .cap{display:flex;gap:6px;margin-top:14px}
+  .cap input{flex:1;border:1px solid rgba(244,239,230,.3);background:rgba(244,239,230,.08);color:var(--cream);border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit}
+  .cap input::placeholder{color:rgba(244,239,230,.55)}
+  .cap input:focus{outline:none;border-color:var(--brass-bright)}
+  .cap button{border:none;background:var(--brass);color:var(--indigo);border-radius:9px;padding:0 14px;font-size:13px;font-weight:650;cursor:pointer;font-family:inherit}
+  .capdone{font-size:12.5px;color:var(--brass-bright);margin-top:8px}.capdone a{color:var(--brass-bright)}
+  .note{text-align:center;color:var(--pewter);font-size:12.5px;max-width:600px;margin:24px auto 0;font-style:italic}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:50px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="positioning.html">How it works</a>
+      <a href="demos.html">See it work</a><a href="roi-calculator.html" class="active">ROI</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <div class="gate"><span class="line"></span><span class="dia"></span><span class="line"></span></div>
+    <h1>What could an employee recover?</h1>
+    <p class="lede">Pick an outcome, enter your own numbers, and watch the math. Conservative defaults — nothing made up.</p>
+  </div></section>
+
+  <div class="calc">
+    <div class="modes" id="modes"></div>
+    <div class="panel">
+      <div class="inputs" id="inputs"></div>
+      <div class="result">
+        <div class="lab" id="rlab">Recovered every month</div>
+        <div class="big" id="rbig">$0</div>
+        <div class="per" id="rper">per month</div>
+        <div class="yr">That's <b id="ryr">$0</b> a year.</div>
+        <div class="sentence" id="rsent"></div>
+        <a href="https://calendly.com/the Founder-yourco/30min">See what it'd take →</a>
+        <form class="cap" id="cap"><input id="cem" type="email" placeholder="Email me this breakdown" autocomplete="off" /><button type="submit">Send</button></form>
+        <div class="capdone" id="capdone"></div>
+      </div>
+    </div>
+    <p class="note" id="note"></p>
+  </div>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="demos.html">See it work</a><a href="build-your-employee.html">Build yours</a><a href="https://calendly.com/the Founder-yourco/30min">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+const MODES={
+  revenue:{label:"Recover missed revenue",rlab:"Recovered every month",
+    fields:[
+      {id:"inq",label:"Inbound inquiries a month",hint:"calls, texts, form fills",val:120,pre:"",suf:""},
+      {id:"miss",label:"% you miss or never follow up",hint:"after-hours, busy, dropped",val:30,pre:"",suf:"%"},
+      {id:"val",label:"Average value of a job / sale",hint:"",val:3500,pre:"$",suf:""},
+      {id:"rec",label:"Share of the missed an employee recovers",hint:"conservative",val:50,pre:"",suf:"%",range:true}
+    ],
+    calc:f=>f.inq*(f.miss/100)*(f.rec/100)*f.val,
+    sentence:"Most of that is revenue you're already paying to generate — it's just slipping out the back door.",
+    note:"Math: inquiries × % missed × recovery rate × average value. All your inputs; the recovery rate defaults low on purpose."},
+  time:{label:"Win back your time",rlab:"Worth of time, every month",
+    fields:[
+      {id:"hrs",label:"Hours a week on this task",hint:"answering, scheduling, follow-up, admin",val:12,pre:"",suf:"hrs"},
+      {id:"rate",label:"What an hour of that time is worth",hint:"yours or a hire's",val:60,pre:"$",suf:"/hr"}
+    ],
+    calc:f=>f.hrs*f.rate*4.33,
+    sentence:"That's time back on the work only you can do — sold, built, in front of customers.",
+    note:"Math: hours/week × hourly value × 4.33 weeks. Hours back per year shown below."},
+  convert:{label:"Convert faster",rlab:"Extra revenue every month",
+    fields:[
+      {id:"leads",label:"Leads a month",hint:"",val:80,pre:"",suf:""},
+      {id:"close",label:"Your current close rate",hint:"",val:25,pre:"",suf:"%"},
+      {id:"val2",label:"Average value of a closed deal",hint:"",val:3500,pre:"$",suf:""},
+      {id:"lift",label:"Conversion lift from instant response",hint:"speed-to-lead, conservative",val:20,pre:"",suf:"%",range:true}
+    ],
+    calc:f=>f.leads*(f.close/100)*(f.lift/100)*f.val2,
+    sentence:"Answering in seconds instead of hours wins deals that were already in your pipeline.",
+    note:"Math: leads × close rate × conversion lift × deal value. The lift is yours to set; it defaults low."},
+  noshow:{label:"Reduce no-shows",rlab:"Recovered from fewer no-shows",
+    fields:[
+      {id:"ns_a",label:"Appointments a month",val:160,pre:"",suf:""},
+      {id:"ns_r",label:"Your no-show rate",val:15,pre:"",suf:"%"},
+      {id:"ns_v",label:"Value of a booked appointment",val:200,pre:"$",suf:""},
+      {id:"ns_c",label:"No-shows cut by reminders",hint:"conservative",val:50,pre:"",suf:"%",range:true}
+    ],
+    calc:f=>f.ns_a*(f.ns_r/100)*f.ns_v*(f.ns_c/100),
+    sentence:"Automatic reminders and one-tap reschedule turn empty slots back into revenue.",
+    note:"Math: appointments × no-show rate × value × the share reminders recover."},
+  afterhours:{label:"Capture after-hours",rlab:"Recovered after-hours every month",
+    fields:[
+      {id:"ah_i",label:"Inbound inquiries a month",val:120,pre:"",suf:""},
+      {id:"ah_p",label:"% that come in after hours",val:35,pre:"",suf:"%"},
+      {id:"ah_v",label:"Average value of a job / sale",val:3500,pre:"$",suf:""},
+      {id:"ah_c",label:"Share an employee captures",hint:"vs. a voicemail",val:55,pre:"",suf:"%",range:true}
+    ],
+    calc:f=>f.ah_i*(f.ah_p/100)*(f.ah_c/100)*f.ah_v,
+    sentence:"The inquiries that land when you're closed go to whoever answers first. Now that's you.",
+    note:"Math: inquiries × after-hours % × capture rate × average value."},
+  reactivate:{label:"Reactivate past customers",rlab:"Recovered from win-backs",
+    fields:[
+      {id:"rx_n",label:"Past customers you could win back",val:600,pre:"",suf:""},
+      {id:"rx_p",label:"Share an employee reactivates",hint:"conservative",val:8,pre:"",suf:"%",range:true},
+      {id:"rx_v",label:"Average value of a job / sale",val:3500,pre:"$",suf:""}
+    ],
+    calc:f=>f.rx_n*(f.rx_p/100)*f.rx_v,
+    sentence:"Your warmest list is the customers you already served. An employee works it, you don't.",
+    note:"Math: past customers × reactivation rate × average value. One-time + repeatable."},
+  upsell:{label:"Upsell existing customers",rlab:"Extra revenue every month",
+    fields:[
+      {id:"up_n",label:"Active customers a month",val:200,pre:"",suf:""},
+      {id:"up_p",label:"Share who take an offered upsell",val:8,pre:"",suf:"%",range:true},
+      {id:"up_v",label:"Average upsell value",val:400,pre:"$",suf:""}
+    ],
+    calc:f=>f.up_n*(f.up_p/100)*f.up_v,
+    sentence:"The right add-on, offered at the right moment, every time — without anyone remembering to.",
+    note:"Math: customers × upsell take-rate × upsell value."},
+  quotes:{label:"Recover stalled quotes",rlab:"Recovered from quotes/month",
+    fields:[
+      {id:"q_n",label:"Quotes / proposals sent a month",val:40,pre:"",suf:""},
+      {id:"q_s",label:"% that stall or go cold",val:50,pre:"",suf:"%"},
+      {id:"q_v",label:"Average value of the work",val:3500,pre:"$",suf:""},
+      {id:"q_r",label:"Share an employee revives",hint:"persistent follow-up",val:35,pre:"",suf:"%",range:true}
+    ],
+    calc:f=>f.q_n*(f.q_s/100)*(f.q_r/100)*f.q_v,
+    sentence:"Most quotes don't die from a 'no' — they die from silence. An employee follows up until there's an answer.",
+    note:"Math: quotes × stall rate × revival rate × value."},
+  collect:{label:"Collect overdue invoices",rlab:"Cash collected sooner",
+    fields:[
+      {id:"c_o",label:"Overdue invoices outstanding",val:18000,pre:"$",suf:""},
+      {id:"c_r",label:"Share recovered with steady chasing",hint:"tone-matched reminders",val:45,pre:"",suf:"%",range:true}
+    ],
+    calc:f=>f.c_o*(f.c_r/100),
+    sentence:"Invoices get paid when someone consistently, politely asks. An employee never forgets to.",
+    note:"Math: overdue balance × recovery rate. Every send still gets your okay."},
+  hire:{label:"Skip a hire",rlab:"Cost of a hire, avoided",
+    fields:[
+      {id:"h_h",label:"Hours a week the role needs",val:25,pre:"",suf:"hrs"},
+      {id:"h_r",label:"Loaded cost of that hire, per hour",hint:"wage + overhead",val:28,pre:"$",suf:"/hr"}
+    ],
+    calc:f=>f.h_h*f.h_r*4.33,
+    sentence:"The work gets covered without recruiting, ramping, turnover, or benefits.",
+    note:"Math: hours/week × loaded hourly cost × 4.33 weeks."}
+};
+let cur='revenue';
+const modesBox=document.getElementById('modes'),inputsBox=document.getElementById('inputs');
+const fmt=n=>'$'+Math.round(n).toLocaleString();
+Object.entries(MODES).forEach(([k,m])=>{const b=document.createElement('button');b.className='mode'+(k==='revenue'?' on':'');b.textContent=m.label;
+  b.onclick=()=>{cur=k;[...modesBox.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');build();};modesBox.appendChild(b);});
+
+function build(){
+  const m=MODES[cur]; inputsBox.innerHTML='';
+  m.fields.forEach(f=>{
+    const d=document.createElement('div');d.className='field';
+    if(f.range){
+      d.innerHTML=`<label>${f.label} <span class="hintl">${f.hint?'· '+f.hint:''}</span><span class="rangeval" id="rv_${f.id}">${f.val}%</span></label>
+        <input type="range" min="10" max="90" step="5" value="${f.val}" id="${f.id}">`;
+    }else{
+      d.innerHTML=`<label>${f.label} ${f.hint?'<span class="hintl">· '+f.hint+'</span>':''}</label>
+        <div class="row">${f.pre?'<span class="pre">'+f.pre+'</span>':''}<input type="number" min="0" value="${f.val}" id="${f.id}">${f.suf?'<span class="suf">'+f.suf+'</span>':''}</div>`;
+    }
+    inputsBox.appendChild(d);
+  });
+  inputsBox.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',calc));
+  document.getElementById('rlab').textContent=m.rlab;
+  document.getElementById('note').textContent=m.note;
+  document.getElementById('rsent').textContent=m.sentence;
+  calc();
+}
+function calc(){
+  const m=MODES[cur],f={};
+  m.fields.forEach(fl=>{const el=document.getElementById(fl.id); f[fl.id]=parseFloat(el.value)||0; if(fl.range){const rv=document.getElementById('rv_'+fl.id); if(rv)rv.textContent=el.value+'%';}});
+  const monthly=m.calc(f);
+  document.getElementById('rbig').textContent=fmt(monthly);
+  document.getElementById('ryr').textContent=fmt(monthly*12);
+  // time mode: also show hours/year in the year line
+  if(cur==='time'){document.getElementById('ryr').parentElement.innerHTML=`That's <b>${fmt(monthly*12)}</b> a year — and <b>${Math.round((f.hrs||0)*52).toLocaleString()} hours</b> back.`;}
+}
+build();
+// Lead capture — high-intent: they just calculated their ROI. mailto stopgap now; /api/capture at launch.
+(function(){var f=document.getElementById('cap');if(!f)return;
+  f.addEventListener('submit',function(e){e.preventDefault();
+    var em=document.getElementById('cem').value.trim();if(!em||em.indexOf('@')<1)return;
+    var ctx=(document.getElementById('rbig').textContent||'')+' /mo, '+(document.getElementById('ryr').textContent||'')+' /yr';
+    var lead={source:'ROI calculator',email:em,context:ctx};
+    try{console.log('[yourco lead]',JSON.stringify(lead));window.__yourcoLeads=(window.__yourcoLeads||[]);window.__yourcoLeads.push(lead);}catch(_){}
+    var mt='mailto:founder@yourco.example.com?subject='+encodeURIComponent('ROI lead — '+em)+'&body='+encodeURIComponent('Source: ROI calculator\nEmail: '+em+'\nResult on screen: '+ctx);
+    f.style.display='none';
+    document.getElementById('capdone').innerHTML='✓ Done — the Founder will send your breakdown + what it’d take. <a href="'+mt+'">email it instead</a>';
+  });})();
+</script>
+</body>
+</html>

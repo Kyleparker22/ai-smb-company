@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hours OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-dispatch"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. The clock arithmetic decides every
+dispatch — nobody talks anyone into it. Software never edits or certifies a log, an OOS truck
+never gets assigned, and nothing outward drafts after an accident.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'dispatch',label:'Dispatch & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,dispatch,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.trucks} trucks · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The fleet, counted', '',
+      `<div class="grid">
+        ${stat('Drivers', fmt.num(b.drivers), `${b.clocks_unknown} clock(s) UNKNOWN — undispatchable, said plainly`, b.clocks_unknown?'warn':'')}
+        ${stat('Trucks overdue service', fmt.num(b.trucks_overdue), '', b.trucks_overdue?'alert':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'accident and log reads come first', b.messages_open?'bad':'')}
+        ${stat('', '', '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.loads_dispatched} · ${fmt.money(b.recovered.detention_billed)} · ${b.recovered.log_requests_refused}`,
+               'loads dispatched · detention billed · log requests refused')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"Fix his log" is refused and preserved verbatim — the falsification
+      line. An accident gets the preservation brief and <b>nothing outward from software</b>.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, ['accident','log_ask'].includes(m.label)?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      ${s.brief?`<div class="why">${(s.brief.checklist||[]).map(x=>'• '+esc(x)).join('<br>')}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function dispatch(){
+  const d = await API.get('/api/loads');
+  document.getElementById('v-dispatch').innerHTML =
+    `<div class="banner warn">Try it: dispatch the 8h Memphis run on the 3h clock — refused with
+      the arithmetic; the same run on the 10.5h clock queues; the UNKNOWN clock cannot dispatch
+      anything. Detention with no departure stamp — refused.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="disp('dr_demo_short','ld_demo_long')">Dispatch: 3h clock, 8h run</button>
+      <button class="act primary" onclick="disp('dr_demo_full','ld_demo_long')">Dispatch: 10.5h clock</button>
+      <button class="act" onclick="disp('dr_demo_unknown','ld_demo_short')">Dispatch: UNKNOWN clock</button>
+      <button class="act" onclick="det('ld_demo_nostamps')">Detention: no departure stamp</button>
+      <button class="act primary" onclick="det('ld_demo_detention')">Detention: stamps recorded</button>
+     </div><div id="dout"></div>` +
+    panel('Loads', '', table([{label:'Load'},{label:'Lane'},{label:'Run h',num:true},{label:'Stamps'}],
+      d.rows, l=>`<td class="mono">${esc(l.id)}${l.demo_tag?' '+pill(l.demo_tag,'brand'):''}</td>
+        <td>${esc(l.lane)}</td><td class="num">${l.run_hours}</td>
+        <td>${l.arrived_at&&l.departed_at?pill('pair recorded','good'):l.arrived_at?pill('half','warn'):'—'}</td>`), true);
+}
+async function disp(driver, load){
+  const r = await API.post('/api/dispatch',{driver_id:driver,load_id:load});
+  document.getElementById('dout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Dispatch', '', `<div class="strong">queued at R1 — ${esc((r.detail&&r.detail.summary)||'')}</div>`);
+}
+async function det(id){
+  const r = await API.post(`/api/loads/${id}/detention`);
+  document.getElementById('dout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Detention computes', '', `<div class="strong">${fmt.money(r.total)} — ${esc(r.basis)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['detention_open','Detention billable now','counted'],
+    ['dispatch_hours_wk','Dispatch hrs/wk','your number'],['dispatch_rate','Dispatch rate','your number'],
+    ['violations_yr','HOS violations last yr','your history'],['exposure_per','Exposure per violation','your number'],
+    ['log_value','The clean-log file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

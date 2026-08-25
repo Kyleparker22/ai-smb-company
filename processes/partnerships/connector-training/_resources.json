@@ -1,0 +1,135 @@
+{
+  "_what": "The connector-facing RESOURCE INDEX the Connector Console renders (section 8). Content, not code — add an item here rather than hardcoding one in the console.",
+  "_rule": "`clearedExternally` is the only thing that decides whether the console renders a LINK. It is false for every document whose own header carries an INTERNAL / STAGED / DRAFT / counsel-gated banner — the console lists the item and marks it not-yet-available instead of linking a document that is not cleared for external eyes. When in doubt: false.",
+  "_availability": "now = usable today · launch = exists but not cleared to send until the launch gate · counsel = blocked on outside counsel · rung:<Rn> = gated on the trust ladder · per-connector = depends on that person's own record",
+  "resources": [
+    {
+      "id": "intro-play",
+      "title": "The intro play",
+      "what": "What a good introduction sounds like, and the five steps from intro to payout.",
+      "kind": "lesson",
+      "availability": "now",
+      "clearedExternally": true,
+      "lesson": "01-the-intro-play",
+      "note": "Readable in this console under Learnings."
+    },
+    {
+      "id": "cheat-sheet",
+      "title": "The ideal-client cheat sheet",
+      "what": "The signals that mark a business worth introducing, and the one question that finds them.",
+      "kind": "lesson",
+      "availability": "now",
+      "clearedExternally": true,
+      "lesson": "02-who-to-flag",
+      "note": "Readable in this console under Learnings."
+    },
+    {
+      "id": "rules",
+      "title": "The rules of the road",
+      "what": "The six rules that govern everything you do as a connector, and the line that answers a price question.",
+      "kind": "lesson",
+      "availability": "now",
+      "clearedExternally": true,
+      "lesson": "05-the-rules-of-the-road",
+      "note": "Readable in this console under Learnings."
+    },
+    {
+      "id": "getting-paid",
+      "title": "How you get paid",
+      "what": "The escalator, the payday, what counts as an active client, and the parts that are not settled yet.",
+      "kind": "lesson",
+      "availability": "now",
+      "clearedExternally": true,
+      "lesson": "06-how-you-get-paid",
+      "note": "Readable in this console under Learnings."
+    },
+    {
+      "id": "training-record",
+      "title": "Your training record",
+      "what": "Which rung's training you have completed, when, and what each completion committed you to.",
+      "kind": "status",
+      "availability": "per-connector",
+      "clearedExternally": false,
+      "status_source": "crm.meta.connectorTraining",
+      "note": "Completion is self-recorded in this console and written to your permanent history. It records that you read a lesson — not that you were tested on it."
+    },
+    {
+      "id": "packet",
+      "title": "The Connector Packet",
+      "what": "The full program document — your role, the compensation escalator, the rules of the road, the FAQ.",
+      "kind": "document",
+      "availability": "launch",
+      "clearedExternally": false,
+      "source": "processes/partnerships/rep-packet.md",
+      "why": "Its own header marks it INTERNAL / STAGED: not offered to anyone until outside counsel clears the program structure and the launch gate clears."
+    },
+    {
+      "id": "onepager",
+      "title": "The referral one-pager",
+      "what": "The short version you can forward to someone who asks what this is.",
+      "kind": "document",
+      "availability": "launch",
+      "clearedExternally": false,
+      "source": "processes/partnerships/referral-recruitment-onepager.md",
+      "why": "Marked internal/staged in its own header — not sent until launch and until the numbers are locked."
+    },
+    {
+      "id": "agreement",
+      "title": "The Partner Agreement",
+      "what": "The contract that governs everything — attribution, payment timing, clawbacks, termination.",
+      "kind": "document",
+      "availability": "counsel",
+      "clearedExternally": false,
+      "source": "processes/partnerships/legal/referral-partner-agreement.md",
+      "why": "DRAFT, in outside-counsel review. Nothing is signable until counsel finishes; a draft agreement must never be circulated as if it were the terms."
+    },
+    {
+      "id": "income-disclosure",
+      "title": "The Income Disclosure Statement",
+      "what": "What connectors actually earn, stated plainly — delivered alongside the agreement, before you sign anything.",
+      "kind": "document",
+      "availability": "counsel",
+      "clearedExternally": false,
+      "source": "processes/partnerships/legal/income-disclosure-statement.md",
+      "why": "DRAFT, in outside-counsel review. It is required at the point the opportunity is presented, which is exactly why it is not shown before it is cleared."
+    },
+    {
+      "id": "w9",
+      "title": "Your W-9",
+      "what": "Required on file before any payout can be computed. yourco issues a 1099.",
+      "kind": "status",
+      "availability": "per-connector",
+      "clearedExternally": false,
+      "status_source": "crm.contact.w9OnFile"
+    },
+    {
+      "id": "referral-link",
+      "title": "Your referral link and code",
+      "what": "Your own link and code, so a referral is attributed to you even when you are not on the email.",
+      "kind": "status",
+      "availability": "per-connector",
+      "clearedExternally": false,
+      "status_source": "crm.contact.referralCode",
+      "note": "Issued at join, alongside the agreement and W-9."
+    },
+    {
+      "id": "demo-kits",
+      "title": "Your demo kits",
+      "what": "The working demos you have generated for businesses you met — each one is yours to show and to send.",
+      "kind": "generated",
+      "availability": "rung:R1",
+      "clearedExternally": true,
+      "unlocks": "demo_generation",
+      "status_source": "agents/bird/connector-demos/<you>/"
+    },
+    {
+      "id": "statement",
+      "title": "Your monthly statement",
+      "what": "The month's commission with the arithmetic shown — the same computation as the money section of this console.",
+      "kind": "document",
+      "availability": "launch",
+      "clearedExternally": false,
+      "why": "Statements are issued from the same book computation this page uses. None exists yet because no payout has been computed — the program has not launched."
+    }
+  ]
+}

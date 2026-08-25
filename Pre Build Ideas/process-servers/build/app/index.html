@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serve OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-serves"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never signs or attests an
+affidavit (the affidavit is a human's oath), never writes a fact the attempt log doesn't hold,
+never edits an attempt (corrections are new entries; a late-recorded attempt is labeled forever),
+and never declares due diligence past the recorded jurisdiction rule. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Deadline board'},{id:'inbox',label:'Inbox'},
+      {id:'serves',label:'Serves & affidavits'},{id:'roi',label:'What it\'s worth'},
+      {id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,serves,roi,trust})[w](); }
+
+const dl = d => d==null ? blank('no recorded court deadline')
+                        : (d<0 ? pill(`${-d}d PAST DUE`,'bad') : d<=3 ? pill(`${d}d left`,'warn') : `${d}d left`);
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${(d.config.counties||[]).length} counties · ${d.config.phone||''}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The court clock, counted', 'the deadline is the master clock — the board ranks by days-to-deadline',
+      `<div class="grid">
+        ${stat('Open serves', fmt.num(b.open_serves), 'papers in or attempting')}
+        ${stat('Due in ≤ 3 days', fmt.num(b.due_3_days), 'a blown deadline collapses the case', b.due_3_days?'alert':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the deadline-risk read comes first', b.messages_open?'warn':'')}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('This week, counted', fmt.money(b.recovered.fees_earned),
+               `${b.recovered.serves_completed} serve(s) completed · ${b.recovered.deadline_flags_raised} deadline flag(s) · ${b.recovered.late_records_labeled} late-record label(s)`)}</div>`) +
+    panel('Closest to the deadline', '', table(
+      [{label:'Defendant'},{label:'County'},{label:'Firm'},{label:'Deadline'},{label:'Attempts',num:true},{label:'Diligence'},{label:''}],
+      b.top, r=>`<td>${esc(r.defendant||'')}${r.rush?' '+pill('rush','warn'):''}</td>
+        <td>${esc(r.county||'')}</td><td>${esc(r.firm||'')}</td>
+        <td>${dl(r.days_to_deadline)}</td><td class="num">${r.attempts}</td>
+        <td class="why">${esc(r.diligence||'')}</td>
+        <td class="mono muted">${esc(r.assigned_to||'unassigned')}</td>`), true);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"The answer is due Monday and he still isn't served" reads FIRST —
+      flagged to a human at R2 the moment it lands, and the reply cites the attempt log and the
+      recorded due-diligence rule. Nothing speculative goes back to a law firm.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}<div class="why">${esc(m.firm||'')}</div></td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='deadline_risk'?'bad':m.label==='affidavit_request'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function serves(){
+  const d = await API.get('/api/serves');
+  document.getElementById('v-serves').innerHTML =
+    `<div class="banner warn">Try it: attest the affidavit — refused, R0, no approve button
+      anywhere; substituted service at 2 of 3 attempts — refused with the Hardin rule cited;
+      an unlogged "fact" for the affidavit — refused and preserved verbatim; the clean draft —
+      assembled verbatim from the log, late-recorded labels included.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="attest('sv_demo_affidavit')">Sign / attest — refused (R0)</button>
+      <button class="act" onclick="substitute('sv_demo_two')">Substituted at 2 of 3 — refused</button>
+      <button class="act" onclick="substitute('sv_demo_diligent')">Substituted, rule satisfied</button>
+      <button class="act" onclick="affidavit('sv_demo_affidavit','he also dodged me at his office')">Add an unlogged fact — refused</button>
+      <button class="act primary" onclick="affidavit('sv_demo_affidavit')">Draft affidavit — verbatim from the log</button>
+      <button class="act" onclick="affidavit('sv_demo_late')">Due-diligence draft w/ late-recorded label</button>
+     </div><div id="sout"></div>` +
+    panel('The deadline board', esc(d.rules_source), table(
+      [{label:'Defendant'},{label:'County'},{label:'Firm'},{label:'Deadline'},{label:'Attempts',num:true},{label:'Diligence'},{label:'Server'}],
+      d.rows.slice(0,40), r=>`<td>${esc(r.defendant||'')}${r.rush?' '+pill('rush','warn'):''}</td>
+        <td>${esc(r.county||'')}</td><td>${esc(r.firm||'')}</td>
+        <td>${dl(r.days_to_deadline)}</td><td class="num">${r.attempts}</td>
+        <td class="why">${esc(r.diligence||'')}</td>
+        <td class="mono muted">${esc(r.assigned_to||'unassigned')}</td>`), true);
+}
+function sout(html){ document.getElementById('sout').innerHTML = html; }
+async function attest(id){
+  const r = await API.post(`/api/serves/${id}/attest`);
+  sout(panel('Refused — R0, never promotes', '', `<div class="banner warn">${esc(r.reason||'refused')}</div>
+    <div class="why">No approval row was created — R0 is not a slow yes.</div>`));
+}
+async function substitute(id){
+  const r = await API.post(`/api/serves/${id}/substitute`);
+  sout(r.refused
+    ? panel('Substituted service — refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Substituted service — cleared by the log', '', `<div class="strong">${esc(r.basis)}</div>
+        <div class="why">${esc(r.note||'')}</div>`));
+}
+async function affidavit(id, fact){
+  const r = await API.post(`/api/serves/${id}/affidavit`, fact?{extra_fact:fact}:{});
+  sout(r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Affidavit draft — verbatim from the attempt log', '',
+        `<div class="strong mono" style="white-space:pre-wrap">${esc(r.draft)}</div>
+         <div class="why">${esc(r.note||'')} · queued at R1 for a human</div>`));
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['serves_completed_90d','Serves completed / 90d','counted'],
+    ['throughput_lift','Throughput lift','your number (e.g. 0.1)'],
+    ['serve_fee','Average serve fee','your number'],
+    ['rush_requests_90d','Rush requests / 90d','counted'],
+    ['rush_capture','Rush capture','your number (0–1)'],
+    ['rush_premium','Rush premium $','your number'],
+    ['status_hours_wk','Status-call hrs/wk','your number'],
+    ['office_rate','Office rate $/hr','your number'],
+    ['quashed_value','The quashed-service file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

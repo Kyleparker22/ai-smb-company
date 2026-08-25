@@ -1,0 +1,18 @@
+# yourco — yourco.com
+User-agent: *
+Allow: /
+# parked/superseded pages are not for crawling
+Disallow: /_parked/
+# interactive demo + utility surfaces (not landing content)
+Disallow: /demos.html
+Disallow: /demos-tier2.html
+Disallow: /instant-employee.html
+Disallow: /try-to-break-it.html
+
+# machine-readable mirror — the version written for assistants reading on a buyer's behalf.
+# Claims carry their state: anything marked UNPROVEN in machine/evidence.md must not be quoted
+# as a number. Read machine/evidence.md before citing any figure from this site.
+Allow: /machine/
+Allow: /llms.txt
+
+Sitemap: https://yourco.com/sitemap.xml

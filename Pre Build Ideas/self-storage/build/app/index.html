@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gate OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-delinquent"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. No lien step runs against a
+military-flagged or unverified tenant; auctions, lock cuts, and content sales are never performed
+by software; and a reminder never threatens.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'delinquent',label:'Delinquency & liens'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,delinquent,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = d.config.revenue;
+  document.getElementById('v-board').innerHTML =
+    panel('The ledger, counted', '',
+      `<div class="grid">
+        ${stat('Delinquent tenants', fmt.num(b.delinquent), fmt.money(b.delinquent_total)+' outstanding', b.delinquent?'warn':'')}
+        ${stat('Lien ladders frozen', fmt.num(b.lien_frozen), 'military-flagged or SCRA-unverified — refused, not delayed', b.lien_frozen?'alert':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.cured_value)}`,
+               `${b.recovered.delinquencies_cured} cured · ${b.recovered.scra_verified} SCRA verified · ${b.recovered.reminders_sent} reminder(s) sent`)}</div>`) +
+    panel('Occupancy', 'a missing denominator is refused', table(
+      [{label:'Facility'},{label:'Units',num:true},{label:'Occupied',num:true},{label:'Rate',num:true}],
+      b.occupancy, o=>`<td>${esc(o.facility)}</td><td class="num">${o.units??'—'}</td>
+        <td class="num">${o.occupied}</td>
+        <td class="num">${o.rate!=null?fmt.pct(o.rate):blank(o._missing)}</td>`), true);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A deployment or active-duty signal <b>freezes every lien step</b> for
+      that tenant immediately and queues human SCRA verification.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='military_signal'?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+  inbox();
+}
+
+async function delinquent(){
+  const d = await API.get('/api/delinquent');
+  document.getElementById('v-delinquent').innerHTML =
+    `<div class="banner warn">Try a lien step on each demo tenant: military-flagged — refused;
+      unverified — refused; verified non-military — the date-alert calendar.</div>` +
+    panel('Delinquent tenants', '', table(
+      [{label:'Tenant'},{label:'Unit'},{label:'Balance',num:true},{label:'SCRA'},{label:'Ladder',num:true},{label:''}],
+      d.rows, t=>`<td>${esc(t.name)}</td><td class="mono">${esc(t.unit)}</td>
+        <td class="num">${fmt.money(t.balance)}</td>
+        <td>${t.military?pill('military','bad'):t.scra_verified?pill('verified','good'):pill('UNVERIFIED','warn')}</td>
+        <td class="num">${t.touches}/3</td>
+        <td class="right"><button class="act" onclick="lien('${t.tenant}')">Lien step</button></td>`), true) +
+    `<div id="lout"></div>`;
+}
+async function lien(id){
+  const r = await API.post(`/api/tenants/${id}/lien`);
+  document.getElementById('lout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Lien calendar', r.calendar.rules_source||'', table(
+        [{label:'Step'},{label:'Due'},{label:'Days',num:true},{label:''}],
+        r.calendar.steps||[], s=>`<td>${esc(s.step)}</td><td>${fmt.date(s.due)}</td>
+          <td class="num">${s.days_left}</td><td>${pill(s.label,'warn')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['delinquent_total','Delinquent $','counted'],['days_saved','Days shortened','your estimate'],
+    ['daily_cost_rate','Daily cost of $1 late','your number'],['ladder_hours_wk','Ladder hrs/wk','your number'],
+    ['manager_rate','Manager rate','your number'],['auctions_yr','Auctions/yr','your history'],
+    ['auction_cost','All-in auction cost','your number'],['scra_value','SCRA discipline worth','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'manager'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Portfolio performance</title>
+<link rel="stylesheet" href="/shared.css">
+<style>
+  /* A page a stranger reads on their phone or prints for a meeting. */
+  .pitch-wrap { max-width: 780px; margin: 0 auto; padding: 28px 18px 40px; }
+  .pitch-head { padding: 10px 0 22px; border-bottom: 2px solid var(--ink); margin-bottom: 22px; }
+  .bignum { font-size: 40px; font-weight: 700; letter-spacing: -.03em; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<main class="pitch-wrap" id="main">
+  <div class="empty"><div class="big">◈</div>Loading…</div>
+</main>
+
+<script src="/app.js"></script>
+<script>
+const token = new URLSearchParams(location.search).get('t');
+
+function metric(label, res, sub, fmt = String) {
+  // Same honesty rule as everywhere else: an unmeasured figure renders its
+  // reason. A prospect page that zero-fills would be the least honest surface
+  // in the product, which is exactly backwards.
+  const body = res.missing
+    ? `<div class="small miss missing">${esc(res.missing)}</div>`
+    : `<div class="bignum num">${esc(fmt(res.value))}</div>` +
+      (sub ? `<div class="small muted">${esc(sub)}</div>` : '');
+  return `<div class="card"><div class="card-b">
+    <div class="k tiny" style="color:var(--ink-3);text-transform:uppercase;letter-spacing:.055em;font-weight:640">${esc(label)}</div>
+    <div style="margin-top:7px">${body}</div></div></div>`;
+}
+
+async function boot() {
+  if (!token) {
+    $('#main').innerHTML = '<div class="empty"><div class="big">◈</div>This page needs its link.</div>';
+    return;
+  }
+  let D;
+  try {
+    const r = await fetch('/api/pitch/' + encodeURIComponent(token));
+    D = await r.json();
+    if (!r.ok) throw new Error(D.error || 'unavailable');
+  } catch (e) {
+    $('#main').innerHTML = `<div class="empty"><div class="big">◈</div>${esc(e.message)}</div>`;
+    return;
+  }
+
+  const p = D.portfolio;
+  const avg = D.avg_resolution, p1 = D.p1_resolution;
+  const stat = (o, key) => o._missing ? { missing: o._missing } : { value: o[key] };
+
+  $('#main').innerHTML = `
+  <div class="pitch-head spread wrap-r" style="align-items:flex-end">
+    <div>
+      <h1 style="font-size:26px">${esc(D.org)}</h1>
+      <div class="muted small">How this portfolio is run — ${p.units} units across
+        ${p.properties} properties in ${esc((p.cities || []).join(', '))}</div>
+    </div>
+    <button class="btn sm no-print" onclick="print()">Print / save PDF</button>
+  </div>
+
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px">
+    ${metric('Occupancy', { value: p.occupancy }, `${p.units} units`, pct)}
+    ${metric('Average repair resolution', stat(avg, 'hours'),
+      avg.n ? `median ${hrs(avg.median)} across ${avg.n} jobs, last 90 days` : '', hrs)}
+    ${metric('Emergency resolution', stat(p1, 'hours'),
+      p1.n ? `${p1.n} emergencies, 24-hour target` : '', hrs)}
+    ${metric('Repairs closed inside their deadline', stat(D.sla_hit_rate, 'rate'),
+      D.sla_hit_rate.n ? `of ${D.sla_hit_rate.n} resolved in the last 90 days` : '', pct)}
+    ${metric('Vendor visits avoided', { value: D.deflection.deflected },
+      `guided resident fixes, last 90 days — ${money(D.deflection.avoided_cost)} in avoided invoices`)}
+    ${metric('Measured vacancy on turnover', stat(D.measured_vacancy, 'days'),
+      D.measured_vacancy.basis || '', d => d + ' days')}
+    ${metric('Work running without a human touch', stat(D.automation, 'rate'),
+      D.automation.moving ? `${D.automation.autonomous} of ${D.automation.moving} pipeline actions — counted from the log, never asserted` : '', pct)}
+    ${metric('Repairs that came back after "fixed"', stat(D.reopen_rate, 'rate'),
+      D.reopen_rate.n ? `of ${D.reopen_rate.n} resolved — we count our own misses` : '', pct)}
+  </div>
+
+  <div class="card" style="margin-bottom:12px;border-color:color-mix(in srgb,${D.trust.balanced ? 'var(--ok)' : 'var(--bad)'} 36%,transparent)">
+    <div class="card-b">
+      <div class="row" style="gap:9px">
+        <span class="pill ${D.trust.balanced ? 'ok' : 'bad'}">${D.trust.balanced ? 'trust reconciled' : 'trust out of balance'}</span>
+        <span class="small" style="color:var(--ink-2)">${esc(D.trust.statement)}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px"><div class="card-b">
+    <div class="small" style="color:var(--ink-2)">
+      ${D.preventive_orders_180d} preventive maintenance orders were dispatched in the last
+      six months — filters, flushes, and detector tests scheduled from each component's own
+      age and service history, before failure instead of after it.
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-b">
+    <div class="missing">${esc(D.basis)}</div>
+    <div class="tiny muted" style="margin-top:9px">Prepared by ${esc(D.org)} ·
+      generated ${esc(new Date(D.generated).toLocaleDateString('en-US',
+        { month: 'long', day: 'numeric', year: 'numeric' }))} · figures refresh every time
+      this page is opened.</div>
+  </div></div>`;
+}
+
+boot();
+</script>
+</body>
+</html>

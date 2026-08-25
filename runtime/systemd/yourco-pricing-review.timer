@@ -1,0 +1,10 @@
+[Unit]
+Description=YourCo quarterly pricing review — first Monday of the quarter, 09:15 ET (Polo)
+
+[Timer]
+# First Monday of Jan/Apr/Jul/Oct
+OnCalendar=Mon *-01,04,07,10-1..7 09:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

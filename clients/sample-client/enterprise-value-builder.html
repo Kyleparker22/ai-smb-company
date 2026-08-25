@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Enterprise Value Builder — INTERNAL (Sample Client)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0F1220; --bg2:#161A2E; --card:#1B2038; --line:rgba(230,232,245,.10);
+    --cream:#F3ECDE; --muted:#B7BAD0; --dim:#7E839E;
+    --indigo:#2E3A6E; --indigo2:#3E4E93; --brass:#C99A4B; --brass2:#E0B968; --sage:#8FA27C; --amber:#D9A441;
+    --shadow:0 30px 80px -30px rgba(0,0,0,.75);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.1}
+  .banner{background:repeating-linear-gradient(45deg,rgba(217,164,65,.14),rgba(217,164,65,.14) 12px,transparent 12px,transparent 24px);border-bottom:1px solid rgba(217,164,65,.4);color:var(--brass2);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:8px}
+  header{padding:34px 0 20px}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brass2)}
+  header h1{font-size:clamp(26px,3.6vw,36px);margin-top:8px}
+  header p{color:var(--muted);max-width:70ch;margin-top:10px;font-size:15px}
+  .layout{display:grid;grid-template-columns:1fr 1.05fr;gap:22px;align-items:start;padding-bottom:30px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .panel h2{font-size:18px;margin-bottom:4px}
+  .panel .ph{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+  .ph.today{color:var(--dim)} .ph.os{color:var(--brass2)}
+  .field{margin-bottom:15px}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);margin-bottom:6px}
+  .field label b{color:var(--cream);font-variant-numeric:tabular-nums;font-size:14px}
+  .field input[type=range]{width:100%;accent-color:var(--brass);height:4px}
+  .divider{height:1px;background:var(--line);margin:20px 0}
+  .os-group{border:1px solid rgba(201,154,75,.28);background:linear-gradient(180deg,rgba(62,78,147,.12),transparent);border-radius:14px;padding:16px 16px 4px;margin-top:6px}
+  /* outputs */
+  .hero-out{background:linear-gradient(180deg,rgba(62,78,147,.22),transparent),var(--card);border:1px solid rgba(62,78,147,.5);border-radius:16px;padding:22px;margin-bottom:16px}
+  .hero-out .row{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .hero-out .today .l,.hero-out .exit .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .hero-out .today .v{font-family:Fraunces,serif;font-size:26px;color:var(--muted);margin-top:2px}
+  .hero-out .exit .l{color:var(--brass2)}
+  .hero-out .exit .v{font-family:Fraunces,serif;font-size:44px;color:var(--cream);line-height:1;margin-top:2px}
+  .hero-out .arrow{font-size:22px;color:var(--dim);padding-bottom:6px}
+  .created{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .created b{color:var(--sage);font-family:Fraunces,serif;font-size:20px}
+  .bars{margin-top:16px;display:grid;gap:12px}
+  .bar .bl{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px}
+  .bar .bl .n{color:var(--muted)} .bar .bl .v{color:var(--cream);font-weight:700;font-variant-numeric:tabular-nums}
+  .track{height:12px;background:var(--bg2);border-radius:7px;overflow:hidden}
+  .fill{height:100%;border-radius:7px}
+  .fill.ebitda{background:linear-gradient(90deg,var(--indigo2),#5568c0)}
+  .fill.mult{background:linear-gradient(90deg,var(--brass),var(--brass2))}
+  .rows{margin-top:18px;display:grid;gap:9px}
+  .orow{display:flex;justify-content:space-between;font-size:13.5px;border-top:1px solid var(--line);padding-top:9px}
+  .orow span:first-child{color:var(--muted)} .orow span:last-child{color:var(--cream);font-weight:700;font-variant-numeric:tabular-nums}
+  .orow.big span:last-child{color:var(--brass2);font-size:16px}
+  .note{font-size:12px;color:var(--dim);line-height:1.55;margin-top:14px}
+  .callout{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:10px;padding:13px 15px;font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:16px}
+  .callout b{color:var(--cream)}
+  .refbox{margin-top:22px}
+  .refbox h3{font-size:16px;margin-bottom:10px}
+  .refbox table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
+  .refbox th{text-align:left;background:var(--bg2);color:var(--dim);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:10px 14px}
+  .refbox td{padding:10px 14px;border-top:1px solid var(--line);color:var(--muted)} .refbox td b{color:var(--cream)}
+  .foot{font-size:11.5px;color:var(--dim);line-height:1.6;padding:24px 0 60px}
+</style>
+</head>
+<body>
+<div class="banner">Internal — model, not a valuation · pressure-test before Client Owner sees it</div>
+<div class="wrap">
+<header>
+  <div class="eyebrow">yourco · exit-value model</div>
+  <h1>Enterprise Value Builder — Sample Client</h1>
+  <p>Models how the AI OS lifts Client Owner's exit value through <b style="color:var(--cream)">both</b> levers at once: it grows the EBITDA the multiple is applied to, <i>and</i> it raises the multiple itself (recurring revenue, transferability, clean data, differentiation). Drag the inputs to Client Owner's real numbers. Everything is illustrative — a real number needs a broker/M&A advisor on his books.</p>
+</header>
+
+<div class="layout">
+  <!-- INPUTS -->
+  <div class="panel">
+    <h2>Inputs</h2>
+    <div class="ph today" style="margin-top:14px">Sample Client — today</div>
+    <div class="field"><label>Annual revenue <b id="v-rev">$1,200,000</b></label><input type="range" id="rev" min="400000" max="6000000" step="50000" value="1200000"></div>
+    <div class="field"><label>EBITDA / owner-profit margin <b id="v-margin">15%</b></label><input type="range" id="margin" min="8" max="30" step="1" value="15"></div>
+    <div class="field"><label>Recurring revenue (maintenance/care) today <b id="v-rec0">10%</b></label><input type="range" id="rec0" min="0" max="60" step="5" value="10"></div>
+    <div class="field"><label>Valuation multiple today <b id="v-mult0">3.5×</b></label><input type="range" id="mult0" min="2.5" max="5" step="0.1" value="3.5"></div>
+
+    <div class="os-group">
+      <div class="ph os">With the yourco OS — by exit</div>
+      <div class="field"><label>Years to exit <b id="v-years">3</b></label><input type="range" id="years" min="1" max="6" step="1" value="3"></div>
+      <div class="field"><label>Added revenue growth / yr (from OS) <b id="v-growth">15%</b></label><input type="range" id="growth" min="0" max="35" step="1" value="15"></div>
+      <div class="field"><label>Margin improvement by exit <b id="v-dmargin">+5 pts</b></label><input type="range" id="dmargin" min="0" max="12" step="1" value="5"></div>
+      <div class="field"><label>Recurring revenue % at exit <b id="v-rec1">35%</b></label><input type="range" id="rec1" min="0" max="70" step="5" value="35"></div>
+      <div class="field"><label>Exit multiple (systematized / recurring / transferable) <b id="v-mult1">5.5×</b></label><input type="range" id="mult1" min="3" max="8" step="0.1" value="5.5"></div>
+    </div>
+    <div class="callout"><b>Multiple guide:</b> small owner-run install shops ≈ 2.5–4× SDE; professionalized, recurring-revenue, low-owner-dependence companies ≈ 5–7× EBITDA; PE roll-up platforms can exceed that. The OS pushes Sample Client up this range by fixing the exact things buyers pay premiums for.</div>
+  </div>
+
+  <!-- OUTPUTS -->
+  <div class="panel">
+    <h2>Projected enterprise value</h2>
+    <div class="hero-out" style="margin-top:14px">
+      <div class="row">
+        <div class="today"><div class="l">Value today</div><div class="v" id="o-ev0">$630,000</div></div>
+        <div class="arrow">→</div>
+        <div class="exit"><div class="l">Value at exit, with the OS</div><div class="v" id="o-ev1">$2.0M</div></div>
+      </div>
+      <div class="created">Enterprise value created: <b id="o-created">$1.38M</b> <span id="o-createdyrs">over 3 years</span></div>
+    </div>
+
+    <div class="bars">
+      <div class="bar"><div class="bl"><span class="n">From bigger &amp; more profitable jobs (EBITDA ↑)</span><span class="v" id="o-lev-e">$648k</span></div><div class="track"><div class="fill ebitda" id="bar-e" style="width:50%"></div></div></div>
+      <div class="bar"><div class="bl"><span class="n">From a higher multiple (de-risked, recurring, transferable)</span><span class="v" id="o-lev-m">$730k</span></div><div class="track"><div class="fill mult" id="bar-m" style="width:50%"></div></div></div>
+    </div>
+
+    <div class="rows">
+      <div class="orow"><span>EBITDA today → at exit</span><span id="o-ebitda">$180k → $365k</span></div>
+      <div class="orow"><span>Revenue at exit</span><span id="o-rev1">$1.83M</span></div>
+      <div class="orow"><span>yourco investment over the period</span><span id="o-cost">$175k</span></div>
+      <div class="orow big"><span>Enterprise value created per $1 spent with yourco</span><span id="o-roi">7.9×</span></div>
+    </div>
+
+    <div class="callout"><b>Structuring note (do this now):</b> because yourco <i>operates</i> the stack, make the OS <b>transferable</b> — Client Owner owns his data, brand, and results, and the operated service is assignable to a buyer (or licensable). The systematization, recurring revenue, and clean data lift the multiple regardless; the "proprietary tech asset" premium only conveys if the capability continues for the acquirer.</div>
+
+    <div class="refbox">
+      <h3>Where the multiple lift comes from</h3>
+      <table>
+        <tr><th>Buyer pays a premium for…</th><th>OS module that builds it</th></tr>
+        <tr><td><b>Recurring revenue</b></td><td>Warranty/care plans, follow-up, maintenance conversion</td></tr>
+        <tr><td><b>Low owner-dependence</b></td><td>Design/quote/ops run on the system, not in Client Owner's head</td></tr>
+        <tr><td><b>Clean, verifiable data</b></td><td>CRM pipeline + job-cost dashboard = diligence-ready</td></tr>
+        <tr><td><b>Differentiation / growth</b></td><td>Same-day design close machine + lead engine</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="foot">
+  Illustrative model for internal pricing/strategy — not a business valuation, not financial advice, not a guarantee. Multiple ranges are general green-industry M&A rules of thumb and vary by size, mix, region, and buyer. A real valuation requires a licensed business broker / M&A advisor reviewing Sample Client's actual financials. Default inputs are placeholders — replace with Client Owner's real numbers before drawing conclusions.
+</div>
+</div>
+
+<script>
+(function(){
+  var ids=["rev","margin","rec0","mult0","years","growth","dmargin","rec1","mult1"];
+  var el={}; ids.forEach(function(i){el[i]=document.getElementById(i);});
+  function money(n){
+    n=Math.round(n);
+    if(Math.abs(n)>=1e6) return "$"+(n/1e6).toFixed(2)+"M";
+    if(Math.abs(n)>=1e3) return "$"+Math.round(n/1e3)+"k";
+    return "$"+n.toLocaleString("en-US");
+  }
+  function full(n){return "$"+Math.round(n).toLocaleString("en-US");}
+  function calc(){
+    var rev=+el.rev.value, margin=+el.margin.value/100, rec0=+el.rec0.value, mult0=+el.mult0.value;
+    var years=+el.years.value, growth=+el.growth.value/100, dmargin=+el.dmargin.value/100, rec1=+el.rec1.value, mult1=+el.mult1.value;
+    // input labels
+    document.getElementById("v-rev").textContent=full(rev);
+    document.getElementById("v-margin").textContent=(margin*100).toFixed(0)+"%";
+    document.getElementById("v-rec0").textContent=rec0+"%";
+    document.getElementById("v-mult0").textContent=mult0.toFixed(1)+"×";
+    document.getElementById("v-years").textContent=years;
+    document.getElementById("v-growth").textContent=growth*100+"%";
+    document.getElementById("v-dmargin").textContent="+"+(dmargin*100).toFixed(0)+" pts";
+    document.getElementById("v-rec1").textContent=rec1+"%";
+    document.getElementById("v-mult1").textContent=mult1.toFixed(1)+"×";
+    // model
+    var ebitda0=rev*margin;
+    var ev0=ebitda0*mult0;
+    var revExit=rev*Math.pow(1+growth,years);
+    var marginExit=margin+dmargin;
+    var ebitdaExit=revExit*marginExit;
+    var evExit=ebitdaExit*mult1;
+    var evEbitdaOnly=ebitdaExit*mult0;             // hold multiple flat -> EBITDA lever
+    var levEbitda=evEbitdaOnly-ev0;
+    var levMult=evExit-evEbitdaOnly;               // extra from multiple expansion
+    var created=evExit-ev0;
+    var cost=55000+60000*(years-1);                 // yr1 ramp + $60k/yr after
+    var roi=created/cost;
+    // outputs
+    document.getElementById("o-ev0").textContent=full(ev0);
+    document.getElementById("o-ev1").textContent=money(evExit);
+    document.getElementById("o-created").textContent=money(created);
+    document.getElementById("o-createdyrs").textContent="over "+years+" year"+(years==1?"":"s");
+    document.getElementById("o-lev-e").textContent=money(Math.max(0,levEbitda));
+    document.getElementById("o-lev-m").textContent=money(Math.max(0,levMult));
+    var tot=Math.max(1,Math.max(0,levEbitda)+Math.max(0,levMult));
+    document.getElementById("bar-e").style.width=(Math.max(0,levEbitda)/tot*100)+"%";
+    document.getElementById("bar-m").style.width=(Math.max(0,levMult)/tot*100)+"%";
+    document.getElementById("o-ebitda").textContent=money(ebitda0)+" → "+money(ebitdaExit);
+    document.getElementById("o-rev1").textContent=money(revExit);
+    document.getElementById("o-cost").textContent=full(cost);
+    document.getElementById("o-roi").textContent=roi.toFixed(1)+"×";
+  }
+  ids.forEach(function(i){el[i].addEventListener("input",calc);});
+  calc();
+})();
+</script>
+</body>
+</html>

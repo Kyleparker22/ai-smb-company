@@ -1,0 +1,18 @@
+[Unit]
+Description=YourCo CRM — hosted on Tailscale, git-synced (David)
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+
+[Service]
+Type=simple
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+# Bind to the VPS's Tailscale IP only (never the public interface). CRM_GIT_SYNC=1 makes
+# hosted edits pull-before-read + commit/push-after-write so phone + agents stay in sync.
+ExecStart=/usr/bin/env bash -c 'source /home/claudeops/.yourco/env 2>/dev/null; CRM_HOST="$(tailscale ip -4 | head -1)" CRM_GIT_SYNC=1 exec python3 /home/claudeops/yourco-os/crm/server.py'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

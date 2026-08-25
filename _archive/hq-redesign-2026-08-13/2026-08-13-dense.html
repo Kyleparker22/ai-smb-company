@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>yourco · HQ redesign — 3 · Dense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560&display=swap" rel="stylesheet">
+<style>
+:root{
+  --base:#1c2027; --panel:#22272f;
+  --hair:rgba(255,255,255,.06); --hair2:rgba(255,255,255,.10);
+  --txt:#e9ecf2; --txt2:#b3bac8; --faint:#7d8497;
+  --brass:#d2ae74; --green:#7fc99a; --red:#e06a78; --amber:#dcae62;
+  --serif:"Fraunces",Georgia,serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+  --sans:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--base);color:var(--txt);font-family:var(--sans);font-size:13px;line-height:1.45}
+.mockbar{background:#14181e;border-bottom:1px solid var(--hair2);padding:8px 20px;font-family:var(--mono);
+  font-size:10.5px;color:var(--faint);letter-spacing:.04em}
+.mockbar b{color:var(--brass)}
+
+/* ── DENSITY · the Bloomberg trade ─────────────────────────────────────
+   No cards anywhere. Information sits in ruled columns, the way an expert
+   daily tool does — the Terminal's users accept ugliness for speed and
+   predictability. Everything above the fold, nothing to scroll for, and
+   status carried by a 2px left rule instead of a pill that costs a row. */
+.grid{display:grid;grid-template-columns:1.35fr 1fr;gap:0;border-top:1px solid var(--hair2)}
+.col{border-right:1px solid var(--hair2);min-width:0}
+.col:last-child{border-right:0}
+.blk{border-bottom:1px solid var(--hair2);padding:14px 18px}
+.blk:last-child{border-bottom:0}
+h2{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  font-weight:500;margin:0 0 12px;display:flex;align-items:baseline;gap:8px}
+h2 .c{color:var(--brass);font-size:10px}
+
+/* the command bar — a compact learnable grammar, not a nav to hunt through */
+.cmd{display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:1px solid var(--hair2);
+  background:#191d24}
+.cmd .k{font-family:var(--mono);font-size:10px;color:var(--faint);border:1px solid var(--hair2);
+  border-radius:4px;padding:2px 6px}
+.cmd input{flex:1;background:transparent;border:0;color:var(--txt);font-family:var(--mono);font-size:12px;outline:0}
+.cmd input::placeholder{color:var(--faint)}
+.cmd .hint{font-family:var(--mono);font-size:10px;color:var(--faint)}
+
+/* ticker strip: every headline number on one line */
+.tick{display:flex;gap:0;border-bottom:1px solid var(--hair2);background:#191d24;overflow-x:auto}
+.tick div{padding:9px 16px;border-right:1px solid var(--hair);white-space:nowrap}
+.tick span{font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);display:block}
+.tick b{font-family:var(--serif);font-size:19px;font-weight:560}
+.tick b em{font-style:normal;color:var(--faint);font-size:12px}
+.tick .warn b{color:var(--amber)} .tick .bad b{color:var(--red)}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--faint);font-weight:500;padding:0 8px 7px 0;border-bottom:1px solid var(--hair)}
+td{padding:6px 8px 6px 0;border-bottom:1px solid var(--hair);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.nm{white-space:normal;width:38%}
+td.n{font-family:var(--mono);font-size:14px;text-align:right;width:44px}
+td.n.zero{color:var(--faint)} td.n.up{color:var(--green)} td.n.dn{color:var(--red)}
+td.d{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:right;width:46px}
+td.w{white-space:normal;color:var(--faint);font-size:11.5px}
+.spark{display:inline-flex;align-items:flex-end;gap:1px;height:15px;width:52px}
+.spark i{flex:1;background:rgba(210,174,116,.42);min-height:2px;display:block}
+.spark i.now{background:var(--brass)}
+
+/* status as a left rule — zero vertical cost */
+.row{border-left:2px solid transparent;padding:6px 0 6px 11px;margin-bottom:8px}
+.row.bad{border-color:var(--red)} .row.ok{border-color:var(--green)} .row.warn{border-color:var(--amber)}
+.row b{font-weight:600;font-size:12.5px} .row span{display:block;color:var(--faint);font-size:11.5px}
+.mini{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.mini b{color:var(--txt2);font-weight:500}
+</style></head><body>
+<div class="mockbar">MOCKUP · <b>Option 3 — Dense</b> · Mission Control revisited: no cards, ruled columns, ⌘K, status as a left rule, everything above the fold · real data, snapshot 2026-08-13 · nothing here is wired</div>
+
+<div class="cmd">
+  <span class="k">⌘K</span>
+  <input placeholder="jump to a door, client, agent, decision or filter…  try: board needs-you the Founder">
+  <span class="hint">wbr · board · partners · evidence · clients</span>
+</div>
+
+<div class="tick">
+  <div><span>MRR</span><b>$0<em>/13k</em></b></div>
+  <div><span>Live clients</span><b>0<em>/5</em></b></div>
+  <div><span>Deals in motion</span><b>3<em>/5</em></b></div>
+  <div><span>Prospects</span><b>18<em>/40</em></b></div>
+  <div class="warn"><span>Needs a human</span><b>30</b></div>
+  <div class="bad"><span>Locked</span><b>1<em>/14</em></b></div>
+  <div class="bad"><span>Loops on time</span><b>8<em>/25</em></b></div>
+  <div class="warn"><span>Charges</span><b>6</b></div>
+</div>
+
+<div class="grid">
+  <div class="col">
+
+    <div class="blk">
+      <h2>Inputs you control <span class="c">week of 2026-08-10 · fixed order</span></h2>
+      <table>
+        <tr><th class="nm">Input</th><th style="text-align:right">Wk</th><th style="text-align:right">Avg</th><th>6wk</th><th class="w">Why</th></tr>
+        <tr><td class="nm">Conversations held</td><td class="n up">1</td><td class="d">0.4</td>
+            <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:7px"></i><i class="now" style="height:7px"></i></span></td>
+            <td class="w">the only input that creates pipeline</td></tr>
+        <tr><td class="nm">Deliverables shipped</td><td class="n dn">0</td><td class="d">1.2</td>
+            <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:8px"></i><i style="height:15px"></i><i class="now" style="height:2px"></i></span></td>
+            <td class="w">give-first proof reaching a prospect</td></tr>
+        <tr><td class="nm">Companies touched</td><td class="n up">4</td><td class="d">0.8</td>
+            <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:4px"></i><i style="height:4px"></i><i style="height:8px"></i><i class="now" style="height:15px"></i></span></td>
+            <td class="w">breadth of contact</td></tr>
+        <tr><td class="nm">Deals advanced</td><td class="n dn">0</td><td class="d">0.6</td>
+            <td><span class="spark"><i style="height:15px"></i><i style="height:2px"></i><i style="height:15px"></i><i style="height:2px"></i><i style="height:15px"></i><i class="now" style="height:2px"></i></span></td>
+            <td class="w">movement, not just activity</td></tr>
+        <tr><td class="nm">Warm intros made</td><td class="n zero">0</td><td class="d">0.0</td>
+            <td><span class="spark"><i></i><i></i><i></i><i></i><i></i><i class="now"></i></span></td>
+            <td class="w">give-first half of the warm network</td></tr>
+        <tr><td class="nm">Referral asks made</td><td class="n zero">0</td><td class="d">0.0</td>
+            <td><span class="spark"><i></i><i></i><i></i><i></i><i></i><i class="now"></i></span></td>
+            <td class="w">connector program's leading indicator</td></tr>
+        <tr><td class="nm">New prospects added</td><td class="n zero">0</td><td class="d">0.0</td>
+            <td><span class="spark"><i></i><i></i><i></i><i></i><i></i><i class="now"></i></span></td>
+            <td class="w">top-of-funnel replenishment</td></tr>
+        <tr><td class="nm">Next actions set</td><td class="n dn">1</td><td class="d">2.2</td>
+            <td><span class="spark"><i style="height:2px"></i><i style="height:2px"></i><i style="height:3px"></i><i style="height:5px"></i><i style="height:15px"></i><i class="now" style="height:3px"></i></span></td>
+            <td class="w">is the board ready to be worked</td></tr>
+      </table>
+    </div>
+
+    <div class="blk">
+      <h2>6-12 <span class="c">6 weeks · 12 months · same position every week</span></h2>
+      <table>
+        <tr><th class="nm">Metric</th><th>Trailing 6 weeks</th><th style="text-align:right">Now</th></tr>
+        <tr><td class="nm">Pipeline value</td><td class="mini">18k 18k 18k 18k 18k <b>24k</b></td><td class="n up">24k</td></tr>
+        <tr><td class="nm">Deals in motion</td><td class="mini">2 2 2 2 2 <b>3</b></td><td class="n up">3</td></tr>
+        <tr><td class="nm">MRR <span class="mini">· flat</span></td><td class="mini">0 0 0 0 0 <b>0</b></td><td class="n zero">0</td></tr>
+        <tr><td class="nm">Companies</td><td class="mini">23 23 24 25 25 <b>25</b></td><td class="n">25</td></tr>
+        <tr><td class="nm">Contacts</td><td class="mini">45 45 46 48 48 <b>49</b></td><td class="n">49</td></tr>
+      </table>
+    </div>
+
+  </div>
+  <div class="col">
+
+    <div class="blk">
+      <h2>The case against <span class="c">6 charges · 4 of 4 headlines</span></h2>
+      <div class="row bad"><b>Pipeline $24,000</b><span>1 of 3 deals untouched 21+ days</span></div>
+      <div class="row bad"><b>Goals · 9 metrics</b><span>7 of 9 zero or unmeasurable · 5 inputs zero this week</span></div>
+      <div class="row bad"><b>Roster · 28 agents</b><span>9 produced nothing · 2 loops armed, no artifact</span></div>
+      <div class="row bad"><b>Runtime · 25 loops</b><span>17 stale or never run</span></div>
+    </div>
+
+    <div class="blk">
+      <h2>Since you last looked</h2>
+      <div class="row ok"><b>Nothing changed</b><span>computed delta vs your last visit · 8 snapshots</span></div>
+    </div>
+
+    <div class="blk">
+      <h2>Board <span class="c">96 open</span></h2>
+      <div class="mini" style="line-height:1.9">
+        needs a human <b>30</b> · blocked <b>17</b> · missing <b>10</b><br>
+        backlog <b>42</b> · parked <b>9</b><br>
+        the Founder <b>53</b> · Partner B <b>0</b> · Mike <b>0</b> · agents <b>45</b> · unowned <b>10</b>
+      </div>
+    </div>
+
+    <div class="blk">
+      <h2>Lock-in <span class="c">8/11 → 8/26</span></h2>
+      <div class="row warn"><b>1 of 14 locked</b><span>4 slipped · 2 likely-unconfirmed · 7 upcoming</span></div>
+    </div>
+
+    <div class="blk">
+      <h2>Runtime</h2>
+      <div class="row bad"><b>8 of 25 loops on time</b><span>14 stale · 3 never run · paused since 08-04</span></div>
+    </div>
+
+  </div>
+</div>
+</body></html>

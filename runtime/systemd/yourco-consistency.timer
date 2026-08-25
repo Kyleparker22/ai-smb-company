@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo consistency watchdog — Mondays 07:40 ET, before the registry check + Monday briefing (which surface any drift)
+
+[Timer]
+OnCalendar=Mon *-*-* 07:35:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

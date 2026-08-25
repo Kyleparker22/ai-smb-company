@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>2304 Highland Forest Drive</title>
+<style>
+  @page{size:letter;margin:0}
+  :root{--red:#EF0004;--ink:#131318;--paper:#FCFBF8;--line:rgba(19,19,24,.16);--dim:rgba(19,19,24,.6);
+        --on-dark:#F7F5F0;--on-dark-soft:rgba(247,245,240,.72);--line-dark:rgba(247,245,240,.24)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#8a8a8a;font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);
+       -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sheet{width:8.5in;height:11in;background:var(--paper);position:relative;overflow:hidden;
+         page-break-after:always;break-after:page;display:flex;flex-direction:column}
+  .sheet:last-child{page-break-after:auto;break-after:auto}
+  @media screen{.sheet{margin:14px auto;box-shadow:0 6px 26px rgba(0,0,0,.35)}}
+
+  /* ── shared type ── */
+  .kick{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5pt;font-weight:600;letter-spacing:.28em;
+        text-transform:uppercase;color:var(--red)}
+  .mono{font-family:Didot,Georgia,serif;font-size:16pt;letter-spacing:.04em}
+  .mono i{font-style:normal;color:var(--red)}
+
+  /* ── page 1 cover ── */
+  .cover .hero{height:5.55in;position:relative;background:#1b1b20}
+  .cover .hero img{width:100%;height:100%;object-fit:cover;display:block}
+  .cover .band{background:var(--ink);color:var(--on-dark);padding:.3in .55in .28in;text-align:center}
+  .cover .band .firm{font-family:"Avenir Next",Avenir,sans-serif;font-size:7.5pt;letter-spacing:.32em;
+                     text-transform:uppercase;color:var(--on-dark-soft);margin-top:5px}
+  .cover .addr{text-align:center;padding:.3in .55in .1in}
+  .cover .addr .num{font-family:Didot,Georgia,serif;font-size:41pt;line-height:1}
+  .cover .addr .st{font-family:Didot,Georgia,serif;font-size:20pt;font-style:italic;margin-top:2px}
+  .cover .addr .loc{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5pt;letter-spacing:.24em;
+                    text-transform:uppercase;color:var(--dim);margin-top:9px}
+  .facts{display:flex;justify-content:center;gap:.42in;margin-top:.16in;padding-bottom:.14in}
+  .facts div{text-align:center}
+  .facts b{display:block;font-family:Didot,Georgia,serif;font-size:15pt;font-weight:400}
+  .facts span{font-family:"Avenir Next",Avenir,sans-serif;font-size:6.6pt;letter-spacing:.16em;
+              text-transform:uppercase;color:var(--dim)}
+  .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:.055in;padding:0 .5in;margin-top:auto}
+  .strip img{width:100%;height:1.32in;object-fit:cover;display:block}
+  .cfoot{display:flex;justify-content:space-between;align-items:baseline;padding:.16in .5in .28in;
+         font-family:"Avenir Next",Avenir,sans-serif;font-size:7.4pt;letter-spacing:.16em;
+         text-transform:uppercase;color:var(--dim)}
+
+  /* ── highlight pages ── */
+  .pg{padding:.55in .6in .45in}
+  .phead{border-bottom:1px solid var(--line);padding-bottom:.12in;margin-bottom:.2in;
+         display:flex;justify-content:space-between;align-items:baseline}
+  .phead h1{font-family:Didot,Georgia,serif;font-size:22pt;font-weight:400}
+  .phead .r{font-family:"Avenir Next",Avenir,sans-serif;font-size:7.4pt;letter-spacing:.2em;
+            text-transform:uppercase;color:var(--dim)}
+  .lvl{background:var(--ink);color:var(--on-dark);padding:.11in .2in;margin:.02in 0 .17in}
+  .lvl b{font-family:Didot,Georgia,serif;font-size:13pt;font-weight:400}
+  .lvl span{font-family:"Avenir Next",Avenir,sans-serif;font-size:7pt;letter-spacing:.2em;
+            text-transform:uppercase;color:var(--on-dark-soft);margin-left:.12in}
+  .cols{column-count:2;column-gap:.34in}
+  .grp{break-inside:avoid;margin-bottom:.17in}
+  .grp h3{font-family:Didot,Georgia,serif;font-size:11.5pt;font-weight:400;margin-bottom:.05in}
+  .grp h3 em{font-style:normal;color:var(--red);font-size:8pt;font-family:"Avenir Next",Avenir,sans-serif;
+             letter-spacing:.12em;margin-left:.06in}
+  .grp ul{list-style:none}
+  .grp li{font-size:8.6pt;line-height:1.42;padding-left:.13in;position:relative;margin-bottom:.028in}
+  .grp li::before{content:"·";position:absolute;left:0;color:var(--red);font-weight:700}
+  .pfoot{position:absolute;bottom:.32in;left:.6in;right:.6in;display:flex;justify-content:space-between;
+         font-family:"Avenir Next",Avenir,sans-serif;font-size:7pt;letter-spacing:.16em;
+         text-transform:uppercase;color:var(--dim);border-top:1px solid var(--line);padding-top:.1in}
+
+  /* ── updates strip ── */
+  .upd{margin-top:.12in;border-top:1px solid var(--line);padding-top:.15in;break-inside:avoid}
+  .upd .row{display:flex;flex-wrap:wrap;gap:.06in .28in;margin-top:.09in}
+  .upd .row div{font-size:8.6pt;white-space:nowrap}
+  .upd .row b{font-family:Didot,Georgia,serif;color:var(--red);font-weight:400;margin-right:.05in}
+
+  /* ── floor plan page ── */
+  .fp{padding:.5in .5in .4in;display:flex;flex-direction:column;height:100%}
+  .fp img{width:100%;flex:1;object-fit:contain;object-position:center}
+</style></head><body>
+
+<!-- ═══ 1 · COVER ═══ -->
+<section class="sheet cover">
+  <div class="hero"><img src="hero.jpg" alt=""></div>
+  <div class="band">
+    <div class="mono">P<i>·</i>R</div>
+    <div class="firm">Sample Realty Home &amp; Land, LLC</div>
+  </div>
+  <div class="addr">
+    <div class="num">2304</div>
+    <div class="st">Highland Forest Drive</div>
+    <div class="loc">Yourtown, Your State · 28173</div>
+  </div>
+  <div class="facts">
+    <div><b>5</b><span>Bedrooms</span></div>
+    <div><b>4.5</b><span>Baths</span></div>
+    <div><b>6,070</b><span>Square Feet</span></div>
+    <div><b>3</b><span>Car Garage</span></div>
+    <div><b>0.44</b><span>Acres</span></div>
+    <div><b>2005</b><span>Built</span></div>
+  </div>
+  <div class="strip">
+    <img src="kitchen.jpg" alt=""><img src="great.jpg" alt="">
+    <img src="primary.jpg" alt=""><img src="deck.jpg" alt="">
+  </div>
+  <div class="cfoot"><span>Sample Contact · 704 · 575 · 0714</span><span>Equal Housing Opportunity</span></div>
+</section>
+
+<!-- ═══ 2 · MAIN LEVEL ═══ -->
+<section class="sheet">
+ <div class="pg">
+  <div class="phead"><h1>Features &amp; Highlights</h1><div class="r">2304 Highland Forest Drive</div></div>
+  <div class="lvl"><b>Main Level</b><span>Elegant living &amp; everyday sophistication</span></div>
+  <div class="cols">
+    <div class="grp"><h3>Exceptional Setting &amp; Curb Appeal</h3><ul>
+      <li>Full brick and stucco exterior with natural stone accents</li>
+      <li>Authentic wood shutters</li>
+      <li>Decorative arched entryway</li>
+      <li>Perfectly maintained landscaping with Zoysia lawn</li>
+      <li>Long driveway opening to three-car-wide parking</li>
+      <li>Three-car garage with 8-foot doors</li>
+      <li>Stone columns and paver steps to the backyard</li>
+      <li>Full irrigation</li>
+      <li>Underground pet fence</li>
+    </ul></div>
+    <div class="grp"><h3>Grand Foyer &amp; Living Spaces</h3><ul>
+      <li>Distinguished John Wieland–Colonnade home with timeless architectural character</li>
+      <li>Hardwood flooring throughout and updated interior paint</li>
+      <li>Grand hardwood staircase with elegant iron spindles</li>
+      <li>Spacious living areas designed for entertaining and everyday comfort</li>
+      <li>Surround sound in the living room</li>
+      <li>Generous storage integrated throughout</li>
+    </ul></div>
+    <div class="grp"><h3>Gourmet Kitchen<em>Remodeled 2016</em></h3><ul>
+      <li>Beautifully remodeled with refined finishes and quality craftsmanship</li>
+      <li>Expansive quartzite island</li>
+      <li>Wolf dual-fuel range with six gas burners</li>
+      <li>Built-in Sub-Zero refrigerator</li>
+      <li>Built-in bench surrounding the bay window with remote-control blinds</li>
+      <li>16-foot high ceilings in the keeping room, with expansive windows and abundant light</li>
+    </ul></div>
+    <div class="grp"><h3>Private Primary Retreat</h3><ul>
+      <li>Double doors open to the primary suite and retreat</li>
+      <li>Dramatic vaulted, high-tray ceiling</li>
+      <li>Beautiful windows with abundant natural light</li>
+      <li>Spa-inspired bath: Jacuzzi tub, separate vanities, frameless glass shower</li>
+      <li>Dual walk-in closets with exceptional storage and organization</li>
+    </ul></div>
+    <div class="grp"><h3>Formal &amp; Functional Living</h3><ul>
+      <li>Elegant formal dining room for gatherings and occasions</li>
+      <li>Grand great room with 12-foot high coffered ceiling and stone fireplace</li>
+      <li>Dedicated office/study — a refined, private workspace</li>
+      <li>Convenient drop zone for everyday organization</li>
+      <li>Spacious laundry room with sink and cabinetry</li>
+    </ul></div>
+    <div class="grp"><h3>Outdoor Living &amp; Entertaining</h3><ul>
+      <li>Permitted covered rear terrace with stone fireplace</li>
+      <li>Designed for relaxing and entertaining over the pond setting</li>
+      <li>Ceiling fan and additional canned lighting</li>
+      <li>Gas line for an outdoor grill or future outdoor kitchen</li>
+      <li>Lower-level covered porch with architectural columned archways</li>
+      <li>Paver patio a few steps down, on your way to the pond</li>
+    </ul></div>
+  </div>
+ </div>
+ <div class="pfoot"><span>Sample Realty Home &amp; Land, LLC</span><span>Sample Contact · 704 · 575 · 0714</span></div>
+</section>
+
+<!-- ═══ 3 · SECOND + LOWER ═══ -->
+<section class="sheet">
+ <div class="pg">
+  <div class="phead"><h1>Features &amp; Highlights</h1><div class="r">Continued</div></div>
+  <div class="lvl"><b>Second Level</b><span>Private bedroom retreats &amp; elevated flexibility</span></div>
+  <div class="cols">
+    <div class="grp"><h3>Elegant Bedroom Retreats</h3><ul>
+      <li>Secondary bedroom with built-in shelving and en-suite bath</li>
+      <li>Two additional bedrooms sharing a beautifully designed Jack-and-Jill bath</li>
+      <li>Built-in desk space in the spacious secondary bedroom</li>
+      <li>Custom built-in storage systems in every bedroom closet</li>
+      <li>Layout suited to family living and overnight guests</li>
+    </ul></div>
+    <div class="grp"><h3>Bonus / Billiards Room</h3><ul>
+      <li>Expansive room for recreation and entertaining</li>
+      <li>Ideal as a game room, media room, playroom, office or private retreat</li>
+      <li>Additional area wired for potential whole-home audio</li>
+    </ul></div>
+  </div>
+  <div class="lvl" style="margin-top:.18in"><b>Lower Level</b><span>Recreation, entertainment &amp; extended living</span></div>
+  <div class="cols">
+    <div class="grp"><h3>Private Golf Simulator Room<em>2020</em></h3><ul>
+      <li>Dedicated room creating a year-round recreational experience</li>
+      <li>Simulator system conveys with the property; software to be added/activated</li>
+      <li>Two televisions convey — easily converted to a theater room</li>
+      <li>Surround sound</li>
+      <li>An exceptional amenity for golf enthusiasts and entertaining</li>
+    </ul></div>
+    <div class="grp"><h3>Lower-Level Living &amp; Recreation</h3><ul>
+      <li>Expansive lower-level living room with surround sound</li>
+      <li>Flexible spaces for movie nights, hobbies, fitness, games and entertaining</li>
+      <li>Additional living quarters — ideal for in-laws, a nanny, guests or extended family</li>
+      <li>Generous unfinished basement storage</li>
+      <li>A true extension of the home, separating everyday living, recreation, work and guests</li>
+    </ul></div>
+  </div>
+  <div class="lvl" style="margin-top:.18in"><b>The Community</b><span>Resort-style amenities</span></div>
+  <div class="cols">
+    <div class="grp"><h3>Clubhouse &amp; Recreation</h3><ul>
+      <li>Grand clubhouse available for entertaining, with a full kitchen</li>
+      <li>Fitness center</li>
+      <li>Outdoor pool and kiddie pool</li>
+      <li>Tennis courts, basketball court and volleyball court</li>
+    </ul></div>
+    <div class="grp"><h3>Grounds &amp; Neighborhood</h3><ul>
+      <li>Recreational area and playground</li>
+      <li>Beautiful walking trails</li>
+      <li>Sidewalks and street lights throughout</li>
+      <li>Regular community activities</li>
+    </ul></div>
+  </div>
+  <div class="upd">
+    <div class="kick">Impeccably maintained &amp; thoughtfully updated</div>
+    <div class="row">
+      <div><b>2014</b>Roof</div><div><b>2016</b>Kitchen</div><div><b>2016</b>Rear covered deck</div>
+      <div><b>2020</b>Golf simulator</div><div><b>2021 / 2023</b>Four HVAC systems</div>
+      <div><b>2026</b>Upper deck repainted</div><div><b>·</b>Tankless water heater</div>
+      <div><b>·</b>Fresh designer paint</div><div><b>·</b>Fully permitted</div>
+    </div>
+  </div>
+ </div>
+ <div class="pfoot"><span>Sample Realty Home &amp; Land, LLC</span><span>Sample Contact · 704 · 575 · 0714</span></div>
+</section>
+
+<!-- ═══ 4 · FLOOR PLAN ═══ -->
+<section class="sheet">
+ <div class="fp">
+  <div class="phead"><h1>Floor Plan</h1><div class="r">Measured · gross living area 6,070 sq ft</div></div>
+  <img src="floorplan.png" alt="Floor plan">
+ </div>
+ <div class="pfoot"><span>Sample Realty Home &amp; Land, LLC</span><span>Sample Contact · 704 · 575 · 0714</span></div>
+</section>
+
+</body></html>

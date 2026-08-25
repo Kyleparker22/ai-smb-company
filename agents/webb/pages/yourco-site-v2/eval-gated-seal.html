@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="yourco — Eval-Gated" />
+<meta property="og:description" content="Every yourco agent is Eval-Gated — held to eval gates, watchdogs, an approval boundary, and a red-team before it ever touches a real customer. Reliability you can see." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+
+<title>yourco — Eval-Gated</title>
+<meta name="description" content="Every yourco agent is Eval-Gated — held to eval gates, watchdogs, an approval boundary, and a red-team before it ever touches a real customer. Reliability you can see." />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .nav{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--hairline)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .mark{font-size:21px;font-weight:600;color:var(--indigo);text-decoration:none}.mark .dot{color:var(--brass)}
+  .nav-links{display:flex;align-items:center;gap:24px}.nav-links a{color:var(--indigo);text-decoration:none;font-size:14px;opacity:.8}.nav-links a:hover,.nav-links a.active{opacity:1}
+  .pill{display:inline-block;background:var(--brass);color:var(--indigo);text-decoration:none;font-weight:600;padding:9px 18px;border-radius:9999px;font-size:14px}
+  @media(max-width:760px){.nav-links a:not(.pill){display:none}}
+  .hero{text-align:center;padding:54px 0 10px}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:650;letter-spacing:-.025em;line-height:1.05}
+  .lede{color:var(--ink-muted);font-size:18px;max-width:600px;margin:14px auto 0}
+  .sealrow{display:flex;gap:34px;justify-content:center;align-items:center;flex-wrap:wrap;margin:36px 0 8px}
+  .sealbox{border-radius:18px;padding:30px;display:flex;align-items:center;justify-content:center}
+  .sealbox.light{background:#fff;border:1px solid var(--hairline)}
+  .sealbox.dark{background:var(--indigo)}
+  .seal{width:184px;height:184px}
+  .what{max-width:760px;margin:30px auto 0}
+  .what h2{text-align:center;font-size:24px;font-weight:650;margin-bottom:6px}
+  .what .sub{text-align:center;color:var(--ink-muted);margin-bottom:24px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+  .item{background:#fff;border:1px solid var(--hairline);border-left:3px solid var(--brass);border-radius:10px;padding:14px 16px}
+  .item h3{font-size:15px;font-weight:650;margin-bottom:3px}.item p{font-size:13.5px;color:var(--ink-muted)}
+  .usage{max-width:760px;margin:36px auto 0;text-align:center;color:var(--pewter);font-size:13.5px}
+  .usage code{background:#fff;border:1px solid var(--hairline);border-radius:6px;padding:1px 6px;font-size:12.5px}
+  footer{background:var(--parchment);padding:54px 0 48px;border-top:1px solid var(--hairline);margin-top:46px;text-align:center}
+  .sig{font-size:15px;color:var(--indigo);margin-bottom:18px}.sig .p{color:var(--brass)}
+  .fgrid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;font-size:14px}.fgrid a{color:var(--pewter);text-decoration:none}.fgrid a:hover{color:var(--indigo)}
+  .fmeta{font-size:12px;color:var(--pewter);margin-top:22px}
+
+/* ===== PREMIUM POLISH (2026-06-22, Webb) — editorial type · material grain · tactility · section rhythm · scroll-reveal. Quiet-luxury (Luka watch-notes). Additive + reversible; degrades gracefully. ===== */
+h1,.hero h1,h2.sec,.close h2,.pullquote,.value h3,.ptier h3,.audit-card h3{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560}
+h1,.hero h1{letter-spacing:-.022em}
+h2.sec,.close h2{letter-spacing:-.016em}
+.pullquote,.value h3,.ptier h3,.audit-card h3{letter-spacing:-.012em;font-weight:560}
+body::after{content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E")}
+.tile,footer,footer.site{position:relative;z-index:1}
+.nav{z-index:20}
+.card,.ptier{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease;box-shadow:0 1px 2px rgba(22,27,51,.04)}
+.card:hover,.ptier:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(22,27,51,.10);border-color:rgba(184,150,90,.55)}
+.tile.dark .card{box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.tile.dark .card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34);border-color:rgba(184,150,90,.5)}
+.demo-frame{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease}
+.demo-frame:hover{transform:translateY(-3px);box-shadow:0 22px 50px rgba(22,27,51,.18)}
+.pill{box-shadow:0 1px 2px rgba(22,27,51,.08)}
+.pill:hover{box-shadow:0 10px 24px rgba(184,150,90,.34);transform:translateY(-1px)}
+.pill:active{transform:translateY(0) scale(.98)}
+.nav-links a:not(.pill){position:relative;padding-bottom:3px}
+.nav-links a:not(.pill)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.2,.7,.3,1)}
+.nav-links a:not(.pill):hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.tile + .tile{box-shadow:0 -1px 0 var(--hairline)}
+.tile.dark + .tile,.tile + .tile.dark,.tile.dark{box-shadow:none}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline:view()){
+  .tile:not(.hero) .eyebrow,.tile:not(.hero) h2.sec,.tile:not(.hero) .lede,.tile:not(.hero) .value,.tile:not(.hero) .ptier,.tile:not(.hero) .card,.tile:not(.hero) .moat .m,.tile:not(.hero) .audit-card,.tile:not(.hero) .pullquote,.tile:not(.hero) .demo-frame,.tile:not(.hero) .prose > *,.close h2,.close .ctas{animation:revealRise linear both;animation-timeline:view();animation-range:entry 8% entry 46%}
+  @keyframes revealRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+}}
+/* ===== /PREMIUM POLISH ===== */
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=eval-gated-seal" class="pill sm">Book a call</a></div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap">
+    <h1>Eval-Gated.</h1>
+    <p class="lede">Reliability is usually invisible — until something breaks. So we made it a mark. Every yourco agent earns it before it touches a real customer.</p>
+  </div></section>
+
+  <!-- the seal (reusable SVG) -->
+  <div class="sealrow">
+    <div class="sealbox light">
+      <svg class="seal" id="sealLight" viewBox="0 0 200 200" role="img" aria-label="Eval-Gated by yourco"></svg>
+    </div>
+    <div class="sealbox dark">
+      <svg class="seal" id="sealDark" viewBox="0 0 200 200" role="img" aria-label="Eval-Gated by yourco"></svg>
+    </div>
+  </div>
+
+  <section class="what"><div class="wrap">
+    <h2>What "Eval-Gated" certifies</h2>
+    <p class="sub">Six standards every agent clears — ours and yours, the same bar.</p>
+    <div class="grid">
+      <div class="item"><h3>✓ Eval gates</h3><p>Scored against a fixed rubric before it ships, and every week after.</p></div>
+      <div class="item"><h3>✓ Watchdogs</h3><p>It's monitored for failure and silent drift — the watcher that watches the work.</p></div>
+      <div class="item"><h3>✓ Approval boundary</h3><p>Can't send, delete, or spend without a human until it's earned that trust.</p></div>
+      <div class="item"><h3>✓ Red-teamed</h3><p>We try to break it — injection, abuse, data grabs — before a real customer can.</p></div>
+      <div class="item"><h3>✓ Grounded &amp; honest</h3><p>No fabricated facts; it escalates what it shouldn't guess on.</p></div>
+      <div class="item"><h3>✓ Accountable</h3><p>Someone owns keeping it good. That's the whole model.</p></div>
+    </div>
+    <p class="usage">A reusable mark — it goes on the site, the collateral, and the agent itself. Drop the <code>&lt;svg&gt;</code> anywhere; it's self-contained and on-brand.</p>
+  </div></section>
+
+  <footer><div class="wrap">
+    <div class="sig">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="fgrid"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="build-your-os.html">What we build</a><a href="audit.html">The audit</a><a href="reliability.html">Reliability</a><a href="proof.html">Our receipts</a><a href="without.html">Without yourco</a><a href="expiry.html">Expiry</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="objections.html">Honest answers</a><a href="about.html">About</a><a href="connect.html">Refer a business</a><a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=eval-gated-seal">Book a call</a></div>
+    <div class="fmeta">© 2026 yourco · yourco.com</div>
+  </div></footer>
+
+<script>
+function seal(ring,word,arc,center,sub){return `
+  <defs><path id="arcTop" d="M30,100 a70,70 0 0,1 140,0" fill="none"/></defs>
+  <circle cx="100" cy="100" r="97" fill="${ring.bg}"/>
+  <circle cx="100" cy="100" r="93" fill="none" stroke="${ring.line}" stroke-width="2"/>
+  <circle cx="100" cy="100" r="82" fill="none" stroke="${ring.line}" stroke-width="1" opacity=".45"/>
+  <text font-size="11" letter-spacing="3.4" font-weight="700" fill="${arc}" font-family="-apple-system,Helvetica,Arial,sans-serif">
+    <textPath href="#arcTop" startOffset="50%" text-anchor="middle">RELIABILITY YOU CAN SEE</textPath></text>
+  <!-- diamond rule motif -->
+  <g transform="translate(100,62)"><rect x="-3" y="-3" width="6" height="6" transform="rotate(45)" fill="${ring.brass}"/></g>
+  <!-- check -->
+  <path d="M82,104 l11,12 l26,-30" fill="none" stroke="${ring.brass}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="100" y="150" text-anchor="middle" font-size="20" font-weight="600" fill="${word}" font-family="-apple-system,Helvetica,Arial,sans-serif">yourco</text>
+  <text x="100" y="167" text-anchor="middle" font-size="9.5" letter-spacing="3" font-weight="700" fill="${arc}" font-family="-apple-system,Helvetica,Arial,sans-serif">EVAL-GATED</text>
+`;}
+const I='#161B33',CREAM='#F4EFE6',BRASS='#B8965A',BRASSB='#D4B27A',HAIR='rgba(22,27,51,.18)';
+document.getElementById('sealLight').innerHTML=seal({bg:CREAM,line:HAIR,brass:BRASS},I,'#8a7a52');
+document.getElementById('sealDark').innerHTML=seal({bg:I,line:'rgba(212,178,122,.4)',brass:BRASSB},CREAM,BRASSB);
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client — monthly report</title>
+<!-- MOCKUP (sample data). The monthly "what your employee did" report — proof of value + reliability. -->
+<style>
+  :root{--bg:#f4f5f1;--card:#fff;--ink:#1c2419;--muted:#6b7280;--line:#e8e9e3;--sc:#2c5f2d;--sc-d:#234a24;--green:#2f7d52;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:22px 14px}
+  .sheet{max-width:760px;margin:0 auto;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 10px 34px rgba(28,36,25,.14)}
+  .top{background:var(--sc);color:#fff;padding:24px 30px}
+  .top .logo{font-size:17px;font-weight:700}
+  .top h1{font-size:24px;font-weight:680;margin:10px 0 4px;letter-spacing:-.01em}
+  .top p{font-size:13.5px;color:rgba(255,255,255,.82)}
+  .body{padding:24px 30px 16px}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px}
+  @media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat .v{font-size:30px;font-weight:720;letter-spacing:-.02em;color:var(--sc-d)}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:1px;line-height:1.35}
+
+  h2{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:24px 0 11px}
+  .did li{font-size:14px;margin-bottom:8px;list-style:none;padding-left:22px;position:relative}
+  .did li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+
+  .rely{background:#f1f8f2;border:1px solid #cfe6d4;border-radius:12px;padding:16px 18px;margin-top:8px}
+  .rely .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:620px){.rely .rg{grid-template-columns:1fr}}
+  .rely .rv{font-size:17px;font-weight:680;color:var(--sc-d)}
+  .rely .rl{font-size:12px;color:var(--muted)}
+  .rely .line{font-size:12.5px;color:#3a4a3a;margin-top:12px;border-top:1px solid #d7e8da;padding-top:11px}
+
+  footer{padding:18px 30px 24px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+  footer b{color:var(--sc)}
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="top">
+      <div class="logo">Sample Client</div>
+      <h1>Your digital employee — June report</h1>
+      <p>What it did this month, and how reliably. Prepared by yourco for Client Owner + Charlene.</p>
+    </div>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="v">23</div><div class="l">signed installation proposals handled</div></div>
+        <div class="stat"><div class="v">$418K</div><div class="l">in deposits requested, on time</div></div>
+        <div class="stat"><div class="v">61</div><div class="l">supplier + sub orders drafted</div></div>
+        <div class="stat"><div class="v">19</div><div class="l">jobs greenlit (deposit + suppliers + subs all confirmed)</div></div>
+        <div class="stat"><div class="v">~3.5 hrs</div><div class="l">avg from signed → first client contact (was ~2 days)</div></div>
+        <div class="stat"><div class="v"><span style="color:var(--sc)">~31</span></div><div class="l">hours of coordination saved this month</div></div>
+      </div>
+
+      <h2>What it handled</h2>
+      <ul class="did">
+        <li>Deposit requests sent the same hour a proposal signed — every payment tier applied correctly.</li>
+        <li>Material orders routed to shop vs job site and sent to 9 suppliers, with delivery dates tracked.</li>
+        <li>14 subs notified with scope + windows; chased 6 that went quiet until they confirmed.</li>
+        <li>Flagged 4 deposits and 3 supplier replies that were sitting too long, before they became a problem.</li>
+      </ul>
+
+      <h2>Reliability — the part you're paying for</h2>
+      <div class="rely">
+        <div class="rg">
+          <div><div class="rv">0</div><div class="rl">messages sent without your approval</div></div>
+          <div><div class="rv">100%</div><div class="rl">of dollar figures computed by tested code</div></div>
+          <div><div class="rv">99.9%</div><div class="rl">uptime · 0 missed signed proposals</div></div>
+        </div>
+        <div class="line">Every send this month was approved by you or Charlene. The eval suite re-ran before each change shipped, and a duplicate deposit was caught and blocked once. Nothing reached a customer that you didn't see first.</div>
+      </div>
+    </div>
+    <footer>Sample data · your employee, your email, your number — owned by Sample Client · built &amp; run by <b>yourco</b></footer>
+  </div>
+</body>
+</html>

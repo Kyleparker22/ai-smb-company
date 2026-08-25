@@ -1,0 +1,59 @@
+{
+  "_what": "Practice scenarios for the advisor curriculum, served by crm/coach.py. Content, not code.",
+  "_rule": "Every drill maps to a lesson slug in this folder and practises what that lesson teaches.",
+  "_honesty": "n=0 advisors hired and n=0 signed clients. No drill may cite a win rate, a benchmark, or what 'good advisors' do. Rubrics describe what yourco's documented rules require.",
+  "drills": {
+    "01-what-the-job-is": [
+      {
+        "prompt": "A prospect emails you directly at 9pm: 'Send me the contract, I want to start Monday.' What do you do in the next ten minutes?",
+        "looks_like": "Drafts the reply, hands it to the Founder to send. Does not send anything themselves, does not attach a contract, does not confirm a start date. Flags to the Founder immediately because it is time-sensitive.",
+        "fails_if": "Sends any reply directly, however harmless \u2014 'just acknowledging so they aren't left hanging' is the exact failure the rule exists to stop."
+      }
+    ],
+    "02-lead-high-land-anywhere": [
+      {
+        "prompt": "You have finished the audit. The owner clearly has budget anxiety. Open your proposal conversation, out loud.",
+        "looks_like": "Opens with the OS anyway, anchored to what the audit just showed. Then presents the first module as where the system starts, with the expansion path named.",
+        "fails_if": "Opens with the single employee to be kind about budget, or frames the module as 'the cheaper option' / 'if the full thing is too much' \u2014 that is the pre-framing that makes the later upsell awkward."
+      }
+    ],
+    "03-what-an-ai-os-is": [
+      {
+        "prompt": "Give me the formula, then the very next thing you say.",
+        "looks_like": "The six familiar pieces, the 'except they talk to each other and they do the work' turn, then immediately the moat close: 'You own the outcome; we own everything that makes it reliable.'",
+        "fails_if": "Recites the formula and stops, or lets the formula carry the whole pitch \u2014 a no-code operator could say the same six things honestly."
+      }
+    ],
+    "04-running-the-audit-conversation": [
+      {
+        "prompt": "You are 70 minutes into a 90-minute call and behind. Which block do you cut?",
+        "looks_like": "None \u2014 and specifically not Block E. Better to shorten D or book a second call than to drop the control map, because Q21 produces the promotion criterion in the client's own words.",
+        "fails_if": "Cuts Block E because it 'feels like a governance conversation, not a sales one'. That is the named temptation and the reason the block gets skipped."
+      },
+      {
+        "prompt": "The owner says 'we lose a ton of calls when the crews are out.' Take it from adjective to finding.",
+        "looks_like": "Gets the count, the conversion, and the job value \u2014 roughly how many a month, how many would have booked, what a job is worth \u2014 then shows the arithmetic back to them.",
+        "fails_if": "Writes down 'a ton of missed calls' and moves on, or supplies a plausible number the owner never said."
+      }
+    ],
+    "05-scoping-with-the-pillars": [
+      {
+        "prompt": "A prospect asks 'so is it three agents or five? What's the difference in price?' Answer.",
+        "looks_like": "Explains that agent count is an included guide, not a meter, and that scope is set by which pillars the audit surfaced. Does not quote a band \u2014 Polo owns pricing, and it comes with the proposal.",
+        "fails_if": "Prices per agent, or gives any band from memory."
+      }
+    ],
+    "06-objections-and-the-moat": [
+      {
+        "prompt": "'Who else have you done this for?' Answer it now, honestly.",
+        "looks_like": "Says plainly that yourco is pre-revenue with one unsigned engagement, then moves to what is real: the diagnosis just delivered, the system yourco runs on itself, the control map the owner helped write.",
+        "fails_if": "Any invented client, any 'we work with several businesses like yours', any implied plural. A prospect who catches a fabricated client is gone permanently."
+      },
+      {
+        "prompt": "'Won't this be obsolete in a year?'",
+        "looks_like": "The model-upgrade dividend \u2014 yourco owns the stack and sells the outcome, so every model improvement arrives as a free upgrade; the offering appreciates while a purchased tool depreciates.",
+        "fails_if": "Argues that AI progress is slowing, or promises specific future capabilities yourco has not built."
+      }
+    ]
+  }
+}

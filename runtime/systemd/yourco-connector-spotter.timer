@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo connector-spotter — weekday mornings 09:10 ET (Bird) [STAGED — do not install until the Connector OS clears counsel + launch]
+
+[Timer]
+OnCalendar=Mon-Fri *-*-* 09:10:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

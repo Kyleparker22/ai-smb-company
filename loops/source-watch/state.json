@@ -1,0 +1,31 @@
+{
+  "_note": "Runtime-owned; do not hand-edit. Runs 2026-07-27 AND 2026-08-21 were both PARTIAL: WebFetch not granted + Bash denied, so no items could be read/triaged. seen lists left EMPTY on purpose so the next working run does a true first sweep instead of skipping unread items. The read-path block is now a RECURRING config issue — WebFetch must be added to the runtime's ~/.claude/settings.json allow-list before this loop can function. See loops/source-watch/2026-08-21.md.",
+  "baseline_established": false,
+  "last_run": "2026-08-21",
+  "last_run_status": "partial-read-path-unavailable-2nd",
+  "sources": {
+    "greg-isenberg-youtube": {
+      "channel_id": "UCPjNBjflYl0-HQtUvOx0Ibw",
+      "handle": "@GregIsenberg",
+      "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCPjNBjflYl0-HQtUvOx0Ibw",
+      "seen": []
+    },
+    "greg-isenberg-newsletter": {
+      "url": "https://latecheckout.substack.com/",
+      "rss": "https://latecheckout.substack.com/feed",
+      "note": "SOP roster lists gregisenberg.com; actual feed is latecheckout.substack.com/feed (Greg's Letter). Roster correction proposed in 2026-07-27.md.",
+      "seen": []
+    },
+    "ycombinator": {
+      "blog": "https://www.ycombinator.com/blog",
+      "youtube_channel_id": null,
+      "youtube_note": "Not resolved this run (WebFetch blocked). Resolve @ycombinator channel_id next run.",
+      "seen": []
+    },
+    "foundedceo": {
+      "url": "https://foundedceo.substack.com/",
+      "rss": "https://foundedceo.substack.com/feed",
+      "seen": []
+    }
+  }
+}

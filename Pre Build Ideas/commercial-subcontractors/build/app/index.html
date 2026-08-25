@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Change OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-cos"></section>
+  <section class="view" id="v-retainage"></section>
+  <section class="view" id="v-deadlines"></section>
+  <section class="view" id="v-invites"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system never files a notice or
+lien, never asserts a claim to a GC, and never submits a change order that has no written
+authorization on file. Every deadline shown is a date alert, not legal advice.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'cos',label:'Change orders'},{id:'retainage',label:'Retainage'},
+      {id:'deadlines',label:'Notice calendar'},{id:'invites',label:'Invitations'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,cos,retainage,deadlines,invites,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.revenue} · notice rules: default (replace before go-live)`;
+  document.getElementById('v-board').innerHTML =
+    panel('The three leaks', 'all counted from your own records',
+      `<div class="grid">
+        ${stat('Unbilled change value', fmt.money(b.unbilled.value), `${b.unbilled.count} CO(s) not yet billed`, b.unbilled.count?'alert':'')}
+        ${stat('Retainage past terms', fmt.money(b.retainage_overdue), 'held after substantial completion', b.retainage_overdue?'warn':'')}
+        ${stat('Deadlines inside 30 days', fmt.num(b.next_deadlines.filter(x=>x.days_left<=30).length), 'date alerts, not legal advice')}
+        ${stat('Notes needing a PM read', fmt.num(b.ambiguous_notes), 'ambiguous is routed, never guessed')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('Recovered this week', fmt.money(b.recovered.co_value + b.recovered.released_value),
+               `${b.recovered.cos_submitted} CO(s) submitted · ${b.recovered.chases_sent} chase(s) sent — counted from the log`)}</div>`) +
+    panel('Next deadlines', b.rules_source, table([{label:'Project'},{label:'State'},{label:'Step'},{label:'Due'},{label:'Days',num:true}],
+      b.next_deadlines, r=>`<td>${esc(r.project)}</td><td>${esc(r.state)}</td><td>${esc(r.step)}</td>
+        <td>${fmt.date(r.due)}</td><td class="num ${r.days_left<15?'strong':''}">${r.days_left}</td>`), true);
+}
+
+async function cos(){
+  const d = await API.get('/api/cos');
+  document.getElementById('v-cos').innerHTML =
+    `<div class="banner warn">A change order with <b>no written authorization on file</b> cannot be
+      submitted — the system refuses. A verbal CO submitted in writing becomes a dispute, not a
+      payment.</div>` +
+    panel('The ledger', `${fmt.money(d.unbilled.value)} not yet billed`, table(
+      [{label:'CO'},{label:'Summary'},{label:'Value',num:true},{label:'Directive'},{label:'State'},{label:''}],
+      d.rows, c=>`<td class="mono">${esc(c.id)}${c.demo_tag?' '+pill(c.demo_tag,'brand'):''}</td>
+        <td>${esc(c.summary||'')}</td><td class="num">${fmt.money(c.value)}</td>
+        <td>${c.directive_ref?pill('on file','good'):pill('NONE','bad')}</td>
+        <td>${pill(c.state, c.state==='draft'?'warn':'')}</td>
+        <td class="right">${c.state==='draft'?`<button class="act primary" onclick="submitCo('${c.id}')">Submit</button>`:''}</td>`), true);
+}
+async function submitCo(id){
+  const r = await API.post(`/api/cos/${id}/submit`);
+  alert(r.refused ? `Refused: ${r.refused}` : (r.approval ? 'Queued for a human to send.' : JSON.stringify(r)));
+  cos();
+}
+
+async function retainage(){
+  const d = await API.get('/api/retainage');
+  document.getElementById('v-retainage').innerHTML =
+    `<div class="banner">The chase is a <b>bounded ladder</b>: three drafted notes with a
+      ${'10'}-day cooldown, each queued for a human to send. Past the third unanswered note the row
+      leaves the message lane — silence is an answer, and the answer is a phone call.</div>` +
+    panel('Held after completion', 'the cash nobody owns', table(
+      [{label:'Project'},{label:'Held',num:true},{label:'Days since completion',num:true},{label:'Ladder'},{label:''}],
+      d.rows, r=>`<td>${esc(r.project)}</td><td class="num strong">${fmt.money(r.held)}</td>
+        <td class="num">${r.days_since_completion}</td>
+        <td>${r.touches?`step ${r.touches} of 3`:'—'}</td>
+        <td>${r.escalated?pill('phone call','bad'):r.overdue?pill('past terms','bad'):pill('inside terms')}</td>`), true) +
+    panel('Latest drafted chase', 'what the human actually sends', d.last_draft
+      ? `<div class="strong" style="white-space:pre-wrap">${esc(d.last_draft)}</div>`
+      : `<div class="why">no chase drafted yet — run the sweeps</div>`);
+}
+
+async function deadlines(){
+  const d = await API.get('/api/deadlines');
+  document.getElementById('v-deadlines').innerHTML =
+    `<div class="banner">${esc(d.rules_source)}</div>` +
+    panel('Computed deadlines', 'soonest first', table(
+      [{label:'Project'},{label:'State'},{label:'Step'},{label:'Due'},{label:'Days',num:true},{label:''}],
+      d.deadlines, r=>`<td>${esc(r.project)}</td><td>${esc(r.state)}</td><td>${esc(r.step)}</td>
+        <td>${fmt.date(r.due)}</td><td class="num">${r.days_left}</td>
+        <td>${pill('DATE ALERT — not legal advice','warn')}</td>`), true) +
+    panel('Cannot be computed', 'and says so', table([{label:'Project'},{label:'Why'}],
+      d.uncomputable, r=>`<td>${esc(r.project)}</td><td class="why">${esc(r.why)}</td>`), true);
+}
+
+async function invites(){
+  const d = await API.get('/api/invitations');
+  document.getElementById('v-invites').innerHTML =
+    panel('Bid invitations', 'go/no-go with receipts — pay speed is your own ledger, not reputation', table(
+      [{label:'Project'},{label:'Value',num:true},{label:'Score',num:true},{label:'Why'}],
+      d.rows, i=>`<td>${esc(i.project)}</td><td class="num">${fmt.money(i.value)}</td>
+        <td class="num strong">${i.score??'—'}</td>
+        <td><ul class="reasons">${(i.reasons||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['captured_cos','Unbilled COs captured','counted'],['avg_co_value','Avg CO value','counted'],
+    ['overdue_retainage','Retainage past terms','counted'],['active_projects','Active projects','counted'],
+    ['payapp_hours','Pay-app hrs / project / mo','your number'],['admin_rate','Admin rate','your number'],
+    ['exposed_receivable','Receivable on live deadlines','your number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.capture) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

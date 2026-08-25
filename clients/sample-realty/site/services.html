@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Services — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:84px 0 72px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(34px,4.5vw,54px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:18px;font-style:italic;color:var(--on-dark-soft);margin-top:18px;max-width:54ch}
+  header.page .jump{display:flex;gap:22px;margin-top:30px;flex-wrap:wrap}
+  header.page .jump a{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark);text-decoration:none;border:1px solid var(--line-dark);padding:10px 20px;border-radius:9999px}
+  header.page .jump a:hover{border-color:var(--red);color:var(--red)}
+
+  section{padding:92px 0}
+  section.alt{background:var(--warm)}
+  section.dark{background:var(--ink);color:var(--on-dark)}
+  section.dark .lede{color:var(--on-dark-soft)}
+  h2{font-family:Didot,Georgia,serif;font-size:clamp(28px,3.4vw,42px);font-weight:400;line-height:1.15;margin-top:14px}
+  h2 em{font-style:italic;color:var(--red)}
+  .lede{font-family:Didot,Georgia,serif;font-size:18px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:18px;max-width:58ch}
+  p.body{font-size:15.5px;color:var(--ink-2);margin-top:16px;max-width:64ch}
+
+  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start;margin-top:8px}
+  @media(max-width:900px){.split{grid-template-columns:1fr}}
+
+  .steps{border-top:1px solid var(--line);margin-top:26px;counter-reset:step}
+  .step{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .step .n{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);font-size:15px;min-width:26px}
+  .step div b{font-family:Didot,Georgia,serif;font-weight:400;font-size:17px;display:block}
+  .step div p{font-size:13.5px;color:var(--ink-soft);margin-top:4px;line-height:1.7}
+  .dark .steps{border-color:var(--line-dark)}
+  .dark .step{border-color:var(--line-dark)}
+  .dark .step div p{color:var(--on-dark-soft)}
+
+  .inclusions{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:0 34px;border-top:1px solid var(--line)}
+  @media(max-width:640px){.inclusions{grid-template-columns:1fr}}
+  .inc{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2);align-items:baseline}
+  .inc i{font-style:normal;color:var(--red)}
+
+  .pull{margin-top:30px;padding-left:24px;border-left:2px solid var(--red);font-family:Didot,Georgia,serif;font-size:19px;font-style:italic;line-height:1.55}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:84px 0}
+  .ctaband h2{color:inherit}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:28px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .tag{font-family:Didot,Georgia,serif;font-size:14px;font-style:italic;margin-top:12px;color:var(--on-dark-soft)}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo, not the live site</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="listings/">Listings</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Services</div>
+    <h1>Every side of the transaction, <em>handled.</em></h1>
+    <div class="lede">Selling, buying, and property management — each one delivered with boutique attention, by people who stay with you from the first conversation to the closing table and beyond.</div>
+    <div class="jump">
+      <a href="#selling">Selling</a>
+      <a href="#buying">Buying</a>
+      <a href="#management">Property Management</a>
+    </div>
+  </div>
+</header>
+
+<section id="selling">
+  <div class="wrap">
+    <div class="kicker">i. Selling Your Home</div>
+    <h2>Every listing gets the <em>full production.</em></h2>
+    <div class="split">
+      <div>
+        <p class="lede">Your home only gets one debut. We treat it that way — every listing, at every price point, gets the complete Sample Realty launch.</p>
+        <p class="body">It starts with a private listing presentation built for your home: what it's worth, what we'd stage, how we'd position it, and exactly what happens between listing day and closing table. Then the production begins.</p>
+        <div class="inclusions">
+          <div class="inc"><i>·</i>Staging by an Accredited Staging Professional</div>
+          <div class="inc"><i>·</i>Professional photography, inside and out</div>
+          <div class="inc"><i>·</i>Drone &amp; aerial coverage</div>
+          <div class="inc"><i>·</i>Cinematic listing tour buyers actually watch</div>
+          <div class="inc"><i>·</i>Deliberate MLS keywords &amp; positioning</div>
+          <div class="inc"><i>·</i>Everywhere the MLS reaches — every major site</div>
+          <div class="inc"><i>·</i>Luxury-level signage</div>
+          <div class="inc"><i>·</i>Supra lockbox security</div>
+          <div class="inc"><i>·</i>CSS showing scheduling</div>
+          <div class="inc"><i>·</i>Every piece of showing feedback reported to you</div>
+          <div class="inc"><i>·</i>Negotiation by a 24-year Broker/Owner</div>
+          <div class="inc"><i>·</i>Contract-to-close management, every detail</div>
+        </div>
+        <div class="pull">"You are never handed off to a transaction team. When you call, the person who answers knows your house, your timeline, and where things stand."</div>
+      </div>
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">i.</div><div><b>The conversation</b><p>Walk us through your home and your timeline. No contract, no pressure — just an honest read on the market and your options.</p></div></div>
+          <div class="step"><div class="n">ii.</div><div><b>The private listing presentation</b><p>A pricing strategy and launch plan prepared specifically for your home — the same document our sellers call "the reason we chose Sample Realty."</p></div></div>
+          <div class="step"><div class="n">iii.</div><div><b>Staging &amp; production</b><p>Staging consult, professional photo/video day, drone, and the cinematic tour — the full production, before a single buyer walks in.</p></div></div>
+          <div class="step"><div class="n">iv.</div><div><b>Launch week</b><p>Live on the Carolinas MLS and every major site it feeds, with deliberate keywords, premium signage, and secure Supra access.</p></div></div>
+          <div class="step"><div class="n">v.</div><div><b>Showings &amp; feedback</b><p>CSS-scheduled showings; every piece of buyer feedback relayed to you, with strategy adjusted in real time.</p></div></div>
+          <div class="step"><div class="n">vi.</div><div><b>Negotiation to closing</b><p>Offers negotiated hard and managed to the closing table — inspections, appraisal, attorney coordination, all of it.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="buying">
+  <div class="wrap">
+    <div class="kicker">ii. Buying a Home</div>
+    <h2>From first search to <em>keys in hand.</em></h2>
+    <div class="split">
+      <div>
+        <p class="lede">First home, forever home, luxury, land, or investment — in both Carolinas, guided by people who know these markets in depth.</p>
+        <p class="body">Buying well is about knowing what a home is actually worth, what it will need, and how to win it without overpaying. With 70+ years of combined experience across the team — and a Broker/Owner licensed in both North and South Carolina — you get that judgment on your side of the table.</p>
+        <div class="inclusions">
+          <div class="inc"><i>·</i>First-time buyer guidance, start to finish</div>
+          <div class="inc"><i>·</i>Luxury &amp; estate purchases</div>
+          <div class="inc"><i>·</i>Investment property analysis</div>
+          <div class="inc"><i>·</i>Land &amp; new construction</div>
+          <div class="inc"><i>·</i>Military relocation — Certified Military Residential Specialist</div>
+          <div class="inc"><i>·</i>Short sales — Certified Short Sale Buyer specialist</div>
+          <div class="inc"><i>·</i>Licensed in North &amp; South Carolina</div>
+          <div class="inc"><i>·</i>Lender, inspector &amp; attorney network</div>
+        </div>
+      </div>
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">i.</div><div><b>Get clear on the target</b><p>Needs, wants, neighborhoods, and a realistic budget — including what your monthly payment actually looks like. (Start with our <a href="tools/mortgage.html" style="color:var(--red)">mortgage calculator</a>.)</p></div></div>
+          <div class="step"><div class="n">ii.</div><div><b>Get pre-approved</b><p>We connect you with trusted local lenders so your offer carries weight from day one.</p></div></div>
+          <div class="step"><div class="n">iii.</div><div><b>Search &amp; tour</b><p>Every MLS listing that fits, toured on your schedule — with an honest read on each one, including the ones to walk away from.</p></div></div>
+          <div class="step"><div class="n">iv.</div><div><b>Offer &amp; negotiate</b><p>Priced to win without overpaying — terms, timelines, and contingencies structured to protect you.</p></div></div>
+          <div class="step"><div class="n">v.</div><div><b>Under contract to keys</b><p>Inspections, repairs, appraisal, and closing — coordinated end to end, with you informed at every step.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dark" id="management">
+  <div class="wrap">
+    <div class="kicker">iii. Property Management</div>
+    <h2 style="color:inherit">Your investment, run like <em>our own.</em></h2>
+    <div class="split">
+      <div>
+        <p class="lede">A dedicated property-management division for owners and investors — the same boutique attention we give every listing, applied to your rental.</p>
+        <p class="body" style="color:var(--on-dark-soft)">From marketing the vacancy to handing back the keys, we manage the whole life of the tenancy — and you always know exactly how your property is performing.</p>
+        <div class="pull" style="color:var(--on-dark)">"Own a rental? We'll run it — marketing, tenants, maintenance, and the monthly statement."</div>
+      </div>
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">i.</div><div><b>Market the vacancy</b><p>MLS-grade marketing for rentals — professional photos, broad syndication, and pricing set from real comps.</p></div></div>
+          <div class="step"><div class="n">ii.</div><div><b>Screen tenants properly</b><p>Applications, credit, background, and references — placed carefully, because the right tenant is the whole game.</p></div></div>
+          <div class="step"><div class="n">iii.</div><div><b>Lease &amp; move-in</b><p>Airtight lease documentation, deposits handled correctly, and a documented move-in condition report.</p></div></div>
+          <div class="step"><div class="n">iv.</div><div><b>Rent &amp; maintenance</b><p>Collection, coordination of repairs with trusted vendors, and responsive tenant communication — without you fielding the 10pm call.</p></div></div>
+          <div class="step"><div class="n">v.</div><div><b>Report &amp; renew</b><p>Clear owner statements, renewal strategy, and honest advice on when to raise, hold, or sell.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">Ready when you are</div>
+    <h2>It starts with a conversation, <em>not a contract.</em></h2>
+    <a href="index.html#contact">Start a conversation</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="tag">We get you moving in the right direction!</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Closing Costs — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:76px 0 64px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(32px,4.2vw,50px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:54ch}
+
+  .calc{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;padding:72px 0;align-items:start}
+  @media(max-width:900px){.calc{grid-template-columns:1fr}}
+  .panel h2{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400}
+  .panel h2 em{font-style:italic;color:var(--red)}
+  .field{margin-top:22px}
+  .field label{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .field input{width:100%;font-family:"Avenir Next",Avenir,sans-serif;font-size:15px;padding:13px 15px;background:#fff;border:1px solid var(--line);border-radius:4px;color:var(--ink)}
+  .field input:focus{outline:2px solid var(--red);outline-offset:-1px;border-color:transparent}
+  .seg{display:flex;border:1px solid var(--line);border-radius:9999px;overflow:hidden;margin-top:8px}
+  .seg button{flex:1;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:12px 0;background:transparent;border:0;cursor:pointer;color:var(--ink-2)}
+  .seg button.on{background:var(--ink);color:var(--paper)}
+  .hint{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:14px;max-width:44ch}
+
+  .result{background:var(--ink);color:var(--on-dark);padding:40px 44px}
+  .result .big{font-family:Didot,Georgia,serif;font-size:clamp(34px,4.4vw,46px);line-height:1.1;margin-top:12px}
+  .result .sub{font-family:Didot,Georgia,serif;font-size:13.5px;font-style:italic;color:var(--on-dark-soft);margin-top:8px}
+  .rows{margin-top:26px;border-top:1px solid var(--line-dark)}
+  .r{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--line-dark);font-size:13.5px}
+  .r span em{font-family:Didot,Georgia,serif;font-style:italic;color:var(--on-dark-soft);font-size:12px;display:block}
+  .r b{font-family:Didot,Georgia,serif;font-weight:400;white-space:nowrap}
+  .r.total{font-family:Didot,Georgia,serif;font-size:16.5px}
+  .r.total b{color:var(--red)}
+  .result .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.06em;color:rgba(247,245,240,.45);margin-top:18px;line-height:1.8}
+
+  section.info{background:var(--warm);padding:88px 0}
+  section.info h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,36px);font-weight:400;margin-top:12px}
+  section.info h2 em{font-style:italic;color:var(--red)}
+  .faq{margin-top:38px;border-top:1px solid var(--line)}
+  details{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:20px 0;font-family:Didot,Georgia,serif;font-size:19px}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"+";font-family:Didot,Georgia,serif;color:var(--red);font-size:22px;flex:0 0 auto}
+  details[open] summary:after{content:"−"}
+  details .a{padding:0 0 22px;font-size:15px;color:var(--ink-2);max-width:72ch}
+  details .a p+p{margin-top:10px}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:76px 0}
+  .ctaband h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,36px);font-weight:400;margin-top:12px}
+  .ctaband h2 em{font-style:italic;color:var(--red)}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:26px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:78ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · estimates only, verify with your closing attorney</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../services.html">Services</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Tools · Closing Costs</div>
+    <h1>Know what to expect at the table — <em>no surprises.</em></h1>
+    <div class="lede">Every line item explained, and an estimate for your numbers — whether you're buying or selling, in North or South Carolina.</div>
+  </div>
+</header>
+
+<div class="wrap calc">
+
+  <div class="panel">
+    <h2>Your <em>situation.</em></h2>
+    <div class="field">
+      <label for="cprice">Home price</label>
+      <input id="cprice" type="text" inputmode="numeric" value="435,000"/>
+    </div>
+    <div class="field">
+      <label>I'm the…</label>
+      <div class="seg" id="segRole">
+        <button class="on" data-v="buyer">Buyer</button>
+        <button data-v="seller">Seller</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>State</label>
+      <div class="seg" id="segState">
+        <button class="on" data-v="NC">Your State</button>
+        <button data-v="SC">South Carolina</button>
+      </div>
+    </div>
+    <div class="hint">Both Carolinas are attorney-closing states — a real estate attorney, not a title company, closes your transaction. That's a good thing.</div>
+  </div>
+
+  <div class="result">
+    <div class="kicker" id="rTitle">Estimated Buyer Closing Costs</div>
+    <div class="big" id="rRange">—</div>
+    <div class="sub" id="rSub"></div>
+    <div class="rows" id="rRows"></div>
+    <div class="fine">Planning estimates only — actual costs vary by lender, attorney, insurer, and contract terms. Not a quote. Lender fees apply only with financing. Commission is set by your listing agreement.</div>
+  </div>
+
+</div>
+
+<section class="info">
+  <div class="wrap">
+    <div class="kicker">The Fine Print, Translated</div>
+    <h2>Closing costs, <em>explained.</em></h2>
+    <div class="faq">
+      <details open>
+        <summary>Who pays what in the Carolinas?</summary>
+        <div class="a"><p><b>Buyers</b> typically pay their loan costs (origination, appraisal, credit), their attorney, title search and title insurance, inspections, recording, and the prepaids their lender requires (first year of insurance, property-tax escrow, prepaid interest). Plan on roughly <b>2–4% of the purchase price</b> with a loan; much less when paying cash.</p>
+        <p><b>Sellers</b> typically pay the real estate commission (per the listing agreement), the state transfer tax, their side of the attorney/settlement work, mortgage payoff, and any HOA transfer documents.</p></div>
+      </details>
+      <details>
+        <summary>What is the transfer (excise) tax?</summary>
+        <div class="a"><p>A state tax on the sale, traditionally paid by the seller. In <b>Your State</b> it's <b>$1 per $500</b> of the price ($2 per $1,000 — $870 on a $435,000 sale). In <b>South Carolina</b> the deed recording fee is <b>$1.85 per $500</b> ($3.70 per $1,000 — about $1,610 on the same sale).</p></div>
+      </details>
+      <details>
+        <summary>What are "prepaids" and why are they so big?</summary>
+        <div class="a"><p>Prepaids aren't fees — they're your own future expenses collected up front: the first year of homeowner's insurance, a cushion of property taxes for the escrow account, and interest from closing day to your first payment. They're often the largest "cost" on a buyer's statement, but every dollar goes toward things you'd pay anyway.</p></div>
+      </details>
+      <details>
+        <summary>What does the closing attorney actually do?</summary>
+        <div class="a"><p>In both Carolinas, a licensed attorney searches the title, resolves anything found, prepares the deed, holds and disburses every dollar, records the sale with the county, and runs the closing itself. Your agent coordinates with the attorney so deadlines never slip — and we work with attorneys we trust on every closing.</p></div>
+      </details>
+      <details>
+        <summary>Can closing costs be negotiated?</summary>
+        <div class="a"><p>Yes — seller-paid credits toward the buyer's closing costs are a common negotiating lever, especially on longer-market listings and new construction. It's one of the terms we negotiate hardest, whichever side of the table we're on.</p></div>
+      </details>
+      <details>
+        <summary>What's due diligence money vs. earnest money? (NC)</summary>
+        <div class="a"><p>Your State contracts have two deposits. The <b>due diligence fee</b> is paid directly to the seller for taking the home off the market — nonrefundable, but credited to you at closing. The <b>earnest money deposit</b> is held in trust and refundable if you walk before the due diligence deadline. Setting these two numbers well is a big part of winning a house without over-risking — that's our job.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">Want real numbers for your situation?</div>
+    <h2>We'll walk your estimate line by line, <em>free.</em></h2>
+    <a href="../index.html#contact">Start a conversation</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine">Estimates for planning only — not legal, lending, or tax advice. Actual figures come from your lender's Loan Estimate and your attorney's settlement statement. Sample Realty Home &amp; Land, LLC is a real estate brokerage.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const num = el => parseFloat(String(el.value).replace(/[^0-9.]/g, "")) || 0;
+  const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
+  let role = "buyer", state = "NC";
+
+  function seg(id, cb){
+    const el = $(id);
+    el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+      el.querySelectorAll("button").forEach(x => x.classList.remove("on"));
+      b.classList.add("on"); cb(b.dataset.v);
+    }));
+  }
+  seg("segRole", v => { role = v; calc(); });
+  seg("segState", v => { state = v; calc(); });
+
+  function row(label, note, val){
+    return '<div class="r"><span>' + label + (note ? '<em>' + note + '</em>' : '') +
+           '</span><b>' + val + '</b></div>';
+  }
+
+  function calc(){
+    const p = num($("cprice"));
+    const transfer = state === "NC" ? p / 500 * 1 : p / 500 * 1.85;
+    const transferLabel = state === "NC" ? "NC excise (transfer) tax" : "SC deed recording fee";
+    const transferNote = state === "NC" ? "$1 per $500 of price" : "$1.85 per $500 of price";
+    let html = "", lo = 0, hi = 0;
+
+    if (role === "buyer") {
+      const items = [
+        ["Loan origination &amp; lender fees", "≈0.5–1% of loan · $0 if paying cash", p*.004, p*.008],
+        ["Appraisal &amp; credit report", "lender-ordered", 550, 700],
+        ["Closing attorney", "attorney state — handles title, deed, funds", 850, 1200],
+        ["Title search &amp; title insurance", "owner's + lender's policies", p*.0035, p*.005],
+        ["Home &amp; pest inspections", "your choice of inspectors", 400, 650],
+        ["Survey (optional)", "recommended on most homes", 0, 500],
+        ["Recording fees", "county register of deeds", 75, 150],
+        ["Prepaids &amp; escrow", "insurance yr 1 + tax escrow + interest", p*.008, p*.015]
+      ];
+      items.forEach(it => { html += row(it[0], it[1], fmt(it[2]) + " – " + fmt(it[3])); lo += it[2]; hi += it[3]; });
+      $("rTitle").textContent = "Estimated Buyer Closing Costs";
+      $("rSub").textContent = "on a " + fmt(p) + " purchase in " + state + ", with financing";
+    } else {
+      const items = [
+        [transferLabel, transferNote, transfer, transfer],
+        ["Attorney / settlement fees", "deed prep + seller-side work", 350, 650],
+        ["HOA transfer &amp; documents", "if applicable", 0, 450],
+        ["Home warranty (optional)", "sometimes offered to buyers", 0, 650]
+      ];
+      items.forEach(it => { html += row(it[0], it[1], it[2] === it[3] ? fmt(it[2]) : fmt(it[2]) + " – " + fmt(it[3])); lo += it[2]; hi += it[3]; });
+      html += row("Real estate commission", "per your listing agreement — reviewed together up front", "—");
+      html += row("Mortgage payoff", "your remaining balance, from your lender", "—");
+      $("rTitle").textContent = "Estimated Seller Closing Costs";
+      $("rSub").textContent = "on a " + fmt(p) + " sale in " + state + " — before commission & payoff";
+    }
+    html += '<div class="r total"><span>Estimated range</span><b>' + fmt(lo) + " – " + fmt(hi) + "</b></div>";
+    $("rRange").textContent = fmt(lo) + " – " + fmt(hi);
+    $("rRows").innerHTML = html;
+  }
+
+  $("cprice").addEventListener("input", calc);
+  calc();
+})();
+</script>
+
+</body>
+</html>

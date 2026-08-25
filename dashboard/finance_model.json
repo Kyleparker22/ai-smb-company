@@ -1,0 +1,190 @@
+{
+  "generated": "2026-08-22T23:55:17",
+  "source": {
+    "file": "finance/yourco-financial-model.xlsx",
+    "sha256": "3be2b631663a2e254d98c455bda181fb63c54df01f79bcadbe02e6e90f504220",
+    "modified": "2026-08-18T15:27:29",
+    "lastCommit": "45b6b83 2026-08-18"
+  },
+  "activeScenario": "Target",
+  "horizon": {
+    "start": "Jan-27",
+    "end": "Dec-29"
+  },
+  "scenarios": {
+    "Conservative": {
+      "years": [
+        {
+          "year": 1,
+          "clients": 25.0,
+          "revenue": 489494,
+          "ebitda": 95443,
+          "noiPct": 0.195,
+          "people": 3,
+          "advisors": 0,
+          "arr": 1097487
+        },
+        {
+          "year": 2,
+          "clients": 60.0,
+          "revenue": 2215901,
+          "ebitda": 961652,
+          "noiPct": 0.434,
+          "people": 6,
+          "advisors": 3,
+          "arr": 3036001
+        },
+        {
+          "year": 3,
+          "clients": 95.1,
+          "revenue": 4356023,
+          "ebitda": 1977240,
+          "noiPct": 0.4539,
+          "people": 8,
+          "advisors": 5,
+          "arr": 5130919
+        }
+      ],
+      "peakCash": 11155,
+      "breakevenMonth": 6,
+      "cumCashM36": 2057981,
+      "grossMargin": 0.8552,
+      "conversion": 0.45,
+      "churn": 0.18
+    },
+    "Target": {
+      "years": [
+        {
+          "year": 1,
+          "clients": 50.0,
+          "revenue": 1021291,
+          "ebitda": 389024,
+          "noiPct": 0.3809,
+          "people": 3,
+          "advisors": 0,
+          "arr": 2194857
+        },
+        {
+          "year": 2,
+          "clients": 117.9,
+          "revenue": 4343716,
+          "ebitda": 2013983,
+          "noiPct": 0.4637,
+          "people": 9,
+          "advisors": 6,
+          "arr": 5969024
+        },
+        {
+          "year": 3,
+          "clients": 189.6,
+          "revenue": 8607017,
+          "ebitda": 4187335,
+          "noiPct": 0.4865,
+          "people": 13,
+          "advisors": 10,
+          "arr": 10233758
+        }
+      ],
+      "peakCash": 0,
+      "breakevenMonth": 4,
+      "cumCashM36": 4471402,
+      "grossMargin": 0.855,
+      "conversion": 0.6,
+      "churn": 0.12
+    },
+    "Aggressive": {
+      "years": [
+        {
+          "year": 1,
+          "clients": 75.0,
+          "revenue": 1533969,
+          "ebitda": 614523,
+          "noiPct": 0.4006,
+          "people": 5,
+          "advisors": 2,
+          "arr": 3292891
+        },
+        {
+          "year": 2,
+          "clients": 176.9,
+          "revenue": 6500195,
+          "ebitda": 3051780,
+          "noiPct": 0.4695,
+          "people": 12,
+          "advisors": 9,
+          "arr": 8952906
+        },
+        {
+          "year": 3,
+          "clients": 285.0,
+          "revenue": 12896439,
+          "ebitda": 6418141,
+          "noiPct": 0.4977,
+          "people": 18,
+          "advisors": 15,
+          "arr": 15379361
+        }
+      ],
+      "peakCash": 0,
+      "breakevenMonth": 4,
+      "cumCashM36": 6849243,
+      "grossMargin": 0.8549,
+      "conversion": 0.75,
+      "churn": 0.08
+    }
+  },
+  "principalEarnings3yr": {
+    "Conservative": {
+      "the Founder": 825727,
+      "Partner B": 727272,
+      "Mike": 595997
+    },
+    "Target": {
+      "the Founder": 1507765,
+      "Partner B": 1308582,
+      "Mike": 1043004
+    },
+    "Aggressive": {
+      "the Founder": 2194158,
+      "Partner B": 1893858,
+      "Mike": 1493459
+    }
+  },
+  "clientTargets": {
+    "Y1": {
+      "Conservative": 25,
+      "Target": 50,
+      "Aggressive": 75
+    },
+    "Y2": {
+      "Conservative": 60,
+      "Target": 115,
+      "Aggressive": 175
+    },
+    "Y3": {
+      "Conservative": 95,
+      "Target": 190,
+      "Aggressive": 285
+    }
+  },
+  "assumptions": {
+    "blendedRetainerEarly": 3100,
+    "blendedRetainerMature": 4497.5,
+    "cogsPerClient": 300,
+    "advisorFullyLoaded": 10000,
+    "clientsPerAdvisor": 20,
+    "principalCapacity": 50,
+    "capacityZeroMonth": 24,
+    "principalSalary": 50000,
+    "commissionEach": 0.05,
+    "distributionPctMRR": 0.1,
+    "onboardingCost": 150,
+    "onboardingHours": 30
+  },
+  "ownership": {
+    "the Founder": 0.5,
+    "Partner B": 0.35,
+    "Mike": 0.15
+  },
+  "honesty": "Every figure here is a PLAN on assumptions with no evidence behind them — the company is pre-revenue with zero clients and zero audits delivered. HQ mirrors the workbook; it does not compute or edit it."
+}

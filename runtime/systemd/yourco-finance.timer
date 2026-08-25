@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo finance pulse — Mondays 07:15 ET
+
+[Timer]
+OnCalendar=Mon *-*-* 07:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco × Sample Client — Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0F1220; --bg2:#161A2E; --card:#1B2038; --line:rgba(230,232,245,.10);
+    --cream:#F3ECDE; --muted:#B7BAD0; --dim:#7E839E;
+    --indigo:#2E3A6E; --indigo2:#3E4E93; --brass:#C99A4B; --brass2:#E0B968; --sage:#8FA27C;
+    --shadow:0 30px 80px -30px rgba(0,0,0,.75);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.1;letter-spacing:-.01em;margin:0}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brass2)}
+  .muted{color:var(--muted)} .dim{color:var(--dim)}
+  a{color:var(--brass2)}
+  .lo{font-family:Fraunces,serif;font-weight:600;font-size:20px;letter-spacing:-.02em;color:var(--cream)}
+  .top{position:sticky;top:0;z-index:20;background:rgba(15,18,32,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .top .r{font-size:12.5px;color:var(--dim)}
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  .hero{padding:56px 0 40px}
+  .hero h1{font-size:clamp(28px,4.4vw,44px);max-width:20ch}
+  .hero .sub{font-size:17px;color:var(--muted);max-width:60ch;margin-top:16px}
+  .pill{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass2);border:1px solid rgba(201,154,75,.4);border-radius:999px;padding:5px 13px;margin-bottom:18px}
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:11px;padding:12px 20px;font-weight:600;font-size:14.5px;text-decoration:none;border:0;cursor:pointer;margin-top:22px}
+  .btn-p{background:var(--brass);color:#1a1206} .btn-p:hover{background:var(--brass2)}
+  h2.k{font-size:clamp(22px,3vw,30px);margin-bottom:6px}
+  .lead{font-size:16px;color:var(--muted);max-width:64ch;margin-top:8px}
+  .grid{display:grid;gap:14px;margin-top:22px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:1fr 1fr} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:760px){.g3,.g4{grid-template-columns:1fr 1fr}} @media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px}
+  .card h4{margin:0 0 5px;font-size:14.5px;font-family:Inter,sans-serif;font-weight:600;color:var(--cream)}
+  .card p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .card .ph{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass2);font-weight:700;margin-bottom:8px}
+  /* ROI calc */
+  .roi{background:linear-gradient(180deg,rgba(62,78,147,.18),transparent),var(--card);border:1px solid rgba(62,78,147,.4);border-radius:18px;padding:24px;box-shadow:var(--shadow);margin-top:24px}
+  .roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media(max-width:720px){.roi-grid{grid-template-columns:1fr}}
+  .field{margin-bottom:16px}
+  .field label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:7px}
+  .field label b{color:var(--cream);font-variant-numeric:tabular-nums}
+  .field input[type=range]{width:100%;accent-color:var(--brass)}
+  .out{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .out .big{font-family:Fraunces,serif;font-size:40px;color:var(--brass2);line-height:1}
+  .out .biglbl{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+  .out .rows{margin-top:16px;display:grid;gap:9px}
+  .out .row{display:flex;justify-content:space-between;font-size:13.5px;border-top:1px solid var(--line);padding-top:9px}
+  .out .row span:first-child{color:var(--muted)} .out .row span:last-child{color:var(--cream);font-weight:700;font-variant-numeric:tabular-nums}
+  .out .verdict{margin-top:14px;font-size:12.5px;color:var(--sage);line-height:1.5}
+  .ledger{width:100%;border-collapse:collapse;margin-top:20px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .ledger th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:11px 15px;background:var(--bg2)}
+  .ledger td{padding:12px 15px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted);vertical-align:top}
+  .ledger td b{color:var(--cream)}
+  .inv{width:100%;border-collapse:collapse;margin-top:18px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .inv th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:11px 15px;background:var(--bg2)}
+  .inv th.r,.inv td.r{text-align:right}
+  .inv td{padding:12px 15px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+  .inv td b{color:var(--cream);font-variant-numeric:tabular-nums}
+  .strike{color:var(--dim);text-decoration:line-through;font-size:13px}
+  ul.checks{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:9px}
+  ul.checks li{font-size:13.5px;color:var(--muted);padding-left:24px;position:relative;line-height:1.5}
+  ul.checks li:before{content:"✓";position:absolute;left:0;color:var(--sage);font-weight:700}
+  ul.checks li b{color:var(--cream)}
+  .sig{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:22px}
+  @media(max-width:520px){.sig{grid-template-columns:1fr}}
+  .sig .line{border-top:1px solid var(--muted);margin-top:34px;padding-top:8px;font-size:12.5px;color:var(--dim)}
+  .foot{font-size:11.5px;color:var(--dim);line-height:1.6;padding:26px 0 60px}
+  .note{font-size:12px;color:var(--dim);margin-top:12px;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap"><span class="lo">yourco</span><span class="r">Proposal · Sample Client Design &amp; Build</span></div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="pill">AI Operating System — prepared for the Client Owner</div>
+  <h1>An AI operating system for Sample Client, led by the Same-Day Design Studio.</h1>
+  <p class="sub">Your crew takes three phone photos on-site. Before they leave the driveway, the homeowner has seen their <b>actual backyard</b> redesigned, watched a cinematic tour, built it live with your rep, and gotten an itemized quote in your Aspire format — hardscape or full landscape. Around it runs the machine that fills the funnel, protects the margin, and keeps clients for life.</p>
+  <a class="btn btn-p" href="https://sample-client-studio.higgsfield.app" target="_blank" rel="noopener">See it live on a real Yourtownhome →</a>
+  <p class="note">Prepared by YourCo LLC · the Founder · founder@yourco.example.com · valid 30 days. You own the outcome — you never touch tokens, models, or infrastructure. yourco runs all of it.</p>
+</div></header>
+
+<section><div class="wrap">
+  <div class="eyebrow">What you get</div>
+  <h2 class="k">One operating system, built in phases.</h2>
+  <p class="lead">Start with the wedge that closes jobs on the first visit; add each module as it pays for itself. Every one is built on <b>your</b> Aspire data and gets better over time as the AI improves — at no change to your price.</p>
+  <div class="grid g2">
+    <div class="card"><div class="ph">Phase 1 · Close on the first visit</div><h4>Same-Day Design Studio</h4><p>Photo → AI design on the real yard → cinematic tour → live "build it together" configurator → 3-tier quote in your Aspire format → scaled 2D plan + material takeoff, with real-time material availability.</p></div>
+    <div class="card"><div class="ph">Phase 2 · Fill &amp; convert the funnel</div><h4>Lead machine</h4><p>24/7 website design magnet, &lt;60-second speed-to-lead auto-responder, and follow-up autopilot that resurrects the quotes that used to die in the 2–6 week gap.</p></div>
+    <div class="card"><div class="ph">Phase 3 · Protect the margin</div><h4>Ops &amp; money</h4><p>Margin guardrail on every quote, auto supplier POs from the takeoff, weather-aware crew scheduling, and a live job-cost dashboard (actual-vs-estimate from Aspire).</p></div>
+    <div class="card"><div class="ph">Phase 4 · Compound growth</div><h4>Reputation &amp; retention</h4><p>Review + referral engine, auto-generated marketing content from every finished job, a live client project portal, and warranty + seasonal-care reminders.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">The return — in your numbers</div>
+  <h2 class="k">How many jobs does it take to pay for itself?</h2>
+  <p class="lead">Move the sliders to your real numbers. This is a projection from your inputs — not a guarantee — but it shows the shape: the system pays off in a handful of jobs, whether you grow by <i>more</i> jobs or <i>bigger</i> ones.</p>
+  <div class="roi"><div class="roi-grid">
+    <div>
+      <div class="field"><label>Average project value <b id="v-job">$27,500</b></label><input type="range" id="s-job" min="12000" max="70000" step="500" value="27500" /></div>
+      <div class="field"><label>Your net profit margin <b id="v-margin">20%</b></label><input type="range" id="s-margin" min="12" max="35" step="1" value="20" /></div>
+      <div class="field"><label>Extra or upgraded jobs / month the system drives <b id="v-extra">2</b></label><input type="range" id="s-extra" min="0" max="6" step="1" value="2" /></div>
+      <p class="note">"Upgraded" counts too: moving a job you'd already win up a tier (bigger ticket) lands the same added profit as a new job. Steady-state platform cost used: <b>$60,000 / yr</b> ($5,000/mo).</p>
+    </div>
+    <div class="out">
+      <div class="big" id="o-payback">~11 jobs</div>
+      <div class="biglbl">to fully cover the platform for a year</div>
+      <div class="rows">
+        <div class="row"><span>Added profit / year</span><span id="o-added">$132,000</span></div>
+        <div class="row"><span>Platform cost / year</span><span id="o-cost">$60,000</span></div>
+        <div class="row"><span>Net gain / year</span><span id="o-net">+$72,000</span></div>
+        <div class="row"><span>Return on the fee</span><span id="o-roi">2.2×</span></div>
+      </div>
+      <div class="verdict" id="o-verdict">→ At these numbers, it pays for itself in about 11 jobs and returns 2.2× its cost — from just 2 more or bigger jobs a month.</div>
+    </div>
+  </div></div>
+
+  <table class="ledger"><tr><th>What the system drives / saves</th><th>What it costs</th></tr>
+    <tr><td><b>More closed jobs</b> — 24/7 lead capture + &lt;60-sec response (~10× contact rate) + same-day close vs. the 2–6 week gap</td><td rowspan="3"><b>$1,000</b> one-time build<br><b>$3,000/mo</b> — months 1–3 (intro)<br><b>$5,000/mo</b> — month 4 on<br><span class="dim" style="font-size:12px">list rate $8,000–$10,000/mo</span></td></tr>
+    <tr><td><b>Bigger tickets</b> — Base/Better/Dream + live configurator upsell lifts the average job</td></tr>
+    <tr><td><b>Recovered revenue + hard costs replaced</b> — follow-up resurrects dead quotes; margin guardrail stops underpriced bids; outsourced 3D renders + designer takeoff hours eliminated</td></tr>
+  </table>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">Investment — the brotherly rate</div>
+  <h2 class="k">$5,000/mo — roughly half the standard rate.</h2>
+  <p class="lead">The $8,000–$10,000/mo standard rate for this scope, discounted in return for a case study, a testimonial once it's proven, and referrals when you think it's warranted.</p>
+  <table class="inv">
+    <tr><th>&nbsp;</th><th class="r">One-time</th><th class="r">Monthly</th></tr>
+    <tr><td>Implementation — build, integration, testing, launch</td><td class="r"><b>$1,000</b></td><td class="r">—</td></tr>
+    <tr><td>Months 1–3 — intro rate</td><td class="r">—</td><td class="r"><b>$3,000</b>/mo</td></tr>
+    <tr><td>Month 4 onward — 12-month minimum term <span class="strike">$8–10k</span></td><td class="r">—</td><td class="r"><b>$5,000</b>/mo</td></tr>
+  </table>
+  <ul class="checks">
+    <li><b>Everything operated &amp; absorbed</b> — model/tokens, render generation, hosting, telephony. You are never billed for usage.</li>
+    <li><b>Pay-in-full discounts</b> — prepay the 3-month intro for <b>$8,100</b> (save $900); prepay the year at $5k for <b>$55,000</b> — one month free (save $5,000).</li>
+    <li><b>The reliability layer</b> — evals, watchdogs, and an approval gate: nothing customer-facing sends without your rules. Every price is computed by tested code, never guessed by AI.</li>
+    <li><b>Every AI advance, free</b> — a tool you'd buy today is outdated in a year; this gets better every year you own it.</li>
+    <li><b>You own what carries your name</b> — email, number, data, designs. If yourco vanished tomorrow, you keep it all.</li>
+  </ul>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">Acceptance</div>
+  <h2 class="k">This becomes the Statement of Work.</h2>
+  <p class="lead">By signing, Sample Client Design &amp; Build and YourCo LLC adopt this as the Statement of Work under the counsel-reviewed Engagement Agreement. Pricing is a proposal until countersigned.</p>
+  <div class="sig">
+    <div><div class="line">the Client Owner · Sample Client Design &amp; Build · Date</div></div>
+    <div><div class="line">the Founder · YourCo LLC · Date</div></div>
+  </div>
+</div></section>
+
+<div class="foot"><div class="wrap">
+  Figures are a proposal until locked. Return-side figures from the ROI calculator are projections computed from the numbers you enter, with the assumptions shown — never guarantees, never third-party benchmarks presented as yours. Demos shown are premium AI, illustrative until built on your real Aspire data. The counsel-reviewed Engagement Agreement (with its DPA) is the binding contract; this SOW attaches to it.
+</div></div>
+
+<script>
+(function(){
+  var COST=60000;
+  var f=function(n){return "$"+Math.round(n).toLocaleString("en-US");};
+  var els={job:"s-job",margin:"s-margin",extra:"s-extra"};
+  function calc(){
+    var job=+document.getElementById("s-job").value;
+    var margin=+document.getElementById("s-margin").value/100;
+    var extra=+document.getElementById("s-extra").value;
+    document.getElementById("v-job").textContent=f(job);
+    document.getElementById("v-margin").textContent=(margin*100).toFixed(0)+"%";
+    document.getElementById("v-extra").textContent=extra;
+    var profitPerJob=job*margin;
+    var addedProfit=extra*12*profitPerJob;
+    var net=addedProfit-COST;
+    var payback=profitPerJob>0?COST/profitPerJob:0;
+    var roi=addedProfit/COST;
+    document.getElementById("o-payback").textContent="~"+Math.max(1,Math.round(payback))+" job"+(Math.round(payback)===1?"":"s");
+    document.getElementById("o-added").textContent=f(addedProfit);
+    document.getElementById("o-cost").textContent=f(COST);
+    document.getElementById("o-net").textContent=(net>=0?"+":"")+f(net);
+    document.getElementById("o-roi").textContent=(roi).toFixed(1)+"×";
+    var v=document.getElementById("o-verdict");
+    if(extra===0){ v.textContent="→ Even before a single extra or upgraded job, the platform replaces outsourced render costs and designer takeoff hours, and closes deals faster."; }
+    else { v.textContent="→ At these numbers, it pays for itself in about "+Math.max(1,Math.round(payback))+" jobs and returns "+roi.toFixed(1)+"× its cost — from just "+extra+" more or bigger job"+(extra===1?"":"s")+" a month."; }
+  }
+  ["s-job","s-margin","s-extra"].forEach(function(id){document.getElementById(id).addEventListener("input",calc);});
+  calc();
+})();
+</script>
+</body>
+</html>

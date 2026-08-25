@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fix OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-claims"></section>
+  <section class="view" id="v-jobs"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. An incomplete warranty claim
+cannot be submitted — every missing field is named and there is no force-submit. COD work past
+the recorded authorization has no path; the overage drafts back for the customer first. A gas,
+spark, or flood message keeps the customer's own words — the safety script leads and is never
+softened. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'claims',label:'Claim gate'},
+      {id:'jobs',label:'Jobs & COD'},{id:'roi',label:'What it\'s worth'},
+      {id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,claims,jobs,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent =
+    `${d.config.techs} techs · warranty-authorized: ${(d.config.warranty_makes||[]).join(', ')}`;
+  document.getElementById('v-board').innerHTML =
+    panel('Warranty money, counted', '',
+      `<div class="grid">
+        ${stat('Blocked by the gate', fmt.money(b.claims.blocked_value),
+               `${b.claims.blocked} incomplete claim(s) — dead money until the fields exist`, b.claims.blocked?'alert':'')}
+        ${stat('Ready to release', fmt.money(b.claims.ready_value),
+               `${b.claims.ready} complete claim(s) waiting on a human`, b.claims.ready?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the gas smell reads first', b.messages_open?'bad':'')}
+        ${stat('Recall-flagged units', fmt.num(b.recall_flagged), 'the notice rides the ticket verbatim', b.recall_flagged?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', fmt.money(b.recovered.paid_value),
+               `${b.recovered.claims_paid} claim(s) paid · ${b.recovered.claims_submitted} released · ${b.recovered.first_visit_fixes} first-visit fix(es)`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The gas smell gets a script, not a queue position: stop using it,
+      leave, call the utility — and the customer's own words survive <b>verbatim</b> in the
+      draft. Warranty vs COD routes from the <b>recorded</b> coverage, never the customer's
+      memory of it.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='safety_symptom'?'bad':m.label==='warranty_repair'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.parts_to_bring&&s.parts_to_bring.length?`<div class="banner">Parts to bring: <b>${esc(s.parts_to_bring.join(', '))}</b> — ${esc(s.parts_basis||'')}</div>`:''}
+      ${s.recall_notice?`<div class="banner warn">RECALL (verbatim): ${esc(s.recall_notice)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function claims(){
+  const d = await API.get('/api/claims');
+  document.getElementById('v-claims').innerHTML =
+    `<div class="banner warn">Try it: submit the incomplete claim — refused, with <b>every
+      missing field named</b>; submit the complete one — it drafts at R1 for a human to
+      release; ask the narrative to invent a field — refused. A denied claim is free work.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="submitClaim('cl_demo_incomplete')">Submit: missing serial + proof</button>
+      <button class="act" onclick="submitClaim('cl_demo_complete')">Submit: complete claim</button>
+      <button class="act" onclick="inventNarrative('cl_demo_complete')">Narrative: invent a field</button>
+     </div><div id="cout"></div>` +
+    panel('Warranty claims', esc(d.note||''), table(
+      [{label:'Claim'},{label:'Make'},{label:'Amount',num:true},{label:'Code'},{label:'Gate'},{label:'State'}],
+      d.rows, c=>`<td>${esc(c.id)}${c.demo_tag?' '+pill(c.demo_tag,'brand'):''}</td>
+        <td>${esc(c.make||'')}</td><td class="num">${fmt.money(c.amount)}</td>
+        <td>${esc(c.failure_code||'—')}</td>
+        <td>${c.missing.length?pill('missing: '+c.missing.join(', '),'bad'):pill('complete','good')}</td>
+        <td>${c.paid_at?pill('paid','good'):c.submitted_at?pill('submitted','brand'):'open'}</td>`), true);
+}
+async function submitClaim(id){
+  const r = await API.post(`/api/claims/${id}/submit`);
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Drafted for release', '', `<div class="strong">${esc(r.why)}</div>
+        <div class="why">rung ${esc(r.gate.rung)} — waiting for a human on the Trust tab; nothing was sent</div>`);
+}
+async function inventNarrative(id){
+  const r = await API.post(`/api/claims/${id}/narrative`,
+    {fields:['appliance','symptom','diagnosis','failure_code','parts','customer_fault_story']});
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Narrative', '', `<div class="strong">${esc(r.narrative)}</div><div class="why">${esc(r.basis)}</div>`);
+}
+
+async function jobs(){
+  const d = await API.get('/api/jobs'), rc = await API.get('/api/recalls');
+  document.getElementById('v-jobs').innerHTML =
+    `<div class="banner warn">Try it: add $60 to the job sitting at its recorded $280
+      authorization — <b>no path</b>; the overage drafts back for the customer. Add $40 to the
+      job with headroom — it executes, logged.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="addWork('jb_demo_cod','door seal',60)">Add $60 past the authorization</button>
+      <button class="act" onclick="addWork('jb_demo_cod_room','vent brush',40)">Add $40 inside it</button>
+     </div><div id="jout"></div>` +
+    panel('Open jobs', '', table(
+      [{label:'Job'},{label:'Customer'},{label:'Unit'},{label:'Route'},{label:'Work',num:true},{label:'Authorized',num:true},{label:'Parts to bring'}],
+      d.rows, j=>`<td>${esc(j.id)}${j.demo_tag?' '+pill(j.demo_tag,'brand'):''}${j.recall_notice?' '+pill('RECALL','bad'):''}</td>
+        <td>${esc(j.customer||'')}</td><td>${esc(j.appliance||'')} · ${esc((j.symptom||'').replace('_',' '))}</td>
+        <td>${pill(j.kind, j.kind==='warranty'?'brand':'')}</td>
+        <td class="num">${fmt.money(j.total)}</td>
+        <td class="num">${j.authorized!=null?fmt.money(j.authorized):(j.kind==='cod'?blank('no recorded authorization'):'—')}</td>
+        <td>${esc((j.parts_to_bring||[]).join(', ')||'—')}</td>`), true) +
+    panel('Recall-flagged units', esc(rc.source||''), table(
+      [{label:'Unit'},{label:'Customer'},{label:'Model'},{label:'Notice (verbatim)'}],
+      rc.rows, u=>`<td>${esc(u.unit)}</td><td>${esc(u.customer||'')}</td>
+        <td>${esc(u.make)} ${esc(u.model)}</td><td>${esc(u.notice)}</td>`), true);
+}
+async function addWork(id, desc, amount){
+  const r = await API.post(`/api/jobs/${id}/work`, {desc, amount});
+  document.getElementById('jout').innerHTML = r.refused
+    ? panel('Refused — the clamp is structural', '', `<div class="banner warn">${esc(r.refused)}</div>
+        ${r.overage?`<div class="why">the overage is now an R1 draft for the customer — see Trust & audit</div>`:''}`)
+    : panel('Work added', '', `<div class="strong">${esc(r.why)}</div>
+        <div class="why">running total ${fmt.money(r.total)} — logged at R2, visible on the ticket</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['blocked_claim_value','Blocked claim value','counted'],
+    ['denial_rate','Your historical denial rate','your number (0–1)'],
+    ['re_rolled_visits','Re-rolled visits','counted'],
+    ['truck_roll_cost','Cost per truck roll','your number'],
+    ['office_hours_wk','Office hrs/wk on paperwork','your number'],
+    ['office_rate','Office rate','your number'],
+    ['cod_dispute_value','COD disputes','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

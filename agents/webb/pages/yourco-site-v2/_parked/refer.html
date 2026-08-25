@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Refer yourco — get paid every month they stay</title>
+<style>
+  :root{
+    --indigo:#161B33; --indigo2:#1f274a; --cream:#F4EFE6; --brass:#B8965A;
+    --ink:#12162b; --muted:#5b617a; --line:#e6e1d6; --good:#4F6B4A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--cream)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  a{color:var(--brass)}
+  /* hero */
+  .hero{background:radial-gradient(120% 120% at 80% -10%,rgba(184,150,90,.22),transparent),var(--indigo);color:var(--cream);padding:64px 0 56px}
+  .brand{font-weight:700;letter-spacing:.02em;font-size:18px;opacity:.92}
+  .hero h1{font-size:clamp(30px,5vw,46px);line-height:1.1;margin:18px 0 14px;font-weight:700}
+  .hero p{font-size:18px;max-width:620px;color:rgba(244,239,230,.85);margin:0 0 26px}
+  .cta{display:inline-block;background:var(--brass);color:#1a1d2e;font-weight:700;padding:13px 24px;border-radius:10px;text-decoration:none}
+  .cta:hover{filter:brightness(1.06)}
+  .pill{display:inline-block;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--brass);border:1px solid rgba(184,150,90,.5);border-radius:999px;padding:5px 12px}
+  /* sections */
+  section{padding:48px 0}
+  h2{font-size:26px;margin:0 0 8px}
+  .sub{color:var(--muted);margin:0 0 26px;max-width:640px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+  .step .n{width:30px;height:30px;border-radius:50%;background:var(--indigo);color:var(--cream);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-bottom:12px}
+  .step h3{margin:0 0 6px;font-size:17px}
+  .step p{margin:0;color:var(--muted);font-size:14.5px}
+  /* tiers */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .tier{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;position:relative}
+  .tier.top{border-color:var(--brass);box-shadow:0 8px 30px rgba(184,150,90,.16)}
+  .tier .rate{font-size:40px;font-weight:800;color:var(--indigo);line-height:1}
+  .tier .name{font-weight:700;margin:10px 0 2px}
+  .tier .meta{color:var(--muted);font-size:14px}
+  .tier .tag{position:absolute;top:14px;right:14px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--brass)}
+  .note{color:var(--muted);font-size:14px;margin-top:14px}
+  /* form */
+  .panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin:12px 0 5px}
+  input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fcfbf8}
+  input:focus,textarea:focus{outline:2px solid rgba(184,150,90,.45);border-color:var(--brass)}
+  textarea{min-height:76px;resize:vertical}
+  .submit{margin-top:18px;background:var(--indigo);color:var(--cream);border:0;font-weight:700;padding:13px 22px;border-radius:10px;cursor:pointer;font-size:15px}
+  .submit:hover{background:var(--indigo2)}
+  .linkbox{display:flex;gap:8px;margin-top:8px}
+  .linkbox input{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#f3efe6}
+  .copy{background:var(--brass);color:#1a1d2e;border:0;font-weight:700;border-radius:9px;padding:0 16px;cursor:pointer;white-space:nowrap}
+  .ok{display:none;background:rgba(79,107,74,.1);border:1px solid rgba(79,107,74,.35);color:#33502f;border-radius:12px;padding:18px;margin-top:16px}
+  .faq h3{font-size:16px;margin:18px 0 4px}
+  .faq p{margin:0 0 4px;color:var(--muted);font-size:14.5px}
+  footer{background:var(--indigo);color:rgba(244,239,230,.7);padding:26px 0;font-size:13px;text-align:center}
+  .staged{background:#fff5e0;border:1px solid #e9d8a8;color:#7a601f;font-size:12.5px;border-radius:8px;padding:8px 12px;margin-top:14px}
+  @media(max-width:720px){.steps,.tiers,.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="wrap">
+      <div class="brand">yourco</div>
+      <span class="pill" style="margin-top:18px">Referral program</span>
+      <h1>Refer yourco. Get paid every month they stay.</h1>
+      <p>Know a business drowning in missed calls, manual back-office work, or slow quotes? Introduce them. When they become a client, you earn a <strong>recurring</strong> share of their retainer — for as long as they stay. No cap on referrals, no cost to you.</p>
+      <a class="cta" href="#refer">Refer someone →</a>
+    </div>
+  </div>
+
+  <section class="wrap">
+    <h2>How it works</h2>
+    <p class="sub">Three steps. The whole point is that it's easy — you make the intro, we do the rest, you get paid on collected revenue.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Refer</h3><p>Submit who you're introducing below, or share your personal referral link. Takes 30 seconds.</p></div>
+      <div class="step"><div class="n">2</div><h3>We build</h3><p>We give them a live demo and, if it's a fit, a working AI employee in ~48 hours. You stay out of the selling.</p></div>
+      <div class="step"><div class="n">3</div><h3>You earn</h3><p>Recurring commission on their monthly retainer — paid every month they remain a client.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2>What you earn</h2>
+    <p class="sub">A tiered escalator on the <strong>collected</strong> monthly retainer. The rate is set by how many of your referred clients are <strong>currently active</strong> — and it lifts your <em>whole book</em>, not just the next one.</p>
+    <div class="tiers">
+      <div class="tier"><div class="rate">3%</div><div class="name">Referrer</div><div class="meta">1–4 active clients</div></div>
+      <div class="tier"><div class="rate">5%</div><div class="name">Senior</div><div class="meta">5–9 active clients</div></div>
+      <div class="tier top"><span class="tag">Top tier</span><div class="rate">10%</div><div class="name">Partner</div><div class="meta">10+ active clients</div></div>
+    </div>
+    <p class="note">Residual for the life of each active account — as long as they pay and your agreement is active. Bring another referrer into the program and earn an extra <strong>1%</strong> on the clients they sign (one level only). Paid monthly on collected revenue.</p>
+  </section>
+
+  <section class="wrap" id="refer">
+    <div class="panel">
+      <h2 style="margin-top:0">Make a referral</h2>
+      <p class="sub">Tell us who to reach out to. We'll take it from there and keep you posted.</p>
+      <form id="referForm">
+        <div class="grid2">
+          <div><label>Your name</label><input name="referrer_name" required placeholder="Jordan Smith" /></div>
+          <div><label>Your email <span style="color:var(--brass)">(where we send your link + payouts)</span></label><input name="referrer_email" type="email" required placeholder="you@email.com" /></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:20px 0" />
+        <div class="grid2">
+          <div><label>Who are you referring? (business name)</label><input name="referee_company" required placeholder="YourCo Landscaping" /></div>
+          <div><label>Their contact name</label><input name="referee_contact" placeholder="Pat — owner" /></div>
+        </div>
+        <div class="grid2">
+          <div><label>Their email or phone</label><input name="referee_contact_info" placeholder="pat@yourco.com / 555-123-4567" /></div>
+          <div><label>Their industry</label><input name="referee_vertical" placeholder="Landscaping" /></div>
+        </div>
+        <label>Anything we should know? (the pain you noticed)</label>
+        <textarea name="note" placeholder="They keep missing calls during installs and losing jobs to voicemail."></textarea>
+        <button class="submit" type="submit">Submit referral</button>
+        <div class="staged">Staged — at launch this routes the referral into the CRM under the Referrals view and emails you your personal link. Nothing is sent until the launch gate.</div>
+      </form>
+      <div class="ok" id="okMsg"></div>
+
+      <hr style="border:0;border-top:1px solid var(--line);margin:26px 0" />
+      <h3 style="margin:0 0 4px">Or share your personal referral link</h3>
+      <p class="sub" style="margin-bottom:10px">Enter your email to generate a link you can text, email, or post. Anyone who signs up through it is credited to you.</p>
+      <div class="grid2"><div><label>Your email</label><input id="linkEmail" type="email" placeholder="you@email.com" /></div></div>
+      <div class="linkbox"><input id="refLink" readonly value="https://yourco.com/r/…" /><button class="copy" id="copyBtn" type="button">Copy</button></div>
+    </div>
+  </section>
+
+  <section class="wrap faq">
+    <h2>Questions</h2>
+    <h3>Who can refer?</h3><p>Anyone — clients, friends, other operators, consultants. You don't have to be a customer.</p>
+    <h3>When do I get paid?</h3><p>Monthly, on collected revenue, at your current tier rate, starting the first month your referral pays.</p>
+    <h3>What if my referral cancels?</h3><p>Commission runs as long as they're an active, paying client. If your active count drops below a tier line, your rate adjusts — so we're both rooting for them to stay happy.</p>
+    <h3>Is there a limit?</h3><p>No cap on how many you refer. The more active clients you bring, the higher your rate — on your whole book.</p>
+  </section>
+
+  <footer>yourco · referrals paid on collected revenue · program terms apply · <a style="color:var(--brass)" href="mailto:founder@yourco.example.com">founder@yourco.example.com</a></footer>
+
+<script>
+  // Personal referral link — derive a stable code from the email (client-side; no PII in the URL beyond a short hash)
+  function refCode(email){
+    let h=0; const s=(email||"").trim().toLowerCase();
+    for(let i=0;i<s.length;i++){ h=((h<<5)-h+s.charCodeAt(i))|0; }
+    return Math.abs(h).toString(36).slice(0,8);
+  }
+  const linkEmail=document.getElementById("linkEmail"), refLink=document.getElementById("refLink");
+  function updateLink(){
+    const c=linkEmail.value.trim()?refCode(linkEmail.value):"…";
+    refLink.value="https://yourco.com/r/"+c;
+  }
+  linkEmail.addEventListener("input",updateLink);
+  document.getElementById("copyBtn").addEventListener("click",function(){
+    refLink.select(); navigator.clipboard&&navigator.clipboard.writeText(refLink.value);
+    this.textContent="Copied"; setTimeout(()=>this.textContent="Copy",1400);
+  });
+
+  // Submit → POST to the referral capture (staged). Graceful confirmation either way.
+  document.getElementById("referForm").addEventListener("submit",async function(e){
+    e.preventDefault();
+    const data=Object.fromEntries(new FormData(this).entries());
+    data.ref_code=refCode(data.referrer_email);
+    data.source="referral-platform";
+    try{
+      await fetch("/api/refer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+    }catch(_){ /* staged: no backend yet — still confirm to the user */ }
+    const ok=document.getElementById("okMsg");
+    ok.style.display="block";
+    ok.innerHTML="<strong>Thanks, "+(data.referrer_name||"")+".</strong> "+(data.referee_company||"Your referral")+
+      " is in. We'll reach out, keep you posted, and your personal link is <code>https://yourco.com/r/"+data.ref_code+"</code>.";
+    this.reset(); ok.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+</script>
+</body>
+</html>

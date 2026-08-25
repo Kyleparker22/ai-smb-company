@@ -1,0 +1,271 @@
+<title>yourco, End to End</title>
+<style>
+:root{
+  --indigo:#161B33; --indigo-deep:#0F1226; --indigo-2:#1c2240;
+  --cream:#F4EFE6; --parchment:#EAE1CD;
+  --brass:#8F6F35; --brass-bright:#D4B27A;
+  --oxblood:#6B1E29; --verdigris:#3F6152;
+
+  --bg:var(--cream); --raised:#FBF8F2; --sunk:var(--parchment);
+  --ink:var(--indigo);
+  --muted:rgba(22,27,51,.68);
+  --faint:rgba(22,27,51,.44);
+  --rule:rgba(22,27,51,.16);
+  --rule-soft:rgba(22,27,51,.08);
+  --accent:var(--brass);
+  --warn:var(--oxblood);
+  --ok:var(--verdigris);
+
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  --sans:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:var(--indigo); --raised:#1b2140; --sunk:#12162c;
+    --ink:var(--cream);
+    --muted:rgba(244,239,230,.70);
+    --faint:rgba(244,239,230,.44);
+    --rule:rgba(244,239,230,.18);
+    --rule-soft:rgba(244,239,230,.09);
+    --accent:var(--brass-bright);
+    --warn:#D98A96;
+    --ok:#7FA890;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:var(--indigo); --raised:#1b2140; --sunk:#12162c;
+  --ink:var(--cream);
+  --muted:rgba(244,239,230,.70);
+  --faint:rgba(244,239,230,.44);
+  --rule:rgba(244,239,230,.18);
+  --rule-soft:rgba(244,239,230,.09);
+  --accent:var(--brass-bright);
+  --warn:#D98A96;
+  --ok:#7FA890;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16.5px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(26px,5vw,60px) clamp(18px,4vw,40px) 100px}
+
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5.6vw,50px);line-height:1.06;letter-spacing:-.015em;margin:0 0 18px;text-wrap:balance}
+h1 em{font-style:italic;color:var(--accent)}
+.stand{font-size:18px;color:var(--muted);max-width:64ch;margin:0 0 30px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:11.5px;color:var(--faint);border-top:1px solid var(--rule);padding-top:15px;margin:0}
+.meta b{color:var(--muted);font-weight:400}
+
+section{margin-top:56px}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(23px,3.2vw,29px);margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 22px;max-width:64ch}
+
+/* the two-column ledger: what's built | what's true */
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.ledger>div{padding:20px clamp(14px,2vw,22px)}
+.ledger .built{background:var(--raised);border-right:1px solid var(--rule)}
+.ledger .true{background:var(--sunk)}
+.lhead{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 12px;font-weight:400}
+.built .lhead{color:var(--accent)}
+.true .lhead{color:var(--warn)}
+.ledger ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:9px}
+.ledger li{font-size:15px;line-height:1.5}
+.ledger p{margin:0 0 10px;font-size:15px}
+.ledger p:last-child{margin-bottom:0}
+
+.rows{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:190px 1fr;gap:0 22px;padding:14px 0;border-bottom:1px solid var(--rule-soft);align-items:start}
+.row .k{font-family:var(--mono);font-size:12px;color:var(--faint);letter-spacing:.02em;padding-top:2px}
+.row .v{font-size:15.5px}
+.row .v b{font-weight:600}
+
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.fig{background:var(--raised);padding:17px 18px}
+.fig .n{font-family:var(--mono);font-size:25px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;display:block;line-height:1.15}
+.fig .l{font-size:12.5px;color:var(--muted);margin-top:5px;display:block;line-height:1.35}
+.fig.warn .n{color:var(--warn)}
+.fig.ok .n{color:var(--ok)}
+
+.surface{border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:2px;background:var(--raised);padding:18px 22px;margin-bottom:14px}
+.surface h3{font-family:var(--serif);font-weight:400;font-size:20px;margin:0 0 4px}
+.surface .addr{font-family:var(--mono);font-size:12px;color:var(--accent);margin:0 0 9px}
+.surface p{margin:0;font-size:15px;color:var(--muted)}
+
+.note{border-left:2px solid var(--warn);padding:2px 0 2px 16px;margin:20px 0 0;color:var(--muted);font-size:15px}
+.note b{color:var(--ink)}
+
+footer{margin-top:64px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.75}
+
+@media (max-width:720px){
+  .ledger{grid-template-columns:1fr}
+  .ledger .built{border-right:none;border-bottom:1px solid var(--rule)}
+  .row{grid-template-columns:1fr;gap:4px}
+}
+</style>
+
+<div class="wrap">
+
+<p class="eyebrow">for Partner C &nbsp;·&nbsp; 17 August 2026</p>
+<h1>What yourco is, and where it <em>actually</em> stands.</h1>
+<p class="stand">
+  A boutique AI-implementation company: we diagnose how a business really runs, then build and
+  <em>operate</em> a custom AI system inside it. The client never touches a token, a model, or a server —
+  they get an outcome. Everything below is real and checkable; the right-hand column of each section is
+  the part most companies leave out.
+</p>
+<p class="meta">
+  <span><b>Members</b> the Founder 50 · Partner B 35 · Mike 15</span>
+  <span><b>Stage</b> pre-revenue</span>
+  <span><b>Built since</b> June 2026</span>
+</p>
+
+<section>
+  <h2>The business</h2>
+  <p class="sub">One product, one motion. Every engagement starts with an Audit that finds and prices the bottleneck; what we build is scoped from what the Audit found.</p>
+  <div class="ledger">
+    <div class="built">
+      <p class="lhead">What's built</p>
+      <ul>
+        <li><b>Audit first</b> — a ~1-week diagnostic, priced, credited against the build</li>
+        <li><b>Then a custom AI OS</b> — agents scoped to the 8 pillars of a business: intake, sales, marketing, customer, operations, back office, company brain, training</li>
+        <li>Four tiers by scope — <b>Core · Suite · Operation · Command</b>, $3–10k/mo</li>
+        <li>We absorb all model and infrastructure cost. Flat retainer, no metering</li>
+      </ul>
+    </div>
+    <div class="true">
+      <p class="lhead">What's true</p>
+      <p><b>Zero audits have been delivered.</b> The front door of the only motion we have has never been opened.</p>
+      <p>One deal sits at proposal — Sample Client, $1,000/mo against a $3,000 floor, unsigned since June.</p>
+      <p>Tier prices are a working draft, not a ratified sheet.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Why this is defensible</h2>
+  <p class="sub">Agent tooling is commoditizing. Anyone with $20/month can wire a workflow. Almost nobody can prove the workflow did its job to the person whose name is on the building.</p>
+  <div class="ledger">
+    <div class="built">
+      <p class="lhead">The moat</p>
+      <ul>
+        <li><b>Reliability, evaluation, observability, approval, audit trail.</b> We charge for the proof, not the automation</li>
+        <li><b>Autonomy is earned</b> — every agent action starts behind a human gate and climbs only on evidence it works</li>
+        <li><b>The model-upgrade dividend</b> — we own the stack, so every AI improvement is swapped in underneath the client free. What we sell appreciates; what they'd buy instead depreciates</li>
+      </ul>
+    </div>
+    <div class="true">
+      <p class="lhead">What's true</p>
+      <p><b>The moat is a design, not a demonstrated fact.</b> It runs daily on our own operation — real evidence of a real kind — but it is unproven across paying clients.</p>
+      <p>Until then it's the name of a hypothesis, held with conviction and stated as one.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The numbers</h2>
+  <p class="sub">From the financial model, Target case. Every figure carries its assumption, and the assumptions have n=0 behind them.</p>
+  <div class="figs">
+    <div class="fig"><span class="n">50</span><span class="l">clients, end of Year 1</span></div>
+    <div class="fig"><span class="n">190</span><span class="l">clients, end of Year 3</span></div>
+    <div class="fig"><span class="n">$8.61M</span><span class="l">Year-3 revenue</span></div>
+    <div class="fig"><span class="n">$4.19M</span><span class="l">Year-3 EBITDA</span></div>
+    <div class="fig"><span class="n">13</span><span class="l">people at Year 3</span></div>
+    <div class="fig ok"><span class="n">$50k</span><span class="l">the Founder's day-one injection, as a repayable loan</span></div>
+  </div>
+  <p class="note">
+    <b>Read the downside, not the headline.</b> Three principals draw salary from month 1 — $150k/year
+    committed against $0 in the bank. The Conservative case runs <b>$11,155 below zero in month 5</b>, so a
+    further $50,000 the Founder has declared available isn't a cushion, it's what makes the downside solvent. And
+    "Conservative" was itself raised on 10 August; the model no longer contains a case below 45% conversion,
+    and no prospect has ever been asked to buy.
+  </p>
+</section>
+
+<section>
+  <h2>The machine that runs it</h2>
+  <p class="sub">yourco runs itself on the same kind of system it sells. That's the proof asset — we're the reference client.</p>
+  <div class="rows">
+    <div class="row"><div class="k">Agents</div><div class="v"><b>27 named agents</b> — sales, delivery, finance, marketing, trust and compliance — each with a defined scope, an approval rung, and its own Slack channel</div></div>
+    <div class="row"><div class="k">Always-on runtime</div><div class="v">A private server runs scheduled loops with no human: briefings, pipeline reports, eval reviews, consistency checks, a watchdog</div></div>
+    <div class="row"><div class="k">The approval gate</div><div class="v">Agents may draft, read and post. <b>Sending, deleting and shell access are denied at the infrastructure level</b> — always-on does not mean auto-send</div></div>
+    <div class="row"><div class="k">Written memory</div><div class="v"><b>111 decisions</b> with their alternatives and what would reverse them · 48 learnings · 18 reusable procedures</div></div>
+    <div class="row"><div class="k">Self-checking</div><div class="v">23 machine-checked invariants catch facts that drift between documents; decisions carry trip-wires that report their own expiry</div></div>
+  </div>
+  <p class="note">
+    <b>It was switched off for twelve days.</b> The runtime paused on 4 August and resumed on the 16th, after
+    a five-day server outage and a stretch of API billing failures. Every loop skipped honestly and said so —
+    but nothing outside the box noticed, and the watchdog was itself asleep for five weeks. Twelve loops
+    haven't run successfully in over a month. That's the most important thing to know about the machine.
+  </p>
+</section>
+
+<section>
+  <h2>The surfaces — what we'll open</h2>
+  <p class="sub">These run locally and privately. Nothing here is on the public internet.</p>
+
+  <div class="surface">
+    <h3>CRM</h3>
+    <p class="addr">localhost:8790</p>
+    <p>Companies, contacts, deals and activity — plus seven reads a normal CRM can't produce: where every deal would be at our own median speed, a prosecution/defence pair arguing the same evidence, our own forecasting bias measured against outcomes. Each one refuses to state a number it can't defend.</p>
+  </div>
+
+  <div class="surface">
+    <h3>yourco HQ</h3>
+    <p class="addr">localhost:8791</p>
+    <p>The company dashboard. The Board lists every open item across the business; Clients scores each engagement's readiness; Evidence is the door that asks what this system can actually prove about itself; Partners holds the three-way split, the operating agreement's open questions, and who owns what.</p>
+  </div>
+
+  <div class="surface">
+    <h3>Connector Console</h3>
+    <p class="addr">localhost:8807</p>
+    <p>The growth engine. People refer business and earn a rising share — 10% to 15% by active clients — and from the first rung they can recruit other connectors. The console is their view: their ladder, their pipeline, their ledger, their training.</p>
+  </div>
+
+  <p class="note">
+    <b>The connector program is counsel-gated and has zero connectors.</b> The multi-level override raises a
+    genuine legal question that no lawyer has looked at yet, and the packet that markets it is already in use.
+    That's on the list to fix, not to explain away.
+  </p>
+</section>
+
+<section>
+  <h2>Where it actually stands</h2>
+  <p class="sub">Everything above is built. This is the honest ledger of what hasn't happened.</p>
+  <div class="figs">
+    <div class="fig warn"><span class="n">$0</span><span class="l">revenue, and $0 in the company's bank</span></div>
+    <div class="fig warn"><span class="n">0</span><span class="l">signed clients</span></div>
+    <div class="fig warn"><span class="n">0</span><span class="l">audits delivered</span></div>
+    <div class="fig warn"><span class="n">18 / 21</span><span class="l">deals never contacted</span></div>
+    <div class="fig warn"><span class="n">13</span><span class="l">legal gates open, no counsel engaged</span></div>
+    <div class="fig warn"><span class="n">0</span><span class="l">social accounts, nothing published</span></div>
+  </div>
+  <p class="note">
+    <b>The pattern is consistent and worth naming.</b> The apparatus is built to an unusual standard and the
+    small unglamorous act of switching a channel on hasn't happened. Sales built an industrial machine for
+    cold outreach — which is legally gated — while the warm network of people who already know the Founder sits
+    un-contacted. Marketing has fourteen weeks of finished content and no account to publish it to. The
+    constraint isn't capability, strategy or tooling. All three are in place.
+  </p>
+</section>
+
+<section>
+  <h2>What's being decided right now</h2>
+  <div class="rows">
+    <div class="row"><div class="k">The partnership</div><div class="v">the Founder 50 / Partner B 35 / Mike 15, as a <b>profits interest</b> — you share in value created after the grant, not what exists today. The operating agreement is a v5 draft with three unsigned blocks and three open governance questions. <b>Nothing is signed and no counsel has reviewed it.</b></div></div>
+    <div class="row"><div class="k">Your lane</div><div class="v">Undefined, and that's the open item. The agreement's own blank is what your contribution is — it's the one thing that can't be answered by anyone but you</div></div>
+    <div class="row"><div class="k">The lock run</div><div class="v">the Founder and Partner B are walking every domain of the company to a settled baseline, 11–26 August. <b>Seven of fourteen are locked</b>; sales, marketing, tools, back office, legal and org remain</div></div>
+    <div class="row"><div class="k">The launch gate</div><div class="v">A legal matter blocks everything external — the site, outreach, the referral program. Its resolution condition has never been written down, which means it can be waited on but not worked toward. That's the single biggest unforced problem on this page</div></div>
+  </div>
+</section>
+
+<footer>
+  Prepared 2026-08-16 from yourco's own records. Every figure is read from the financial model, the CRM,
+  or the runtime's logs — none is estimated for this document.<br>
+  Internal and confidential. Not an offer, not a term sheet, and not a solicitation.
+</footer>
+
+</div>

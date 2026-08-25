@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Results — Anatomy of a Sale · Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:80px 0 0}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(34px,4.5vw,54px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:18px;font-style:italic;color:var(--on-dark-soft);margin-top:18px;max-width:52ch}
+
+  .statband{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line-dark)}
+  @media(max-width:840px){.statband{grid-template-columns:1fr 1fr}}
+  .st{padding:30px 26px 34px 0}
+  .st+.st{padding-left:26px;border-left:1px solid var(--line-dark)}
+  @media(max-width:840px){.st:nth-child(3){padding-left:0;border-left:0}}
+  .st .n{font-family:Didot,Georgia,serif;font-size:clamp(30px,3.6vw,44px)}
+  .st .n i{font-style:normal;color:var(--red)}
+  .st .l{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:8px;line-height:1.9}
+  .srcline{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);padding:0 0 26px}
+
+  .story{padding:96px 0}
+  .story.alt{background:var(--warm)}
+  .story.dark{background:var(--ink);color:var(--on-dark)}
+  .story .head{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:end}
+  @media(max-width:900px){.story .head{grid-template-columns:1fr}}
+  .story h2{font-family:Didot,Georgia,serif;font-size:clamp(28px,3.4vw,42px);font-weight:400;line-height:1.15;margin-top:14px}
+  .story h2 em{font-style:italic;color:var(--red)}
+  .story .sub{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-top:10px}
+  .story.dark .sub{color:var(--on-dark-soft)}
+  .story .photo{position:relative;overflow:hidden}
+  .story .photo img{width:100%;height:340px;object-fit:cover}
+  .story .photo:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18)}
+  .bignum{display:flex;gap:44px;margin-top:26px;flex-wrap:wrap}
+  .bn b{font-family:Didot,Georgia,serif;font-size:32px;font-weight:400;display:block}
+  .bn b i{font-style:normal;color:var(--red)}
+  .bn span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .story.dark .bn span{color:var(--on-dark-soft)}
+
+  .tl{margin-top:54px;border-left:2px solid var(--red);padding-left:34px;max-width:760px}
+  .tle{position:relative;padding-bottom:30px}
+  .tle:last-child{padding-bottom:0}
+  .tle:before{content:"";position:absolute;left:-40px;top:7px;width:10px;height:10px;border-radius:9999px;background:var(--red)}
+  .tle .w{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .story.dark .tle .w{color:var(--on-dark-soft)}
+  .tle b{font-family:Didot,Georgia,serif;font-weight:400;font-size:19px;display:block;margin-top:3px}
+  .tle p{font-size:14px;color:var(--ink-soft);margin-top:5px;line-height:1.7;max-width:64ch}
+  .story.dark .tle p{color:var(--on-dark-soft)}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:80px 0}
+  .ctaband h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,38px);font-weight:400;margin-top:12px}
+  .ctaband h2 em{font-style:italic;color:var(--red)}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:26px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:74ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · figures from Canopy MLS closed data</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="listings/">Listings</a>
+      <a href="tools/home-worth.html">Home Worth</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Results · Anatomy of a Sale</div>
+    <h1>We don't just say it works. <em>Here's the tape.</em></h1>
+    <div class="lede">Three recent transactions, told with the real numbers — because proof beats promises.</div>
+    <div class="statband" id="statband"></div>
+    <div class="srcline" id="srcline"></div>
+  </div>
+</header>
+
+<section class="story" id="meadowgate">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="kicker">Case Study No. 1 · Listing Side</div>
+        <h2>Under contract in <em>four days.</em></h2>
+        <div class="sub">7518 Meadowgate Lane · Weddington Chase · Marvin, ST</div>
+        <div class="bignum">
+          <div class="bn"><b>4<i> days</i></b><span>Listed to under contract</span></div>
+          <div class="bn"><b>$1.2M</b><span>Closed price</span></div>
+          <div class="bn"><b>6<i> bd</i> · 5,398<i> sqft</i></b><span>Marvin Ridge schools</span></div>
+        </div>
+      </div>
+      <div class="photo"><img src="assets/listings/7518-meadowgate-lane.jpg" alt="7518 Meadowgate Lane — estate home, Marvin ST"/></div>
+    </div>
+    <div class="tl">
+      <div class="tle"><div class="w">Week 0 — The strategy</div><b>Priced to create urgency, not to sit</b><p>A $1.2M+ estate in the Marvin Ridge district draws a specific buyer. The comparative market analysis set the list at $1,220,000 — positioned for serious buyers, not for sitting.</p></div>
+      <div class="tle"><div class="w">Week 0 — The production</div><b>Staged, shot, droned, launched everywhere</b><p>Full staging pass, professional photography including aerials of the community pond and trails, deliberate MLS keywords — live on Canopy and every site it feeds.</p></div>
+      <div class="tle"><div class="w">Day 4</div><b>Under contract</b><p>An offer strong enough to sign, four days after launch — on a listing size where months on market is the norm.</p></div>
+      <div class="tle"><div class="w">July 2, 2026</div><b>Closed at $1,200,000</b><p>Negotiated cleanly through inspection and appraisal to a $1.2M close — 98.4% of list, in a summer where comparable estates sat for months. MLS #4385632.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="story alt" id="wingfoot">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="kicker">Case Study No. 2 · Listing Side</div>
+        <h2>Sold <em>over asking.</em></h2>
+        <div class="sub">401 Wingfoot Drive · Innisbrook at Firethorne · Yourtown, ST</div>
+        <div class="bignum">
+          <div class="bn"><b>+0.4<i>%</i></b><span>Over list price</span></div>
+          <div class="bn"><b>$1,445,000</b><span>Closed price</span></div>
+          <div class="bn"><b>0.95<i> acres</i></b><span>Custom estate</span></div>
+        </div>
+      </div>
+      <div class="photo"><img src="assets/listings/401-wingfoot-drive.jpg" alt="401 Wingfoot Drive — custom estate, Yourtown ST"/></div>
+    </div>
+    <div class="tl">
+      <div class="tle"><div class="w">The setup</div><b>A custom estate that had to be felt</b><p>Nearly an acre of wooded grounds in Innisbrook at Firethorne — the kind of home photography undersells, so the full production went to work for it.</p></div>
+      <div class="tle"><div class="w">The launch</div><b>Listed at $1,439,000</b><p>Priced from real comps, not wishful ones — positioned under the $1.45M line to keep the widest serious-buyer pool watching.</p></div>
+      <div class="tle"><div class="w">The negotiation</div><b>The winning contract came in above list</b><p>When a home is presented and priced right, buyers compete on the seller's terms. This one signed over asking.</p></div>
+      <div class="tle"><div class="w">June 25, 2026</div><b>Closed at $1,445,000 — over asking</b><p>$6,000 over list on a seven-figure sale. MLS #4350790.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="story dark" id="whitebark">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="kicker" style="color:var(--red)">Case Study No. 3 · Buyer Side</div>
+        <h2 style="color:inherit">The $1M new build, <em>watched every step.</em></h2>
+        <div class="sub">2275 Whitebark Drive #148 · The Pines at Sugar Creek · Indian Land, SC</div>
+        <div class="bignum">
+          <div class="bn"><b>$1,003,225</b><span>Contract price</span></div>
+          <div class="bn"><b>Toll Brothers</b><span>"William Elite" · new construction</span></div>
+          <div class="bn"><b>2026</b><span>Delivery — under contract now</span></div>
+        </div>
+      </div>
+      <div class="photo"><img src="assets/listings/2275-whitebark-drive/photo-0.jpg" alt="2275 Whitebark Drive — under construction, SOLD sign"/></div>
+    </div>
+    <div class="tl">
+      <div class="tle"><div class="w">The trap most buyers walk into</div><b>The builder's agent works for the builder</b><p>On-site sales staff are lovely people — employed by the seller. Our buyers brought their own representation, at no change to the builder's price.</p></div>
+      <div class="tle"><div class="w">Contract</div><b>Terms negotiated before the first nail</b><p>Structural selections, upgrade pricing, and timeline protections reviewed line by line on a $1,003,225 build — before signing, when leverage exists.</p></div>
+      <div class="tle"><div class="w">Construction</div><b>We walk the site at every stage</b><p>Pre-drywall and stage-by-stage visits — the photos on this page are from our own construction walks, checking the details our buyers will live with long after closing.</p></div>
+      <div class="tle"><div class="w">Delivery 2026</div><b>Punch list, final walk, keys</b><p>Before closing: a full punch-list pass held to the builder's own standard, an independent inspection, and a final walk. Then keys. MLS #4401927 — in progress now.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">Your Home Could Be the Next Case Study</div>
+    <h2>Let's talk about what your sale <em>could look like.</em></h2>
+    <a href="tools/home-worth.html">Start with your home's value</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine" id="footsrc">All figures from Canopy MLS closed data. Every transaction is different — past results don't guarantee future outcomes, but preparation repeats.</div>
+  </div>
+</footer>
+
+<script src="listings-data.js"></script>
+<script>
+(function(){
+  const S = window.PR_STATS;
+  document.getElementById("statband").innerHTML =
+    '<div class="st"><div class="n">' + S.closedTransactions + '</div><div class="l">Closed transactions<br/>last two years</div></div>' +
+    '<div class="st"><div class="n">' + S.closedVolume.replace("+","<i>+</i>") + '</div><div class="l">Closed volume<br/>listing + buyer side</div></div>' +
+    '<div class="st"><div class="n">' + S.fastestContract.replace(" days","<i> days</i>") + '</div><div class="l">Fastest listing<br/>to under contract</div></div>' +
+    '<div class="st"><div class="n">+' + S.overAsking.replace("%","<i>%</i>") + '</div><div class="l">Sold over asking<br/>401 Wingfoot Dr</div></div>';
+  document.getElementById("srcline").textContent = "Source: " + S.source + ".";
+})();
+</script>
+<script src="concierge.js" data-base=""></script>
+
+</body>
+</html>

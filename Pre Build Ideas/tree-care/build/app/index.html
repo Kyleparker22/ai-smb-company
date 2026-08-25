@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canopy OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-jobs"></section>
+  <section class="view" id="v-estimates"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never declares a tree safe
+or hazardous, never schedules a power-line job without utility clearance on file, and never
+promises a felling outcome. Storm emergencies go to a human coordinator immediately.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'jobs',label:'Jobs & gates'},
+      {id:'estimates',label:'Estimates'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,jobs,estimates,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.crews} crews · ${d.config.crane} crane · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The season, counted', '',
+      `<div class="grid">
+        ${stat('Open estimates', fmt.money(b.open_estimates.value), `${b.open_estimates.count} in the ladder`, b.open_estimates.count?'alert':'')}
+        ${stat('Power-line blocked', fmt.num(b.powerline_blocked), 'no utility clearance on file', b.powerline_blocked?'warn':'')}
+        ${stat('Storm emergencies', fmt.num(b.emergencies), 'human-handled, minutes matter', b.emergencies?'bad':'')}
+        ${stat('PHC due in 30d', fmt.num(b.phc_due), 'renewals recalled from the schedule')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.won_value)}`,
+               `${b.recovered.estimates_won} estimate(s) won · ${b.recovered.phc_renewed} PHC renewed · ${b.recovered.emergency_callbacks} callback(s)`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A storm emergency goes to a human coordinator immediately. "Is my
+      tree safe?" gets an arborist visit booked — <b>neither "safe" nor "hazardous" ever leaves
+      software.</b></div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='emergency'?'bad':m.label==='hazard_ask'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function jobs(){
+  const d = await API.get('/api/jobs');
+  document.getElementById('v-jobs').innerHTML =
+    `<div class="banner warn">Try it: schedule the power-line job with no clearance — refused;
+      the clear job queues at R1.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="sched('jb_demo_lines')">Schedule: power lines, no clearance</button>
+      <button class="act primary" onclick="sched('jb_demo_clear')">Schedule: clear job</button>
+     </div><div id="jout"></div>` +
+    panel('Jobs', '', table([{label:'Job'},{label:'Lines'},{label:'Clearance'}],
+      d.rows, j=>`<td>${esc(j.desc)}${j.demo_tag?' '+pill(j.demo_tag,'brand'):''}</td>
+        <td>${j.near_powerlines?pill('NEAR LINES','warn'):pill('clear')}</td>
+        <td>${j.near_powerlines?(j.utility_clearance_ref?pill(j.utility_clearance_ref,'good'):pill('NONE','bad')):'—'}</td>`), true);
+}
+async function sched(id){
+  const r = await API.post(`/api/jobs/${id}/schedule`);
+  document.getElementById('jout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Scheduled', '', `<div class="strong">queued at R1</div>`);
+}
+
+async function estimates(){
+  const d = await API.get('/api/estimates');
+  document.getElementById('v-estimates').innerHTML =
+    panel('Estimates', 'bounded ladder — 3 touches, 6-day cooldown, then silence is an answer', table(
+      [{label:'Customer'},{label:'Work'},{label:'Amount',num:true},{label:'Touches'},{label:'State'}],
+      d.rows, e=>`<td>${esc(e.customer_name||'')}</td><td>${esc(e.desc)}</td>
+        <td class="num">${fmt.money(e.amount)}</td><td>${(e.touches||[]).length} of 3</td>
+        <td>${e.won_at?pill('won','good'):e.lost_at?pill('lost'):pill('open','warn')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['open_estimate_value','Open estimate value','counted'],['close_rate','Close rate','your number (0–1)'],
+    ['phc_due_count','PHC programs due','counted'],['avg_program','Avg program value','your number'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['storm_value','The first storm hour','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

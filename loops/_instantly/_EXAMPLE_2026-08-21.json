@@ -1,0 +1,17 @@
+{
+  "_note": "EXAMPLE OUTPUT \u2014 not yours. One run from the source company, kept to show the shape. Delete once your own loop writes one.",
+  "connected": true,
+  "campaigns": [
+    {
+      "name": "[AI SDR] YourCo AI Sales Agent - Fully Personalized Campaign",
+      "status": "accounts-unhealthy"
+    }
+  ],
+  "accounts": 2,
+  "warmup": {
+    "active": 0,
+    "of": 2,
+    "avgScore": 100
+  },
+  "fetched": "2026-08-21T16:54:56"
+}

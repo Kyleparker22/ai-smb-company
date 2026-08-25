@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco without yourco — the counterfactual</title>
+<meta name="description" content="Every company says it uses its own product. Here's the half nobody publishes: a model of the company we'd be if we hadn't built it — including the numbers we refuse to estimate." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="preload" href="fonts/fraunces-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  .modelflag{display:inline-flex;align-items:center;gap:9px;margin-top:26px;padding:11px 17px;border:1px solid var(--brass);border-radius:9999px;background:rgba(184,150,90,.09)}
+  .modelflag .dot{width:7px;height:7px;background:var(--brass);transform:rotate(45deg);flex:none}
+  .modelflag span{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--indigo)}
+
+  .cfrow{padding:30px 0;border-top:1px solid var(--hairline)}
+  .cfrow h3{font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.25}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:18px;max-width:520px}
+  @media(max-width:560px){.pair{grid-template-columns:1fr;gap:14px}}
+  .pair .side{padding-right:26px}
+  .pair .side + .side{border-left:1px solid var(--hairline);padding-left:26px;padding-right:0}
+  @media(max-width:560px){.pair .side + .side{border-left:0;border-top:1px solid var(--hairline);padding-left:0;padding-top:14px}}
+  .pair .lbl{font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--brass);margin-bottom:7px}
+  .pair .side.model .lbl{color:var(--pewter)}
+  .pair .num{font-size:38px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+  .pair .side.model .num{color:var(--pewter)}
+  .pair .unit{font-size:13.5px;color:var(--ink-muted);margin-top:6px}
+  .cfrow .assume{margin-top:18px;padding-left:15px;border-left:2px solid var(--brass);font-size:15.5px;color:var(--ink-muted);line-height:1.6;max-width:66ch}
+  .cfrow .assume b{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);display:block;margin-bottom:5px}
+
+  .exrow{padding:24px 0;border-top:1px solid var(--hairline-dark)}
+  .exrow h4{font-size:18px;font-weight:600;letter-spacing:-.015em;color:var(--on-dark)}
+  .exrow h4 .tag{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-bright);border:1px solid var(--brass-bright);border-radius:3px;padding:2px 7px;margin-right:11px;vertical-align:2px}
+  .exrow p{font-size:15.5px;color:var(--on-dark-muted);margin-top:9px;line-height:1.6;max-width:68ch}
+
+  .notes{margin-top:34px;padding:22px 26px;border:1px solid var(--hairline);border-radius:8px;background:#FBF8F1}
+  .notes li{font-size:15px;color:var(--ink-muted);line-height:1.6;margin-left:18px}
+  .notes li+li{margin-top:7px}
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+      <div class="nav-links"><a href="index.html">Home</a><a href="positioning.html">How it works</a><a href="reliability.html">Reliability</a><a href="build-your-os.html">What we build</a><a href="demos.html">See it work</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=without" class="pill sm">Book a call</a></div>
+    </div>
+  </nav>
+
+  <section class="tile hero">
+    <div class="wrap narrow">
+      <div class="eyebrow">the counterfactual</div>
+      <h1 style="font-size:clamp(36px,5.6vw,56px);line-height:1.05;font-weight:600;letter-spacing:-.03em;max-width:15ch">This is the company we&rsquo;d be without the thing we sell you.</h1>
+      <p class="lede">Every software company tells you it uses its own product. It&rsquo;s the cheapest sentence in the industry, and it settles nothing — <em>so what?</em> The half that would actually persuade you is the half nobody publishes: what would this company look like if it hadn&rsquo;t built the thing?</p>
+      <p class="lede">We can compute that, so here it is. Including — especially — the numbers we refuse to put a figure on.</p>
+      <div class="modelflag"><span class="dot" aria-hidden="true"></span><span>This is a model, not a measurement</span></div>
+    </div>
+  </section>
+
+  <section class="tile parchment">
+    <div class="wrap narrow">
+      <h2 class="sec">What the system did that a company without it wouldn&rsquo;t have.</h2>
+      <p class="lede" id="label"></p>
+      <div id="rows"><p class="lede">Loading the model&hellip;</p></div>
+      <div class="notes" id="notes" hidden><ul id="notesList"></ul></div>
+    </div>
+  </section>
+
+  <section class="tile dark">
+    <div class="wrap narrow">
+      <div class="eyebrow">the part that makes the rest worth reading</div>
+      <h2 class="sec" style="color:var(--on-dark)">What we won&rsquo;t put a number on.</h2>
+      <p class="lede">This is where a normal ROI page does its best work and its worst. It would be trivially easy to multiply those actions by a plausible minutes-per-task and print a headline about founder hours reclaimed. We&rsquo;d have no right to that number, and printing it would make every honest figure above it worthless.</p>
+      <div id="excluded"></div>
+      <p class="lede" id="honestLimit" style="margin-top:34px"></p>
+    </div>
+  </section>
+
+  <section class="tile">
+    <div class="wrap narrow">
+      <h2 class="sec">Why we show you this one instead.</h2>
+      <p class="lede">When you&rsquo;re deciding whether to let a system run part of your business, the useful question isn&rsquo;t whether the vendor can produce an impressive slide. It&rsquo;s whether they&rsquo;ll tell you what they don&rsquo;t know.</p>
+      <p class="lede">The systems we build behave the same way: they report what they can prove and name what they can&rsquo;t, rather than filling the gap with something that sounds right. A confident wrong answer inside your business is worse than no answer, because you&rsquo;ll act on it. This page is that discipline pointed at our own marketing, where it&rsquo;s least comfortable and easiest to check.</p>
+      <p class="lede"><a class="tlink" href="proof.html">Every claim on this site, and the check behind it &rarr;</a> &nbsp;·&nbsp; <a class="tlink" href="glass-box.html">How our own company runs on this &rarr;</a></p>
+      <div class="ctas" style="margin-top:34px;display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+        <a class="pill" href="audit.html">Start with the audit &rarr;</a>
+        <a class="tlink" href="https://calendly.com/the Founder-yourco/30min?utm_source=site&amp;utm_content=without">or book 30 min →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:48px 0;border-top:1px solid var(--hairline)">
+    <div class="wrap narrow" style="font-size:14px;color:var(--pewter)">
+      © 2026 yourco · <a class="tlink" href="index.html" style="font-size:14px">yourco.com</a>
+    </div>
+  </footer>
+
+<script>
+/* Renders only from without.json (runtime/self_counterfactual.py). No number is written into this
+   page's markup — if the model can't be read, the page says so rather than showing a stale one. */
+(function () {
+  var R = document.getElementById('rows'), X = document.getElementById('excluded');
+  function e(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
+
+  function side(lbl, num, unit, isModel) {
+    var s = e('div', 'side' + (isModel ? ' model' : ''));
+    s.appendChild(e('div', 'lbl', lbl));
+    s.appendChild(e('div', 'num', String(num)));
+    if (unit) s.appendChild(e('div', 'unit', unit));
+    return s;
+  }
+
+  fetch('without.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (d) {
+      document.getElementById('label').textContent = d.label || '';
+      document.getElementById('honestLimit').textContent = d.honestLimit || '';
+
+      R.textContent = '';
+      (d.rows || []).forEach(function (row) {
+        var c = e('div', 'cfrow');
+        c.appendChild(e('h3', null, row.metric));
+        var p = e('div', 'pair');
+        p.appendChild(side('With the system', row.actual, row.unit, false));
+        p.appendChild(side('Without it — modelled', row.without, row.unit, true));
+        c.appendChild(p);
+        var a = e('div', 'assume');
+        a.appendChild(e('b', null, 'The assumption'));
+        a.appendChild(document.createTextNode(row.assumption));
+        c.appendChild(a);
+        R.appendChild(c);
+      });
+
+      var notes = d.notes || [];
+      if (notes.length) {
+        var ul = document.getElementById('notesList');
+        notes.forEach(function (n) { ul.appendChild(e('li', null, n)); });
+        document.getElementById('notes').hidden = false;
+      }
+
+      X.textContent = '';
+      (d.excluded || []).forEach(function (x) {
+        var c = e('div', 'exrow');
+        var h = e('h4');
+        h.appendChild(e('span', 'tag', 'excluded'));
+        h.appendChild(document.createTextNode(x.metric));
+        c.appendChild(h);
+        c.appendChild(e('p', null, x.why));
+        X.appendChild(c);
+      });
+    })
+    .catch(function (err) {
+      R.textContent = '';
+      R.appendChild(e('p', 'lede', 'The model could not be read (' + (err.message || err) +
+        '), so nothing is shown here. We would rather show you an empty page than last month’s numbers.'));
+    });
+})();
+</script>
+</body>
+</html>

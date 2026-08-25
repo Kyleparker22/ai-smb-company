@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Watch — Sample Product · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--indigo:#161B33;--indigo2:#1f2547;--cream:#F4EFE6;--parchment:#EAE1CD;--brass:#B8965A;--muted:#9aa0bd;--high:#5fd08b;--red:#ff8f8f;--line:rgba(255,255,255,.1)}
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:#0b0e1e;color:#e9ebf4;font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+  .player{position:fixed;inset:0;display:flex;flex-direction:column;background:radial-gradient(1200px 700px at 50% 20%,#1a1f3d 0%,#0b0e1e 70%)}
+  .bar{height:4px;background:rgba(255,255,255,.08)} .bar>i{display:block;height:100%;background:var(--brass);width:0}
+  .topline{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;font-size:12px;color:var(--muted)}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:17px;color:#fff}.mark .dot{color:var(--brass)}
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 24px;position:relative}
+  .scene{max-width:900px;width:100%;text-align:center;opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+  .scene.in{opacity:1;transform:none}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  h1{font-family:Fraunces,serif;font-weight:700;font-size:clamp(28px,5vw,52px);color:#fff;margin:12px 0 4px;line-height:1.08}
+  h1 .a{color:var(--brass)}
+  .visual{margin:22px auto 0;max-width:760px}
+  /* mockups */
+  .phone{width:280px;margin:0 auto;background:var(--indigo);border-radius:28px;padding:10px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6)}
+  .screen{background:#0e1226;border-radius:20px;padding:16px 14px;text-align:left;min-height:150px}
+  .push{background:rgba(255,255,255,.09);border-radius:14px;padding:13px 14px}
+  .push .ap{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+  .push .ti{font-weight:700;font-size:15px;color:#fff} .push .bo{font-size:13px;color:#cfd3e4;margin-top:3px}
+  .chip{display:inline-block;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;margin:4px}
+  .card{background:#fff;color:#161B33;border-radius:14px;padding:16px 18px;text-align:left;box-shadow:0 20px 50px -22px rgba(0,0,0,.5)}
+  .card.reject{border-left:4px solid #b23a3a}
+  .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);font-weight:700}
+  .big{font-family:Fraunces,serif;font-size:26px;font-weight:700}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .tile{background:#fff;color:#161B33;border-radius:14px;padding:16px;text-align:center;box-shadow:0 20px 50px -24px rgba(0,0,0,.5)}
+  .tile .n{font-family:Fraunces,serif;font-size:30px;font-weight:700} .tile.hi .n{color:var(--brass)} .tile .l{font-size:12px;color:#6b6f83}
+  .row{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px solid rgba(22,27,51,.1)} .row:last-child{border:none}
+  .star{color:var(--brass)}
+  .clock{font-family:Fraunces,serif;font-size:44px;color:#fff}
+  .sms{background:#2b64d9;color:#fff;border-radius:16px 16px 16px 5px;padding:11px 14px;font-size:14px;max-width:90%;margin-top:8px}
+  /* caption + controls */
+  .caption{max-width:820px;margin:0 auto;padding:6px 24px 8px;text-align:center;font-size:clamp(15px,2.2vw,20px);color:#e9ebf4;min-height:60px}
+  .controls{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 0 22px}
+  .controls button{background:rgba(255,255,255,.08);border:1px solid var(--line);color:#e9ebf4;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  .controls .play{background:var(--brass);color:#20160a;border-color:var(--brass);min-width:96px}
+  .dots{display:flex;gap:6px;justify-content:center;margin-top:2px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2)} .dots i.on{background:var(--brass)}
+  .start{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(11,14,30,.85);backdrop-filter:blur(3px);z-index:5}
+  .start h1{margin:0} .start p{color:var(--muted);max-width:52ch;text-align:center;margin:0}
+  .startbtn{background:var(--brass);color:#20160a;border:none;border-radius:14px;padding:15px 30px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+  .cta{display:inline-block;margin-top:16px;background:var(--brass);color:#20160a;border-radius:12px;padding:12px 22px;font-weight:700;text-decoration:none}
+  .fine{font-size:11px;color:var(--muted);text-align:center;padding-bottom:8px}
+</style>
+</head>
+<body>
+<div class="player">
+  <div class="bar"><i id="bar"></i></div>
+  <div class="topline"><div class="mark">yourco<span class="dot">.</span> Sample Product</div><div id="counter"></div></div>
+  <div class="stage">
+    <div class="scene" id="scene"></div>
+    <div class="start" id="start">
+      <div class="eyebrow">a 90-second walkthrough</div>
+      <h1>Sample Product<span class="a">.</span></h1>
+      <p>Built for Prospect A. Hit play — it narrates itself, start to finish.</p>
+      <button class="startbtn" onclick="begin()">▶  Play the demo</button>
+      <div class="fine">Best with sound on · you can pause, skip, or replay anytime</div>
+    </div>
+  </div>
+  <div class="caption" id="caption"></div>
+  <div class="dots" id="dots"></div>
+  <div class="controls">
+    <button onclick="prev()">‹ Back</button>
+    <button class="play" id="playbtn" onclick="toggle()">Pause</button>
+    <button onclick="next()">Skip ›</button>
+    <button onclick="setMute()" id="mutebtn">🔊 Sound</button>
+  </div>
+</div>
+
+<script src="demo_data.js"></script>
+<script src="roi_data.js"></script>
+<script>
+  const D=window.STORM_DEMO||{}, R=window.ROI_DATA||{};
+  const roiRev = R.totals? '$'+Number(R.totals.revenue).toLocaleString() : '$1.3M';
+  const cpj = R.cost_per_job!=null? '$'+R.cost_per_job : '$0.47';
+  const cleared = (D.ai_stats||{}).cleared||13, held=(D.ai_stats||{}).held||1;
+
+  const SCENES = [
+    { eyebrow:'the problem', title:`It's 11pm. <span class="a">Again.</span>`,
+      vo:"Right now, you're up late cross-referencing NOAA, HailTrace, and the hail maps by hand — an hour a night — and you still chase the odd storm that turns out to be nothing.",
+      html:`<div class="visual"><div class="clock">11:00 PM</div><div style="margin-top:10px">${['NOAA','HailTrace','Hail Maps','Xweather'].map(s=>`<span class="chip">${s}</span>`).join('')}</div><div style="color:var(--muted);margin-top:10px">…cross-referencing by hand.</div></div>` },
+    { eyebrow:'it watches', title:`The storm hits your phone <span class="a">first.</span>`,
+      vo:"Sample Product watches every source at once. The moment a storm clears verification, it's on your phone — day or night.",
+      html:`<div class="visual"><div class="phone"><div class="screen"><div class="push"><div class="ap"><span>⚡ Sample Product</span><span>now</span></div><div class="ti">Verified: Duval County</div><div class="bo">60 mph wind · NOAA LSR + SPC. Tap to dispatch — be first.</div></div></div></div></div>` },
+    { eyebrow:'it reads the reports', title:`No more <span class="a">wasted trips.</span>`,
+      vo:"The AI reads every report first. When a hail report is just a pea-sized guess someone posted online, it filters it out — so your crews only roll on storms that are actually real.",
+      html:`<div class="visual"><div class="card reject"><div class="k">✕ AI filtered</div><div style="font-weight:700;margin:4px 0">Palm Beach — "1 inch hail"</div><div style="color:#8a4444;font-size:14px">Only report is a single public "pea to quarter size" estimate — the 1″ flag overstates it. Not worth a crew.</div></div><div style="color:var(--muted);margin-top:12px">Cleared ${cleared} real storms · filtered ${held} this window.</div></div>` },
+    { eyebrow:'you approve', title:`One tap. <span class="a">Your whole crew knows.</span>`,
+      vo:"You tap once. Your crew knows in seconds — by person, area, or team. Nothing sends without your tap.",
+      html:`<div class="visual"><div class="phone"><div class="screen"><div class="k">storm confirmed · HIGH</div><div class="big" style="color:#fff;margin:4px 0">Duval County</div><div style="color:#c7cbe0;font-size:13px">WIND 60mph · claim-grade</div><div class="sms">Storm confirmed: Duval Co — WIND 60mph. Door-knock priority — beat everyone there. —Nick</div><div style="text-align:right;margin-top:8px"><span class="chip" style="background:var(--brass);color:#20160a;border:none">Send ▸</span></div></div></div></div>` },
+    { eyebrow:'right door, with proof', title:`Crews knock the <span class="a">money doors first.</span>`,
+      vo:"Crews open the app to their route — the highest-value doors first: older roofs, bigger homes, owner-occupied — with the NOAA report in hand.",
+      html:`<div class="visual"><div class="card" style="max-width:440px;margin:0 auto"><div class="k">★ knock these first</div><div class="row"><span><b>1.</b> 890 Magnolia St</span><span style="color:#6b6f83">24yr · $470k</span></div><div class="row"><span><b>2.</b> 958 Ibis St</span><span style="color:#6b6f83">22yr · $360k</span></div><div class="row"><span><b>3.</b> 803 Magnolia St</span><span style="color:#6b6f83">18yr · $400k</span></div></div></div>` },
+    { eyebrow:'the field', title:`Every door logged. <span class="a">You see it live.</span>`,
+      vo:"Every door they knock is logged from their phone. You see coverage in real time — who's where, and what's signed — so no crew doubles up and nothing's missed.",
+      html:`<div class="visual grid3"><div class="tile"><div class="n">42</div><div class="l">doors</div></div><div class="tile"><div class="n">9</div><div class="l">interested</div></div><div class="tile hi"><div class="n">6</div><div class="l">signed · $61k</div></div></div>` },
+    { eyebrow:'claims that hold up', title:`Proof the adjuster <span class="a">can't argue with.</span>`,
+      vo:"And every storm comes with an adjuster-ready packet — measured NOAA airport data, the source insurers use — so claims get approved faster and denied less.",
+      html:`<div class="visual"><div class="card" style="max-width:520px;margin:0 auto"><div style="font-weight:700;border-bottom:2px solid #161B33;padding-bottom:6px;margin-bottom:8px">Storm verification — Calhoun County</div><div class="row"><span>Verified peak</span><span>1.00″ hail · 69 mph wind</span></div><div class="row"><span>Measured</span><span style="color:#3f7d5a;font-weight:700">ASOS KF95 gusted 69 mph ✓</span></div><div class="row"><span>Source of record</span><span>NOAA NWS</span></div></div></div>` },
+    { eyebrow:'it learns + pays', title:`Smarter, and more profitable, <span class="a">every storm.</span>`,
+      vo:"It learns which storms actually pay — big hail and tornadoes convert far better than weak wind — and prioritizes those. Then it shows you exactly what it made you.",
+      html:`<div class="visual grid3"><div class="tile hi"><div class="n">${roiRev}</div><div class="l">revenue sourced</div></div><div class="tile"><div class="n">${cpj}</div><div class="l">cost per job<br>vs $50–200/lead</div></div><div class="tile"><div class="n">$5.6k</div><div class="l">wasted trips avoided</div></div></div>` },
+    { eyebrow:'Sample Product', title:`Find it. Verify it. Dispatch it. <span class="a">Close it.</span>`,
+      vo:"Find the storm, verify it's real, get the right crew to the right door fastest, and prove what it made you. That's Sample Product — built for you.",
+      html:`<div class="visual"><a class="cta" href="index.html">Open the live version →</a><div style="color:var(--muted);margin-top:14px;font-size:13px">Real NOAA data throughout · nothing texts without your tap</div></div>` },
+  ];
+
+  let idx=0, playing=false, muted=false, timer=null, startT=0, dur=0;
+  const $=id=>document.getElementById(id);
+  const wc=s=>s.replace(/<[^>]+>/g,'').split(/\s+/).length;
+
+  function dotsHTML(){ return SCENES.map((_,i)=>`<i class="${i===idx?'on':''}"></i>`).join(''); }
+
+  function paint(){
+    const s=SCENES[idx];
+    const el=$('scene'); el.classList.remove('in');
+    el.innerHTML=`<div class="eyebrow">${s.eyebrow}</div><h1>${s.title}</h1>${s.html||''}`;
+    void el.offsetWidth; el.classList.add('in');
+    $('caption').textContent = playing? s.vo : '';
+    $('counter').textContent = `${idx+1} / ${SCENES.length}`;
+    $('dots').innerHTML = dotsHTML();
+  }
+
+  function speak(text){
+    if(muted||!window.speechSynthesis) return;
+    try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.rate=1.0; u.pitch=1.0; speechSynthesis.speak(u); }catch(e){}
+  }
+
+  function startScene(){
+    const s=SCENES[idx];
+    $('caption').textContent=s.vo;
+    dur=Math.max(5200, wc(s.vo)*360);        // ~pace of narration
+    startT=Date.now();
+    const bar=$('bar'); bar.style.transition='none'; bar.style.width='0%'; void bar.offsetWidth;
+    bar.style.transition=`width ${dur}ms linear`; bar.style.width='100%';
+    speak(s.vo);
+    clearTimeout(timer); timer=setTimeout(()=>{ if(idx<SCENES.length-1){ idx++; paint(); startScene(); } else { finish(); } }, dur);
+  }
+
+  function finish(){ playing=false; $('playbtn').textContent='Replay'; if(window.speechSynthesis) speechSynthesis.cancel(); }
+
+  function begin(){ $('start').style.display='none'; playing=true; idx=0; $('playbtn').textContent='Pause'; paint(); startScene(); }
+  function toggle(){
+    if($('playbtn').textContent==='Replay'){ begin(); return; }
+    playing=!playing; $('playbtn').textContent=playing?'Pause':'Play';
+    if(playing){ startScene(); }
+    else { clearTimeout(timer); if(window.speechSynthesis) speechSynthesis.cancel();
+      const bar=$('bar'); const w=Math.min(100,(Date.now()-startT)/dur*100); bar.style.transition='none'; bar.style.width=w+'%'; }
+  }
+  function next(){ if(idx<SCENES.length-1){ idx++; if(!playing){paint();return;} paint(); startScene(); } }
+  function prev(){ if(idx>0){ idx--; if(!playing){paint();return;} paint(); startScene(); } }
+  function setMute(){ muted=!muted; $('mutebtn').textContent=muted?'🔇 Muted':'🔊 Sound'; if(muted&&window.speechSynthesis) speechSynthesis.cancel(); else if(playing) speak(SCENES[idx].vo); }
+
+  paint();
+  document.addEventListener('keydown',e=>{ if(e.code==='Space'){e.preventDefault();toggle();} if(e.code==='ArrowRight')next(); if(e.code==='ArrowLeft')prev(); });
+</script>
+</body>
+</html>

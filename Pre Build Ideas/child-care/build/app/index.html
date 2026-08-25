@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ratio OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-release"></section>
+  <section class="view" id="v-waitlist"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never authorizes a release,
+never adds a pickup name on a caller's say-so, drafts nothing on an incident, and never states a
+ratio without attendance records behind it.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Ratios'},{id:'inbox',label:'Inbox'},{id:'release',label:'Release check'},
+      {id:'waitlist',label:'Waitlist'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,release,waitlist,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = d.config.revenue;
+  document.getElementById('v-board').innerHTML =
+    panel('Ratios, counted', b.rules_source,
+      `<div class="grid">
+        ${stat('Rooms over ratio', fmt.num(b.ratio_over), 'from recorded attendance and clock-ins', b.ratio_over?'alert':'')}
+        ${stat('Rooms unmeasured', fmt.num(b.ratio_unmeasured), 'no records — never assumed compliant', b.ratio_unmeasured?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.verifications_opened} · ${b.recovered.tour_offers_sent} · ${b.recovered.enrollments}`,
+               'verifications opened · tour offers sent · enrollments — from the log')}</div>`) +
+    panel('By room', 'over first', table(
+      [{label:'Room'},{label:'Age group'},{label:'Children',num:true},{label:'Staff',num:true},{label:'Status'}],
+      b.ratio_rows, r=>`<td>${esc(r.room)}</td><td>${esc(r.age_group)}</td>
+        <td class="num">${r.children??'—'}</td><td class="num">${r.staff??'—'}</td>
+        <td>${r._missing?blank(r._missing):r.status==='over'?pill('OVER — '+(r.why||r.ratio+' vs '+r.required_ratio),'bad'):pill('inside ('+r.ratio+' vs '+r.required_ratio+')','good')}</td>`), true);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A pickup change is <b>never auto-approved</b> — it opens a human
+      verification task. An incident gets nothing in writing. An illness question travels with the
+      policy text, never advice.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, ['pickup_change','incident'].includes(m.label)?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function release(){
+  document.getElementById('v-release').innerHTML =
+    `<div class="banner warn">The release check is a record lookup. On the list → staff still
+      checks photo ID. Not on the list → refused; software confirms nothing.</div>` +
+    panel('Try it (demo child: Emma Osei — list: Alex Osei, Harper Osei)', '', `
+      <input id="who" value="Uncle Ray Osei" style="font:inherit;font-size:16px;padding:8px;width:60%;border:1px solid var(--line);background:none;color:inherit">
+      <button class="act primary" onclick="checkRel()">Check release</button>
+      <div id="rout" style="margin-top:10px"></div>`);
+}
+async function checkRel(){
+  const r = await API.post('/api/children/ch_demo/release', {person: document.getElementById('who').value});
+  document.getElementById('rout').innerHTML = r.refused
+    ? `<div class="banner warn">${esc(r.refused)}</div>`
+    : `<div class="banner">${esc(r.note)}</div>`;
+}
+
+async function waitlist(){
+  const d = await API.get('/api/waitlist');
+  const f = d.funnel;
+  document.getElementById('v-waitlist').innerHTML =
+    panel('The funnel (90d)', f._missing?'':'counted from records',
+      f._missing ? blank(f._missing) :
+      `<div class="grid">${stat('Inquiries', fmt.num(f.inquiries))}${stat('Toured', fmt.num(f.toured))}
+        ${stat('Offered', fmt.num(f.offered))}${stat('Enrolled', fmt.num(f.enrolled))}</div>`) +
+    panel('Waitlist', '', table([{label:'Family'},{label:'Age group'},{label:'Stage'}],
+      d.rows, w=>`<td>${esc(w.family)}</td><td>${esc(w.age_group)}</td>
+        <td>${w.enrolled_at?pill('enrolled','good'):w.offered_at?pill('offered','brand'):w.toured_at?pill('toured'):pill('inquiry','warn')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['open_seats','Open licensed seats','counted'],['fill_lift','Fill lift','your number (0–1)'],
+    ['annual_tuition','Annual tuition','your number'],['desk_hours_wk','Front-desk hrs/wk','your number'],
+    ['staff_rate','Staff rate','your number'],['violation_cost','Citation cost','your number'],
+    ['pickup_value','The release rule worth','yours or blank — cannot be priced']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'director'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<title>yourco — Review → Lock · 11–26 August 2026</title>
+<style>
+:root{
+  --indigo:#161B33; --indigo-deep:#0F1226; --indigo-2:#1c2240;
+  --cream:#F4EFE6; --parchment:#EAE1CD;
+  --brass:#8F6F35; --brass-bright:#D4B27A;
+  --oxblood:#6B1E29; --verdigris:#3F6152;
+
+  --bg:var(--cream); --bg-raised:#FBF8F2; --bg-sunk:var(--parchment);
+  --ink:var(--indigo);
+  --ink-muted:rgba(22,27,51,.66);
+  --ink-faint:rgba(22,27,51,.42);
+  --hairline:rgba(22,27,51,.15);
+  --hairline-soft:rgba(22,27,51,.08);
+  --accent:var(--brass);
+  --ok:var(--verdigris);
+  --warn:var(--oxblood);
+
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif;
+  --sans:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:var(--indigo); --bg-raised:#1b2140; --bg-sunk:#12162c;
+    --ink:var(--cream);
+    --ink-muted:rgba(244,239,230,.68);
+    --ink-faint:rgba(244,239,230,.42);
+    --hairline:rgba(244,239,230,.17);
+    --hairline-soft:rgba(244,239,230,.09);
+    --accent:var(--brass-bright);
+    --ok:#7FA890;
+    --warn:#D98A96;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:var(--indigo); --bg-raised:#1b2140; --bg-sunk:#12162c;
+  --ink:var(--cream);
+  --ink-muted:rgba(244,239,230,.68);
+  --ink-faint:rgba(244,239,230,.42);
+  --hairline:rgba(244,239,230,.17);
+  --hairline-soft:rgba(244,239,230,.09);
+  --accent:var(--brass-bright);
+  --ok:#7FA890;
+  --warn:#D98A96;
+}
+:root[data-theme="light"]{
+  --bg:var(--cream); --bg-raised:#FBF8F2; --bg-sunk:var(--parchment);
+  --ink:var(--indigo);
+  --ink-muted:rgba(22,27,51,.66);
+  --ink-faint:rgba(22,27,51,.42);
+  --hairline:rgba(22,27,51,.15);
+  --hairline-soft:rgba(22,27,51,.08);
+  --accent:var(--brass);
+  --ok:var(--verdigris);
+  --warn:var(--oxblood);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:920px; margin:0 auto; padding:clamp(28px,5vw,64px) clamp(18px,4vw,36px) 96px}
+
+/* ---- masthead ---- */
+.eyebrow{
+  font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 14px;
+}
+h1{
+  font-family:var(--serif); font-weight:400; font-style:normal;
+  font-size:clamp(34px,6vw,52px); line-height:1.05; letter-spacing:-.015em;
+  margin:0 0 14px; text-wrap:balance;
+}
+h1 em{font-style:italic; color:var(--accent)}
+.standfirst{
+  font-size:17px; color:var(--ink-muted); max-width:62ch; margin:0 0 26px;
+}
+.meta{
+  display:flex; flex-wrap:wrap; gap:10px 26px; align-items:baseline;
+  font-family:var(--mono); font-size:12px; color:var(--ink-faint);
+  border-top:1px solid var(--hairline); padding-top:16px;
+}
+.meta b{color:var(--ink-muted); font-weight:400}
+
+/* ---- next session card ---- */
+.next{
+  margin:34px 0 0; background:var(--bg-raised);
+  border:1px solid var(--hairline); border-left:3px solid var(--accent);
+  border-radius:2px; padding:24px clamp(18px,3vw,28px);
+}
+.next-head{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline; margin-bottom:6px}
+.next-head .tag{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--bg); background:var(--accent); padding:3px 8px; border-radius:2px;
+}
+.next-head h2{font-family:var(--serif); font-weight:400; font-size:24px; margin:0; letter-spacing:-.01em}
+.next p.sub{margin:0 0 18px; color:var(--ink-muted); font-size:15px}
+.checks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px}
+.checks li{
+  display:grid; grid-template-columns:18px 1fr; gap:11px; align-items:start;
+  font-size:14.5px; line-height:1.5;
+}
+.checks .mark{font-family:var(--mono); font-size:13px; line-height:1.6}
+.checks .ready .mark{color:var(--ok)}
+.checks .block .mark{color:var(--warn)}
+.checks .block strong{color:var(--warn)}
+.checks code{
+  font-family:var(--mono); font-size:12.5px; background:var(--bg-sunk);
+  padding:1px 5px; border-radius:2px; color:var(--ink-muted);
+}
+
+/* ---- ledger ---- */
+.ledger-head{
+  display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  margin:52px 0 4px; padding-bottom:10px; border-bottom:1px solid var(--hairline);
+}
+.ledger-head h2{font-family:var(--serif); font-weight:400; font-size:23px; margin:0}
+.legend{font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:.04em}
+
+.row{
+  display:grid; grid-template-columns:96px 1fr 1fr; gap:0 22px;
+  padding:18px 0; border-bottom:1px solid var(--hairline-soft); align-items:start;
+}
+.row:last-of-type{border-bottom:none}
+.row.done{opacity:1}
+.date{font-family:var(--mono); font-size:12px; line-height:1.45; color:var(--ink-faint)}
+.date .d{display:block; font-size:19px; color:var(--ink); letter-spacing:-.02em}
+.date .dow{text-transform:uppercase; letter-spacing:.13em; font-size:10px}
+
+.cell h3{
+  font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-faint); margin:0 0 7px; font-weight:400;
+}
+.cell.lock h3{color:var(--accent)}
+.item{font-size:15px; line-height:1.45; margin:0 0 3px}
+.item.none{color:var(--ink-faint); font-style:italic}
+.where{
+  font-family:var(--mono); font-size:11.5px; color:var(--ink-faint);
+  margin:5px 0 0; line-height:1.6; word-break:break-word;
+}
+.chain{
+  font-family:var(--mono); font-size:10.5px; color:var(--ink-faint);
+  letter-spacing:.04em; margin-top:6px; display:block;
+}
+.flag{color:var(--warn); font-size:13px; margin:6px 0 0; line-height:1.45}
+
+/* ---- rules ---- */
+.rules{margin-top:56px; background:var(--bg-sunk); border-radius:2px; padding:26px clamp(18px,3vw,30px)}
+.rules h2{font-family:var(--serif); font-weight:400; font-size:21px; margin:0 0 4px}
+.rules p.sub{margin:0 0 18px; color:var(--ink-muted); font-size:14.5px}
+.rules ol{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:12px}
+.rules li{font-size:15px; line-height:1.55}
+.rules li b{font-weight:600}
+.rules code{font-family:var(--mono); font-size:12.5px; color:var(--ink-muted)}
+
+footer{
+  margin-top:44px; padding-top:16px; border-top:1px solid var(--hairline);
+  font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); line-height:1.7;
+}
+
+@media (max-width:680px){
+  .row{grid-template-columns:1fr; gap:14px 0; padding:22px 0}
+  .date{display:flex; gap:10px; align-items:baseline}
+  .date .d{font-size:17px}
+  .cell{padding-left:0}
+}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">yourco &nbsp;·&nbsp; the Founder &amp; Partner B</p>
+  <h1>Review, then <em>lock</em>.</h1>
+  <p class="standfirst">
+    Nine working sessions that walk every domain of the business to a settled baseline — each one
+    reviewed in one sitting and locked in the next, so nothing gets agreed in the same breath it was
+    first seen. The run ends where a partnership conversation can actually start.
+  </p>
+  <p class="meta">
+    <span><b>Set</b> 2026-08-10 by the Founder</span>
+    <span><b>Runs</b> Tue 11 Aug → Wed 26 Aug 2026</span>
+    <span><b>Members</b> the Founder 50 / Partner B 35 / Mike 15</span>
+    <span><b>Status</b> nothing locked yet</span>
+  </p>
+
+  <section class="next">
+    <div class="next-head">
+      <span class="tag">Next session</span>
+      <h2>Tuesday 11 August — Business Plan · Financial Model · CRM</h2>
+    </div>
+    <p class="sub">Three locks in one sitting, and the only day that reviews and locks the same material. Prep state as of 2026-08-10 evening:</p>
+    <ul class="checks">
+      <li class="ready"><span class="mark">✓</span><span><strong>Business plan v1.2</strong> is realigned to the model — Target 50 / 118 / 190 clients, $1.02M / $4.34M / $8.61M recognized revenue, $10.23M ARR at end of Year 3.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>Model assumptions §7</strong> resynced to the workbook. The table there had predated the day's four model changes and understated it by roughly 2×.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>HQ's finance mirror</strong> re-synced and no longer stale — HQ and the workbook now agree.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>CRM is up</strong> on <code>:8790</code>, HQ on <code>:8791</code>.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>The cash structure is rebuilt to your 8/10 call.</strong> the Founder injects <strong>$50,000 alone</strong> on day one as a repayable founder loan; all three principals draw $50k <strong>from month 1</strong>, not on a $25k MRR trigger. There is no unpaid-founder period left in the model.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>Recalculated across all three cases.</strong> Target: trough $8,604 in month 3, breakeven month 4, <strong>the Founder repaid month 5</strong> — <strong>$53,000</strong> ($50,000 + ~$3,000 build spend), ranking <em>behind</em> distributions, not ahead. A further <strong>$50,000 is declared available</strong> from the Founder → $100,000 total capital.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>Cash &amp; Runway now counts three principals</strong> — it had summed unpaid months over the Founder and Partner B only, and split peak cash "50/50" at a 50/35/15 company. Both fixed.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>Decision entry written</strong> — <code>decisions/2026-08-10_cash-structure-and-model-recalibration.md</code>, covering both the cash change and the same-day model recalibration that had no record.</span></li>
+      <li class="ready"><span class="mark">✓</span><span><strong>Equipment, partner expenses and conferences are now charged</strong> — $3,000/person on hire (3 principals in month 1), $500/principal/month through the business, and 2 · 4 · 6 events a year at $5,000, starting only after breakeven. ~$28,000 in Year 1.</span></li>
+      <li class="block"><span class="mark">!</span><span><strong>The $50k no longer covers every case — lead with this.</strong> With those costs charged, <strong>Conservative runs $11,100 below zero in month 4</strong>, and Target consumes <strong>83%</strong> of the injection where it consumed 56% this morning. The second $50,000 is what makes the downside solvent, not a cushion on top of it. Nothing about the business changed — we started charging costs the model had been ignoring.</span></li>
+      <li class="block"><span class="mark">!</span><span><strong>The change has a price, and it's stated.</strong> Paying three principals from month 1 costs ~$12,500/mo of early runway. Year-1 EBITDA falls in every case — Target $523k → <strong>$460k</strong> — and breakeven slips to month 4. Year 3 is unchanged.</span></li>
+      <li class="block"><span class="mark">!</span><span><strong>The ~$3,000 build spend inside the repayable balance isn't reconciled.</strong> June is $405.73 receipted, subscriptions ~$614/mo since, Anthropic top-ups still TBD. Confirm against receipts before the loan is papered — it's the one number in the block a lawyer will want evidence for.</span></li>
+    </ul>
+  </section>
+
+  <div class="ledger-head">
+    <h2>The run</h2>
+    <span class="legend">reviewed one session · locked the next</span>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Tue</span><span class="d">11 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item none">Nothing yet — the run starts here</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Business Plan · Financial Model · CRM</p>
+      <p class="where">06_business-plan.md · finance/yourco-financial-model.xlsx · finance/model-assumptions.md · CRM :8790</p>
+      <span class="chain">reviewed and locked same day</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Wed</span><span class="d">12 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item none">—</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">HQ · Connector Console · Connector / Referral program</p>
+      <p class="where">HQ :8791 · connector console :8807 · packet :8806</p>
+      <p class="flag">The multi-level override and the equity track are both counsel-gated. The design can be locked; the launch cannot.</p>
+      <span class="chain">reviewed and locked same day</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Thu</span><span class="d">13 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item none">—</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Agents</p>
+      <p class="where">04_agent_roster.md · runtime/agent-registry.json · processes/autonomy-matrix.md</p>
+      <span class="chain">→ locks Mon 17 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Mon</span><span class="d">17 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Agents</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Sales — process, workflows</p>
+      <p class="where">processes/audit-sop.md · processes/outbound/ · 02_delivery_loop.md</p>
+      <span class="chain">→ locks Tue 18 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Tue</span><span class="d">18 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Sales</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Marketing</p>
+      <p class="where">processes/demand-generation.md · processes/content/content-engine.md · brand/writing-rules.md</p>
+      <span class="chain">→ locks Wed 19 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Wed</span><span class="d">19 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Marketing</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Software · tools · expenses · costs</p>
+      <p class="where">finance/expenses.md · runtime/connectors.md · processes/connections-map.md</p>
+      <span class="chain">→ locks Thu 20 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Thu</span><span class="d">20 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Software · tools · costs</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Back office</p>
+      <p class="where">processes/onboarding.md · offboarding.md · payments.md · finance/monthly_close.md</p>
+      <span class="chain">→ locks Fri 21 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Fri</span><span class="d">21 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Back office</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Legal</p>
+      <p class="where">processes/counsel-gates.md · processes/launch-gate.md · finance/legal-docs/operating-agreement-DRAFT.md</p>
+      <p class="flag">12 counsel gates are blocked and no counsel is engaged. This session decides what gets unblocked, not what gets decided without them.</p>
+      <span class="chain">→ locks Mon 24 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Mon</span><span class="d">24 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Legal</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Overall organization &amp; simplicity of the business</p>
+      <span class="chain">→ locks Wed 26 Aug</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="date"><span class="dow">Wed</span><span class="d">26 Aug</span></div>
+    <div class="cell lock"><h3>Lock</h3><p class="item">Organization &amp; simplicity</p></div>
+    <div class="cell"><h3>Review</h3>
+      <p class="item">Who to add to the CRM — potential Connectors, potential Prospects</p>
+      <p class="where">processes/outbound/warm-network.md · CRM :8790</p>
+      <span class="chain">the run ends here</span>
+    </div>
+  </div>
+
+  <section class="rules">
+    <h2>Rules for the run</h2>
+    <p class="sub">Four things that decide whether "locked" means anything a month from now.</p>
+    <ol>
+      <li><b>Every lock produces a decision entry the same day.</b> A domain locked with nothing in <code>decisions/</code> is not locked — it is a conversation that was had once.</li>
+      <li><b>Change one value, sweep every surface.</b> Locked numbers and names live in more than one place — site, packets, CRM, CLAUDE.md. Fix them in the same commit, and add the invariant to <code>runtime/consistency-check.py</code> if a human caught the drift by eye.</li>
+      <li><b>Membership is three.</b> the Founder 50 / Partner B 35 / Mike 15. Anything still written for two partners is wrong, including inside the financial model.</li>
+      <li><b>Nothing locked here goes external</b> until the launch-gate clears.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Source of truth: <code>processes/partner-b-walkthrough-schedule.md</code>. The six-session content script beneath that
+    table stays the material for each domain — what to open, and what the honest half is.<br>
+    Internal working document. Not a term sheet, and not an offer.
+  </footer>
+
+</div>

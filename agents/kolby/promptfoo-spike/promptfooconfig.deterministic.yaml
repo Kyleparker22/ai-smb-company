@@ -1,0 +1,111 @@
+# yourco outbound pre-send gate — promptfoo SPIKE, deterministic layer (no API key needed)
+# Re-expresses the scriptable half of processes/outbound/pre-send-eval-gate.md as config-in-git.
+# Provider `echo` returns the prompt verbatim → assertions run against the STAGED RENDERED copy.
+# NOTE (spike finding): promptfoo renders prompts through nunjucks, so a leaked {{merge_var}} in the
+# copy must be wrapped in {% raw %} here or it crashes the render. Real rendered copy has no braces.
+description: "yourco pre-send gate (deterministic layer) — promptfoo spike"
+
+providers:
+  - id: echo
+
+prompts:
+  - "{{copy}}"
+
+# Deterministic assertions = the mechanical + mechanical-brand checks, all via javascript so the
+# rubric is explicit and greppable. Maps to: M3/dim3 (no raw merge var), dim4 (lowercase yourco,
+# no internal agent name, no price), M7 (opt-out present).
+defaultTest:
+  assert:
+    - type: javascript
+      value: "(b => ({pass: !b, score: b?0:1, reason: b ? 'M3/dim3: unresolved merge var leaked into rendered copy' : 'no leaked merge var'}))(/\\{\\{/.test(output))"
+    # dim4: internal agent names are banned in external copy — but this check is deliberately narrow.
+    # SCOPE: only the internal roster (04_agent_roster.md). Demo personas (Reese/Quinn/Sage) are ALLOWED
+    # and excluded. The greeting line is stripped first, because {{first_name}} renders real prospect
+    # names that collide with the roster (David/Jim/Ray/Harry/Katie/Mario/Brett…). Genuinely ambiguous
+    # cases (is this name a persona, a prospect, or an agent?) are the LLM judge's job, not this regex.
+    - type: javascript
+      value: |
+        const body = output.replace(/^\s*Hi[^\n]*\n/i, '');
+        const m = body.match(/\b(Atlas|Bella|Bird|Brett|Charles|David|Harry|Janice|Jim|Katie|Kemba|Kimi|Reed|Kolby|Kori|Kortney|Luka|Mario|Melanie|Michelle|Pickle|Polo|Rafi|Ray|Reilly|Sadie|Webb)\b/);
+        return { pass: !m, score: m ? 0 : 1,
+          reason: m ? ('dim4: internal agent name "' + m[1] + '" in external copy (demo personas Reese/Quinn/Sage are allowed)')
+                    : 'no internal agent name' };
+    - type: javascript
+      value: "(b => ({pass: !b, score: b?0:1, reason: b ? 'dim4: price/$ symbol in outbound (proposals only)' : 'no price'}))(output.includes('$'))"
+    - type: javascript
+      value: "(b => ({pass: !b, score: b?0:1, reason: b ? 'dim4: capitalized brand (use lowercase yourco; YourCo LLC legal footer ok)' : 'brand lowercase'}))(/\\bYourCo\\b(?!\\s+LLC)/.test(output))"
+    - type: javascript
+      value: "(b => ({pass: b, score: b?1:0, reason: b ? 'opt-out present' : 'M7: CAN-SPAM opt-out missing'}))(/unsubscribe/i.test(output))"
+
+tests:
+  - description: "Touch 1 — clean rendered preview (expect PASS)"
+    vars:
+      copy: |
+        Hi Marcus,
+
+        I run yourco — we build AI employees for landscaping businesses.
+
+        I put together a 60-second working demo of an AI front desk for Oakline Landscaping. It
+        answers your calls, qualifies the job, and books the estimate — in your voice:
+
+        https://demo.yourco.com/prospect-demo.html?p=oakline-landscaping
+
+        If it's useful, I can have a real one live at Oakline Landscaping in 48 hours — catching
+        every call you'd otherwise miss, nights and weekends included.
+
+        Worth a quick look?
+
+        — the Founder
+        the Founder · yourco · founder@yourco.example.com
+        unsubscribe · YourCo LLC, 123 Example St, Riverton, FL 33713
+
+  - description: "Touch 2 — REAL canonical copy ('Reese' is the sanctioned demo persona → expect PASS)"
+    vars:
+      copy: |
+        Hi Marcus,
+
+        Did the demo make sense? Here's the part most owners don't love:
+
+        Even a handful of missed calls a week — at your average job value — is real money
+        going straight to voicemail. Reese catches them 24/7, qualifies, and books the
+        estimate while you're on the job.
+
+        The 60-sec demo for Oakline Landscaping, again: https://demo.yourco.com/p/oakline
+
+        Want to see the real thing? 15 minutes: https://calendly.com/the Founder-yourco/30min
+
+        — the Founder
+        unsubscribe · YourCo LLC, 123 Example St, Riverton, FL 33713
+
+  - description: "Prospect named 'David' in greeting (collides with roster) → expect PASS (greeting stripped)"
+    vars:
+      copy: |
+        Hi David,
+
+        I run yourco — we build AI employees for landscaping businesses. A 60-second demo
+        of an AI front desk for your shop: https://demo.yourco.com/p/davids-landscaping
+
+        — the Founder
+        unsubscribe · YourCo LLC, 123 Example St, Riverton, FL 33713
+
+  - description: "REAL internal agent name in body ('Reilly') → expect FAIL (scoped list still fires)"
+    vars:
+      copy: |
+        Hi Marcus,
+
+        Reilly on our team will reach out to set up your AI front desk. Demo:
+        https://demo.yourco.com/p/oakline
+
+        — the Founder
+        unsubscribe · YourCo LLC, 123 Example St, Riverton, FL 33713
+
+  - description: "Broken preview — leaked merge var + capitalized brand + price + no opt-out (expect multiple FAILs)"
+    vars:
+      copy: |
+        Hi {% raw %}{{first_name}}{% endraw %},
+
+        YourCo can put an AI front desk in your business for just $500/mo.
+
+        See it: https://demo.yourco.com/p/x
+
+        — the Founder

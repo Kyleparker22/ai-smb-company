@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yourco — trust ledger</title>
+<style>
+  :root {
+    --cream: #f6f3ec; --card: #fdfcf9; --ink: #23283d; --ink2: #5a5f75; --ink3: #8b8fa3;
+    --brass: #8a6d3b; --brass-soft: #f0e9db; --line: #e5e0d3;
+    --r1: #a33b2e; --r1-bg: #f7e9e6; --r2: #8a6100; --r2-bg: #f7efd9; --r3: #1a6f47; --r3-bg: #e6f2ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --cream: #16181f; --card: #1e212b; --ink: #ecedf2; --ink2: #a9adbd; --ink3: #7c8093;
+      --brass: #c9a86a; --brass-soft: #2b2618; --line: #2c3040;
+      --r1: #e08575; --r1-bg: #33211e; --r2: #d9ae4a; --r2-bg: #322a18; --r3: #57c48a; --r3-bg: #1c2f26;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--cream); color: var(--ink); font: 15px/1.55 Georgia, "Times New Roman", serif; padding: 34px clamp(16px, 5vw, 64px) 60px; }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  .stagebar { background: var(--brass-soft); color: var(--brass); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; font: 12.5px/1.4 -apple-system, sans-serif; margin-bottom: 26px; }
+  .mark { font: 700 26px/1 -apple-system, "Segoe UI", sans-serif; letter-spacing: -.5px; }
+  .mark .dot { color: var(--brass); }
+  h1 { font-size: 30px; font-weight: 600; margin: 14px 0 4px; letter-spacing: -.3px; }
+  .sub { color: var(--ink2); font-size: 16px; font-style: italic; }
+  .asof { font: 12px -apple-system, sans-serif; color: var(--ink3); margin: 14px 0 26px; }
+  .principle { border-left: 3px solid var(--brass); padding: 4px 0 4px 16px; color: var(--ink2); margin-bottom: 34px; font-size: 15.5px; }
+  h2 { font-size: 13px; font-family: -apple-system, "Segoe UI", sans-serif; text-transform: uppercase; letter-spacing: .09em; color: var(--brass); margin: 38px 0 14px; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font: 12.5px -apple-system, sans-serif; color: var(--ink2); margin-bottom: 14px; }
+  .badge { display: inline-block; font: 700 11px/1 -apple-system, sans-serif; padding: 4px 9px; border-radius: 999px; letter-spacing: .04em; }
+  .badge.R1 { color: var(--r1); background: var(--r1-bg); }
+  .badge.R2 { color: var(--r2); background: var(--r2-bg); }
+  .badge.R3 { color: var(--r3); background: var(--r3-bg); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 14px; }
+  th { text-align: left; font: 600 11.5px -apple-system, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: var(--ink3); padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td .note { color: var(--ink2); font-size: 13px; }
+  td .streak { display: block; margin-top: 4px; font: 12px -apple-system, sans-serif; color: var(--ink3); }
+  .incident { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+  .incident .d { font: 600 12px -apple-system, sans-serif; color: var(--r1); margin-bottom: 6px; }
+  .incident p { margin: 4px 0; font-size: 14.5px; }
+  .incident .lbl { font: 600 11px -apple-system, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: var(--ink3); margin-right: 6px; }
+  .block { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; color: var(--ink2); font-size: 14.5px; }
+  .foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink3); font: 12.5px -apple-system, sans-serif; }
+  @media (max-width: 640px) { .hidecol { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stagebar">STAGED PREVIEW — internal until launch. This page publishes the day the company does; the data underneath is already real.</div>
+  <div class="mark">yourco<span class="dot">.</span></div>
+  <h1>The trust ledger</h1>
+  <p class="sub">The public record of what our AI is trusted to do — and how it earned it.</p>
+  <p class="asof" id="asof"></p>
+  <p class="principle" id="principle"></p>
+
+  <h2>Autonomy, per action</h2>
+  <div class="legend" id="legend"></div>
+  <table aria-label="Autonomy per action">
+    <thead><tr><th>Action</th><th>Today</th><th class="hidecol">Ceiling</th><th>The record</th></tr></thead>
+    <tbody id="actions"></tbody>
+  </table>
+
+  <h2>Incident log — complete, including the unresolved</h2>
+  <div id="incidents"></div>
+
+  <h2>What never advances</h2>
+  <div class="block" id="never"></div>
+
+  <h2>Why you can believe this page</h2>
+  <div class="block" id="honesty"></div>
+
+  <div class="foot">Methodology: the yourco Autonomy Standard (R1 → R3, earned per action on eval evidence; any incident holds or resets). Source of record: <span id="src"></span></div>
+</div>
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+fetch("data.json", { cache: "no-store" }).then(r => r.json()).then(d => {
+  document.getElementById("asof").textContent = `As of ${d.asOf} · updated with every weekly eval review`;
+  document.getElementById("principle").textContent = d.principle;
+  document.getElementById("src").textContent = d.source;
+  document.getElementById("legend").innerHTML = Object.entries(d.rungs)
+    .map(([k, v]) => `<span><span class="badge ${k}">${k}</span> ${esc(v)}</span>`).join("");
+  document.getElementById("actions").innerHTML = d.actions.map(a => `
+    <tr>
+      <td>${esc(a.action)}</td>
+      <td><span class="badge ${esc(a.rung)}">${esc(a.rung)}</span></td>
+      <td class="hidecol"><span class="badge ${esc(a.ceiling)}">${esc(a.ceiling)}</span></td>
+      <td><span class="note">${esc(a.note)}</span>${a.streak ? `<span class="streak">Streak: ${esc(a.streak)}</span>` : ""}</td>
+    </tr>`).join("");
+  document.getElementById("incidents").innerHTML = d.incidents.map(i => `
+    <div class="incident">
+      <div class="d">${esc(i.date)}</div>
+      <p><span class="lbl">What</span>${esc(i.what)}</p>
+      <p><span class="lbl">Effect</span>${esc(i.effect)}</p>
+      <p><span class="lbl">Fix</span>${esc(i.fix)}</p>
+    </div>`).join("");
+  document.getElementById("never").textContent = d.neverAdvances;
+  document.getElementById("honesty").textContent = d.honesty;
+}).catch(e => { document.getElementById("asof").textContent = "Could not load data.json — " + e.message; });
+</script>
+</body>
+</html>

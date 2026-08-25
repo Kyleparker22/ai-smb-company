@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meet Sage — yourco intake employee</title>
+<style>
+  :root{
+    --indigo:#161B33; --cream:#F4EFE6; --brass:#B8965A; --brass-bright:#D4B27A;
+    --oxblood:#6B1E29; --pewter:#6E7180; --ink:#1c2030;
+    --bubble-them:#E9E4D8; --bubble-sage:#161B33;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:980px;margin:0 auto;padding:40px 24px 64px}
+  header{text-align:center;margin-bottom:8px}
+  .wordmark{font-size:22px;letter-spacing:.02em;color:var(--indigo);font-weight:600}
+  .rule{width:46px;height:3px;background:var(--brass);margin:14px auto 22px;border-radius:2px}
+  h1{font-size:30px;line-height:1.15;margin:.2em 0 .1em;color:var(--indigo);font-weight:650;letter-spacing:-.01em}
+  .sub{color:var(--pewter);font-size:16px;max-width:560px;margin:0 auto 28px}
+  .stage{display:grid;grid-template-columns:340px 1fr;gap:34px;align-items:start}
+  @media(max-width:760px){.stage{grid-template-columns:1fr;gap:24px}}
+  /* phone */
+  .phone{background:var(--indigo);border-radius:36px;padding:14px;box-shadow:0 24px 60px rgba(22,27,51,.28);justify-self:center;width:340px}
+  .screen{background:#fbfaf7;border-radius:24px;height:560px;display:flex;flex-direction:column;overflow:hidden}
+  .pbar{background:#fff;border-bottom:1px solid #eee;padding:12px 16px;text-align:center}
+  .pbar .name{font-weight:650;font-size:15px;color:var(--indigo)}
+  .pbar .who{font-size:11px;color:var(--pewter)}
+  .thread{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth}
+  .msg{max-width:80%;padding:9px 13px;border-radius:18px;font-size:14.5px;line-height:1.4;animation:pop .25s ease}
+  .them{background:var(--bubble-them);color:#2a2a2a;align-self:flex-start;border-bottom-left-radius:5px}
+  .sage{background:var(--bubble-sage);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+  .stamp{font-size:10.5px;color:var(--pewter);align-self:center;margin:4px 0 2px}
+  .sysline{align-self:center;font-size:12px;color:var(--brass);background:#fff;border:1px solid #ece5d6;
+    padding:6px 12px;border-radius:20px;font-weight:600;animation:pop .25s ease}
+  .typing{align-self:flex-end;background:var(--bubble-sage);padding:11px 14px;border-radius:18px;border-bottom-right-radius:5px}
+  .typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#cdd0db;margin:0 1.5px;animation:blink 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+  @keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+  /* side panel */
+  .panel{padding-top:6px}
+  .scn-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .scn{border:1px solid #d9d2c2;background:#fff;color:var(--indigo);padding:8px 13px;border-radius:999px;
+    font-size:13px;cursor:pointer;font-weight:600;transition:.15s}
+  .scn:hover{border-color:var(--brass)}
+  .scn.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .play{display:inline-flex;align-items:center;gap:9px;background:var(--brass);color:#fff;border:none;
+    padding:13px 22px;border-radius:12px;font-size:15px;font-weight:650;cursor:pointer;transition:.15s;box-shadow:0 6px 16px rgba(184,150,90,.32)}
+  .play:hover{background:var(--brass-bright)}.play:disabled{opacity:.5;cursor:default;box-shadow:none}
+  .scn-title{font-size:18px;color:var(--indigo);font-weight:650;margin:22px 0 4px}
+  .scn-desc{color:var(--pewter);font-size:14px;margin-bottom:16px}
+  .notes{display:flex;flex-direction:column;gap:10px;min-height:120px}
+  .note{background:#fff;border-left:3px solid var(--brass);border-radius:8px;padding:11px 14px;font-size:14px;
+    color:#2a2a2a;animation:slide .35s ease;box-shadow:0 2px 8px rgba(22,27,51,.05)}
+  .note b{color:var(--indigo)}
+  @keyframes slide{from{transform:translateX(10px);opacity:0}to{transform:none;opacity:1}}
+  .closer{margin-top:30px;background:var(--indigo);color:var(--cream);border-radius:16px;padding:24px 26px;display:none}
+  .closer.show{display:block;animation:pop .4s ease}
+  .closer .big{font-size:18px;font-weight:600;line-height:1.4}
+  .closer .tag{margin-top:14px;color:var(--brass-bright);font-size:15px;font-weight:600}
+  footer{text-align:center;color:var(--pewter);font-size:12.5px;margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="wordmark">yourco</div>
+    <div class="rule"></div>
+    <h1>Meet Sage — your intake employee</h1>
+    <p class="sub">The call that used to go to voicemail now gets answered, qualified, and booked — instantly, day or night. Hit play.</p>
+  </header>
+
+  <div class="stage">
+    <div class="phone"><div class="screen">
+      <div class="pbar"><div class="name">Evergreen Lawn &amp; Landscape</div><div class="who">texting with Sage · intake</div></div>
+      <div class="thread" id="thread"></div>
+    </div></div>
+
+    <div class="panel">
+      <div class="scn-tabs" id="tabs"></div>
+      <button class="play" id="play">▶ &nbsp;Play</button>
+      <div class="scn-title" id="scnTitle"></div>
+      <div class="scn-desc" id="scnDesc"></div>
+      <div class="notes" id="notes"></div>
+      <div class="closer" id="closer">
+        <div class="big" id="closerText"></div>
+        <div class="tag">We learn your business. AI does the work.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>A faithful illustration of an yourco intake employee — every step shown is what Sage actually does. · yourco</footer>
+</div>
+
+<script>
+const SCENARIOS = {
+  capture: {
+    label:"After-hours capture", title:"The call that used to die in voicemail",
+    desc:"Tuesday, 8:47pm. The office is closed. A homeowner texts the business line.",
+    closer:"In 90 seconds — after hours — Sage captured the lead, qualified it, and booked a Saturday estimate. A $29 bot takes a message. Sage booked the job.",
+    steps:[
+      {stamp:"Tue 8:47 PM"},
+      {them:"Hey do you guys do paver patios? Looking to get something done in the backyard"},
+      {sage:"Hi, thanks for reaching out to Evergreen! Yes — paver patios are one of our specialties 👍 I can set you up with a free on-site estimate. Quick questions so we come prepared: what's the address or ZIP, and roughly how big are you thinking?"},
+      {note:"<b>⚡ Instant reply at 8:47pm.</b> The competitor's voicemail is still unheard."},
+      {them:"33704. Maybe 300 sq ft? Off the back door. Hoping to have it done before a party end of July"},
+      {sage:"Perfect — you're right in our service area, and end-of-July is very doable for ~300 sq ft. Do you have a rough budget in mind, or want the estimator to walk you through options on-site? And the best name + number for the appointment?"},
+      {note:"<b>✓ Qualifying like a pro</b> — service, area, scope, timeline. Not a script — a trained front-office person."},
+      {them:"Not totally sure on budget. Jordan, 727-555-0148"},
+      {sage:"Thanks, Jordan! No problem on budget — the estimator prices it on-site. I've got these windows open: Thu 6/19 8–10am, Fri 6/20 4–6pm, or Sat 6/21 9–11am. Which works?"},
+      {them:"Saturday morning"},
+      {sage:"Booked — Sat 6/21, 9–11am, paver patio estimate in 33704. You'll get a reminder the day before, and the estimator will bring paver + design options. Anything else?"},
+      {sys:"✓ Estimate booked  ·  ✓ Confirmation sent  ·  ✓ Lead logged"},
+      {note:"<b>📅 Booked a Saturday estimate</b> while the owner slept. They wake up to a job on the calendar, not a missed call."}
+    ]
+  },
+  honest: {
+    label:"Knows its limits", title:"It won't book what it can't keep",
+    desc:"A lead just outside the service area — the moment a cheap bot fumbles.",
+    closer:"Sage is honest about the boundary, doesn't waste the crew's time on a no-go estimate, and still captures the contact for a referral. Accountable, not just automated.",
+    steps:[
+      {them:"Do you do full lawn renovations? I'm over in Brandon"},
+      {sage:"We'd love to help, but Brandon's just outside our service area — and I don't want to book an estimate we can't keep. Let me pass your info to the owner in case we can refer you to someone good nearby. Best way to reach you?"},
+      {note:"<b>✓ Honest about the boundary.</b> No false booking, no wasted truck-roll — and still captures the lead for a referral."}
+    ]
+  },
+  nofib: {
+    label:"Won't make things up", title:"No fabricated prices",
+    desc:"The prospect pushes for a number. A hallucinating bot guesses. Sage won't.",
+    closer:"It refuses to guess a price that could be wrong — and redirects to the free on-site estimate. That discipline is the difference between a tool that sounds helpful and an employee that's accountable.",
+    steps:[
+      {them:"Just ballpark — what's a 300 sq ft paver patio run?"},
+      {sage:"Honest answer: it really depends on the pavers, base prep, and access, so I don't want to throw out a number that's off — the estimator gives you an accurate quote on-site, and it's free. Want me to lock in that Saturday window so you get real numbers fast?"},
+      {note:"<b>✓ Refuses to fabricate.</b> Grounded in what's true, redirects to the on-site estimate. No made-up prices, ever."}
+    ]
+  }
+};
+
+const thread=document.getElementById('thread'), notes=document.getElementById('notes'),
+  playBtn=document.getElementById('play'), tabs=document.getElementById('tabs'),
+  scnTitle=document.getElementById('scnTitle'), scnDesc=document.getElementById('scnDesc'),
+  closer=document.getElementById('closer'), closerText=document.getElementById('closerText');
+let current='capture', playing=false;
+
+Object.entries(SCENARIOS).forEach(([k,s])=>{
+  const b=document.createElement('button'); b.className='scn'+(k==='capture'?' active':''); b.textContent=s.label;
+  b.onclick=()=>{ if(playing)return; current=k; [...tabs.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); reset(); };
+  tabs.appendChild(b);
+});
+
+function reset(){ const s=SCENARIOS[current]; thread.innerHTML=''; notes.innerHTML=''; closer.classList.remove('show');
+  scnTitle.textContent=s.title; scnDesc.textContent=s.desc; playBtn.disabled=false; playBtn.innerHTML='▶ &nbsp;Play'; }
+
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function add(cls,html){ const d=document.createElement('div'); d.className=cls; d.innerHTML=html; thread.appendChild(d); thread.scrollTop=thread.scrollHeight; return d; }
+
+async function play(){
+  if(playing)return; playing=true; reset(); playBtn.disabled=true; playBtn.innerHTML='● &nbsp;Playing…';
+  const s=SCENARIOS[current];
+  for(const step of s.steps){
+    if('stamp'in step){ add('stamp',step.stamp); await wait(500); continue; }
+    if('them'in step){ await wait(650); add('msg them',step.them); await wait(500); continue; }
+    if('sage'in step){
+      const t=add('typing','<span></span><span></span><span></span>');
+      await wait(900+Math.min(step.sage.length*12,1600)); t.remove();
+      add('msg sage',step.sage); await wait(500); continue; }
+    if('sys'in step){ await wait(500); add('sysline',step.sys); await wait(400); continue; }
+    if('note'in step){ const n=document.createElement('div'); n.className='note'; n.innerHTML=step.note; notes.appendChild(n); await wait(700); continue; }
+  }
+  closerText.textContent=s.closer; closer.classList.add('show');
+  playBtn.disabled=false; playBtn.innerHTML='↻ &nbsp;Replay'; playing=false;
+}
+playBtn.onclick=play;
+reset();
+</script>
+</body>
+</html>

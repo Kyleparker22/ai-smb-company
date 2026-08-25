@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo inbox-signal — Fridays 07:15 ET, 15 min before source-watch so it can dedupe
+
+[Timer]
+OnCalendar=Fri *-*-* 07:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5fd8">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Console · Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+
+<div class="bar"><div class="bar-in">
+  <div class="logo"><span class="mark">◈</span><span>Property OS</span></div>
+  <div class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-v="board" aria-selected="true">Board</button>
+    <button role="tab" data-v="approvals">Needs you <span id="apCount"></span></button>
+    <button role="tab" data-v="money">Money</button>
+    <button role="tab" data-v="turns">Turns</button>
+    <button role="tab" data-v="leases">Leases</button>
+    <button role="tab" data-v="leads">Leads</button>
+    <button role="tab" data-v="vendors">Vendors</button>
+    <button role="tab" data-v="agents">Agents</button>
+  </div>
+  <div class="grow"></div>
+  <button class="btn sm" id="runBtn" onclick="runAgents()">Run agents</button>
+  <button class="btn ghost sm" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+</div></div>
+
+<main class="wrap" id="main"><div class="empty"><div class="big">◈</div>Loading portfolio…</div></main>
+
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-label="Request detail">
+  <div class="drawer-h"><div class="grow" id="drawerH"></div>
+    <button class="btn ghost sm" onclick="closeDrawer()">✕</button></div>
+  <div class="drawer-b" id="drawerB"></div>
+</aside>
+
+<script src="/app.js"></script>
+<script>
+let S = null, VIEW = 'board', FILTER = { open: true, priority: '', property: '' };
+
+async function load() { S = await API.get('/bootstrap?role=staff'); render(); }
+
+$$('#tabs button').forEach(b => b.onclick = () => {
+  VIEW = b.dataset.v;
+  $$('#tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+  render(); scrollTo(0, 0);
+});
+
+function render() {
+  const n = S.approvals.length;
+  $('#apCount').innerHTML = n ? `<span class="pill bad tiny" style="margin-left:5px">${n}</span>` : '';
+  $('#main').innerHTML = ({ board, approvals, money: moneyView, turns, leases, leads, vendors, agents })[VIEW]();
+  wire();
+}
+
+/* ------------------------------------------------------------------ board */
+function board() {
+  const m = S.metrics;
+  const rs = S.requests.filter(r =>
+    (!FILTER.open || r.status !== 'resolved') &&
+    (!FILTER.priority || r.priority === FILTER.priority) &&
+    (!FILTER.property || r.property_id === FILTER.property))
+    .sort((a, b) => (['P1', 'P2', 'P3', 'P4'].indexOf(a.priority) - ['P1', 'P2', 'P3', 'P4'].indexOf(b.priority))
+      || (b.age_hours - a.age_hours));
+
+  const breached = m.sla.breached, atRisk = m.sla.at_risk;
+
+  return `
+  <div style="padding:22px 0 16px" class="spread wrap-r">
+    <div><h1>Maintenance board</h1>
+      <div class="muted small">${m.portfolio.units} units · ${m.portfolio.properties} properties ·
+        ${pct(m.portfolio.occupancy)} occupied</div></div>
+  </div>
+
+  <div class="tiles" style="margin-bottom:16px">
+    ${tile('Open requests', { value: m.requests.open },
+      `${m.requests.open_by_status.submitted} awaiting triage`)}
+    ${tile('Avg resolution', statOrMissing(m.avg_resolution, 'hours'),
+      m.avg_resolution.median ? `median ${hrs(m.avg_resolution.median)} · n=${m.avg_resolution.n}` : '', hrs)}
+    ${tile('Emergency (P1)', statOrMissing(m.avg_resolution_p1, 'hours'),
+      m.avg_resolution_p1.n ? `n=${m.avg_resolution_p1.n} · 24h target` : '', hrs)}
+    ${tile('SLA at risk', { value: atRisk + breached },
+      breached ? `${breached} already breached` : 'none breached')}
+    ${tile('Truck rolls avoided', { value: m.deflection.deflected },
+      `${money(m.deflection.avoided_cost)} · ${pct(m.deflection.rate)} of intake`)}
+    ${tile('Running without you', statOrMissing(m.automation, 'rate'),
+      m.automation.moving ? `${m.automation.autonomous} of ${m.automation.moving} actions, 90d` : '', pct)}
+  </div>
+
+  ${breached ? `<div class="card" style="margin-bottom:14px;border-color:color-mix(in srgb,var(--bad) 40%,transparent);background:var(--bad-soft)">
+    <div class="card-b tight row" style="gap:10px">
+      <span class="pill bad"><span class="dot"></span>${breached} past SLA</span>
+      <span class="small">The dispatch agent has already escalated these to a backup vendor. They're listed first.</span>
+    </div></div>` : ''}
+
+  <div class="card">
+    <div class="card-h">
+      <div class="row wrap-r" style="gap:8px">
+        <button class="btn sm ${FILTER.open ? 'primary' : ''}" onclick="setF('open',!FILTER.open)">
+          ${FILTER.open ? 'Open only' : 'All requests'}</button>
+        <select class="in" style="width:auto;padding:5px 10px;font-size:13px" onchange="setF('priority',this.value)">
+          <option value="">Any priority</option>
+          ${['P1', 'P2', 'P3', 'P4'].map(p => `<option value="${p}" ${FILTER.priority === p ? 'selected' : ''}>${p}</option>`).join('')}
+        </select>
+        <select class="in" style="width:auto;padding:5px 10px;font-size:13px" onchange="setF('property',this.value)">
+          <option value="">All properties</option>
+          ${S.properties.map(p => `<option value="${esc(p.id)}" ${FILTER.property === p.id ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}
+        </select>
+      </div>
+      <span class="muted small num">${rs.length} shown</span>
+    </div>
+    <div class="tbl-wrap">
+      ${rs.length ? `<table class="tbl"><thead><tr>
+        <th>Priority</th><th>Request</th><th>Unit</th><th>Status</th>
+        <th>Vendor</th><th>Age</th><th>SLA</th></tr></thead><tbody>
+        ${rs.slice(0, 200).map(rowFor).join('')}
+      </tbody></table>` : '<div class="empty"><div class="big">✓</div>Nothing matches that filter.</div>'}
+    </div>
+  </div>`;
+}
+
+function rowFor(r) {
+  const sla = r.sla_state === 'breached' ? '<span class="pill bad">breached</span>'
+    : r.sla_state === 'at_risk' ? '<span class="pill warn">at risk</span>'
+      : r.sla_state === 'met' ? '<span class="pill ok">met</span>'
+        : '<span class="pill mute">on track</span>';
+  const stall = r.stall_reason
+    ? `<div class="tiny muted">⏸ ${esc(String(r.stall_reason).replace(/_/g, ' '))}</div>` : '';
+  return `<tr onclick="detail('${r.id}')">
+    <td><span class="pill ${esc(r.priority)}">${esc(r.priority)}</span></td>
+    <td><div class="stack"><span class="trunc" style="max-width:330px;font-weight:560">${esc(r.title)}</span>
+      ${stall}</div></td>
+    <td class="small muted">${esc(r.property || '')} ${esc(r.unit || '')}</td>
+    <td><span class="pill mute">${esc(STATUS_LABEL[r.status] || r.status)}</span></td>
+    <td class="small muted trunc" style="max-width:150px">${esc(r.vendor || '—')}</td>
+    <td class="small num muted">${esc(hrs(r.age_hours))}</td>
+    <td>${sla}</td></tr>`;
+}
+
+const setF = (k, v) => { FILTER[k] = v; render(); };
+
+/* -------------------------------------------------------------- approvals
+   A 100+ row queue is one nobody reads, which defeats the point of collecting
+   the human decisions in one place. Four things fix that, and one deliberately
+   does not appear:
+
+     ranked      the top of each group is where the consequence is, by a
+                 stated rule the header names
+     summarised  each group states its total at stake, so you know the shape
+                 without opening it
+     paged       PAGE rows at a time — the DOM was 35,000px tall and the
+                 renderer struggled, and so would a person
+     collapsed   groups start closed once the queue is large
+
+   NOT here: bulk approve. Every row in this queue is here precisely because
+   the autonomy matrix says a human decides — capital is R0, renewals are R1.
+   A button that approves 46 items you have not read is R3 autonomy with extra
+   clicks, and it would hollow out the one control the whole design rests on.
+   The concentration line is the honest substitute: it tells you how much of
+   the money sits in the rows you CAN read, so skipping the tail is a decision
+   rather than an accident. */
+
+const PAGE = 8;
+let APV = { sort: 'urgency', property: '', shown: {}, open: {} };
+
+// Per-kind ranking + what "at stake" means. Every sort is named in the UI;
+// none of them is a hidden heuristic.
+const KIND = {
+  capital: {
+    label: 'Capital replacement', unit: 'exposure if it fails',
+    urgency: p => -(p.spend_ratio ?? 0),            // furthest past the replace line
+    value: p => -(p.next_failure_exposure ?? 0),
+    stake: p => p.next_failure_exposure ?? 0,
+    urgencyNote: 'furthest past the repair-vs-replace line first',
+  },
+  renewal: {
+    label: 'Lease renewal', unit: 'turnover exposure',
+    urgency: p => (p.days_left ?? 9999),            // hard deadline first
+    value: p => -(p.turn_cost?.total ?? 0),
+    stake: p => p.turn_cost?.total ?? 0,
+    urgencyNote: 'soonest lease expiry first',
+  },
+  spend: {
+    label: "Spend above the owner's limit", unit: 'requested',
+    urgency: p => -(p.amount ?? 0), value: p => -(p.amount ?? 0),
+    stake: p => p.amount ?? 0, urgencyNote: 'largest first',
+  },
+  delinquency: {
+    label: 'Delinquency — a human decides tone and terms', unit: 'past due',
+    urgency: p => -(p.days_late ?? 0), value: p => -(p.balance ?? 0),
+    stake: p => p.balance ?? 0, urgencyNote: 'most days late first',
+  },
+  legal_referral: {
+    label: 'Legal referral packets (R0 — never automated)', unit: 'past due',
+    urgency: p => -(p.days_late ?? 0), value: p => -(p.amount ?? 0),
+    stake: p => p.amount ?? 0,
+    urgencyNote: 'most days late first — these go to a human, then counsel',
+  },
+  invoice_review: {
+    label: 'Invoices that do not match the quote', unit: 'invoiced',
+    urgency: p => -Math.abs(p.drift_pct ?? 0), value: p => -(p.amount ?? 0),
+    stake: p => p.amount ?? 0, urgencyNote: 'largest drift from the approved quote first',
+  },
+  deposit_disposition: {
+    label: 'Deposit dispositions (R0 — statutory clock)', unit: 'held',
+    urgency: () => 0, value: p => -(p.amount ?? 0),
+    stake: p => p.amount ?? 0, urgencyNote: 'every one is on a state deadline',
+  },
+  trust_alert: {
+    label: 'TRUST ALERT', unit: 'out of balance',
+    urgency: () => -1e9, value: p => -(p.amount ?? 0),
+    stake: p => p.amount ?? 0, urgencyNote: 'nothing else matters until this is resolved',
+  },
+  emergency_review: {
+    label: 'Emergency spend — post-hoc invoice review', unit: 'already committed',
+    urgency: p => -(p.amount ?? 0), value: p => -(p.amount ?? 0),
+    stake: p => p.amount ?? 0,
+    urgencyNote: 'largest committed spend first — the money is already out the door',
+  },
+  blocked_message: {
+    label: 'Blocked by compliance', unit: null,
+    urgency: () => 0, value: () => 0, stake: () => 0,
+    urgencyNote: 'newest first — each one is a resident waiting on a reply',
+  },
+  no_vendor: {
+    label: 'No vendor available', unit: null,
+    urgency: () => 0, value: () => 0, stake: () => 0,
+    urgencyNote: 'newest first',
+  },
+};
+const kindOf = k => KIND[k] || { label: k, unit: null, urgency: () => 0,
+  value: () => 0, stake: () => 0, urgencyNote: 'newest first' };
+
+function approvals() {
+  const all = S.approvals;
+  const props = [...new Set(all.map(a => a.payload?.property).filter(Boolean))].sort();
+  const rows = APV.property
+    ? all.filter(a => a.payload?.property === APV.property) : all;
+
+  const g = {};
+  rows.forEach(a => (g[a.kind] = g[a.kind] || []).push(a));
+  const groups = Object.entries(g).sort((a, b) => b[1].length - a[1].length);
+
+  // Groups start open while the queue is small enough to read in one pass.
+  const autoOpen = rows.length <= PAGE * 2;
+  const totalStake = rows.reduce((s, a) => s + kindOf(a.kind).stake(a.payload || {}), 0);
+
+  return `<div style="padding:22px 0 14px" class="spread wrap-r">
+    <div><h1>Needs you</h1>
+      <div class="muted small">Everything the agents deliberately would not do alone.
+        Each row says why a human is required — that reason is the autonomy rung,
+        not a preference.</div></div>
+    <div class="row wrap-r" style="gap:8px">
+      <select class="in" style="width:auto;padding:6px 11px;font-size:13px"
+              onchange="setApv('sort',this.value)">
+        <option value="urgency" ${APV.sort === 'urgency' ? 'selected' : ''}>Sort: most urgent</option>
+        <option value="value" ${APV.sort === 'value' ? 'selected' : ''}>Sort: most money</option>
+        <option value="newest" ${APV.sort === 'newest' ? 'selected' : ''}>Sort: newest</option>
+      </select>
+      <select class="in" style="width:auto;padding:6px 11px;font-size:13px"
+              onchange="setApv('property',this.value)">
+        <option value="">All properties</option>
+        ${props.map(p => `<option value="${esc(p)}" ${APV.property === p ? 'selected' : ''}>${esc(p)}</option>`).join('')}
+      </select>
+    </div></div>
+
+  ${!rows.length
+    ? `<div class="card"><div class="empty"><div class="big">✓</div>
+        ${APV.property ? 'Nothing waiting on you for ' + esc(APV.property) + '.' : 'Nothing waiting on you.'}
+       </div></div>`
+    : `<div class="card" style="margin-bottom:14px"><div class="card-b tight row wrap-r" style="gap:8px">
+        <span class="pill brand">${rows.length} waiting</span>
+        ${totalStake ? `<span class="pill mute">${esc(money(totalStake))} at stake across the queue</span>` : ''}
+        <span class="small muted">Nothing here is bulk-approvable — see the note at the bottom.</span>
+      </div></div>
+      ${groups.map(([k, list]) => group(k, list, autoOpen)).join('')}
+      <div class="card" style="margin-top:16px"><div class="card-b">
+        <div class="missing">There is no "approve all" in this queue, on purpose. Capital sits at
+          R0 and renewals at R1 because a person is supposed to decide each one; a button that
+          approves rows you have not opened is full autonomy with extra clicks, and it would
+          remove the only control standing between an agent and an owner's money. The
+          concentration line on each group is the honest version — it tells you how much of the
+          money is in the rows you can actually read.</div>
+      </div></div>`}`;
+}
+
+function group(k, list, autoOpen) {
+  const spec = kindOf(k);
+  const sorted = [...list].sort((a, b) => {
+    if (APV.sort === 'newest') return String(b.at).localeCompare(String(a.at));
+    const f = APV.sort === 'value' ? spec.value : spec.urgency;
+    return f(a.payload || {}) - f(b.payload || {});
+  });
+  const open = APV.open[k] ?? autoOpen;
+  const n = Math.min(APV.shown[k] || PAGE, sorted.length);
+  const stakes = sorted.map(a => spec.stake(a.payload || {}));
+  const total = stakes.reduce((s, x) => s + x, 0);
+  const shownStake = stakes.slice(0, n).reduce((s, x) => s + x, 0);
+
+  return `<div class="card" style="margin-bottom:14px">
+    <div class="card-h" style="cursor:pointer" onclick="toggleGroup('${k}')">
+      <div class="row" style="gap:10px">
+        <span class="caret ${open ? 'open' : ''}" aria-hidden="true"></span>
+        <h2>${esc(spec.label)}</h2>
+        <span class="pill mute">${sorted.length}</span>
+      </div>
+      ${total ? `<span class="small muted num">${esc(money(total))} ${esc(spec.unit || '')}</span>` : ''}
+    </div>
+    ${!open ? '' : `
+      <div class="card-b tight" style="border-bottom:1px solid var(--line-2)">
+        <div class="tiny muted">Ordered by ${esc(APV.sort === 'newest' ? 'newest first'
+          : APV.sort === 'value' ? 'largest amount first' : spec.urgencyNote)}.
+          ${total && n < sorted.length
+            ? `The ${n} shown are ${esc(money(shownStake))} of ${esc(money(total))} —
+               <strong>${Math.round(shownStake / total * 100)}% of the money in ${n} of ${sorted.length} rows.</strong>`
+            : total ? `All ${sorted.length} shown.` : ''}</div>
+      </div>
+      <div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+        ${sorted.slice(0, n).map(apCard).join('')}
+        ${n < sorted.length ? `<div class="row" style="gap:8px;justify-content:center;padding-top:4px">
+          <button class="btn sm" onclick="showMore('${k}',${PAGE})">Show ${Math.min(PAGE, sorted.length - n)} more</button>
+          <button class="btn sm ghost" onclick="showMore('${k}',9999)">Show all ${sorted.length}</button>
+        </div>` : ''}
+      </div>`}
+  </div>`;
+}
+
+function setApv(key, val) { APV[key] = val; APV.shown = {}; render(); scrollTo(0, 0); }
+function toggleGroup(k) {
+  const autoOpen = S.approvals.length <= PAGE * 2;
+  APV.open[k] = !(APV.open[k] ?? autoOpen);
+  render();
+}
+function showMore(k, by) {
+  APV.shown[k] = (APV.shown[k] || PAGE) + by;
+  render();
+}
+
+function apCard(a) {
+  const p = a.payload || {};
+  let extra = '';
+  if (a.kind === 'capital') {
+    extra = `<div class="small" style="margin:7px 0">${(p.why || []).map(w => esc(w)).join('<br>')}</div>
+      <div class="row wrap-r" style="gap:7px">
+        <span class="pill mute">${esc(p.age_years)}y of ${esc(p.life_years)}</span>
+        <span class="pill mute">${esc(p.repairs)} repairs · ${esc(money(p.repair_spend))}</span>
+        <span class="pill warn">replace ${esc(money(p.replace_cost))}</span>
+        <span class="pill bad">next failure exposure ${esc(money(p.next_failure_exposure))}</span></div>`;
+  } else if (a.kind === 'renewal') {
+    const risk = p.risk || {};
+    extra = `<div class="row wrap-r" style="gap:7px;margin:7px 0">
+        <span class="pill ${risk.band === 'high' ? 'bad' : risk.band === 'watch' ? 'warn' : 'ok'}">
+          non-renewal risk ${esc(risk.score ?? '—')}</span>
+        <span class="pill mute">rent ${esc(money(p.current_rent))}</span>
+        <span class="pill bad">turnover costs ${esc(money(p.turn_cost?.total))}</span></div>
+      ${(risk.drivers || []).length ? `<div class="tiny muted" style="margin-bottom:7px">Driven by: ${
+        risk.drivers.map(d => esc(`${d.factor} (${d.n})`)).join(' · ')}</div>` : ''}
+      <details><summary class="small" style="cursor:pointer;color:var(--brand)">Read the draft</summary>
+        <div class="small" style="white-space:pre-wrap;margin-top:9px;padding:11px;background:var(--surface-2);border-radius:9px;border:1px solid var(--line)">${esc(p.draft || '')}</div>
+      </details>`;
+  } else if (a.kind === 'spend' || a.kind === 'emergency_review') {
+    const an = p.anomaly || {};
+    extra = `<div class="row wrap-r" style="gap:7px;margin:7px 0">
+      ${p.emergency ? '<span class="pill bad"><span class="dot"></span>P1 — decide fast</span>' : ''}
+      ${a.kind === 'emergency_review' ? '<span class="pill mute">repair already done — reviewing the invoice</span>' : ''}
+      <span class="pill warn">${esc(money(p.amount))}</span>
+      ${an.flag ? `<span class="pill bad">${esc(an.ratio)}× the median for this job</span>` : ''}
+      ${an.median ? `<span class="pill mute">portfolio median ${esc(money(an.median))} (n=${esc(an.n)})</span>` : ''}
+      <span class="pill mute">${esc(p.owner || '')}</span></div>`;
+  } else if (a.kind === 'delinquency' || a.kind === 'legal_referral') {
+    extra = `<div class="row wrap-r" style="gap:7px;margin:7px 0">
+      ${a.kind === 'legal_referral' ? '<span class="pill bad">R0 — drafted for counsel, never sent alone</span>' : ''}
+      <span class="pill warn">${esc(money(p.balance ?? p.amount))} past due</span>
+      <span class="pill mute">${esc(p.days_late)} days late</span></div>
+      ${p.draft ? `<details><summary class="small" style="cursor:pointer;color:var(--brand)">Read the draft</summary>
+        <div class="small" style="white-space:pre-wrap;margin-top:9px;padding:11px;background:var(--surface-2);border-radius:9px;border:1px solid var(--line)">${esc(p.draft)}</div>
+      </details>` : ''}
+      ${p.packet ? `<div class="tiny muted">${esc(p.packet)}</div>` : ''}`;
+  } else if (a.kind === 'trust_alert') {
+    extra = `<div class="row wrap-r" style="gap:7px;margin:7px 0">
+      <span class="pill bad"><span class="dot"></span>disbursement drafting frozen</span>
+      <span class="pill warn">off by ${esc(money(p.amount))}</span></div>`;
+  } else if (a.kind === 'deposit_disposition') {
+    extra = `<div class="row wrap-r" style="gap:7px;margin:7px 0">
+      <span class="pill bad">R0 — legal document on a state deadline</span>
+      <span class="pill mute">${esc(money(p.amount))} held</span></div>
+      ${p.inspection_note ? `<div class="tiny muted">Inspection: ${esc(p.inspection_note)}</div>` : ''}
+      ${p.draft ? `<div class="tiny muted" style="margin-top:5px">${esc(p.draft)}</div>` : ''}`;
+  } else if (a.kind === 'blocked_message') {
+    extra = `<div class="small" style="margin:7px 0">${(p.flags || []).map(f =>
+      `<span class="pill bad" style="margin:2px 4px 2px 0">${esc(f.kind)}: "${esc(f.term)}"</span>`).join('')}</div>
+      <div class="tiny muted">${esc((p.flags || [])[0]?.why || '')}</div>`;
+  }
+  return `<div style="border:1px solid var(--line);border-radius:11px;padding:13px">
+    <div class="spread" style="align-items:flex-start;gap:12px">
+      <div class="stack grow">
+        <strong style="font-size:14px">${esc(a.summary)}</strong>
+        <span class="tiny muted">${esc(a.agent)} agent · ${esc(ago(a.at))}</span>
+      </div>
+      <div class="row" style="gap:6px">
+        <button class="btn sm primary" onclick="decide('${a.id}',true)">Approve</button>
+        <button class="btn sm" onclick="decide('${a.id}',false)">Decline</button>
+      </div></div>
+    ${extra}
+    <div class="tiny muted" style="margin-top:9px;padding-top:9px;border-top:1px solid var(--line-2)">
+      <strong>Why this needs a human:</strong> ${esc(a.why_human)}</div>
+  </div>`;
+}
+
+async function decide(id, ok) {
+  await API.post('/approvals/' + id + '/decide', { approve: ok });
+  S = await API.get('/bootstrap?role=staff');
+  render();
+  toast(ok ? 'Approved' : 'Declined');
+}
+
+/* ----------------------------------------------------------------- leases */
+function leases() {
+  const L = S.leases;
+  const exposure = L.reduce((s, l) => s + (l.turn_cost?.total || 0), 0);
+  const high = L.filter(l => l.risk?.band === 'high');
+  return `<div style="padding:22px 0 16px"><h1>Lease expirations · next 60 days</h1>
+    <div class="muted small">Ranked by non-renewal risk, which is computed from maintenance
+      behaviour — SLA misses, reopened tickets, low repair ratings — not from a survey nobody filled in.</div></div>
+
+  <div class="tiles" style="margin-bottom:16px">
+    ${tile('Expiring in 60 days', { value: L.length }, `${high.length} at high risk`)}
+    ${tile('Turnover exposure', { value: exposure },
+      'if every one of them left', money)}
+    ${tile('Renewal drafts ready', { value: L.filter(l => l.drafted).length },
+      'waiting for you to send')}
+    ${tile('Unscored', { value: L.filter(l => l.risk?.score == null).length },
+      'no maintenance history — not the same as low risk')}
+  </div>
+
+  <div class="card"><div class="tbl-wrap">
+    ${L.length ? `<table class="tbl"><thead><tr>
+      <th>Days</th><th>Unit</th><th>Resident</th><th>Ends</th><th>Rent</th>
+      <th>Non-renewal risk</th><th>What's driving it</th><th>Costs if they go</th></tr></thead><tbody>
+      ${L.map(l => {
+        const r = l.risk || {};
+        const band = r.score == null ? 'mute' : r.band === 'high' ? 'bad' : r.band === 'watch' ? 'warn' : 'ok';
+        return `<tr onclick="leaseDetail('${l.unit_id}')">
+          <td><span class="pill ${l.days_left < 21 ? 'bad' : l.days_left < 45 ? 'warn' : 'mute'}">${l.days_left}d</span></td>
+          <td class="small">${esc(l.property || '')} ${esc(l.unit)}</td>
+          <td class="small">${esc(l.tenant || '')}</td>
+          <td class="small muted num">${esc(dateOnly(l.ends))}</td>
+          <td class="small num">${esc(money(l.rent))}</td>
+          <td>${r.score == null ? '<span class="pill mute">unscored</span>'
+            : `<span class="pill ${band}">${r.score}</span>`}</td>
+          <td class="tiny muted trunc" style="max-width:280px">${
+            r.score == null ? esc(r._missing || '')
+              : esc((r.drivers || []).map(d => d.factor).join(' · ') || 'nothing adverse on file')}</td>
+          <td class="small num muted">${esc(money(l.turn_cost?.total))}</td></tr>`;
+      }).join('')}</tbody></table>`
+      : '<div class="empty"><div class="big">✓</div>No leases expiring in the next 60 days.</div>'}
+  </div></div>`;
+}
+
+async function leaseDetail(unitId) {
+  const l = S.leases.find(x => x.unit_id === unitId);
+  if (!l) return;
+  const mem = await API.get('/units/' + unitId + '/memory');
+  const r = l.risk || {}, t = l.turn_cost || {};
+  $('#drawerH').innerHTML = `<div class="stack">
+    <h2>${esc(l.property || '')} ${esc(l.unit)}</h2>
+    <span class="small muted">${esc(l.tenant || '')} · lease ends ${esc(dateOnly(l.ends))} (${l.days_left} days)</span></div>`;
+  $('#drawerB').innerHTML = `
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:11px">Why this risk score</h3>
+      ${r.score == null ? `<div class="missing">${esc(r._missing || 'not scored')}</div>` : `
+        <div class="row" style="gap:8px;margin-bottom:12px">
+          <span class="pill ${r.band === 'high' ? 'bad' : r.band === 'watch' ? 'warn' : 'ok'}"
+            style="font-size:15px;padding:5px 13px">${r.score}</span>
+          <span class="small muted">${esc(r.basis || '')}</span></div>
+        ${(r.drivers || []).length ? r.drivers.map(d => `
+          <div class="spread" style="padding:7px 0;border-bottom:1px solid var(--line-2)">
+            <span class="small">${esc(d.factor)} <span class="muted">(${esc(d.n)})</span></span>
+            <span class="pill warn">+${d.points}</span></div>`).join('')
+          : '<div class="small muted">Nothing adverse on file. This is a clean tenancy.</div>'}`}
+    </div></div>
+
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:11px">What losing them costs</h3>
+      ${['make_ready', 'vacancy_cost', 'leasing_fee', 'turnover_admin'].map(k => `
+        <div class="spread" style="padding:6px 0"><span class="small muted">${esc(k.replace(/_/g, ' '))}</span>
+          <span class="small num">${esc(money(t[k]))}</span></div>`).join('')}
+      <div class="sep"></div>
+      <div class="spread"><strong>Total</strong><strong class="num">${esc(money(t.total))}</strong></div>
+      <div class="missing" style="margin-top:11px">${esc(t.assumptions || '')}</div>
+    </div></div>
+
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:11px">What this unit knows about itself</h3>
+      ${mem.history_lines?.length
+        ? mem.history_lines.map(h => `<div class="small mono" style="padding:4px 0;color:var(--ink-2)">${esc(h)}</div>`).join('')
+        : '<div class="small muted">No history on file.</div>'}
+    </div></div>`;
+  openDrawer();
+}
+
+/* ------------------------------------------------------------------ leads
+   Intake only, on purpose. Property OS RECORDS demand (inquiries FIFO,
+   referrals as handed over) — working these into a pipeline is the separate
+   Growth module's job. The two hard lines are on screen, not in a wiki:
+   inquiries carry a position, never a score; referrals get a human first
+   touch, never an automated one. */
+function leads() {
+  const G = S.leads || { inquiries: { queue: [], closed: [] }, referrals: [] };
+  const inq = G.inquiries.queue || [];
+  const refs = G.referrals || [];
+  const INQ_NEXT = { new: 'toured', toured: 'applied', applied: 'closed' };
+  const REF_NEXT = { new: 'contacted', contacted: 'won' };
+
+  return `<div style="padding:22px 0 14px" class="spread wrap-r">
+    <div><h1>Leads</h1>
+    <div class="muted small">Recorded demand: leasing inquiries in the order they arrived,
+      and owner referrals as handed over. This screen records and tracks — it never scores
+      an applicant and never sends first-touch outreach.</div></div>
+    <a class="btn sm" href="/growth">Growth pipeline →</a></div>
+
+  ${G.share_url ? `<div class="card" style="margin-bottom:14px">
+    <div class="card-b tight spread wrap-r" style="gap:9px">
+      <div class="stack grow">
+        <strong class="small">The pitch page — your live performance one-pager</strong>
+        <span class="tiny muted">White-label, no names, no balances; every figure computed
+          on open. Send it to a prospective owner, or hand the link to a happy one.</span>
+      </div>
+      <div class="row" style="gap:7px">
+        <a class="btn sm" href="${esc(G.share_url)}" target="_blank" rel="noopener">Open</a>
+        <button class="btn sm" onclick="copyPitch('${esc(G.share_url)}')">Copy link</button>
+        <button class="btn sm ghost" onclick="rotatePitch()">Rotate (revokes old link)</button>
+      </div>
+    </div></div>` : ''}
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-h"><h2>Leasing inquiries</h2>
+      <span class="muted small">${inq.length} in line · <a href="/inquire" target="_blank" rel="noopener" style="color:var(--brand)">the public form</a></span></div>
+    <div class="tbl-wrap">
+      ${inq.length ? `<table class="tbl"><thead><tr>
+        <th>#</th><th>Received</th><th>Name</th><th>Contact</th><th>Home</th><th>Status</th><th></th>
+      </tr></thead><tbody>
+        ${inq.map(x => `<tr style="cursor:default">
+          <td><span class="pill mute num">${x.position}</span></td>
+          <td class="small muted num">${esc(ago(x.at))}</td>
+          <td class="small">${esc(x.name)}</td>
+          <td class="small muted">${esc(x.contact)}</td>
+          <td class="small muted">${esc(x.property || '')} ${esc(x.unit || '—')}</td>
+          <td><span class="pill ${x.status === 'applied' ? 'brand' : x.status === 'toured' ? 'warn' : 'mute'}">${esc(x.status)}</span></td>
+          <td>${INQ_NEXT[x.status] ? `<button class="btn sm" onclick="inqStatus('${x.id}','${INQ_NEXT[x.status]}')">
+              Mark ${esc(INQ_NEXT[x.status])}</button>` : ''}
+            ${x.status !== 'closed' ? `<button class="btn sm ghost" onclick="inqStatus('${x.id}','closed')">Close</button>` : ''}</td>
+        </tr>`).join('')}</tbody></table>`
+        : '<div class="empty"><div class="big">✓</div>Nobody is waiting in line.</div>'}
+    </div>
+    <div class="card-b" style="border-top:1px solid var(--line)">
+      <div class="missing">${esc(G.inquiries.note || 'Worked strictly in the order received.')}
+        There is no score column because there is no score, permanently.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Owner referrals</h2><span class="muted small">${refs.length} on file</span></div>
+    <div class="card-b" style="display:flex;flex-direction:column;gap:11px">
+      ${refs.length ? refs.map(r => `
+        <div style="border:1px solid var(--line);border-radius:11px;padding:13px">
+          <div class="spread wrap-r" style="gap:9px">
+            <div class="stack grow">
+              <strong class="small">${esc(r.name)} <span class="muted" style="font-weight:400">· ${esc(r.contact)}</span></strong>
+              <span class="tiny muted">from ${esc(String(r.source).replace('owner:', 'owner ').replace('human:', ''))} · ${esc(ago(r.at))}</span>
+              ${r.note ? `<span class="small" style="color:var(--ink-2);margin-top:3px">${esc(r.note)}</span>` : ''}
+            </div>
+            <div class="row" style="gap:6px;align-items:center">
+              <span class="pill ${r.status === 'won' ? 'ok' : r.status === 'contacted' ? 'brand' : 'mute'}">${esc(r.status)}</span>
+              ${REF_NEXT[r.status] ? `<button class="btn sm" onclick="refStatus('${r.id}','${REF_NEXT[r.status]}')">
+                  Mark ${esc(REF_NEXT[r.status])}</button>` : ''}
+              ${!['won', 'closed'].includes(r.status) ? `<button class="btn sm ghost" onclick="refStatus('${r.id}','closed')">Close</button>` : ''}
+            </div>
+          </div>
+        </div>`).join('')
+        : '<div class="empty"><div class="big">◈</div>No referrals yet — the ask lives on each owner\'s dashboard.</div>'}
+    </div>
+    <div class="card-b" style="border-top:1px solid var(--line)">
+      <div class="missing">A referral is a name, not consent. First contact is a person's call
+        (referral_outreach sits at R1) — this product records the handoff and what became of it,
+        and does nothing else with it.</div>
+    </div>
+  </div>`;
+}
+
+function copyPitch(u) {
+  const url = location.origin + u;
+  navigator.clipboard?.writeText(url).then(() => toast('Link copied'))
+    .catch(() => toast(url, 6000));
+}
+async function rotatePitch() {
+  const res = await API.post('/growth/rotate_share', {});
+  S.leads.share_url = res.share_url;
+  render(); toast('Rotated — every previously shared link is now dead');
+}
+async function inqStatus(id, status) {
+  await API.post('/inquiries/' + id + '/status', { status });
+  S = await API.get('/bootstrap?role=staff'); render();
+  toast(status === 'closed' ? 'Closed' : 'Marked ' + status);
+}
+async function refStatus(id, status) {
+  await API.post('/referrals/' + id + '/status', { status });
+  S = await API.get('/bootstrap?role=staff'); render();
+  toast('Marked ' + status);
+}
+
+/* ---------------------------------------------------------------- vendors */
+function vendors() {
+  return `<div style="padding:22px 0 16px"><h1>Vendor bench</h1>
+    <div class="muted small">Assignment is a market, not a phone tree. A vendor with fewer than
+      5 resolved jobs has no score and is labelled unrated — a three-job sample is not a rating.</div></div>
+  <div class="card"><div class="tbl-wrap"><table class="tbl"><thead><tr>
+    <th>Score</th><th>Vendor</th><th>Trades</th><th>First-time fix</th><th>SLA hit</th>
+    <th>Response</th><th>Rating</th><th>Avg invoice</th><th>Open</th><th>Compliance</th>
+  </tr></thead><tbody>
+    ${S.vendors.map(v => {
+      const s = v.scorecard || {};
+      const ins = v.insurance_days;
+      const comp = ins != null && ins < 0 ? '<span class="pill bad">insurance expired</span>'
+        : ins != null && ins < 30 ? `<span class="pill warn">insurance ${ins}d</span>`
+          : !v.w9_on_file ? '<span class="pill warn">no W-9</span>'
+            : '<span class="pill ok">clear</span>';
+      return `<tr>
+        <td>${s.rated ? `<span class="pill ${s.score >= 80 ? 'ok' : s.score >= 60 ? 'warn' : 'bad'}"
+          style="font-size:13px">${s.score}</span>` : '<span class="pill mute">unrated</span>'}</td>
+        <td><div class="stack"><strong style="font-size:14px">${esc(v.name)}</strong>
+          ${!v.active ? '<span class="tiny" style="color:var(--bad)">deactivated by compliance</span>' : ''}</div></td>
+        <td class="tiny muted">${esc((v.trades || []).join(', '))}</td>
+        <td class="small num">${s.rated ? pct(s.first_time_fix) : '—'}</td>
+        <td class="small num">${s.rated ? pct(s.sla_hit) : '—'}</td>
+        <td class="small num">${s.rated ? hrs(s.median_response_h) : '—'}</td>
+        <td class="small num">${s.tenant_rating ? s.tenant_rating + '/5' : '—'}</td>
+        <td class="small num">${s.rated ? money(s.avg_invoice) : '—'}</td>
+        <td class="small num muted">${v.open_jobs}</td>
+        <td>${comp}</td></tr>`;
+    }).join('')}
+  </tbody></table></div>
+  <div class="card-b" style="border-top:1px solid var(--line)">
+    <div class="missing">Unrated vendors show "—" rather than a score built on too few jobs.
+      Composite weighting is stated, not hidden: first-time-fix 35%, SLA 25%, resident rating 25%,
+      response speed 15%. Price is deliberately not in the score — the re-dispatch costs more than the invoice.</div>
+  </div></div>
+
+  ${S.vendors.some(v => (v.recent_reviews || []).length) ? `
+  <div class="card" style="margin-top:14px"><div class="card-b">
+    <h3 style="margin-bottom:4px">What residents said</h3>
+    <div class="muted small" style="margin-bottom:11px">The resident's own stars and words from the
+      post-completion review — nothing here is summarized or scored; the scorecard averages the
+      stars, and the words stay verbatim.</div>
+    ${S.vendors.filter(v => (v.recent_reviews || []).length).map(v => `
+      <div style="padding:9px 0;border-top:1px solid var(--line)">
+        <strong class="small">${esc(v.name)}</strong>
+        ${v.recent_reviews.map(rv => `
+          <div class="small" style="margin-top:5px">
+            <span style="color:var(--warn)">${'★'.repeat(rv.rating)}${'☆'.repeat(5 - rv.rating)}</span>
+            <span class="muted">· ${esc(rv.title || '')}</span>
+            ${rv.comment ? `<div class="tiny" style="color:var(--ink-2);margin-top:2px">“${esc(rv.comment)}”</div>` : ''}
+          </div>`).join('')}
+      </div>`).join('')}
+  </div></div>` : ''}`;
+}
+
+/* ----------------------------------------------------------------- agents */
+function agents() {
+  const m = S.metrics.automation;
+  const A = S.autonomy;
+  const rung = { R0: ['bad', 'proposes only'], R1: ['warn', 'you approve'],
+    R2: ['brand', 'acts, tells you'], R3: ['ok', 'fully autonomous'] };
+  return `<div style="padding:22px 0 16px"><h1>The crew</h1>
+    <div class="muted small">Seven agents. The rung on each action is what it may do unattended —
+      earned per action, and the two that never move are marked.</div></div>
+
+  <div class="tiles" style="margin-bottom:16px">
+    ${tile('Running without you', statOrMissing(m, 'rate'),
+      m.moving ? `${m.autonomous} of ${m.moving} pipeline-moving actions` : '', pct)}
+    ${tile('Gated to you', { value: m.agent_gated ?? 0 }, 'agent proposed, you decide')}
+    ${tile('Human-originated', { value: m.human_originated ?? 0 }, 'staff or vendor actions')}
+    ${tile('Approvals waiting', { value: S.metrics.approvals_pending }, 'in the Needs-you queue')}
+  </div>
+
+  <div class="card"><div class="card-h"><h2>Autonomy matrix</h2>
+    <span class="muted small">what each action may do on its own</span></div>
+  <div class="tbl-wrap"><table class="tbl"><thead><tr>
+    <th>Rung</th><th>Action</th><th>Means</th><th>Why it sits there</th></tr></thead><tbody>
+    ${Object.entries(A).map(([k, v]) => `<tr style="cursor:default">
+      <td><span class="pill ${rung[v.rung][0]}">${v.rung}</span></td>
+      <td class="small mono">${esc(k)}${v.limit ? ` <span class="muted">(≤${money(v.limit)})</span>` : ''}</td>
+      <td class="small muted">${esc(rung[v.rung][1])}</td>
+      <td class="small muted">${esc(v.reason)}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="card-b" style="border-top:1px solid var(--line)">
+    <div class="missing">The percentage above is counted from the event log, never asserted.
+      Tenant-originated events are excluded by design — counting a resident filing a request
+      as "automation" is how vendors get to claim 95%.</div>
+  </div></div>`;
+}
+
+async function runAgents() {
+  const b = $('#runBtn'); b.disabled = true; b.textContent = 'Running…';
+  try {
+    const res = await API.post('/agents/run');
+    S = await API.get('/bootstrap?role=staff');
+    render();
+    const counts = Object.entries(res.ran).map(([k, v]) =>
+      `${k} ${Array.isArray(v) ? v.length : '✓'}`).join(' · ');
+    toast(counts, 5000);
+  } finally { b.disabled = false; b.textContent = 'Run agents'; }
+}
+
+/* ------------------------------------------------------------------ money */
+let MONEY = null;
+function moneyView() {
+  if (!MONEY) { API.get('/money/summary').then(m => { MONEY = m; if (VIEW === 'money') render(); });
+    return '<div class="empty"><div class="big">◈</div>Counting the ledger…</div>'; }
+  const m = MONEY, rec = m.reconcile;
+  const batch = (m.batches || []).find(b => b.status === 'draft');
+  return `<div style="padding:22px 0 14px"><h1>Money</h1>
+    <div class="muted small">${esc(m.note)}</div></div>
+
+  <div class="tiles" style="margin-bottom:16px">
+    ${tile('Trust account', { value: m.trust_cash }, 'pooled client funds', money)}
+    ${tile('Reconciliation', rec.ok ? { value: 'balanced' } : { missing: rec.note },
+      rec.ok ? 'cash = owner + deposit liabilities, to the cent' : '')}
+    ${tile('Behind on rent', { value: m.delinquency.length },
+      money(m.delinquency.reduce((s, d) => s + d.balance, 0)) + ' outstanding')}
+    ${tile('Measured vacancy', statOrMissing(m.measured_vacancy, 'days'),
+      m.measured_vacancy.basis || '', d => d + ' days')}
+  </div>
+
+  ${batch ? `<div class="card" style="margin-bottom:14px;border-color:color-mix(in srgb,var(--brand) 40%,transparent)">
+    <div class="card-h"><h2>Draft disbursement batch</h2>
+      <span class="pill brand">${esc(money(batch.total))} across ${batch.lines.length} owners</span></div>
+    <div class="card-b">
+      ${batch.lines.map(l => `<div class="spread" style="padding:6px 0;border-bottom:1px solid var(--line-2)">
+        <span class="small">${esc(l.owner)} <span class="muted">(reserve floor ${esc(money(l.reserve_floor))} kept)</span></span>
+        <strong class="small num">${esc(money(l.amount))}</strong></div>`).join('')}
+      <div class="missing" style="margin:12px 0">${esc(batch.note)}</div>
+      <div class="row" style="gap:8px">
+        <input class="in grow" id="bankref" placeholder="bank reference (required to record execution)">
+        <button class="btn primary" onclick="execBatch('${batch.id}')">I moved this at the bank — record it</button>
+      </div>
+    </div></div>` : ''}
+
+  <div class="card"><div class="card-h"><h2>Delinquency ladder</h2>
+    <span class="muted small">the further behind, the LESS runs alone</span></div>
+  <div class="tbl-wrap">${m.delinquency.length ? `<table class="tbl"><thead><tr>
+    <th>Resident</th><th>Unit</th><th>Balance</th><th>Days late</th><th>Stage</th><th>Record a payment</th>
+    </tr></thead><tbody>
+    ${m.delinquency.map(d => `<tr style="cursor:default">
+      <td class="small">${esc(d.tenant)}</td>
+      <td class="small muted">${esc(d.unit)}</td>
+      <td class="small num">${esc(money(d.balance))}</td>
+      <td><span class="pill ${d.days_late > 30 ? 'bad' : d.days_late > 10 ? 'warn' : 'mute'}">${d.days_late}d</span></td>
+      <td><span class="pill ${d.stage === 'referral' ? 'bad' : d.stage === 'remind' ? 'mute' : 'warn'}">${esc(d.stage)}</span></td>
+      <td><button class="btn sm" onclick="recordPay('${d.tenant_id}', ${d.balance})">Received ${esc(money(d.balance))}</button></td>
+    </tr>`).join('')}</tbody></table>`
+    : '<div class="empty"><div class="big">✓</div>Nobody is behind on rent.</div>'}
+  </div>
+  <div class="card-b" style="border-top:1px solid var(--line)">
+    <div class="missing">Recording a payment states that money ARRIVED (check logged, bank feed) —
+      nothing here charges anyone. Reminder → firm notice → plan → referral each hand MORE of the
+      decision to a human, and the referral packet never moves without one.</div>
+  </div></div>`;
+}
+
+async function execBatch(id) {
+  const ref = $('#bankref').value.trim();
+  if (!ref) return toast('A bank reference is required — "trust me" is not one');
+  try {
+    await API.post('/money/batches/' + id + '/execute', { reference: ref });
+    MONEY = null; render(); toast('Recorded. The ledger moved; the money moved at your bank.');
+  } catch (e) { toast(e.message); }
+}
+async function recordPay(tid, amt) {
+  await API.post('/money/payments', { tenant_id: tid, amount: amt, method: 'ach' });
+  MONEY = null; render(); toast('Payment recorded');
+}
+
+/* ------------------------------------------------------------------ turns */
+let TURNS = null;
+function turns() {
+  if (!TURNS) { API.get('/turnovers').then(t => { TURNS = t; if (VIEW === 'turns') render(); });
+    return '<div class="empty"><div class="big">◈</div>Loading…</div>'; }
+  const STATES = ['notice', 'moveout_scheduled', 'inspected', 'make_ready', 'ready', 'leased'];
+  const open = TURNS.filter(t => t.state !== 'leased');
+  const done = TURNS.filter(t => t.state === 'leased');
+  return `<div style="padding:22px 0 14px"><h1>Turnovers</h1>
+    <div class="muted small">The pipeline exists to MEASURE what turn-cost used to assume:
+      days vacant and make-ready spend.</div></div>
+  ${open.map(t => {
+    const i = STATES.indexOf(t.state);
+    const u = t.unit_id;
+    return `<div class="card" style="margin-bottom:12px"><div class="card-b">
+      <div class="spread" style="margin-bottom:10px">
+        <strong>Unit turnover · ${esc(t.id.slice(-6))}</strong>
+        <span class="pill brand">${esc(t.state.replace(/_/g, ' '))}</span></div>
+      <div class="row wrap-r" style="gap:5px;margin-bottom:11px">
+        ${STATES.map((st, n) => `<span class="pill ${n < i ? 'ok' : n === i ? 'brand' : 'mute'}">${esc(st.replace(/_/g, ' '))}</span>`).join('')}
+      </div>
+      ${t.inspection_note ? `<div class="tiny muted" style="margin-bottom:8px">Inspection: ${esc(t.inspection_note)}</div>` : ''}
+      ${t.tasks?.length ? `<div class="tiny muted" style="margin-bottom:8px">${t.tasks.length} make-ready tasks dispatched through the vendor market</div>` : ''}
+      ${i < STATES.length - 1 ? `<button class="btn sm primary"
+        onclick="advanceTurn('${t.id}', '${STATES[i + 1]}')">Advance to ${esc(STATES[i + 1].replace(/_/g, ' '))}</button>` : ''}
+    </div></div>`;
+  }).join('') || '<div class="card" style="margin-bottom:12px"><div class="empty"><div class="big">✓</div>No turnovers in flight.</div></div>'}
+  <div class="card"><div class="card-h"><h2>Completed</h2><span class="muted small">${done.length} measured</span></div>
+    <div class="card-b">${done.map(t => `<div class="spread" style="padding:5px 0">
+      <span class="small muted">${esc((t.moved_out || '').slice(0, 10))} → ${esc((t.new_lease_start || '').slice(0, 10))}</span>
+      <span class="pill ${t.vacancy_days > 35 ? 'warn' : 'ok'}">${t.vacancy_days} days vacant</span></div>`).join('')
+      || '<div class="small muted">None yet — vacancy stays an assumption until 3 are measured.</div>'}
+    </div></div>`;
+}
+async function advanceTurn(id, to) {
+  try {
+    await API.post('/turnovers/' + id + '/advance', { state: to });
+    TURNS = null; render(); toast('Advanced to ' + to.replace(/_/g, ' '));
+  } catch (e) { toast(e.message); }
+}
+
+/* ---------------------------------------------------------------- drawer */
+async function detail(id) {
+  const [r, bench] = await Promise.all([
+    API.get('/requests/' + id), API.get('/requests/' + id + '/vendors')]);
+  const mem = await API.get('/units/' + r.unit_id + '/memory');
+  const t = r.triage || {};
+  $('#drawerH').innerHTML = `<div class="stack grow">
+    <div class="row" style="gap:6px"><span class="pill ${esc(r.priority)}">${esc(r.priority)} · ${esc(r.priority_label || '')}</span>
+      <span class="pill mute">${esc(STATUS_LABEL[r.status] || r.status)}</span></div>
+    <h2 style="margin-top:7px">${esc(r.title)}</h2>
+    <span class="small muted">${esc(r.property || '')} ${esc(r.unit || '')} · ${esc(r.tenant || '')} · ${esc(ago(r.submitted_at))}</span></div>`;
+
+  $('#drawerB').innerHTML = `
+    <div class="card"><div class="card-b">${tracker(r.status, r.resolution_kind)}
+      <div class="row wrap-r" style="gap:7px;margin-top:14px">
+        ${STATUS_ORDER.map(s => `<button class="btn sm ${r.status === s ? 'primary' : ''}"
+          onclick="setStatus('${r.id}','${s}')">${esc(STATUS_LABEL[s])}</button>`).join('')}
+      </div></div></div>
+
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:9px">What the resident said</h3>
+      <div class="small" style="color:var(--ink-2)">${esc(r.description)}</div>
+      ${(r.photos || []).filter(p => p.file).length ? `<div class="thumbs" style="margin-top:11px">${
+        r.photos.filter(p => p.file).map(p =>
+          `<img src="/photos/${esc(p.file)}" alt="resident photo" style="width:96px;height:96px">`).join('')}</div>` : ''}
+      <div class="row wrap-r" style="gap:6px;margin-top:11px">
+        <span class="pill mute">entry: ${esc(String(r.entry_permission || '').replace(/_/g, ' '))}</span>
+        ${r.pets ? '<span class="pill warn">pets on site</span>' : ''}
+        ${r.entry_notes ? `<span class="pill mute">${esc(r.entry_notes)}</span>` : ''}
+      </div>
+      ${(r.availability_view?.windows || []).length ? `
+      <div class="small" style="margin-top:10px"><strong>Resident availability:</strong>
+        ${r.availability_view.windows.map(w => `<span class="pill ${r.availability_view.state === 'fresh' ? 'ok' : 'warn'}">${esc(w)}</span>`).join(' ')}
+        <div class="tiny muted" style="margin-top:3px">${esc(r.availability_view.note)}</div></div>` : ''}
+      ${r.proposed_window ? `<div class="small" style="margin-top:8px">
+        <span class="pill warn">proposed: ${esc(r.proposed_window.window || '')}</span>
+        <span class="tiny muted">outside the resident's windows — waiting on their answer</span></div>` : ''}
+      </div></div>
+
+    ${(r.proof_photos || []).filter(p => p.file).length ? `<div class="card"><div class="card-b">
+      <h3 style="margin-bottom:9px">Vendor proof of completion</h3>
+      <div class="thumbs">${r.proof_photos.filter(p => p.file).map(p =>
+        (p.kind === 'video' || /\\.(mp4|mov|webm)$/.test(p.file))
+          ? `<video src="/photos/${esc(p.file)}" controls muted playsinline
+               style="width:170px;height:120px;object-fit:cover;border-radius:8px"></video>`
+          : `<img src="/photos/${esc(p.file)}" alt="vendor proof" style="width:96px;height:96px">`
+      ).join('')}</div>
+      <div class="hint">Attached by the vendor at completion — closing from the job card
+        requires it.</div>
+    </div></div>` : ''}
+
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:9px">Triage <span class="pill brand tiny">${esc(t.source || 'rules')}</span></h3>
+      <div class="stack" style="gap:8px">
+        <div class="spread"><span class="small muted">Likely cause</span>
+          <span class="small" style="text-align:right;max-width:62%">${esc(t.likely_cause || '—')}</span></div>
+        <div class="spread"><span class="small muted">Confidence</span>
+          <span class="small num">${t.confidence != null ? pct(t.confidence) : '—'}</span></div>
+        ${(t.parts_to_bring || []).length ? `<div class="spread" style="align-items:flex-start">
+          <span class="small muted">Bring</span>
+          <span class="small" style="text-align:right;max-width:62%">${esc(t.parts_to_bring.join(', '))}</span></div>` : ''}
+        ${t.reasoning ? `<div class="small muted" style="border-top:1px solid var(--line-2);padding-top:9px">${esc(t.reasoning)}</div>` : ''}
+        ${(t.reasons || []).length ? `<div class="tiny muted">${esc(t.reasons.join(' · '))}</div>` : ''}
+      </div></div></div>
+
+    <div class="card"><div class="card-h"><h3>Vendor</h3>
+      <span class="small muted">${r.vendor ? esc(r.vendor) : 'unassigned'}</span></div>
+      <div class="card-b" style="display:flex;flex-direction:column;gap:9px">
+        ${bench.slice(0, 4).map(v => `
+          <div class="spread" style="gap:10px;padding:9px;border:1px solid ${
+            v.vendor_id === r.vendor_id ? 'var(--brand)' : 'var(--line)'};border-radius:10px">
+            <div class="stack grow">
+              <div class="row" style="gap:7px"><strong class="small">${esc(v.name)}</strong>
+                <span class="pill ${v.score >= 80 ? 'ok' : v.score >= 55 ? 'warn' : 'bad'}">${v.score}</span></div>
+              <span class="tiny muted">${esc((v.why || []).join(' · '))}</span></div>
+            ${v.vendor_id === r.vendor_id ? '<span class="pill brand">assigned</span>'
+              : `<button class="btn sm" onclick="assign('${r.id}','${v.vendor_id}')">Assign</button>`}
+          </div>`).join('')}
+      </div></div>
+
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:9px">This unit's memory</h3>
+      ${mem.history_lines?.length
+        ? mem.history_lines.map(h => `<div class="small mono" style="padding:3px 0;color:var(--ink-2)">${esc(h)}</div>`).join('')
+        : '<div class="small muted">Nothing on file yet.</div>'}
+    </div></div>
+
+    <div class="card"><div class="card-b">
+      <h3 style="margin-bottom:11px">Everything that happened</h3>
+      ${timeline(r.timeline)}
+    </div></div>`;
+  openDrawer();
+}
+
+async function setStatus(id, s) {
+  await API.post('/requests/' + id + '/status', { status: s });
+  S = await API.get('/bootstrap?role=staff'); render(); detail(id); toast('Moved to ' + STATUS_LABEL[s]);
+}
+async function assign(id, vid) {
+  await API.post('/requests/' + id + '/assign', { vendor_id: vid });
+  S = await API.get('/bootstrap?role=staff'); render(); detail(id); toast('Vendor assigned');
+}
+
+function wire() {}
+const openDrawer = () => { $('#drawer').classList.add('on'); $('#scrim').classList.add('on'); };
+const closeDrawer = () => { $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); };
+addEventListener('keydown', e => e.key === 'Escape' && closeDrawer());
+
+load();
+</script>
+</body>
+</html>

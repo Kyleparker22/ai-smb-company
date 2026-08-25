@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consign OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-floor"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Software never calls an item genuine
+and never denies a claim; payouts and markdowns are the recorded agreement's arithmetic; offers
+below the consignor's recorded floor cannot be accepted by software; listings go only to the shop's
+business channels — there is no personal-account channel by construction.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'floor',label:'The floor & ledger'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,floor,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.storefronts} storefronts · channels: ${(d.config.channels||[]).join(', ')}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The floor, counted', '',
+      `<div class="grid">
+        ${stat('Intake, unlisted', fmt.num(b.unlisted), 'inventory earning nothing', b.unlisted?'warn':'')}
+        ${stat('Listed & aging', fmt.num(b.aged), 'markdowns run on the recorded schedule')}
+        ${stat('Payouts owed', fmt.money(b.owed_total), b.owed_unpayable?`+ ${b.owed_unpayable} unpayable — missing inputs named, never estimated`:'the agreement\'s arithmetic', b.owed_total?'alert':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the claim reads first', b.messages_open?'bad':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', fmt.money(b.recovered.sales_value),
+               `${b.recovered.items_sold} sold · ${b.recovered.payouts_paid} payout(s) paid · ${b.recovered.listings_published} listing(s) published · ${b.recovered.reclaim_notices_sent} notice(s) sent`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The counterfeit accusation gets a procedure, not a counter argument:
+      the record pulled, <b>no denial and no verdict</b> — software never calls an item genuine or
+      fake. An offer below the consignor's recorded floor gets a counter, never an acceptance.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='claim'?'bad':m.label==='auth_ask'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      ${s.record&&s.record.line?`<div class="why">record: ${esc(s.record.line)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function floor(){
+  const d = await API.get('/api/floor');
+  document.getElementById('v-floor').innerHTML =
+    `<div class="banner warn">Try it: list the recalled crib — refused at the wall; list without
+      condition notes — refused; payout with a missing sale price — refused with the field named;
+      donate inside the reclaim window — refused.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="listIt('it_demo_recall')">List: drop-side crib</button>
+      <button class="act" onclick="listIt('it_demo_nocond')">List: no condition notes</button>
+      <button class="act primary" onclick="payout('it_demo_sold')">Payout: the agreement's math</button>
+      <button class="act" onclick="payout('it_demo_nosplit')">Payout: missing sale price</button>
+      <button class="act" onclick="donate('it_demo_interm')">Donate: in term</button>
+      <button class="act" onclick="donate('it_demo_expired')">Donate: clock done, no human</button>
+     </div><div id="fout"></div>` +
+    panel('Payouts owed', esc(d.note), table(
+      [{label:'Consignor'},{label:'Item'},{label:'Amount',num:true},{label:''}],
+      d.owed, o=>`<td>${esc(o.consignor||'')}</td><td>${esc(o.title||'')}</td>
+        <td class="num">${o.amount!=null?fmt.money(o.amount):'—'}</td>
+        <td class="why">${o.unpayable?esc(o.unpayable):''}</td>`), true) +
+    panel('Listed & aging', 'clock states are DATE ALERTS from the recorded agreement', table(
+      [{label:'Item'},{label:'List',num:true},{label:'Now',num:true},{label:'Days',num:true},{label:'Clock'}],
+      d.aged, a=>`<td>${esc(a.title||'')}</td><td class="num">${fmt.money(a.list_price)}</td>
+        <td class="num">${a.current_price!=null?fmt.money(a.current_price):'—'}</td>
+        <td class="num">${a.days_listed??'—'}</td>
+        <td>${pill(a.state, a.state==='clock_complete'?'warn':'')} <span class="why">${esc(a.label||'')}</span></td>`), true) +
+    panel('Intake, unlisted', 'the backlog earning nothing', table(
+      [{label:'Item'},{label:'Days waiting',num:true}],
+      d.unlisted, u=>`<td>${esc(u.title||'')}</td><td class="num">${u.days_waiting}</td>`), true);
+}
+async function listIt(id){
+  const r = await API.post(`/api/items/${id}/list`);
+  document.getElementById('fout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Listing drafted', esc(r.note), `<div class="strong">${esc(r.listing.body)}</div>
+        <div class="why">channels: ${r.listing.channels.join(', ')}</div>`);
+}
+async function payout(id){
+  const r = await API.get(`/api/items/${id}/payout`);
+  document.getElementById('fout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Payout drafted', esc(r.note), `<div class="strong">${fmt.money(r.amount)} — ${esc(r.basis)}</div>
+        <div class="why">${esc(r.agreement_source)}</div>`);
+}
+async function donate(id){
+  const r = await API.post(`/api/items/${id}/donate`,{});
+  document.getElementById('fout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Donated', '', `<div class="strong">${esc(r.why)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['items_listed_month','Items through/mo','counted'],['min_per_listing','Min per listing','your number'],
+    ['rate','Rate','your number'],['aged_value','Aged inventory value','counted'],
+    ['sell_lift','Sell-through lift','your number (0–1)'],['shop_share','Shop share','your number (0–1)'],
+    ['counterfeit_value','The counterfeit file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    `<div class="banner">Channels this build can reach: <b>${au.channels.join(' · ')}</b> — a
+      personal marketplace account is not on the list, by construction.</div>` +
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+2026-07-06 — The monthly close reconciles the ledger; it doesn't just re-flag
+
+Source: Charles, June 2026 monthly close (`finance/readouts/2026-06.md`)
+Pattern: For weeks the finance pulses listed the same receipt-confirmed charges as "logging gaps to fix" (Canva $15→$18, ElevenLabs $6, Twilio $20, Tailscale $8) without booking them, so the ledger drifted ~$276+/mo behind reality before model spend. The distinction that matters: a charge with a **receipt in hand** is not a gap to flag — it's an entry to log. A charge whose **amount only a human has** (Anthropic top-up, TBD tiers, the Instantly cancel-vs-keep decision) is the real human-in-loop gap. Also: Anthropic model spend leaves **no email receipt** (prepaid balance), so it is invisible to any inbox sweep and must be supplied by the Founder + quantified by Atlas — it will never reconcile itself.
+Implication: At each close, **book every receipt-confirmed charge into `expenses.md` in the same run** (that's SOP step 2, "log any missing entries") and reserve the "flag for the Founder" list for items that genuinely need a human decision or a figure only he has. Don't carry receipt-sourced numbers as open flags — that's the drift CLAUDE.md's change-one-sweep-all rule warns about. Always separately chase the Anthropic top-up $ + `token_spend.md`, since no receipt will ever surface it.
+Audience: Charles (finance), Atlas (owns `token_spend.md` model-spend rollup).
+
+Triggers: agent:charles, loop:finance-close, monthly close, reconcile the ledger, token spend rollup

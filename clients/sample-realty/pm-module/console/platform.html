@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Property Management OS — the platform</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+    --ok:#1D7A46; --amber:#B26A00;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 28px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  header{background:var(--ink);color:var(--on-dark);padding:34px 0 30px}
+  header .bar{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .mark{font-family:Didot,Georgia,serif;font-size:22px}
+  .mark i{font-style:normal;color:var(--red)}
+  .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--on-dark-soft);margin-left:12px;vertical-align:2px}
+  header h1{font-family:Didot,Georgia,serif;font-size:clamp(24px,3vw,34px);font-weight:400;margin-top:10px}
+  header h1 em{font-style:italic}
+  .asof{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-dark-soft)}
+
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--line);background:#fff}
+  @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}
+  .st{padding:20px 24px;border-right:1px solid var(--line)}
+  .st:last-child{border-right:0}
+  .st b{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400;display:block}
+  .st b i{font-style:normal;color:var(--red)}
+  .st span{font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+
+  section{padding:44px 0 8px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--red)}
+  h2{font-family:Didot,Georgia,serif;font-size:23px;font-weight:400;margin-top:6px}
+  h2 em{font-style:italic;color:var(--red)}
+  .note{font-family:Didot,Georgia,serif;font-size:12px;font-style:italic;color:var(--ink-soft);margin-top:4px}
+
+  table{width:100%;border-collapse:collapse;margin-top:16px;background:#fff;font-size:13px}
+  th{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark);background:var(--ink);text-align:left;padding:10px 14px}
+  td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.money{font-family:Didot,Georgia,serif;white-space:nowrap}
+  td .sub{font-family:Didot,Georgia,serif;font-size:11px;font-style:italic;color:var(--ink-soft)}
+  .chip{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:8.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:4px 11px;border-radius:9999px;white-space:nowrap}
+  .chip.wait{background:var(--warm);color:var(--amber);border:1px solid rgba(178,106,0,.35)}
+  .chip.ok{background:rgba(29,122,70,.1);color:var(--ok)}
+  .chip.flag{background:rgba(239,0,4,.08);color:var(--red)}
+  .chip.dark{background:var(--ink);color:var(--on-dark)}
+
+  .duo{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+  @media(max-width:960px){.duo{grid-template-columns:1fr}}
+
+  .watch{background:var(--ink);color:var(--on-dark);padding:26px 28px;margin-top:16px}
+  .watch .t{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--red)}
+  .w{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-dark);font-size:13px;align-items:baseline}
+  .w:last-child{border-bottom:0}
+  .w i{font-style:normal;color:var(--red);font-family:Didot,Georgia,serif}
+  .w .act{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-soft);display:block;margin-top:2px}
+
+  .cal{background:#fff;border:1px solid var(--line);margin-top:16px}
+  .c{display:flex;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
+  .c:last-child{border-bottom:0}
+  .c .d{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--red);min-width:70px}
+
+  footer{margin-top:52px;background:#0d0d11;color:var(--on-dark);padding:26px 0;text-align:center}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);max-width:90ch;margin:0 auto}
+</style>
+<style>
+  .empty{background:#fff;border:1px dashed var(--line);padding:26px 24px;margin-top:16px;text-align:center}
+  .empty .lab{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.18em;
+              text-transform:uppercase;color:var(--ink-soft)}
+  .empty .say{font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--ink-soft);margin-top:8px}
+  .st b.dash{color:var(--line);font-style:normal}
+  th.q{color:var(--on-dark-soft)}
+  .feeds{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .feeds span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;font-weight:600;letter-spacing:.12em;
+              text-transform:uppercase;padding:5px 11px;border:1px solid var(--line);border-radius:9999px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="ribbon">the platform — no portfolio loaded</div>
+
+<header><div class="wrap">
+  <div class="bar">
+    <div>
+      <div class="mark">P<i>·</i>R<span>Property Management</span></div>
+      <h1>The morning view.</h1>
+    </div>
+    <div class="asof">one screen · everything that needs a decision today</div>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div class="stats">
+    <div class="st"><b class="dash">—</b><span>Doors under management</span></div>
+    <div class="st"><b class="dash">—</b><span>Occupied · paying</span></div>
+    <div class="st"><b class="dash">—</b><span>Monthly rents in place</span></div>
+    <div class="st"><b class="dash">—</b><span>Monthly PM fees</span></div>
+    <div class="st"><b class="dash">—</b><span>Flags open</span></div>
+  </div>
+
+  <section>
+    <div class="kicker">Rent board</div>
+    <h2>Who's paid, who's due, who gets a <em>nudge.</em></h2>
+    <div class="note">Every tenancy, its expected rent, and how it has actually behaved month to month.
+      Reminders draft themselves after the grace window; the agent approves every send.</div>
+    <table>
+      <tr><th>Property</th><th>Tenant</th><th>Expected</th><th class="q">Status</th><th class="q">History</th></tr>
+    </table>
+    <div class="empty"><div class="lab">No portfolio loaded</div>
+      <div class="say">One row per door, drawn from the lease registry and the bank feed.</div></div>
+  </section>
+
+  <div class="duo">
+    <section>
+      <div class="kicker">Owners &amp; funds held</div>
+      <h2>Every landlord, <em>to the penny.</em></h2>
+      <div class="note">Each owner's balance is the sum of their properties' ledgers — not a figure anyone types.</div>
+      <table><tr><th>Owner</th><th>Doors</th><th>Held</th><th class="q">Statement</th></tr></table>
+      <div class="empty"><div class="lab">No owners loaded</div>
+        <div class="say">Monthly statements draft themselves here.</div></div>
+    </section>
+
+    <section>
+      <div class="kicker">Maintenance</div>
+      <h2>Every repair, on the <em>right ledger.</em></h2>
+      <div class="note">A ticket carries its cost to the property ledger and the owner's statement without being entered twice.</div>
+      <table><tr><th>Date</th><th>Property</th><th>Item</th><th>Cost</th></tr></table>
+      <div class="empty"><div class="lab">No tickets</div>
+        <div class="say">Intake → draft → approve → dispatch → posted.</div></div>
+    </section>
+  </div>
+
+  <section>
+    <div class="kicker">The watchdogs</div>
+    <h2>What the system is <em>always watching.</em></h2>
+    <div class="watch">
+      <div class="t">Standing checks</div>
+      <div class="w"><i>●</i><div>Rent not received by the end of the grace window
+        <span class="act">drafts a reminder · never sends without approval</span></div></div>
+      <div class="w"><i>●</i><div>A property ledger drifting negative
+        <span class="act">flags an owner top-up before it becomes other owners' money</span></div></div>
+      <div class="w"><i>●</i><div>Entries not yet cleared against the bank
+        <span class="act">ages them and surfaces the backlog</span></div></div>
+      <div class="w"><i>●</i><div>Security deposits not moved to the deposit account
+        <span class="act">a licence condition, checked continuously</span></div></div>
+      <div class="w"><i>●</i><div>A tenancy that has gone quiet
+        <span class="act">asks the one question that resolves the books</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker">Compliance calendar</div>
+    <h2>Nothing <em>sneaks up.</em></h2>
+    <div class="note">Regulatory, not optional — the dates are fixed by the licence and the lease, not by the portfolio.</div>
+    <div class="cal">
+      <div class="c"><div class="d">Monthly</div><div>NCREC trust reconciliation and trial balance — generated, not typed</div></div>
+      <div class="c"><div class="d">Monthly</div><div>Owner statements drafted for every landlord</div></div>
+      <div class="c"><div class="d">Move-out</div><div>NC 30-day security-deposit itemisation clock starts automatically</div></div>
+      <div class="c"><div class="d">90/60/30</div><div>Lease renewal radar ahead of each expiry</div></div>
+      <div class="c"><div class="d">January</div><div>1099 totals per owner, accumulated all year</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker">What feeds it</div>
+    <h2>Where the numbers <em>come from.</em></h2>
+    <div class="note">Nothing on this screen is hand-entered. Each panel is a view over one of these.</div>
+    <div class="feeds">
+      <span>Bank statement feed</span><span>Lease &amp; rent registry</span><span>Trust-account journal</span>
+      <span>Maintenance tickets</span><span>Owner agreements</span><span>MLS · vacancy status</span>
+    </div>
+  </section>
+</div>
+
+<footer><div class="wrap"><div class="fine">
+  The platform with no portfolio loaded. Every panel above is a view over generated books —
+  the journal, the per-property ledgers and the trial balance stay in sync because they are the same data,
+  not three documents kept alongside each other. The system drafts; money moves only by the agent's hand.
+</div></div></footer>
+
+</body>
+</html>

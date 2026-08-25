@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-calendar"></section>
+  <section class="view" id="v-billing"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Allergen conversations are handled
+by trained humans only, a locked-window BEO change is never auto-applied, a space is never
+double-booked, and a bill never exceeds the recorded count plus recorded additions.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'calendar',label:'Calendar'},
+      {id:'billing',label:'Final-count billing'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,calendar,billing,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.revenue} · ~${d.config.events_yr} events/yr`;
+  document.getElementById('v-board').innerHTML =
+    panel('The calendar, counted', '',
+      `<div class="grid">
+        ${stat('Upcoming events', fmt.num(b.upcoming), '')}
+        ${stat('Inside the 72h lock', fmt.num(b.locked_window), 'changes queue for a human — never auto-applied', b.locked_window?'warn':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.changes_confirmed} · ${b.recovered.bookings_made} · ${b.recovered.replies_sent}`,
+               'changes confirmed · bookings made · replies sent — from the log')}</div>`) +
+    panel('Next up', '', table([{label:'Event'},{label:'Date'},{label:'Guests',num:true},{label:''}],
+      b.upcoming_top, e=>`<td>${esc(e.name)}</td><td>${fmt.stamp(e.date)}</td>
+        <td class="num">${e.guests}</td>
+        <td>${e.locked?pill('LOCKED — 72h window','bad'):pill('open','good')}</td>`), true);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An allergen note gets <b>no drafted answer</b> — the wrong reassurance
+      is an ambulance at the reception. A change inside the lock window queues for a human with the
+      kitchen impact named.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='allergen'?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function calendar(){
+  const d = await API.get('/api/spaces');
+  document.getElementById('v-calendar').innerHTML =
+    `<div class="banner warn">Try booking The Barn on the demo wedding's date — refused. Two parties
+      at one door is not a scheduling style.</div>` +
+    panel('Spaces', '', table([{label:'Space'},{label:'Capacity',num:true},{label:''}],
+      d.rows, s=>`<td>${esc(s.name)}</td><td class="num">${s.capacity}</td>
+        <td class="right"><button class="act" onclick="tryBook('${s.id}')">Book on the locked demo date</button></td>`), true) +
+    `<div id="cout"></div>`;
+}
+async function tryBook(id){
+  const dt = new Date(Date.now()+40*3600*1000).toISOString();
+  const r = await API.post('/api/book', {space_id: id, date: dt, guests: 100, name: 'conflict demo'});
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Clear', '', `<div class="strong">booking drafted at R1</div>`);
+}
+
+async function billing(){
+  document.getElementById('v-billing').innerHTML =
+    `<div class="banner warn">The bill = guaranteed count × per-head + <b>recorded</b> additions.
+      A remembered addition is a dispute, not a charge.</div>` +
+    `<div style="margin:10px 0">
+      <button class="act primary" onclick="inv('ev_demo_locked')">Invoice the demo wedding (has an unrecorded add)</button>
+      <button class="act" onclick="inv('ev_demo_open')">Invoice the corporate dinner (no final count yet)</button>
+     </div><div id="bout"></div>`;
+}
+async function inv(id){
+  const r = await API.post(`/api/bookings/${id}/invoice`);
+  document.getElementById('bout').innerHTML = r._missing ? panel('Cannot bill', '', blank(r._missing)) :
+    panel('Invoice', r.basis, `
+      <div class="grid">${stat('Total', fmt.money(r.total))}${stat('Count', fmt.num(r.final_count))}${stat('Per head', fmt.money(r.per_head))}</div>
+      ${(r.additions||[]).map(a=>`<div class="why">+ ${esc(a.desc)}: ${fmt.money(a.amount)} (recorded)</div>`).join('')}
+      ${(r.excluded||[]).map(a=>`<div class="banner warn" style="margin-top:8px">EXCLUDED ${esc(a.desc)} ${fmt.money(a.amount)}: ${esc(a.why)}</div>`).join('')}`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['inquiries_yr','Inquiries','counted'],['close_lift','Close lift','your number (0–1)'],
+    ['avg_event','Avg event value','your number'],['events_yr','Events/yr','counted'],
+    ['hours_per_event','Coordination hrs/event','your number'],['coordinator_rate','Coordinator rate','your number'],
+    ['beo_errors_yr','BEO errors/yr','your history'],['avg_makegood','Avg make-good','your history'],
+    ['allergen_value','Allergen discipline worth','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'director'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

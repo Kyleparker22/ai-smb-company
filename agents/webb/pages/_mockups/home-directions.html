@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yourco — home hero directions (mockup)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{
+    --indigo:#161B33;--indigo-deep:#0F1226;--indigo-2:#1c2240;
+    --cream:#F4EFE6;--cream-2:#E8E1D3;--parchment:#EAE1CD;--surface:#FBFAF7;
+    --brass:#B8965A;--brass-bright:#D4B27A;--oxblood:#6B1E29;--pewter:#6E7180;
+    --ink-muted:rgba(22,27,51,.62);--hairline:rgba(22,27,51,.12);
+    --on-dark:#F4EFE6;--on-dark-muted:rgba(244,239,230,.66);--hairline-dark:rgba(244,239,230,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--indigo);
+    font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .serif{font-family:"Fraunces",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:560;letter-spacing:-.02em;line-height:1.02}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 40px}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
+  .pill{display:inline-flex;align-items:center;gap:.5em;background:var(--brass);color:var(--indigo);
+    text-decoration:none;font-weight:600;font-size:17px;padding:14px 28px;border-radius:9999px;border:1px solid var(--brass);cursor:pointer}
+  .pill.ghost{background:transparent;color:var(--brass);padding:14px 6px;border-color:transparent}
+  .rule{display:flex;align-items:center;gap:10px;margin:26px 0}
+  .rule .line{height:1px;background:var(--brass);flex:1;opacity:.55}
+  .rule .dia{width:7px;height:7px;background:var(--brass);transform:rotate(45deg)}
+  .sub{font-size:19px;color:var(--ink-muted);max-width:34ch;line-height:1.55}
+
+  /* switcher chrome */
+  .switch{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.86);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--hairline)}
+  .switch .wrap{display:flex;align-items:center;gap:8px;height:60px}
+  .switch b{font-weight:600;font-size:14px;margin-right:8px}
+  .tab{border:1px solid var(--hairline);background:transparent;color:var(--indigo);font:inherit;font-size:13px;
+    padding:8px 14px;border-radius:9999px;cursor:pointer;opacity:.7}
+  .tab.on{background:var(--indigo);color:var(--cream);border-color:var(--indigo);opacity:1}
+  .cap{margin-left:auto;font-size:12.5px;color:var(--ink-muted)}
+  .note{background:var(--parchment);border-bottom:1px solid var(--hairline)}
+  .note .wrap{padding:12px 40px;font-size:13px;color:var(--ink-muted)}
+  .note b{color:var(--indigo)}
+
+  /* shared mini top-nav inside each hero */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:30px 0 0}
+  .mark{font-size:22px;font-weight:600}.mark .dot{color:var(--brass)}
+  .navlinks{display:flex;gap:26px;font-size:14px;color:var(--ink-muted)}
+  .navlinks .cta{color:var(--indigo);background:var(--brass);padding:9px 18px;border-radius:9999px;font-weight:600}
+
+  .hero{display:none;min-height:calc(100vh - 60px);padding-bottom:60px}
+  .hero.on{display:block}
+
+  /* A — Restraint (Aesop): centered, type-only, max whitespace */
+  #A .core{max-width:960px;margin:0 auto;text-align:center;padding:118px 0 0}
+  #A h1{font-size:clamp(46px,7.4vw,104px)}
+  #A .rule{max-width:280px;margin:34px auto}
+  #A .sub{margin:0 auto 40px;max-width:52ch;text-align:center;font-size:20px}
+
+  /* B — Editorial (Anthropic): left column + quiet reliability device */
+  #B .core{display:grid;grid-template-columns:1.35fr .65fr;gap:60px;align-items:center;padding:96px 0 0}
+  #B h1{font-size:clamp(42px,5.6vw,82px)}
+  #B .eyebrow{display:block;margin-bottom:22px}
+  #B .rule{max-width:340px}
+  #B .cta-row{display:flex;align-items:center;gap:18px;margin-top:38px}
+  #B .aside{border-left:1px solid var(--hairline);padding-left:34px}
+  #B .aside .k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-bottom:16px}
+  #B .relrow{display:flex;align-items:baseline;gap:10px;padding:12px 0;border-bottom:1px solid var(--hairline)}
+  #B .relrow:last-child{border-bottom:0}
+  #B .relrow .dot{width:6px;height:6px;border-radius:50%;background:var(--brass);align-self:center}
+  #B .relrow .nm{font-weight:600;font-size:15px}
+  #B .relrow .st{margin-left:auto;font-size:11.5px;color:var(--ink-muted)}
+
+  /* C — Proof-forward (Stripe/structured): split with an approval-gate card */
+  #C .core{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding:88px 0 0}
+  #C h1{font-size:clamp(40px,5vw,76px)}
+  #C .eyebrow{display:block;margin-bottom:22px}
+  #C .rule{max-width:320px}
+  #C .cta-row{display:flex;align-items:center;gap:18px;margin-top:36px}
+  .card{background:var(--surface);border:1px solid var(--hairline);border-radius:14px;padding:24px;box-shadow:0 24px 60px -34px rgba(22,27,51,.35)}
+  .card .hd{display:flex;align-items:center;gap:11px;padding-bottom:16px;border-bottom:1px solid var(--hairline)}
+  .card .ic{width:34px;height:34px;border-radius:9px;background:var(--indigo);color:var(--cream);display:grid;place-items:center;font-size:15px}
+  .card .hd .t{font-weight:600;font-size:15px}
+  .card .hd .s{font-size:12px;color:var(--ink-muted)}
+  .card .body{font-size:14.5px;color:#2a3050;line-height:1.5;padding:16px 0 18px;border-bottom:1px solid var(--hairline)}
+  .card .foot{display:flex;align-items:center;gap:10px;padding-top:16px}
+  .card .approve{background:var(--brass);color:var(--indigo);font-weight:600;font-size:13.5px;padding:9px 18px;border-radius:9999px}
+  .card .edit{font-size:13.5px;color:var(--ink-muted)}
+  .card .flag{margin-left:auto;font-size:11px;color:var(--brass);border:1px solid var(--brass);padding:5px 10px;border-radius:9999px}
+  .status{margin-top:14px;font-size:11.5px;color:var(--ink-muted);letter-spacing:.02em;text-align:center}
+  .status b{color:var(--oxblood)}
+
+  /* R — Recommended: B's editorial hero + C's approval-gate card */
+  #R .core{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center;padding:92px 0 0}
+  #R h1{font-size:clamp(42px,5.4vw,80px)}
+  #R .eyebrow{display:block;margin-bottom:22px}
+  #R .rule{max-width:320px}
+  #R .cta-row{display:flex;align-items:center;gap:18px;margin-top:36px}
+
+  @media(max-width:860px){
+    #B .core,#C .core,#R .core{grid-template-columns:1fr;gap:44px}
+    #B .aside{border-left:0;border-top:1px solid var(--hairline);padding:28px 0 0}
+    .cap{display:none}.wrap{padding:0 24px}
+  }
+</style>
+</head>
+<body>
+
+  <div class="switch"><div class="wrap">
+    <b>Home hero</b>
+    <button class="tab on" data-t="R">★ Recommended</button>
+    <button class="tab" data-t="A">A · Restraint</button>
+    <button class="tab" data-t="B">B · Editorial</button>
+    <button class="tab" data-t="C">C · Proof-forward</button>
+    <span class="cap" id="cap"></span>
+  </div></div>
+  <div class="note"><div class="wrap" id="noteTxt"></div></div>
+
+  <!-- ============ R · RECOMMENDED (B editorial hero + C proof card) ============ -->
+  <section class="hero on" id="R"><div class="wrap">
+    <div class="top"><div class="mark serif" style="font-family:inherit">yourco<span class="dot">.</span></div>
+      <div class="navlinks"><span>How it works</span><span>What we build</span><span>Pricing</span><span class="cta">Book a call</span></div></div>
+    <div class="core">
+      <div>
+        <span class="eyebrow">Boutique AI Implementation</span>
+        <h1 class="serif">We learn your business. Then build the system to run it.</h1>
+        <div class="rule"><span class="dia"></span><span class="line"></span></div>
+        <p class="sub">An audit finds the bottleneck costing you most; then we build and <span style="font-weight:600;color:var(--indigo)">operate</span> a custom AI system fit to your business. First capability live in 48 hours — you own the outcome, never the tokens or infrastructure.</p>
+        <div class="cta-row"><a class="pill">Start with the audit →</a><a class="pill ghost">or book 30 min →</a></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="hd"><span class="ic">✉</span><div><div class="t">Follow-up to a new lead</div><div class="s">drafted by your AI system</div></div></div>
+          <div class="body">"Hi Marcus — thanks for reaching out about the patio project. I've got you penciled for a site visit Thursday 2–4pm; the estimate follows same day. Anything I should know before we come out?"</div>
+          <div class="foot"><span class="approve">✓ Approve</span><span class="edit">Edit</span><span class="flag">Awaiting you</span></div>
+        </div>
+        <div class="status mono">your AI drafts · you approve · then it sends — <b>nothing sends without your say-so</b></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ============ A · RESTRAINT (Aesop) ============ -->
+  <section class="hero" id="A"><div class="wrap">
+    <div class="top"><div class="mark serif" style="font-family:inherit">yourco<span class="dot">.</span></div>
+      <div class="navlinks"><span>How it works</span><span>What we build</span><span>Pricing</span><span class="cta">Book a call</span></div></div>
+    <div class="core">
+      <div class="eyebrow">Boutique AI Implementation</div>
+      <h1 class="serif" style="margin-top:26px">We learn your business.<br>Then build the system<br>to run it.</h1>
+      <div class="rule"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+      <p class="sub">We start with an audit — find the bottleneck costing you most — then build and operate a custom AI system fit to how your business actually works. First capability live in 48 hours.</p>
+      <a class="pill">Start with the audit →</a>
+    </div>
+  </div></section>
+
+  <!-- ============ B · EDITORIAL (Anthropic) ============ -->
+  <section class="hero" id="B"><div class="wrap">
+    <div class="top"><div class="mark serif" style="font-family:inherit">yourco<span class="dot">.</span></div>
+      <div class="navlinks"><span>How it works</span><span>What we build</span><span>Pricing</span><span class="cta">Book a call</span></div></div>
+    <div class="core">
+      <div>
+        <span class="eyebrow">Boutique AI Implementation</span>
+        <h1 class="serif">We learn your business. Then build the system to run it.</h1>
+        <div class="rule"><span class="dia"></span><span class="line"></span></div>
+        <p class="sub">yourco means "I learn." An audit finds the bottleneck; then we build and <span style="font-weight:600;color:var(--indigo)">operate</span> a custom AI system fit to your business. You own the outcome — never the tokens, models, or infrastructure.</p>
+        <div class="cta-row"><a class="pill">Start with the audit →</a><a class="pill ghost">or book 30 min →</a></div>
+      </div>
+      <div class="aside">
+        <div class="k">What you're actually buying</div>
+        <div class="relrow"><span class="dot"></span><span class="nm">Eval gates</span><span class="st mono">held to written standards</span></div>
+        <div class="relrow"><span class="dot"></span><span class="nm">Watchdogs</span><span class="st mono">catch drift first</span></div>
+        <div class="relrow"><span class="dot"></span><span class="nm">Approvals</span><span class="st mono">human say-so to send</span></div>
+        <div class="relrow"><span class="dot"></span><span class="nm">Observability</span><span class="st mono">what it did · why · cost</span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ============ C · PROOF-FORWARD (Stripe/structured) ============ -->
+  <section class="hero" id="C"><div class="wrap">
+    <div class="top"><div class="mark serif" style="font-family:inherit">yourco<span class="dot">.</span></div>
+      <div class="navlinks"><span>How it works</span><span>What we build</span><span>Pricing</span><span class="cta">Book a call</span></div></div>
+    <div class="core">
+      <div>
+        <span class="eyebrow">Boutique AI Implementation</span>
+        <h1 class="serif">We don't sell tools. We run the system.</h1>
+        <div class="rule"><span class="dia"></span><span class="line"></span></div>
+        <p class="sub">Anyone can wire up an agent. The hard part is making a whole system trustworthy enough to run inside your business — evals, watchdogs, approvals, all on us. That's what you're buying.</p>
+        <div class="cta-row"><a class="pill">Start with the audit →</a><a class="pill ghost">or book 30 min →</a></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="hd"><span class="ic">✉</span><div><div class="t">Follow-up to a new lead</div><div class="s">drafted by your AI system</div></div></div>
+          <div class="body">"Hi Marcus — thanks for reaching out about the patio project. I've got you penciled for a site visit Thursday 2–4pm; the estimate follows same day. Anything I should know before we come out?"</div>
+          <div class="foot"><span class="approve">✓ Approve</span><span class="edit">Edit</span><span class="flag">Awaiting you</span></div>
+        </div>
+        <div class="status mono">your AI drafts · you approve · then it sends — <b>nothing external sends without a human say-so</b></div>
+      </div>
+    </div>
+  </div></section>
+
+<script>
+  const NOTES={
+    R:'<b>★ Recommended — lead with B, borrow from C:</b> B\'s editorial hero (no literal brain) + C\'s approval-gate card as the right-column proof. Editorial calm up top, the moat made visible in the same viewport — without duplicating the reliability pillars that already live in the "See it work" section below.',
+    A:'<b>A · Restraint (Aesop):</b> type-only, centered, maximum whitespace. The words carry it — no illustration. Most "premium without being cold." Highest confidence, lowest information density.',
+    B:'<b>B · Editorial (Anthropic):</b> asymmetric column + a quiet reliability ledger as the visual. Leads with the aesthetic <em>and</em> names the moat calmly. The closest to your current lane, refined — swaps the literal brain for an on-brand device.',
+    C:'<b>C · Proof-forward (Stripe):</b> split hero, product proof on the right — a live approval-gate card. Leads with the moat made visible ("your AI drafts, you approve"). Most concrete; sells the trust layer in the first viewport.'
+  };
+  function show(t){
+    document.querySelectorAll('.hero').forEach(h=>h.classList.toggle('on',h.id===t));
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+    document.getElementById('noteTxt').innerHTML=NOTES[t];
+    document.getElementById('cap').textContent=({R:'B + C — the pick',A:'inspired by Aesop',B:'inspired by Anthropic',C:'inspired by Stripe'})[t];
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>show(b.dataset.t)));
+  show('R');
+</script>
+</body>
+</html>

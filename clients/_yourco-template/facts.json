@@ -1,0 +1,15 @@
+{
+  "_readme": "The client's own measured numbers, written by THEIR OS — not by yourco, and never by hand at review time. Consumed by runtime/client_tripwires.py (their decisions) and runtime/counterfactual.py (the shadow model). A fact that isn't here is reported `unmeasured` and no trip-wire referencing it can fire: telling a client a decision expired on the strength of a number nobody measures is the failure mode both features are built to avoid.",
+  "_contract": "Flat numeric key -> value. Numbers only. Each key should be something the OS observes as a side effect of doing the work, never something a human types into this file — a hand-maintained facts file rots and then fires a trip-wire at a client on a stale number.",
+  "_exampleOnly": true,
+  "_note": "These values are EXAMPLE data shipped with the template so the engines are runnable. clients/<name>/facts.json replaces them wholesale at discovery. The template is flagged examples-only by both engines so it can never be mistaken for a live client.",
+  "updated": "2026-08-13",
+  "facts": {
+    "quotesPerWeek": 31,
+    "quoteHoursPerWeek": 10,
+    "saturdayLeadsPerMonth": 3,
+    "avgQuoteTurnaroundHours": 26,
+    "inboundLeadsPerMonth": 42,
+    "adminHoursPerWeek": 14
+  }
+}

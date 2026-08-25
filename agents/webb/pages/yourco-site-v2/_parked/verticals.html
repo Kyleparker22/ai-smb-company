@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Industries — yourco</title>
+<meta name="description" content="Find your industry. yourco builds and operates a custom AI system for your business — start with a free, two-minute Revenue Leak Snapshot built for your trade." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  .igrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:10px}
+  .icard,.catcard{display:block;text-decoration:none;background:#fff;border:1px solid var(--line,#e7e1d4);border-radius:14px;padding:22px;transition:transform .12s ease,box-shadow .12s ease,border-color .12s}
+  .icard:hover,.catcard:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(22,27,51,.12);border-color:var(--brass,#B8965A)}
+  .icard h3,.catcard h3{margin:0 0 6px;font-size:18px;color:var(--indigo,#161B33)}
+  .icard p,.catcard p{margin:0 0 12px;color:var(--pewter,#5b617a);font-size:14px}
+  .icard .go,.catcard .go{color:var(--brass,#B8965A);font-weight:700;font-size:14px}
+  .catcard .samp{color:var(--indigo,#161B33);opacity:.8;font-size:13px;margin:-4px 0 12px;line-height:1.45}
+  .icard.other{background:transparent;border-style:dashed;border-color:var(--brass,#B8965A)}
+  .icard.other h3{color:var(--brass,#B8965A)}
+  @media(max-width:780px){.igrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.igrid{grid-template-columns:1fr}}
+
+  /* search */
+  .searchwrap{position:relative;max-width:520px;margin:22px auto 0}
+  .searchbox{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line,#e7e1d4);border-radius:999px;padding:13px 20px;box-shadow:0 4px 16px rgba(22,27,51,.06)}
+  .searchbox:focus-within{border-color:var(--brass,#B8965A);box-shadow:0 6px 22px rgba(184,150,90,.18)}
+  .searchbox svg{flex:0 0 18px;opacity:.5}
+  .searchbox input{flex:1;border:0;outline:0;font-size:16px;background:transparent;color:var(--indigo,#161B33)}
+  .results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--line,#e7e1d4);border-radius:14px;box-shadow:0 14px 40px rgba(22,27,51,.16);overflow:hidden;display:none;z-index:30;text-align:left;max-height:340px;overflow-y:auto}
+  .result{display:flex;flex-direction:column;gap:1px;padding:11px 18px;text-decoration:none;border-bottom:1px solid #f1ece1}
+  .result:last-child{border-bottom:0}
+  .result:hover,.result.active{background:#faf7f0}
+  .result b{color:var(--indigo,#161B33);font-size:15px;font-weight:600}
+  .result span{color:var(--pewter,#5b617a);font-size:12.5px}
+  .result.none{color:var(--pewter,#5b617a);font-size:14px}
+  .result.none a{color:var(--brass,#B8965A);font-weight:600}
+  .backlink{display:inline-flex;align-items:center;gap:6px;color:var(--brass,#B8965A);font-weight:700;font-size:14px;text-decoration:none;margin-bottom:6px}
+  .backlink:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="verticals.html" class="active">Industries</a><a href="positioning.html">How it works</a>
+      <a href="demos.html">See it work</a><a href="audit.html">The audit</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill sm">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="tile hero"><div class="wrap narrow">
+    <div class="eyebrow">industries</div>
+    <h1>Find your industry.</h1>
+    <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+    <p>yourco builds and operates a custom AI system for your business — tuned to how your trade actually runs. Search for your business, or browse by category, and start with a free, two-minute Revenue Leak Snapshot built specifically for it.</p>
+    <div class="searchwrap">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="search" type="text" autocomplete="off" placeholder="Search your business — e.g. dentist, HVAC, realtor, gym…" aria-label="Search for your type of business" />
+      </div>
+      <div class="results" id="results" role="listbox"></div>
+    </div>
+  </div></section>
+
+  <section class="tile parchment"><div class="wrap">
+    <a href="#all" class="backlink" id="back" style="display:none">← All industries</a>
+    <div class="eyebrow" id="secEye">browse by industry</div>
+    <h2 class="sec" id="secHead">Browse by industry.</h2>
+    <div class="igrid" id="grid"></div>
+  </div></section>
+
+  <section class="tile"><div class="wrap narrow prose">
+    <div class="eyebrow">don't see yours?</div>
+    <h2 class="sec">Let's talk through your business.</h2>
+    <p>We work with more businesses than we can list, and we're adding industries continuously. If yours isn't here yet, book a quick discovery call — we'll talk through how an AI system fits, then map exactly where you're leaking revenue.</p>
+    <div class="ctas"><a class="pill" href="https://calendly.com/the Founder-yourco/30min">Book a discovery call →</a><a class="pill ghost" href="audit-intake.html">Or start the full audit</a></div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap">yourco · we diagnose the bottleneck, build the system, and run it · <a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a></div></footer>
+
+<script src="snapshot-config.js"></script>
+<script>
+  const V = window.YOURCO_VERTICALS || {};
+
+  // Industry groupings (presentation only — drives the hub, not the per-vertical pages).
+  const CATEGORIES = [
+    { key:"home-outdoor",   name:"Home & Outdoor",            desc:"Lawn, landscape, pools, pests and cleaning.",            slugs:["landscaping","hardscaping","tree-service","pool-service","pest-control","cleaning-services","waste-recycling"] },
+    { key:"building",       name:"Building & Sample Company 47",     desc:"New builds, remodels and exterior projects.",            slugs:["roofing","general-contractors","home-builders","kitchen-bath","concrete-masonry","foundation-repair","flooring","fencing-decks","painting","window-door","excavation","solar"] },
+    { key:"repair",         name:"Repair & Mechanical",       desc:"Home systems, emergencies and auto.",                    slugs:["hvac","plumbing","electrical","garage-door","septic-well","restoration","auto-repair"] },
+    { key:"healthcare",     name:"Healthcare & Dental",       desc:"Practices and clinics that run on appointments.",        slugs:["dental","orthodontics","dermatology","plastic-surgery","family-medical","chiropractic","physical-therapy","veterinary"] },
+    { key:"wellness",       name:"Wellness & Aesthetics",     desc:"Med spas, longevity, recovery and cash-pay care.",       slugs:["med-spa","wellness-clinics","peptide-clinics","iv-therapy","hormone-trt","recovery-cold-plunge"] },
+    { key:"professional",   name:"Professional Services",     desc:"Firms that win on responsiveness and intake.",           slugs:["law-firms","accounting-cpa","bookkeeping","wealth-management","insurance-agencies","mortgage-brokers","public-adjusters"] },
+    { key:"realestate",     name:"Real Estate & Property",    desc:"Agents, managers and closings.",                         slugs:["real-estate","property-management","title-escrow"] },
+    { key:"local-business", name:"Hospitality & Local Business", desc:"Hotels, fitness, events, moving and more.",           slugs:["boutique-hotels","sports-fitness","funeral-homes","weddings","moving-storage","commercial-cleaning","pet-care"] }
+  ];
+
+  // Extra search terms so "dentist", "lawyer", "gym", "realtor" etc. all resolve.
+  const ALIASES = {
+    "dental":"dentist teeth","orthodontics":"orthodontist braces invisalign","dermatology":"dermatologist skin derm",
+    "plastic-surgery":"cosmetic surgeon surgery","family-medical":"doctor primary care physician medical clinic",
+    "chiropractic":"chiropractor","physical-therapy":"pt physiotherapy physical therapist","veterinary":"vet animal pet hospital",
+    "med-spa":"medspa medical spa botox filler aesthetics","wellness-clinics":"functional medicine longevity wellness",
+    "peptide-clinics":"peptide longevity","iv-therapy":"iv drip hydration","hormone-trt":"trt testosterone hormone hrt",
+    "recovery-cold-plunge":"cold plunge sauna cryotherapy cryo recovery contrast","law-firms":"lawyer attorney legal law",
+    "accounting-cpa":"cpa accountant tax accounting","bookkeeping":"bookkeeper books","wealth-management":"financial advisor ria wealth planner",
+    "insurance-agencies":"insurance agent agency broker","mortgage-brokers":"mortgage loan officer lender broker",
+    "public-adjusters":"public adjuster claims insurance claim","real-estate":"realtor agent broker real estate",
+    "property-management":"property manager landlord rentals leasing","title-escrow":"title escrow closing",
+    "auto-repair":"mechanic auto car repair shop automotive","hvac":"heating cooling air conditioning ac furnace",
+    "plumbing":"plumber pipes","electrical":"electrician wiring","roofing":"roofer roof","garage-door":"garage door opener",
+    "septic-well":"septic well drilling pumping","restoration":"water damage fire damage mold restoration remediation",
+    "solar":"solar panels installer pv","landscaping":"landscaper lawn care lawn mowing","hardscaping":"hardscape paver patio retaining wall",
+    "tree-service":"arborist tree removal trimming","pool-service":"pool cleaning maintenance","pest-control":"exterminator pest bug termite",
+    "cleaning-services":"maid house cleaning cleaner residential","commercial-cleaning":"janitorial commercial cleaning office",
+    "concrete-masonry":"concrete mason masonry driveway","foundation-repair":"foundation crack structural","flooring":"floor flooring installer tile hardwood",
+    "kitchen-bath":"kitchen bathroom remodel remodeling renovation","fencing-decks":"fence deck builder","painting":"painter painting",
+    "window-door":"window door replacement install","general-contractors":"gc general contractor construction builder",
+    "home-builders":"home builder custom home construction","excavation":"excavation site work grading dirt",
+    "moving-storage":"mover moving movers storage relocation","boutique-hotels":"hotel inn lodging hospitality bnb",
+    "sports-fitness":"gym fitness studio personal trainer crossfit yoga pilates","funeral-homes":"funeral mortuary cremation",
+    "weddings":"wedding venue event planner","pet-care":"pet grooming boarding dog daycare groomer","waste-recycling":"junk removal waste recycling dumpster hauling"
+  };
+
+  // Anything in the config but not placed above falls into "More" so nothing is hidden.
+  const mapped = new Set(CATEGORIES.flatMap(c=>c.slugs));
+  const orphans = Object.keys(V).filter(s=>!mapped.has(s));
+  if(orphans.length) CATEGORIES.push({ key:"more", name:"More Industries", desc:"Other businesses we serve.", slugs:orphans });
+  // Drop any slug that isn't actually in the config (guards against typos / future renames).
+  CATEGORIES.forEach(c=> c.slugs = c.slugs.filter(s=>V[s]));
+  const catByKey = Object.fromEntries(CATEGORIES.map(c=>[c.key,c]));
+
+  const grid = document.getElementById("grid");
+  const back = document.getElementById("back");
+  const secHead = document.getElementById("secHead");
+  const secEye = document.getElementById("secEye");
+
+  function bizCard(slug){
+    const v = V[slug]; if(!v) return "";
+    const blurb = (v.bottlenecks && v.bottlenecks[0]) ? v.bottlenecks[0].title + "." : "";
+    return `<a class="icard" href="vertical-template.html?v=${slug}">
+      <h3>${v.name}</h3>
+      <p>${blurb}</p>
+      <span class="go">Free Revenue Leak Snapshot →</span>
+    </a>`;
+  }
+
+  function renderCategories(){
+    grid.innerHTML = CATEGORIES.map(c=>{
+      const samples = c.slugs.slice(0,3).map(s=>V[s].name).join(" · ");
+      const extra = c.slugs.length>3 ? " · +"+(c.slugs.length-3)+" more" : "";
+      return `<a class="catcard" href="#c=${c.key}">
+        <h3>${c.name}</h3>
+        <p>${c.desc}</p>
+        <div class="samp">${samples}${extra}</div>
+        <span class="go">${c.slugs.length} ${c.slugs.length===1?"business":"businesses"} →</span>
+      </a>`;
+    }).join("");
+    secEye.textContent = "browse by industry";
+    secHead.textContent = "Browse by industry.";
+    back.style.display = "none";
+  }
+
+  function otherCard(){
+    return `<a class="icard other" href="https://calendly.com/the Founder-yourco/30min">
+      <h3>Don't see your business?</h3>
+      <p>We work with more businesses than we can list here. Book a quick discovery call and we'll talk through how an AI system fits yours.</p>
+      <span class="go">Book a discovery call →</span>
+    </a>`;
+  }
+
+  function renderCategory(key){
+    const c = catByKey[key]; if(!c){ renderCategories(); return; }
+    grid.innerHTML = c.slugs.map(bizCard).join("") + otherCard();
+    secEye.textContent = "choose your business";
+    secHead.textContent = c.name + ".";
+    back.style.display = "";
+  }
+
+  function route(){
+    const m = location.hash.match(/c=([\w-]+)/);
+    if(m && catByKey[m[1]]) renderCategory(m[1]); else renderCategories();
+  }
+  window.addEventListener("hashchange", route);
+  route();
+
+  /* ---- search ---- */
+  const search = document.getElementById("search");
+  const results = document.getElementById("results");
+  let active = -1;
+
+  function closeResults(){ results.style.display="none"; results.innerHTML=""; active=-1; }
+
+  search.addEventListener("input", ()=>{
+    const q = search.value.trim().toLowerCase();
+    active = -1;
+    if(!q){ closeResults(); return; }
+    const matches = Object.keys(V).filter(s=>{
+      const hay = (V[s].name + " " + (V[s].eyebrow||"") + " " + (ALIASES[s]||"")).toLowerCase();
+      return hay.includes(q);
+    }).slice(0,8);
+    if(!matches.length){
+      results.innerHTML = `<div class="result none">Don't see your business? <a href="https://calendly.com/the Founder-yourco/30min">Book a quick discovery call →</a> and we'll talk through how an AI system fits yours.</div>`;
+      results.style.display = "block"; return;
+    }
+    results.innerHTML = matches.map(s=>
+      `<a class="result" href="vertical-template.html?v=${s}"><b>${V[s].name}</b><span>${V[s].eyebrow||""}</span></a>`
+    ).join("");
+    results.style.display = "block";
+  });
+
+  search.addEventListener("keydown", e=>{
+    const items = [...results.querySelectorAll("a.result")];
+    if(e.key==="ArrowDown" && items.length){ e.preventDefault(); active=Math.min(active+1,items.length-1); items.forEach((it,i)=>it.classList.toggle("active",i===active)); }
+    else if(e.key==="ArrowUp" && items.length){ e.preventDefault(); active=Math.max(active-1,0); items.forEach((it,i)=>it.classList.toggle("active",i===active)); }
+    else if(e.key==="Enter"){ const pick = items[active] || items[0]; if(pick){ window.location = pick.getAttribute("href"); } }
+    else if(e.key==="Escape"){ closeResults(); }
+  });
+
+  document.addEventListener("click", e=>{ if(!e.target.closest(".searchwrap")) closeResults(); });
+</script>
+</body>
+</html>

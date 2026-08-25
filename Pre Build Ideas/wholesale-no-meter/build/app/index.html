@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Counter OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-ledger"></section>
+  <section class="view" id="v-cases"></section>
+  <section class="view" id="v-vendors"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Every dollar on this surface traces
+to a recorded comparable — a no with none reads UNPRICED, counted, not dollared. Stocking cases
+draft only when the counted ledger crosses the recorded threshold, stock answers cite counted
+stock only (never "should have some in back"), and the vendor packet is the ledger verbatim.
+Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'The No board'},{id:'ledger',label:'The ledger'},
+      {id:'cases',label:'Cases & autopsies'},{id:'vendors',label:'Vendors'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,ledger,cases,vendors,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board, n = b.nos, wk = b.week;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${(d.config.branches||[]).join(' · ')} · ${d.config.tagline||''}`;
+  const watch = (b.watch.rows||[]).slice(0,8);
+  document.getElementById('v-board').innerHTML =
+    panel(`The no's, counted (${n.window_days} days)`, n.note,
+      `<div class="grid">
+        ${stat('Counted no\'s', fmt.num(n.count), `${n.walked} walked out · ${n.by_kind.not_carried||0} not carried · ${n.by_kind.out_of_stock||0} out of stock · ${n.by_kind.wrong_size||0} wrong size`, n.count?'alert':'')}
+        ${stat('Priced', fmt.money(n.priced.dollars), `${n.priced.n} no's — ${esc(n.priced.basis)}`, 'warn')}
+        ${stat('UNPRICED', fmt.num(n.unpriced.n), esc(n.unpriced.note))}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor — cases, autopsies, packets, replies')}
+       </div>`) +
+    panel('This week against the counted baseline', wk.note,
+      `<div class="grid">
+        ${stat('This week', fmt.num(wk.this_week.count), `${fmt.money(wk.this_week.priced_dollars)} priced · ${wk.this_week.unpriced} unpriced`)}
+        ${stat('Baseline / wk', val(wk.baseline,'weekly_avg',fmt.num), wk.baseline._missing?'':`${fmt.money(wk.baseline.weekly_priced_dollars)} priced · counted over ${wk.baseline.weeks} prior weeks`)}
+        ${stat('Delta', val(wk.delta,'count',v=>(v>0?'+':'')+v), wk.delta._missing?'':'counted, both sides — never asserted')}
+        ${renderAutomation(b.automation)}
+       </div>`) +
+    panel('Threshold watch', `the recorded threshold: ${b.watch.threshold.count} counted no's in ${b.watch.threshold.window_days} days`,
+      table([{label:'Asked for'},{label:'Counted',num:true},{label:'Arithmetic'},{label:''}],
+        watch, g=>`<td>${esc(g.item)}</td><td class="num">${g.count}</td>
+          <td class="mono">${esc(g.arithmetic)}</td>
+          <td>${g.crossed?pill('case drafts','warn'):pill('anecdote — no case','')}</td>`), true);
+}
+
+async function ledger(){
+  const [nos, msgs] = await Promise.all([API.get('/api/nos'), API.get('/api/messages')]);
+  document.getElementById('v-ledger').innerHTML =
+    `<div class="banner warn">The capture is the product: a no goes from sentence to counted row
+      in seconds. It is priced from a <b>recorded comparable</b> — the catalog item's own margin
+      or a recorded category margin — or it reads UNPRICED: counted, not dollared. A counted
+      mystery beats an invented dollar.</div>` +
+    panel('Report a no', 'the two required fields are the whole ask',
+      `<div class="grid">
+        <div class="stat"><div class="k">Item asked for</div><input id="f_item" placeholder="e.g. 3 in brass check valve" style="font:inherit;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none"></div>
+        <div class="stat"><div class="k">Kind</div><select id="f_kind" style="font:inherit;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+          <option value="not_carried">not carried</option><option value="out_of_stock">out of stock</option><option value="wrong_size">wrong size</option></select></div>
+        <div class="stat"><div class="k">Branch</div><select id="f_branch" style="font:inherit;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+          <option>Fairfield</option><option>Riverside</option></select></div>
+        <div class="stat"><div class="k">Walked or waited</div><select id="f_ww" style="font:inherit;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+          <option>walked</option><option>waited</option><option>unknown</option></select></div>
+       </div>
+       <div style="margin-top:12px"><button class="act primary" onclick="fileNo()">Count it</button></div>
+       <div id="nout"></div>`) +
+    panel('Counter messages', 'the contractor-down reads first', table(
+      [{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      msgs.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='contractor_down'?'bad':m.label==='no_report'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>` +
+    panel('The ledger, latest first', 'append-only', table(
+      [{label:'When'},{label:'Asked for'},{label:'Kind'},{label:'Who'},{label:'Outcome'},{label:'Branch'}],
+      nos.rows, n=>`<td>${fmt.stamp(n.at)}${n.demo_tag?' '+pill('demo — excluded','brand'):''}</td>
+        <td>${esc(n.item_asked)}${n.sku?' <span class="mono">'+esc(n.sku)+'</span>':''}</td>
+        <td>${pill(n.kind, n.kind==='not_carried'?'warn':'')}</td>
+        <td>${esc(n.asked_by||'')}</td>
+        <td>${n.walked_or_waited==='walked'?pill('walked','bad'):esc(n.walked_or_waited||'')}</td>
+        <td>${esc(n.branch||'')}</td>`), true);
+}
+async function fileNo(){
+  const r = await API.post('/api/nos', {item_asked:document.getElementById('f_item').value,
+    kind:document.getElementById('f_kind').value, branch:document.getElementById('f_branch').value,
+    walked_or_waited:document.getElementById('f_ww').value});
+  document.getElementById('nout').innerHTML = r.error
+    ? `<div class="banner warn">${esc(r.error)}</div>`
+    : `<div class="banner">Counted. ${r.pricing.priced
+        ? 'Priced: <b>'+fmt.money2(r.pricing.dollars)+'</b> — '+esc(r.pricing.basis)
+        : 'UNPRICED — '+esc(r.pricing.why)}${r.threshold?'<br>'+esc(r.threshold):''}</div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.pricing?`<div class="why">${s.pricing.priced?'priced: '+fmt.money2(s.pricing.dollars)+' — '+esc(s.pricing.basis):esc(s.pricing.why)}</div>`:''}
+      ${s.threshold?`<div class="why mono">${esc(s.threshold)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function cases(){
+  const d = await API.get('/api/cases');
+  document.getElementById('v-cases').innerHTML =
+    `<div class="banner warn">Try it: the press jaw's seven counted no's cross the recorded
+      threshold — the case drafts with the arithmetic printed. The copper coupling's two do not —
+      refused, structurally. The EMT connector's out-of-stocks trace to a reorder point the
+      recorded pace beat — the autopsy proposes the new point with the math.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="draftCase('Ridgeline RL-34 press jaw')">Draft: press jaw (7 counted ≥ 5)</button>
+      <button class="act" onclick="draftCase('2 in copper repair coupling')">Draft: copper coupling (2 &lt; 5 → refused)</button>
+      <button class="act" onclick="autopsy('ELC-0042')">Autopsy: ELC-0042 reorder point</button>
+     </div><div id="cout"></div>` +
+    panel('Stocking cases', 'drafted only by the counted ledger', table(
+      [{label:'Item'},{label:'Counted margin',num:true},{label:'Threshold arithmetic'},{label:'State'}],
+      d.rows, c=>`<td>${esc(c.item)}</td>
+        <td class="num">${fmt.money(c.math.counted_margin_dollars)}${c.math.unpriced?` <span class="why">+ ${c.math.unpriced} unpriced</span>`:''}</td>
+        <td class="why mono">${esc(c.threshold.arithmetic)}</td>
+        <td>${pill(c.state, c.state==='approved_to_stock'?'good':'brand')}</td>`), true);
+}
+async function draftCase(item){
+  const r = await API.post('/api/cases/draft', {item});
+  if(r.refused){
+    document.getElementById('cout').innerHTML = panel('Refused — structurally', '',
+      `<div class="banner warn">${esc(r.refused)}</div>
+       <div class="why">There is no force path: the case creator recounts the counted ledger
+       itself, and no function in this build accepts an anecdote.</div>`);
+    return;
+  }
+  const c = r.case;
+  document.getElementById('cout').innerHTML = panel(`Stocking case — ${c.item}`, 'drafted at R1 — a human commits the dollars',
+    `<div class="banner">${esc(c.threshold.arithmetic)}</div>
+     <div class="grid">
+      ${stat('Counted margin in window', fmt.money(c.math.counted_margin_dollars), `${c.math.priced} priced no's${c.math.unpriced?` · ${c.math.unpriced} UNPRICED — counted, not dollared`:''}`)}
+      ${stat('Vendor options', String((c.vendor_options.options||[]).length), esc(c.vendor_options.note))}
+     </div>
+     ${(c.vendor_options.options||[]).map(o=>`<div class="why">· ${esc(o.name)} — recorded lead ${o.lead_time_days}d (rep ${esc(o.rep||'')})</div>`).join('')}
+     ${panel('The no history, verbatim','every row is the ledger row itself', table(
+        [{label:'When'},{label:'Who asked'},{label:'Outcome'},{label:'Branch'}],
+        c.history, n=>`<td>${fmt.stamp(n.at)}</td><td>${esc(n.asked_by||'')}</td>
+          <td>${n.walked_or_waited==='walked'?pill('walked','bad'):esc(n.walked_or_waited)}</td>
+          <td>${esc(n.branch||'')}</td>`), true)}`);
+  cases();
+}
+async function autopsy(sku){
+  const r = await API.post(`/api/autopsy/${sku}`);
+  if(r.refused||r.error){
+    document.getElementById('cout').innerHTML = panel('Refused','', `<div class="banner warn">${esc(r.refused||r.error)}</div>`);
+    return;
+  }
+  const a = r.autopsy;
+  document.getElementById('cout').innerHTML = panel(`Out-of-stock autopsy — ${a.sku}`, a.note,
+    `<div class="banner">${esc(a.math)}</div>
+     <div class="grid">
+      ${stat('Counted OOS no\'s', fmt.num(a.counted_oos_nos), `${a.walked} walked`)}
+      ${stat('Walked cost, counted', fmt.money2(a.walked_cost.dollars), esc(a.walked_cost.basis))}
+      ${stat('Recorded point', String(a.recorded_point), esc(a.pace_basis))}
+      ${stat('Proposed point', String(a.proposed_point), 'drafted at R1 — a human commits the cash', 'warn')}
+     </div><div class="why">${esc(a.safety_source)}</div>`);
+}
+
+async function vendors(){
+  const d = await API.get('/api/vendors');
+  document.getElementById('v-vendors').innerHTML =
+    `<div class="banner warn">The packet a rep never expects a small distributor to have: the
+      counted no's their line produced, verbatim. No invented fill rates — a rate needs a
+      denominator this ledger does not record, so none is stated.</div>` +
+    panel('Vendors', 'recorded lead times', table(
+      [{label:'Vendor'},{label:'Lines'},{label:'Lead',num:true},{label:'Rep'},{label:''}],
+      d.rows, v=>`<td class="strong">${esc(v.name)}</td>
+        <td class="why">${esc((v.lines||[]).join(' · '))}</td>
+        <td class="num">${v.lead_time_days}d</td><td>${esc(v.rep||'')} ${esc(v.phone||'')}</td>
+        <td class="right"><button class="act primary" onclick="packet('${v.id}')">Draft the packet</button></td>`), true) +
+    `<div id="vout"></div>`;
+}
+async function packet(id){
+  const r = await API.post(`/api/vendors/${id}/packet`);
+  if(r.refused||r.error){
+    document.getElementById('vout').innerHTML = panel('Not drafted','', `<div class="banner warn">${esc(r.refused||r.error)}</div>`);
+    return;
+  }
+  const p = r.packet;
+  document.getElementById('vout').innerHTML = panel(`Negotiation packet — ${p.name}`, p.note,
+    `<div class="banner warn">${esc(p.rule)}</div>
+     <div class="grid">
+      ${stat('Counted fill failures', fmt.num(p.counted.fill_failures), `${p.window_days}-day window`)}
+      ${stat('Walked', fmt.num(p.counted.walked), `${p.counted.waited} waited`)}
+      ${stat('Walked margin, counted', fmt.money2(p.counted.walked_margin_dollars), 'recorded catalog margins only')}
+     </div>` +
+    table([{label:'When'},{label:'Item'},{label:'SKU'},{label:'Qty',num:true},{label:'Outcome'},{label:'Who asked'}],
+      p.rows, n=>`<td>${fmt.stamp(n.at)}</td><td>${esc(n.item_asked)}</td>
+        <td class="mono">${esc(n.sku||'')}</td><td class="num">${n.qty??'—'}</td>
+        <td>${n.walked_or_waited==='walked'?pill('walked','bad'):esc(n.walked_or_waited)}</td>
+        <td>${esc(n.asked_by||'')}</td>`));
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['priced_no_dollars_60d','Priced no\'s, 60d','counted'],
+    ['walked_oos_dollars_60d','Walked OOS margin, 60d','counted'],
+    ['captures_wk','Captures / wk','counted'],
+    ['capture_rate','Capture rate after stocking','your number (0–1)'],
+    ['recovery_share','Recovery share from better points','your number (0–1)'],
+    ['seconds_saved','Seconds saved per capture','your number'],
+    ['loaded_rate','Loaded counter rate $/hr','your number'],
+    ['vendor_concession_value','Vendor concessions','yours or blank — a scenario']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

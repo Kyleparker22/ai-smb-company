@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "note": "SAMPLE PRICING — placeholder until Client Owner's master list + SiteOne export land. Stock rules follow the 2026-08-06 meeting: design in-stock-first; special-order never hidden, always badged.",
+    "source": "seeded 2026-08-07 from meeting transcript; replace prices with SiteOne direct pricing (their most expensive supplier = safe conservative quote basis)",
+    "updated": "2026-08-07"
+  },
+  "materials": [
+    { "id": "techo-blu60",    "cat": "paver",    "name": "Techo-Bloc Blu 60mm",            "unit": "sqft",     "price": 4.85,  "stock": "stock",   "tier": "standard", "note": "always in stock, all colors (per Colton)" },
+    { "id": "techo-blu80",    "cat": "paver",    "name": "Techo-Bloc Blu 80mm",            "unit": "sqft",     "price": 5.60,  "stock": "stock",   "tier": "standard", "note": "driveway-rated" },
+    { "id": "belgard-dim",    "cat": "paver",    "name": "Belgard Dimensions 6",           "unit": "sqft",     "price": 3.95,  "stock": "stock",   "tier": "value",    "note": "" },
+    { "id": "techo-borealis", "cat": "paver",    "name": "Techo-Bloc Borealis",            "unit": "sqft",     "price": 8.95,  "stock": "special", "tier": "premium",  "note": "ALWAYS special order (per Colton) — lead time applies" },
+    { "id": "pa-bluestone",   "cat": "natstone", "name": "PA Bluestone (thermal, full color)", "unit": "sqft", "price": 11.50, "stock": "stock",   "tier": "premium",  "note": "in stock locally per Client Owner" },
+    { "id": "tn-veneer",      "cat": "natstone", "name": "TN Fieldstone Veneer",           "unit": "sqft",     "price": 13.00, "stock": "stock",   "tier": "premium",  "note": "in stock locally" },
+    { "id": "flag-steppers",  "cat": "natstone", "name": "Flagstone Steppers",             "unit": "each",     "price": 38.00, "stock": "stock",   "tier": "standard", "note": "1.5\" steppers can be special order — verify" },
+    { "id": "river-rock",     "cat": "aggregate","name": "River Rock",                     "unit": "ton",      "price": 68.00, "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "crusher-run",    "cat": "base",     "name": "Crusher Run (CR-6) Base",        "unit": "ton",      "price": 42.00, "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "57-stone",       "cat": "base",     "name": "#57 Clean Stone",                "unit": "ton",      "price": 46.00, "stock": "stock",   "tier": "standard", "note": "wall backfill / drainage" },
+    { "id": "conc-sand",      "cat": "base",     "name": "Concrete Bedding Sand",          "unit": "ton",      "price": 45.00, "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "poly-sand",      "cat": "base",     "name": "Polymeric Sand",                 "unit": "bag",      "price": 32.00, "stock": "stock",   "tier": "standard", "note": "~60 sqft/bag" },
+    { "id": "edge-restraint", "cat": "edge",     "name": "Paver Edge Restraint + Spikes",  "unit": "lnft",     "price": 2.90,  "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "techo-minicreta","cat": "wall",     "name": "Techo-Bloc Mini-Creta Wall",     "unit": "face-sqft","price": 12.80, "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "belgard-weston", "cat": "wall",     "name": "Belgard Weston Stone Wall",      "unit": "face-sqft","price": 10.90, "stock": "stock",   "tier": "value",    "note": "" },
+    { "id": "bluestone-caps", "cat": "cap",      "name": "Bluestone Caps (thermal)",       "unit": "lnft",     "price": 14.00, "stock": "stock",   "tier": "premium",  "note": "in stock locally per Client Owner" },
+    { "id": "turf-premium",   "cat": "turf",     "name": "Premium Artificial Turf",        "unit": "sqft",     "price": 5.25,  "stock": "stock",   "tier": "premium",  "note": "" },
+    { "id": "firepit-kit",    "cat": "kit",      "name": "Masonry Fire Pit Kit (gas-ready)","unit": "each",    "price": 3250.00,"stock": "special","tier": "standard", "note": "sub: licensed plumber for gas line" },
+    { "id": "mulch-hw",       "cat": "softscape","name": "Double-Shredded Hardwood Mulch", "unit": "yd",       "price": 48.00, "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "topsoil",        "cat": "softscape","name": "Screened Topsoil",               "unit": "yd",       "price": 38.00, "stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "path-light",     "cat": "lighting", "name": "LV Path Light (fixture+wire)",   "unit": "each",     "price": 145.00,"stock": "stock",   "tier": "standard", "note": "" },
+    { "id": "sleeve-2in",     "cat": "util",     "name": "2\" PVC Sleeve under hardscape", "unit": "lnft",     "price": 4.50,  "stock": "stock",   "tier": "standard", "note": "Noah's standing spec — irrigation/lighting future-proofing" }
+  ],
+  "plants": [
+    { "id": "hydrangea-3g",  "name": "Hydrangea (3 gal)",              "unit": "each", "price": 34.00, "availability": "weekly email report — Shepherd's" },
+    { "id": "azalea-3g",     "name": "Azalea (3 gal)",                 "unit": "each", "price": 28.00, "availability": "weekly email report — Kirk Davis" },
+    { "id": "arborvitae-7g", "name": "Green Giant Arborvitae (7 gal)", "unit": "each", "price": 85.00, "availability": "weekly email report — Shepherd's" }
+  ],
+  "stone_regions": ["Your State", "Pennsylvania (bluestone)", "Tennessee (veneer, caps)"],
+  "suppliers": [
+    { "name": "SiteOne",            "role": "primary pricing basis (most expensive supplier = conservative quote)", "integration": "price export / read login — PENDING from Client Owner" },
+    { "name": "Shepherd's Nursery", "role": "plants", "integration": "weekly availability report via EMAIL (skips CAPTCHA login) — PENDING address" },
+    { "name": "Kirk Davis Nursery", "role": "plants", "integration": "weekly availability report via EMAIL — PENDING address" }
+  ]
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client — jobs in flight</title>
+<!-- MOCKUP (sample data). Client Owner's at-a-glance board: every signed job and where it stands. "Operated" view. -->
+<style>
+  :root{--bg:#f4f5f1;--card:#fff;--ink:#1c2419;--muted:#6b7280;--line:#e8e9e3;--sc:#2c5f2d;--sc-d:#234a24;
+        --green:#2f7d52;--amber:#b07d1e;--grey:#9aa0a6;--red:#b23b32;--chip:#eef3ee;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px 40px}
+  .top{background:var(--sc);color:#fff;padding:18px 0}
+  .top .wrap{display:flex;align-items:center;gap:12px}
+  .top .logo{font-size:18px;font-weight:700}
+  .top .sub{font-size:13px;color:rgba(255,255,255,.78)}
+  .top .live{margin-left:auto;font-size:12px;display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.9)}
+  .top .dot{width:8px;height:8px;border-radius:50%;background:#7fe0a0;box-shadow:0 0 0 3px rgba(127,224,160,.3);animation:p 2s infinite}
+  @keyframes p{50%{box-shadow:0 0 0 6px rgba(127,224,160,0)}}
+
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+  .metric{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px}
+  .metric .v{font-size:26px;font-weight:700;letter-spacing:-.02em}
+  .metric .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .metric .v b{color:var(--sc)}
+  @media(max-width:720px){.metrics{grid-template-columns:repeat(2,1fr)}}
+
+  .nudge{background:#fdf6e9;border:1px solid #f0e2c4;border-radius:12px;padding:13px 16px;margin-bottom:18px}
+  .nudge h3{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+  .nudge .item{font-size:13.5px;color:#4a3f24;padding:4px 0;display:flex;gap:9px}
+  .nudge .item b{color:#2a2417}
+
+  h2.sec{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:6px 0 12px}
+  .job{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px}
+  .job .jh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .job .jn{font-size:16px;font-weight:680}
+  .job .jp{font-size:13px;color:var(--muted)}
+  .job .jt{margin-left:auto;font-size:15px;font-weight:680}
+  .gates{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:13px}
+  @media(max-width:560px){.gates{grid-template-columns:1fr}}
+  .gate{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fcfdfb}
+  .gate .gl{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .gate .gv{font-size:13.5px;font-weight:600;margin-top:3px;display:flex;align-items:center;gap:7px}
+  .ic{width:17px;height:17px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex:none}
+  .done .ic{background:var(--green)}.pend .ic{background:var(--amber)}.wait .ic{background:var(--grey)}
+  .done .gv{color:var(--sc-d)}.pend .gv{color:#7a5616}.wait .gv{color:var(--muted)}
+  .greenlit{border-color:#bfe0c8;background:#f1f8f2}
+  .badge{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:9999px;padding:3px 10px;margin-left:auto}
+  .badge.go{background:#dcefe0;color:var(--sc-d)}.badge.run{background:#eef0f2;color:#566}.badge.new{background:#eaf1fb;color:#2c5aa0}
+  .next{font-size:12.5px;color:var(--muted);margin-top:11px}.next b{color:var(--ink)}
+  footer{text-align:center;padding:24px 0 0;font-size:12px;color:var(--muted)}footer b{color:var(--sc)}
+</style>
+</head>
+<body>
+  <div class="top"><div class="wrap"><span class="logo">Sample Client</span><span class="sub">jobs in flight</span><span class="live"><span class="dot"></span>watched live by yourco</span></div></div>
+  <div class="wrap">
+    <div class="metrics">
+      <div class="metric"><div class="v">4</div><div class="l">jobs in flight</div></div>
+      <div class="metric"><div class="v"><b>1</b></div><div class="l">greenlit this week</div></div>
+      <div class="metric"><div class="v">11</div><div class="l">messages you approved</div></div>
+      <div class="metric"><div class="v"><b>~9</b></div><div class="l">hrs of coordination saved this week</div></div>
+    </div>
+
+    <div class="nudge">
+      <h3>⚠ Needs a nudge</h3>
+      <div class="item"><span>•</span><span><b>Volt Lighting</b> (Chen patio) — order sent 2 days ago, no reply. Auto-follow-up drafted, waiting for your okay.</span></div>
+      <div class="item"><span>•</span><span><b>Chen deposit</b> — requested 3 days ago, not yet received. Reminder draft ready.</span></div>
+    </div>
+
+    <h2 class="sec">Active jobs</h2>
+
+    <div class="job">
+      <div class="jh"><span class="jn">Robert &amp; Amanda Chen</span><span class="jp">Backyard paver patio + seating wall</span><span class="jt">$48,500</span><span class="badge run">in progress</span></div>
+      <div class="gates">
+        <div class="gate pend"><div class="gl">Deposit</div><div class="gv"><span class="ic">…</span> Requested — awaiting payment</div></div>
+        <div class="gate pend"><div class="gl">Suppliers</div><div class="gv"><span class="ic">…</span> 1 of 2 confirmed</div></div>
+        <div class="gate wait"><div class="gl">Subcontractors</div><div class="gv"><span class="ic">…</span> Notice approved, awaiting reply</div></div>
+      </div>
+      <div class="next"><b>Next:</b> chase Volt Lighting + the Chen deposit (drafts waiting on you).</div>
+    </div>
+
+    <div class="job">
+      <div class="jh"><span class="jn">Daniel &amp; Maria Alvarez</span><span class="jp">Retaining wall + steps</span><span class="jt">$72,000</span><span class="badge new">just signed</span></div>
+      <div class="gates">
+        <div class="gate pend"><div class="gl">Deposit</div><div class="gv"><span class="ic">…</span> Drafted — waiting for Charlene</div></div>
+        <div class="gate pend"><div class="gl">Suppliers</div><div class="gv"><span class="ic">…</span> 3 orders drafted — your okay</div></div>
+        <div class="gate pend"><div class="gl">Subcontractors</div><div class="gv"><span class="ic">…</span> 1 sub notice drafted</div></div>
+      </div>
+      <div class="next"><b>Next:</b> signed 1 hr ago — everything's drafted and waiting for approvals.</div>
+    </div>
+
+    <div class="job">
+      <div class="jh"><span class="jn">Brennan Residence</span><span class="jp">Outdoor kitchen + fire feature</span><span class="jt">$96,400</span><span class="badge run">in progress</span></div>
+      <div class="gates">
+        <div class="gate done"><div class="gl">Deposit</div><div class="gv"><span class="ic">✓</span> Received</div></div>
+        <div class="gate done"><div class="gl">Suppliers</div><div class="gv"><span class="ic">✓</span> 3 of 3 confirmed</div></div>
+        <div class="gate pend"><div class="gl">Subcontractors</div><div class="gv"><span class="ic">…</span> Mason confirming dates</div></div>
+      </div>
+      <div class="next"><b>Next:</b> one sub left to confirm, then it greenlights automatically.</div>
+    </div>
+
+    <div class="job greenlit">
+      <div class="jh"><span class="jn">Whitfield Residence</span><span class="jp">Driveway + front walkway</span><span class="jt">$31,200</span><span class="badge go">greenlit ✓</span></div>
+      <div class="gates">
+        <div class="gate done"><div class="gl">Deposit</div><div class="gv"><span class="ic">✓</span> Received</div></div>
+        <div class="gate done"><div class="gl">Suppliers</div><div class="gv"><span class="ic">✓</span> 2 of 2 confirmed</div></div>
+        <div class="gate done"><div class="gl">Subcontractors</div><div class="gv"><span class="ic">✓</span> 1 of 1 confirmed</div></div>
+      </div>
+      <div class="next"><b>All systems go.</b> Cleared 2 days ago — crew starts Jul 14. You + Charlene were notified.</div>
+    </div>
+
+    <footer>Mockup on sample data · every send was approved by you or Charlene · built &amp; run by <b>yourco</b></footer>
+  </div>
+</body>
+</html>

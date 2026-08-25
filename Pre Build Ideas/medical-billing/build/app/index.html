@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claim OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-denials"></section>
+  <section class="view" id="v-claims"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records — no real PHI anywhere. A code never
+moves to a higher-paying one without provider documentation, incomplete claims cannot submit,
+write-offs are always a human decision, and outward drafts carry claim references, never patient
+identifiers.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'denials',label:'Denials'},{id:'claims',label:'Claims & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,denials,claims,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.practices} practices · ${d.config.revenue} fees`;
+  document.getElementById('v-board').innerHTML =
+    panel('The window, counted', 'timely filing is where the money dies quietly',
+      `<div class="grid">
+        ${stat('At-risk inside 21d', fmt.money(b.at_risk.at_risk_value), 'unresolved claims near their filing window', b.at_risk.at_risk_value?'alert':'')}
+        ${stat('Already expired', fmt.money(b.at_risk.expired_value), 'a write-off candidate — a human decides', b.at_risk.expired_value?'bad':'')}
+        ${stat('Open denials', fmt.num(b.open_denials), 'typed by reason code')}
+        ${stat('', '', '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${fmt.money(b.recovered.paid_value)}`,
+               `${b.recovered.claims_paid} paid · ${b.recovered.appeals_sent} appeal(s) sent · ${b.recovered.denials_resolved} resolved`)}</div>`);
+}
+
+async function denials(){
+  const d = await API.get('/api/denials');
+  document.getElementById('v-denials').innerHTML =
+    `<div class="banner warn">Every denial is typed by its reason code. Medical-necessity appeals
+      draft with the provider's documentation referenced; write-offs are ALWAYS a human decision.</div>` +
+    panel('Denials', '', table([{label:'Denial'},{label:'Claim'},{label:'CARC'},{label:'Kind'},{label:'Touches'}],
+      d.rows, x=>`<td class="mono">${esc(x.id)}${x.demo_tag?' '+pill(x.demo_tag,'brand'):''}</td>
+        <td class="mono">${esc(x.claim_id||'')}</td><td class="mono">${esc(x.carc||'')}</td>
+        <td>${x.kind?pill(x.kind, x.kind==='needs_provider_doc'?'bad':x.kind==='untimely'?'warn':''):'—'}</td>
+        <td>${(x.touches||[]).length} of 2</td>`), true);
+}
+
+async function claims(){
+  const d = await API.get('/api/claims');
+  document.getElementById('v-claims').innerHTML =
+    `<div class="banner warn">Try it: upcode 99212→99214 with no documentation — refused; the same
+      move WITH a provider-doc reference queues at R1; submit the incomplete claim — refused with
+      the fields named.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="recode('cm_demo_upcode','99214')">Upcode: no documentation</button>
+      <button class="act primary" onclick="recode('cm_demo_docd','99214')">Upcode: documented</button>
+      <button class="act" onclick="recode('cm_demo_upcode','99211')">Downcode</button>
+      <button class="act" onclick="submitClaim('cm_demo_dirty')">Submit: incomplete</button>
+     </div><div id="cout"></div>` +
+    panel('Claims', '', table([{label:'Claim'},{label:'Payer'},{label:'CPT'},{label:'Amount',num:true},{label:'State'}],
+      d.rows, c=>`<td class="mono">${esc(c.id)}${c.demo_tag?' '+pill(c.demo_tag,'brand'):''}</td>
+        <td>${esc(c.payer||'—')}</td><td class="mono">${esc(c.cpt||'')}</td>
+        <td class="num">${fmt.money(c.amount)}</td>
+        <td>${c.paid_at?pill('paid','good'):c.written_off_at?pill('written off'):pill('open','warn')}</td>`), true);
+}
+async function recode(id, code){
+  const r = await API.post(`/api/claims/${id}/recode`,{code});
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Recode', '', `<div class="strong">${r.executed?'executed at R2 (downcode)':'queued at R1'}</div>`);
+}
+async function submitClaim(id){
+  const r = await API.post(`/api/claims/${id}/submit`);
+  document.getElementById('cout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Submitted', '', `<div class="strong">queued at R1</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['at_risk_value','At-risk dollars','counted'],['recovery_rate','Recovery rate','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['audit_value','The audit file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

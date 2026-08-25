@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrier OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-triage"></section>
+  <section class="view" id="v-carriers"></section>
+  <section class="view" id="v-tripwires"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic data. No live FMCSA calls, no load-board access,
+no scraping. This system never asserts that a carrier is fraudulent and never releases a load.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'The board'},{id:'triage',label:'Offer triage'},{id:'carriers',label:'Trust files'},
+      {id:'tripwires',label:'Tripwires'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,triage,carriers,tripwires,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.brokerage;
+  document.getElementById('cosub').textContent = `${d.config.people} people`;
+  const dist = b.trust_distribution;
+  document.getElementById('v-board').innerHTML =
+    panel('Loads at risk right now', 'ranked by exception severity',
+      `<div class="grid">
+        ${stat('In transit', fmt.num(b.in_transit))}
+        ${stat('High-severity exceptions', fmt.num(b.at_risk), 'off route, silent, or will miss the appointment', b.at_risk?'alert':'')}
+        ${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor — including every carrier approval')}
+       </div>`) +
+    panel('', '', table([{label:'Load'},{label:'Lane'},{label:'Customer'},{label:'Carrier'},{label:'Deliver by'},{label:'Exceptions'}],
+      b.rows, r=>`<td class="mono">${esc(r.load)}</td><td>${esc(r.lane||'')}</td>
+        <td>${esc(r.customer||'')}</td><td>${esc(r.carrier||'')}</td>
+        <td>${fmt.stamp(r.deliver_by)}</td>
+        <td>${(r.exceptions||[]).map(e=>`<div>${pill(e.label, e.severity==='high'?'bad':'warn')}
+          <span class="why">${esc(e.evidence)}</span></div>`).join('')||'<span class="why">clean</span>'}</td>`), true) +
+    panel('Carrier base', 'a file with no checked component has no score at all',
+      `<div class="grid">
+        ${stat('Strong', fmt.num(dist.strong))}${stat('Middling', fmt.num(dist.middling))}
+        ${stat('Weak', fmt.num(dist.weak))}${stat('Unscoreable', fmt.num(dist.unscoreable), 'nothing checked')}
+       </div>`) +
+    panel('Margin by lane', 'a lane with too little history has no median — it is not zero',
+      table([{label:'Lane'},{label:'Median margin'},{label:'Loads',num:true}],
+        Object.entries(b.margin_by_lane),
+        ([k,v])=>`<td>${esc(k)}</td><td>${val(v,'median_margin',fmt.money)}</td>
+          <td class="num">${v.n}</td>`), true);
+}
+
+async function triage(){
+  const d = await API.get('/api/triage/ld_demo');
+  const l = d.load;
+  document.getElementById('v-triage').innerHTML =
+    `<div class="banner warn">${esc(d.note)}</div>` +
+    panel(`Load ${esc(l.id)} — ${esc(l.lane)}, ${esc(l.equipment)}, $${l.value.toLocaleString()} of freight`,
+      `customer pays ${fmt.money(l.customer_rate)}`,
+      `<div class="grid">
+        ${stat('Lane benchmark', val(d.benchmark,'median',fmt.money),
+          d.benchmark._missing?'':`${d.benchmark.n} booked loads, ${d.benchmark.weeks} weeks`)}
+        ${stat('Offers', fmt.num(d.offers.length))}
+       </div>`) +
+    panel('Ranked', 'hard stops first — those are refusals, not low rankings', table(
+      [{label:'Carrier'},{label:'Rate',num:true},{label:'vs benchmark',num:true},{label:'Margin',num:true},
+       {label:'Trust',num:true},{label:'Tripwires'},{label:''}],
+      d.offers, o=>`<td>${esc(o.carrier||'')}</td><td class="num">${fmt.money(o.rate)}</td>
+        <td class="num">${o.vs_benchmark==null?blank('no benchmark on this lane'):(o.vs_benchmark*100).toFixed(0)+'%'}</td>
+        <td class="num">${fmt.money(o.margin)}</td>
+        <td class="num strong">${o.trust==null?blank('nothing checked'):o.trust}</td>
+        <td>${(o.tripwires||[]).map(t=>pill(t,'bad')).join(' ')||'<span class="why">none fired</span>'}</td>
+        <td class="right">${o.hard_stop?pill('REFUSED','bad')
+          :`<button class="act" onclick="vet('${o.carrier}','${o.offer}')">Vet it</button>`}</td>`), true) +
+    `<div id="vetout"></div>`;
+}
+
+async function vet(name, offerId){
+  const d = await API.get('/api/triage/ld_demo');
+  const off = d.offers.find(o=>o.offer===offerId);
+  const carriers = await API.get('/api/carriers');
+  const c = carriers.rows.find(r=>r.name===name);
+  const r = await API.post('/api/vet', {carrier: c.carrier, load: 'ld_demo'});
+  const comps = Object.entries(r.trust.components).map(([k,v])=>
+    `<tr><td class="mono">${esc(k)}</td><td class="num">${v.raw}</td>
+      <td>${pill(v.freshness.label, v.freshness.weight<1?'warn':'')}<div class="why">${esc(v.freshness.why)}</div></td>
+      <td class="why">${esc(JSON.stringify(v.evidence))}</td></tr>`).join('');
+  document.getElementById('vetout').innerHTML =
+    panel(`${esc(name)} — ${r.verdict==='refused'?'REFUSED':'clean, and still not approved'}`,
+      esc(r.note),
+      `<div class="grid">${stat('Trust score', r.trust.score==null?null:r.trust.score)}
+        ${stat('Tripwires fired', fmt.num((r.tripwires||[]).length), '', r.tripwires.length?'alert':'')}</div>
+       ${(r.tripwires||[]).map(t=>`<div style="margin-top:8px">${pill(t.tripwire, t.hard_stop?'bad':'warn')}
+         ${t.hard_stop?pill('hard stop','bad'):''} <span class="why">${esc(t.evidence)}</span></div>`).join('')}
+       <div class="scroll" style="margin-top:14px"><table><thead><tr><th>Component</th><th class="num">Raw</th>
+       <th>Freshness</th><th>Evidence</th></tr></thead><tbody>${comps}</tbody></table></div>`);
+}
+
+async function carriers(){
+  const d = await API.get('/api/carriers');
+  document.getElementById('v-carriers').innerHTML =
+    `<div class="banner">Every component carries its own timestamp and is <b>de-rated as it ages</b>.
+      A component that was never checked contributes nothing — it is not treated as good news.</div>` +
+    panel('Carrier base', `${d.rows.length} files`, table(
+      [{label:'Carrier'},{label:'MC'},{label:'Score',num:true},{label:'What the file says'}],
+      d.rows, r=>`<td>${esc(r.name)}${r.demo_tag?' '+pill(r.demo_tag,'bad'):''}</td>
+        <td class="mono">${esc(r.mc||'')}</td>
+        <td class="num strong">${r.score==null?blank(r._missing):r.score}</td>
+        <td><ul class="reasons">${(r.notes||[]).map(n=>`<li>${esc(n)}</li>`).join('')}</ul></td>`), true);
+}
+
+async function tripwires(){
+  const d = await API.get('/api/tripwires');
+  document.getElementById('v-tripwires').innerHTML =
+    `<div class="banner warn">A fired tripwire is <b>not an assertion of fraud</b>. It is a named
+      pattern and the evidence it fired on. The system will refuse on that basis; it will not say
+      what the carrier is.</div>` +
+    panel('The patterns', `${Object.keys(d.definitions).length} · hard stops in red`,
+      `<div>${Object.keys(d.definitions).map(k=>pill(k, d.hard_stops.includes(k)?'bad':'brand')).join(' ')}</div>`) +
+    panel('Fired', `${d.log.length} recorded`, table(
+      [{label:'When'},{label:'Tripwire'},{label:'Evidence'},{label:'Load'}], d.log.slice().reverse(),
+      t=>`<td>${fmt.stamp(t.at)}</td><td>${pill(t.tripwire, t.hard_stop?'bad':'warn')}</td>
+        <td class="why">${esc(t.evidence)}</td><td class="mono">${esc(t.load_id||'')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['loads_wk','Loads / wk','counted from your board'],
+    ['vetting_minutes_saved','Vetting minutes saved','your number'],
+    ['calls_each','Check calls per load','your number'],['minutes_per_call','Minutes per call','your number'],
+    ['loaded_rate','Loaded ops rate','your number'],['loads_yr','Loads / yr','counted'],
+    ['margin_bps','Margin basis points','your number'],
+    ['avg_revenue_per_load','Avg revenue / load','counted (median)'],
+    ['loads_flagged_yr','Loads flagged / yr','counted from your tripwire log'],
+    ['exposure_per_event','Exposure per event','your number']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  const per = Object.entries(ev.per_tripwire||{}).map(([k,v])=>
+    `<tr><td class="mono">${esc(k)}</td><td>${v.fires_on_its_pattern?pill('fires','good'):pill('MISSES','bad')}</td>
+      <td>${v.quiet_otherwise?pill('quiet','good'):pill('noisy','warn')}</td></tr>`).join('');
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev) +
+    panel('Each tripwire, scored on its own', 'an aggregate hides the one that matters',
+      `<div class="scroll"><table><thead><tr><th>Tripwire</th><th>On its pattern</th><th>Otherwise</th></tr></thead>
+      <tbody>${per}</tbody></table></div>`, true) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events, 60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'ops'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

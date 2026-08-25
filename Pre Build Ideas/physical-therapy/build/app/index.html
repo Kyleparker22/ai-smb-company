@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehab OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-dropout"></section>
+  <section class="view" id="v-auth"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Clinical questions are answered by
+the treating therapist only, red flags route to a clinician immediately, no visit is booked past
+authorization silently, and no recovery outcome is ever promised.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'dropout',label:'Dropout watch'},
+      {id:'auth',label:'Authorizations'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,dropout,auth,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.clinics} clinics · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The caseload, counted', '',
+      `<div class="grid">
+        ${stat('Patients at dropout risk', fmt.num(b.at_risk), `${b.single_signal} more show one signal only`, b.at_risk?'alert':'')}
+        ${stat('Over authorization', fmt.num(b.over_auth), 'bookings refused, payer queue open', b.over_auth?'warn':'')}
+        ${stat('Auth unknown', fmt.num(b.auth_unmeasured), 'never assumed unlimited')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.outreach_sent} · ${b.recovered.visits_booked} · ${b.recovered.reauthorizations}`,
+               'outreach sent · visits booked · reauthorizations — from the log')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A typed red flag — cauda equina signs, DVT signs, cardiac symptoms,
+      new neuro deficits, post-op infection — reaches a clinician <b>immediately</b>. Clinical
+      questions route unanswered.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='red_flag'?'bad':m.label==='clinical'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}${s.kind?' '+pill(s.kind,'bad'):''}</h2><div class="body">
+      ${s.said?`<div class="strong">“${esc(s.said)}”</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function dropout(){
+  const d = await API.get('/api/dropout');
+  document.getElementById('v-dropout').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('At risk', `${d.n} with ${d.floor}+ signals · ${d.single_signal} with one only`, table(
+      [{label:'Patient'},{label:'Signals',num:true},{label:'What we can see'}], d.rows,
+      r=>`<td>${esc(r.name)}</td><td class="num strong">${r.count}</td>
+        <td><ul class="reasons">${(r.signals||[]).map(s=>`<li>${esc(s.detail)}</li>`).join('')}</ul></td>`), true);
+}
+
+async function auth(){
+  const d = await API.get('/api/auth');
+  document.getElementById('v-auth').innerHTML =
+    `<div class="banner warn">Try booking the three demo patients: over-auth — refused to the payer
+      queue; no auth recorded — refused, never assumed unlimited; within auth — drafts.</div>` +
+    `<div style="margin:10px 0">
+      <button class="act" onclick="book('pt_demo_over')">Book: over authorization</button>
+      <button class="act" onclick="book('pt_demo_noauth')">Book: no auth recorded</button>
+      <button class="act primary" onclick="book('pt_demo_ok')">Book: within authorization</button>
+     </div><div id="aout"></div>` +
+    panel('Authorization state', 'patient level — the over-auth lesson', table(
+      [{label:'Patient'},{label:'Used',num:true},{label:'Authorized',num:true},{label:'Remaining',num:true},{label:'Recert'}],
+      d.rows, r=>`<td>${esc(r.name)}</td><td class="num">${r.used}</td>
+        <td class="num">${r.authorized??'—'}</td>
+        <td class="num">${r.remaining!=null?r.remaining:blank(r._missing)}</td>
+        <td>${r.recert_due?`${fmt.date(r.recert_due)} <span class="why">(${r.recert_days_left}d)</span>`:'—'}</td>`), true);
+}
+async function book(id){
+  const r = await API.post(`/api/patients/${id}/book`);
+  document.getElementById('aout').innerHTML = r.refused
+    ? panel('Refused', r.note||'', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Drafted', '', `<div class="strong">booking queued at R1 — ${esc(r.reason)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['at_risk','At-risk patients','counted'],['recovery_rate','Recovery rate','your number (0–1)'],
+    ['avg_remaining_value','Avg remaining plan value','your number'],
+    ['desk_hours_wk','Desk hrs/wk','your number'],['staff_rate','Staff rate','your number'],
+    ['denials_yr','Auth denials/yr','your history'],['avg_writeoff','Avg write-off','your history'],
+    ['redflag_value','Red-flag routing worth','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'director'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[Unit]
+Description=YourCo quarterly lineage review — second Monday of the quarter, 09:45 ET (Brett)
+
+[Timer]
+# Second Monday of Jan/Apr/Jul/Oct — a week after Polo's pricing review (1st Mon 09:15)
+# so two quarterly loops don't land in the same morning.
+OnCalendar=Mon *-01,04,07,10-8..14 09:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

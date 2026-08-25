@@ -1,0 +1,12 @@
+[Unit]
+Description=YourCo runtime heartbeat — API-independent availability beat; the only instrument that can measure its own absence
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=claudeops
+Environment=HOME=/home/claudeops
+WorkingDirectory=/home/claudeops/yourco-os
+ExecStart=/bin/bash /home/claudeops/yourco-os/runtime/heartbeat.sh
+TimeoutStartSec=60

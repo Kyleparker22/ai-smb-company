@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fuel OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-calls"></section>
+  <section class="view" id="v-gates"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. A gas smell gets the evacuate script
+verbatim and is never troubleshot by phone; an out-of-gas ticket cannot close without the recorded
+leak check; a contract customer's price cannot be anything but the contract; an out-of-date tank
+gets requalified, not filled.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'calls',label:'Calls'},{id:'gates',label:'Tickets & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,calls,gates,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.bobtails} bobtails · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The season, counted', '',
+      `<div class="grid">
+        ${stat('Tanks critical (<7d)', fmt.num(b.critical), 'from recorded usage — predicted, not guessed', b.critical?'alert':'')}
+        ${stat('Tanks UNKNOWN', fmt.num(b.unknown), 'no usage history — said, never assumed fine', b.unknown?'warn':'')}
+        ${stat('Open outages', fmt.num(b.open_outages), 'each carries the leak-check gate', b.open_outages?'bad':'')}
+        ${stat('Unhandled calls', fmt.num(b.calls_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.outages_closed_with_checks} · ${b.recovered.deliveries_made}`,
+               'outages closed WITH leak checks · deliveries made')}</div>`);
+}
+
+async function calls(){
+  const d = await API.get('/api/calls');
+  document.getElementById('v-calls').innerHTML =
+    `<div class="banner warn">A gas smell gets the evacuate script <b>verbatim</b> — leave now,
+      touch nothing electrical, call from outside. Nothing is troubleshot by phone.</div>` +
+    panel('Calls', '', table([{label:'When'},{label:'From'},{label:'Call'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='gas_smell'?'bad':m.label==='out_of_gas'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="cout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/calls/${id}/handle`);
+  document.getElementById('cout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function gates(){
+  const d = await API.get('/api/tickets');
+  document.getElementById('v-gates').innerHTML =
+    `<div class="banner warn">Try it: close an outage ticket with no leak check — refused; record
+      the tech's result and it closes. Fill the tank past its requal date — refused.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="closeTicket(false)">Close outage: no leak check</button>
+      <button class="act primary" onclick="closeTicket(true)">Close: leak check recorded</button>
+      <button class="act" onclick="fill('tk_demo_expired')">Fill: requal expired</button>
+      <button class="act primary" onclick="fill('tk_demo_ok')">Fill: requal current</button>
+     </div><div id="gout"></div>` +
+    panel('Outage tickets', 'each carries the gate', table(
+      [{label:'Ticket'},{label:'Customer'},{label:'Leak check'},{label:'State'}],
+      d.rows, t=>`<td class="mono">${esc(t.id)}</td><td>${esc(t.customer_name||'')}</td>
+        <td>${t.leak_check?pill(t.leak_check.result+' by '+t.leak_check.tech,'good'):pill('NOT RECORDED','bad')}</td>
+        <td>${t.closed_at?pill('closed','good'):pill('open','warn')}</td>`), true);
+}
+async function closeTicket(withCheck){
+  const d = await API.get('/api/tickets');
+  const open = d.rows.find(t=>!t.closed_at);
+  if(!open){document.getElementById('gout').innerHTML='<div class="why">no open outage — handle the demo outage call first</div>';return;}
+  const r = await API.post(`/api/tickets/${open.id}/close`, withCheck?{leak_result:'pass — system tight', tech:'T-Renner'}:{});
+  document.getElementById('gout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Closed', '', `<div class="strong">${esc(r.why)}</div>`);
+  gates();
+}
+async function fill(id){
+  const r = await API.post(`/api/tanks/${id}/fill`);
+  document.getElementById('gout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Delivery drafted', '', `<div class="strong">queued at R1</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['critical_tanks','Tanks critical now','counted'],
+    ['runouts_avoided','Runouts avoided vs last yr','your history'],['emergency_delta','Emergency-run cost delta','your number'],
+    ['conversions','Will-call conversions/yr','your number'],['annual_gallons','Avg annual gallons','your number'],
+    ['margin_gal','Margin per gallon','your number'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['leakcheck_value','The leak-check file','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

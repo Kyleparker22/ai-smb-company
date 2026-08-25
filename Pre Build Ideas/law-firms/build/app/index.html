@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-intake"></section>
+  <section class="view" id="v-records"></section>
+  <section class="view" id="v-demand"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system gives no legal advice,
+states no case value, and every output touching legal substance is labelled for attorney review.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'The docket'},{id:'intake',label:'Intake'},{id:'records',label:'Records'},
+      {id:'demand',label:'Demand'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,intake,records,demand,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.firm;
+  document.getElementById('cosub').textContent = `${(d.config.attorneys||[]).length} attorneys · ${(d.config.paralegals||[]).length} paralegals`;
+  document.getElementById('v-board').innerHTML =
+    `<div class="banner warn">${esc(b.note)}</div>` +
+    panel('Open matters', 'sorted by statute proximity',
+      `<div class="grid">
+        ${stat('Open', fmt.num(b.rows.length))}
+        ${stat('Statute under 90 days', fmt.num(b.sol_under_90), 'a date alert, not advice', b.sol_under_90?'alert':'')}
+        ${stat('Silent past 30 days', fmt.num(b.contact_overdue), 'silence is the #1 bar complaint', b.contact_overdue?'warn':'')}
+        ${stat('No contact ever recorded', fmt.num(b.no_contact_recorded), 'we do not know that they were called')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 approval floor')}</div>`) +
+    panel('', '', table(
+      [{label:'Client'},{label:'Type'},{label:'Stage'},{label:'Records complete'},
+       {label:'Days since contact',num:true},{label:'Statute in',num:true},{label:'Attorney'}],
+      b.rows.slice(0,60), r=>`<td>${esc(r.client||'')}</td><td>${esc(r.type)}</td>
+        <td>${pill(r.stage)}</td>
+        <td>${val(r.completeness,'pct',fmt.pct)}</td>
+        <td class="num">${r.days_since_contact==null?blank('no contact recorded'):r.days_since_contact+'d'}</td>
+        <td class="num ${r.sol_days_left!=null&&r.sol_days_left<90?'strong':''}">${r.sol_days_left==null?'—':r.sol_days_left+'d'}</td>
+        <td class="why">${esc(r.attorney||'')}</td>`), true);
+}
+
+async function intake(){
+  const d = await API.get('/api/leads');
+  document.getElementById('v-intake').innerHTML =
+    `<div class="banner warn">The conflict check runs <b>before</b> any substantive conversation, and
+      a hit stops it. "Do I have a case?" is routed to an attorney <b>unanswered</b>.</div>` +
+    panel('The firm\'s written criteria', 'the screener reads these and nothing else',
+      `<div>${(d.criteria.accepted_types||[]).map(t=>pill(t,'brand')).join(' ')}
+       ${(d.criteria.states||[]).map(t=>pill(t,'good')).join(' ')}</div>`) +
+    panel('Unhandled leads', `${d.live.length} waiting`, table(
+      [{label:'When'},{label:'Caller'},{label:'What they said'},{label:'Type'},{label:''}], d.live,
+      l=>`<td>${fmt.stamp(l.at)}${l.demo_tag?' '+pill(l.demo_tag,'brand'):''}${l.after_hours?' <span class="why">after hours</span>':''}</td>
+        <td>${esc(l.name)}<div class="why">v. ${esc(l.opposing||'')}</div></td>
+        <td>${esc(l.message)}</td><td>${esc((l.facts||{}).case_type||'')}</td>
+        <td class="right"><button class="act primary" onclick="doIntake('${l.id}')">Take the call</button></td>`), true) +
+    `<div id="out"></div>`;
+}
+async function doIntake(id){
+  const r = await API.post(`/api/leads/${id}/intake`);
+  const s = (r.steps||[]).map(x=>`<div class="panel"><h2>${esc(x.action)}</h2><div class="body">
+      ${x.said?`<div class="strong">“${esc(x.said)}”</div>`:''}
+      ${x.refused?`<div class="banner warn" style="margin-top:10px">Refused: ${esc(x.refused)}</div>`:''}
+      ${x.why?`<div class="why">${esc(x.why)}</div>`:''}
+      ${x.unknown?`<ul class="reasons">${x.unknown.map(u=>`<li>${esc(u.criterion)}: ${esc(u.why)}</li>`).join('')}</ul>`:''}
+      ${x.result?`<div class="why">${x.result.executed?`executed at ${rungPill(x.result.rung)}`:`held at ${rungPill(x.result.rung)} — ${esc(x.result.reason||'')}`}</div>`:''}
+    </div></div>`).join('');
+  const sc = r.screen ? panel('Screened against the firm\'s criteria', esc(r.screen.verdict),
+    table([{label:'Criterion'},{label:'Pass'},{label:'Why'}], r.screen.results,
+      c=>`<td class="mono">${esc(c.criterion)}</td>
+        <td>${c.pass===null?pill('cannot evaluate','warn'):c.pass?pill('yes','good'):pill('no','bad')}</td>
+        <td class="why">${esc(c.why)}</td>`), true) : '';
+  document.getElementById('out').innerHTML = s + sc;
+  intake();
+}
+
+async function records(){
+  const d = await API.get('/api/records');
+  document.getElementById('v-records').innerHTML =
+    panel('Requests', `${d.open} open of ${d.total}`,
+      `<div class="grid">
+        ${Object.entries(d.by_state).map(([k,v])=>stat(k, fmt.num(v))).join('')}
+        ${stat('Median age of sent requests', val(d.aging,'median_days', v=>v+'d'),
+          d.aging._missing?'':`worst ${d.aging.max_days}d`)}
+       </div>
+       <div style="margin-top:12px"><button class="act primary" onclick="sweepRecords()">Work the requests</button></div>`) +
+    panel('Incomplete productions', 'a PDF arriving is not the same as a file being whole', table(
+      [{label:'Provider'},{label:'Matter'},{label:'What is missing'}], d.incomplete_productions,
+      r=>`<td>${esc(r.provider||'')}</td><td class="mono">${esc(r.matter)}</td>
+        <td>${(r.gaps||[]).map(g=>`<div>${pill(g.severity, g.severity==='critical'?'bad':g.severity==='high'?'warn':'')} ${esc(g.gap)}</div>`).join('')}</td>`), true);
+}
+async function sweepRecords(){ await API.post('/api/records/sweep'); records(); }
+
+async function demand(){
+  const b = await API.get('/api/board');
+  const withRecords = b.board.rows.filter(r=>r.completeness && r.completeness.pct!=null).slice(0,12);
+  document.getElementById('v-demand').innerHTML =
+    panel('Pick a matter', 'the draft states no case value',
+      table([{label:'Client'},{label:'Stage'},{label:'Records complete'},{label:''}], withRecords,
+        r=>`<td>${esc(r.client||'')}</td><td>${pill(r.stage)}</td>
+          <td>${fmt.pct(r.completeness.pct)}</td>
+          <td class="right"><button class="act" onclick="draft('${r.matter}')">Draft the facts</button></td>`), true) +
+    `<div id="dm"></div>`;
+}
+async function draft(id){
+  const d = await API.get(`/api/demand/${id}`);
+  const c = d.chronology;
+  document.getElementById('dm').innerHTML =
+    (d.warning?`<div class="banner warn">${esc(d.warning)}</div>`:'') +
+    panel(esc(d.header), esc(c.note),
+      `<div class="grid">
+        ${stat('Cited entries', fmt.num(c.entries.length))}
+        ${stat('Billed (cited only)', c.billed_total==null?null:fmt.money(c.billed_total), 'sum of entries we can point to')}
+        ${stat('Omitted as unsupported', fmt.num(c.unsupported.length), 'no exhibit and page', c.unsupported.length?'warn':'')}
+        ${stat('File completeness', val(d.completeness,'pct',fmt.pct))}
+       </div>`) +
+    panel('Chronology', 'every line cites an exhibit and page', table(
+      [{label:'Date'},{label:'What'},{label:'Charge',num:true},{label:'Citation'}], c.entries,
+      e=>`<td>${fmt.date(e.date)}</td><td>${esc(e.what)}</td>
+        <td class="num">${fmt.money(e.charge)}</td><td class="mono">${esc(e.citation)}</td>`), true) +
+    panel('Omitted', 'listed, not written into the demand', table(
+      [{label:'What'},{label:'Charge',num:true},{label:'Why omitted'}], c.unsupported,
+      e=>`<td>${esc(e.what)}</td><td class="num">${fmt.money(e.charge)}</td>
+        <td class="why">${esc(e.why)}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['after_hours_leads_yr','After-hours leads / yr','counted from your intake log'],
+    ['incremental_sign_rate','Incremental sign %','your number'],
+    ['avg_case_fee','YOUR average case fee','we will not borrow a settlement statistic'],
+    ['open_matters','Open matters','counted'],['days_removed','Days removed from the file','your number'],
+    ['daily_carry','Daily carry per matter','your number'],
+    ['paralegal_hours_wk','Paralegal hours / wk','your number'],['loaded_rate','Loaded rate','your number'],
+    ['rescued_per_year','Declined-but-qualified rescued / yr','a scenario input']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide')+renderEval(ev.upl)+renderEval(ev.productions)+
+    renderAutonomy(au.matrix)+renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'attorney'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

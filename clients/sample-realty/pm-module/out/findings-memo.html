@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Trust Account Review — Sample Realty Property Management</title>
+<style>
+  :root{--red:#C00003;--ink:#131318;--soft:#6b6b74;--line:#e4e2dc;--warm:#f7f5f0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Georgia,"Times New Roman",serif;color:var(--ink);background:#fff;font-size:11.5px;line-height:1.55;padding:48px 54px}
+  .top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px solid var(--ink);padding-bottom:14px}
+  h1{font-size:21px;font-weight:normal}
+  h1 b{font-weight:bold}
+  .date{font-size:10px;color:var(--soft);letter-spacing:.08em;text-transform:uppercase}
+  .intro{margin-top:14px;font-style:italic;color:#333;max-width:88ch}
+  .nums{display:flex;gap:0;margin:20px 0 6px;border:1px solid var(--line)}
+  .n{flex:1;padding:12px 16px;border-right:1px solid var(--line)}
+  .n:last-child{border-right:0}
+  .n b{display:block;font-size:17px}
+  .n span{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+  h2{font-size:13px;margin:22px 0 8px;letter-spacing:.04em}
+  h2 i{color:var(--red);font-style:normal}
+  .f{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .f .dot{color:var(--red);font-weight:bold}
+  .f b{font-size:12px}
+  .f p{color:#444;font-size:11px;margin-top:1px}
+  .callout{background:var(--warm);border-left:3px solid var(--red);padding:14px 18px;margin:18px 0;font-size:12px}
+  .two{display:flex;gap:26px;margin-top:8px}
+  .two > div{flex:1}
+  ol{margin:6px 0 0 18px}
+  ol li{padding:3px 0;font-size:11px}
+  .foot{margin-top:26px;padding-top:12px;border-top:1px solid var(--line);font-size:9.5px;color:var(--soft);display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1><b>Trust Account Review</b> — Sample Realty Property Management</h1>
+  <div class="date">NC Rent Escrow Account · Jan–Jul 2026</div>
+</div>
+<div class="intro">We ran your own two workbooks — the Rent Account Journal and the Trial Balance — through one automated pass. Nothing was retyped: the attached workbook regenerates your journal (clean and date-ordered), a ledger for every property, and the NCREC trial balance entirely by formula from the journal itself. Below is what that single pass surfaced.</div>
+
+<div class="nums">
+  <div class="n"><b>137</b><span>transactions read</span></div>
+  <div class="n"><b>$96,666</b><span>deposits traced</span></div>
+  <div class="n"><b>$96,695</b><span>disbursements traced</span></div>
+  <div class="n"><b>10</b><span>findings</span></div>
+  <div class="n"><b>~4 hrs/mo</b><span>of typing this replaces</span></div>
+</div>
+
+<h2>What the pass found <i>·</i> every item traceable to a journal row</h2>
+<div class="f"><span class="dot">●</span><div><b>Property balances don't zero out — the headline.</b><p>1010 Bexton ends July at <b>−$1,830.51</b>: April's $4,331 in repairs exceeded its rents, so those bills were effectively covered by other owners' funds sitting in the same trust account (or an owner top-up went unrecorded). Bare-"Doveridge" entries hide −$6,150 that mostly belongs against 1139 Doveridge's +$6,396. Invisible in hand-kept books; instant when the ledgers are generated.</p></div></div>
+<div class="f"><span class="dot">●</span><div><b>19 entries had no date · 20 spellings for ~10 properties · 6 entries still ambiguous.</b><p>Undated rows silently vanish from monthly reports; "Doveridge" alone can mean three different homes. The pass matched what it could (4 resolved by who paid) and flagged the rest for a one-time, two-minute confirm.</p></div></div>
+<div class="f"><span class="dot">●</span><div><b>The running balance contradicts itself 5 times, and the cushion is off.</b><p>Rows entered out of date order broke the typed balance column around Feb 10. Recomputed, the account ends at <b>$96.20</b> against a $125 float ($100 incidentals + $25 Capps overpayment, per your own notes) — a $28.80 drift needing a one-time true-up.</p></div></div>
+<div class="f"><span class="dot">●</span><div><b>29 entries never marked cleared · 3 multi-property payments can't post to any ledger.</b><p>Statement ticking is months behind, and one-Zelle-many-properties entries ("all Kristi's properties") strand small balances across four ledgers.</p></div></div>
+<div class="f"><span class="dot">●</span><div><b>The good news: your fees are clean.</b><p>Everywhere rent and fee both posted, the 8% management fee holds exactly ($204/$2,550 · $180/$2,250 · $210/$2,625 · $128/$1,600).</p></div></div>
+
+<div class="callout"><b>Why this matters beyond the hours:</b> this is an NCREC escrow trust account — the monthly reconciliation and trial balance aren't optional paperwork, they're license requirements. Today they depend on hand-typed running balances. Generated books make the compliance a byproduct instead of a project.</div>
+
+<div class="two">
+  <div>
+    <h2>What the monthly module does <i>·</i> the operated version</h2>
+    <ol>
+      <li><b>Enter it once</b> — bank transactions come in; each is matched to tenant + property and coded (rent / fee / maintenance / disbursement). You approve exceptions only.</li>
+      <li><b>The books become views</b> — journal, per-property ledgers, and trial balance always in sync, always reconciled.</li>
+      <li><b>Close on rails</b> — fees computed, landlord disbursement list drafted, owner statements drafted. One screen, one approve.</li>
+      <li><b>Watchdogs</b> — late rent by the 5th, balance drift, aging uncleared items, SD transfers: flagged the day they happen.</li>
+    </ol>
+  </div>
+  <div>
+    <h2>Guardrails <i>·</i> non-negotiable</h2>
+    <ol>
+      <li>The system never moves money — it drafts; Kimi approves every disbursement.</li>
+      <li>Every figure traceable to a source transaction; full audit trail retained.</li>
+      <li>Trust-account data stays isolated; nothing shared, nothing trained on.</li>
+      <li>Counsel review of NCREC record-keeping fit before anything goes live.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="foot">
+  <div>Prepared from "Rent Account Journal 2026.xlsx" + "2026 ST Rent Trial Balance.xlsx" · companion workbook: Parker-Realty-Trust-Account-Review-2026.xlsx</div>
+  <div>prepared by yourco · august 2026</div>
+</div>
+
+</body>
+</html>

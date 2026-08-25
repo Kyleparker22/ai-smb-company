@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Product — built for Nick · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --indigo:#161B33; --cream:#F4EFE6; --parchment:#EAE1CD; --brass:#B8965A;
+    --ink:#161B33; --muted:#6b6f83; --high:#3f7d5a; --med:#a98033; --line:rgba(22,27,51,.12);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);
+    font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;line-height:1.1;margin:0}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .sec{font-size:28px;margin-top:8px}
+
+  .demobar{background:var(--brass);color:#20160a;font-size:12.5px;font-weight:600;text-align:center;padding:8px 16px;letter-spacing:.01em}
+  .topbar{background:var(--indigo);color:var(--cream);padding:16px 0}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:20px} .mark .dot{color:var(--brass)}
+  .topbar .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#b9bdd0}
+
+  .hero{background:var(--indigo);color:var(--cream);padding:52px 0 60px}
+  .hero h1{font-size:clamp(30px,5vw,50px);color:var(--cream);margin:14px 0 16px;max-width:16ch}
+  .hero h1 .accent{color:var(--brass)}
+  .hero p{max-width:60ch;color:#d7dae6;font-size:18px}
+  .hero .now{display:inline-flex;gap:8px;align-items:center;margin-top:22px;font-size:13px;color:#b9bdd0}
+  .dotlive{width:8px;height:8px;border-radius:50%;background:#5fd08b;box-shadow:0 0 0 4px rgba(95,208,139,.18)}
+
+  .band{padding:44px 0;border-bottom:1px solid var(--line)}
+  .lede{font-size:18px;color:#3a3f55;max-width:64ch}
+
+  /* sources strip */
+  .srcs{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .src{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);
+    border-radius:999px;padding:8px 15px 8px 12px;font-size:14px;font-weight:500}
+  .src .d{width:9px;height:9px;border-radius:50%}
+  .src.live .d{background:#3f7d5a;box-shadow:0 0 0 3px rgba(63,125,90,.15)}
+  .src.ready .d{background:#c7a24a}
+  .src .st{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .src.ready{opacity:.72;border-style:dashed}
+
+  /* pipeline */
+  .pipe{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:14px;align-items:stretch;margin-top:22px}
+  .node{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .node h4{margin:0 0 6px;font-family:Inter;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .node ul{margin:6px 0 0;padding-left:16px;font-size:14px;color:#3a3f55}
+  .node p{margin:0;font-size:14px;color:#3a3f55}
+  .node.verify{background:var(--indigo);color:var(--cream);border-color:var(--indigo)}
+  .node.verify h4{color:var(--brass)} .node.verify p{color:#d7dae6}
+  .node.out{background:var(--parchment);border-color:transparent}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--brass);font-size:22px;font-weight:700}
+  @media(max-width:820px){.pipe{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
+
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;flex:1;min-width:150px}
+  .stat .n{font-family:Fraunces,serif;font-size:34px;font-weight:700;line-height:1}
+  .stat .l{font-size:13px;color:var(--muted);margin-top:6px}
+  .stat.hi .n{color:var(--brass)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:22px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .card .county{font-family:Fraunces,serif;font-size:20px;font-weight:600}
+  .card .date{font-size:13px;color:var(--muted)}
+  .badge{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .badge.HIGH{background:rgba(63,125,90,.12);color:var(--high)}
+  .badge.MEDIUM{background:rgba(169,128,51,.14);color:var(--med)}
+  .gradepill{font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 8px;border-radius:8px;white-space:nowrap;border:1px solid transparent}
+  .gradepill.A{background:rgba(178,58,58,.1);color:#b23a3a;border-color:rgba(178,58,58,.25)}
+  .gradepill.B{background:rgba(169,128,51,.16);color:var(--med);border-color:rgba(169,128,51,.3)}
+  .gradepill.C{background:rgba(63,125,90,.1);color:var(--high);border-color:rgba(63,125,90,.22)}
+  .gradepill.D{background:rgba(107,111,131,.12);color:var(--muted);border-color:rgba(107,111,131,.22)}
+  .badgewrap{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  .hz{margin-top:12px;font-weight:600;font-size:15px}
+  .src2{margin-top:6px;font-size:13px;color:var(--muted)}
+  .src2 b{color:var(--indigo);font-weight:600}
+  .act{margin-top:10px;display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:var(--indigo);background:var(--parchment);border-radius:999px;padding:5px 11px}
+  .vpill{margin-top:10px;margin-left:8px;font-size:11.5px;font-weight:600;border-radius:999px;padding:5px 10px;display:inline-block}
+  .vpill.GO{background:rgba(63,125,90,.12);color:var(--high)}
+  .vpill.HOLD{background:rgba(169,128,51,.14);color:var(--med)}
+  .vpill.REJECT{background:rgba(178,58,58,.1);color:#b23a3a}
+  .card.rejected{opacity:.66}
+  .vreason{margin-top:8px;font-size:12.5px;color:#8a4444;line-height:1.4}
+  .aicatch{background:#fff;border:1px solid var(--line);border-left:3px solid #b23a3a;border-radius:12px;padding:15px 18px;margin-top:20px}
+  .aicatch .h{font-weight:600;color:var(--indigo);font-size:15px;margin-bottom:9px}
+  .aicatch .row{font-size:13px;color:#3a3f55;margin:5px 0;line-height:1.45}
+  .aicatch .row b{color:#b23a3a}
+
+  /* FL map */
+  .maprow{display:grid;grid-template-columns:1.35fr .9fr;gap:26px;align-items:center;margin-top:22px}
+  @media(max-width:820px){.maprow{grid-template-columns:1fr}}
+  .mapcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+  .mapcard svg{width:100%;height:auto;display:block}
+  .flshape{fill:#eef0f6;stroke:#c9cdda;stroke-width:1.2}
+  .dot-h{fill:var(--brass);stroke:#fff;stroke-width:1.5}
+  .dot-m{fill:#c7a24a;stroke:#fff;stroke-width:1.2;opacity:.8}
+  .dot-lbl{font-family:Inter;font-size:11px;fill:#3a3f55;font-weight:600}
+  .legend{font-size:13px;color:#3a3f55}
+  .legend .row{display:flex;align-items:center;gap:9px;margin:8px 0}
+  .legend .k{width:13px;height:13px;border-radius:50%}
+  .legend .k.h{background:var(--brass)} .legend .k.m{background:#c7a24a}
+
+  /* phones */
+  .phones{display:flex;gap:34px;flex-wrap:wrap;margin-top:26px;align-items:flex-start}
+  .phonewrap{flex:1;min-width:290px} .phonewrap>.cap{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .phonewrap>.cap b{color:var(--indigo)}
+  .phone{background:var(--indigo);border-radius:30px;padding:12px;box-shadow:0 20px 50px -18px rgba(22,27,51,.5);max-width:350px}
+  .screen{background:#0e1226;border-radius:20px;overflow:hidden;min-height:440px;color:#e9ebf4;font-size:14px;display:flex;flex-direction:column}
+  .screen .bar{padding:10px 16px;font-size:12px;color:#aeb3c9;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06)}
+  .alert{padding:16px}
+  .alert .kick{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .alert .big{font-family:Fraunces,serif;font-size:22px;font-weight:700;margin:8px 0 2px;color:#fff}
+  .alert .sub{font-size:14px;color:#c7cbe0}
+  .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:5px 11px;font-size:12px;color:#dfe2f0}
+  .chip.ok{border-color:rgba(95,208,139,.4);color:#7fe0a5}
+  .verline{margin:14px 16px 0;padding:11px 13px;background:rgba(95,208,139,.08);border:1px solid rgba(95,208,139,.25);border-radius:12px;font-size:13px;color:#a9e7c2}
+  .trigsel{margin:14px 16px 0}
+  .trigsel .tl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa0bd;margin-bottom:8px}
+  .trigbtns{display:flex;flex-wrap:wrap;gap:7px}
+  .tbtn{font-size:12px;padding:7px 11px;border-radius:9px;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);color:#c7cbe0;cursor:pointer;user-select:none}
+  .tbtn.on{background:var(--brass);border-color:var(--brass);color:#20160a;font-weight:600}
+  .draft{margin:14px 16px 0;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.18);border-radius:12px;padding:12px 14px;font-size:13.5px;color:#e9ebf4}
+  .draft .dl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa0bd;margin-bottom:6px}
+  .cta{margin:16px;margin-top:auto;display:flex;gap:10px}
+  .btn{flex:1;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;cursor:default}
+  .btn.go{background:var(--brass);color:#20160a} .btn.no{background:rgba(255,255,255,.08);color:#c7cbe0}
+  .sms{padding:16px;display:flex;flex-direction:column;gap:10px}
+  .from{font-size:12px;color:#9aa0bd;text-align:center}
+  .bubble{background:#2b64d9;color:#fff;border-radius:16px 16px 16px 5px;padding:11px 14px;font-size:14px;max-width:90%}
+  .meta{font-size:11px;color:#8b90ab;margin-left:4px}
+  .sent{align-self:flex-end;text-align:right} .sent .bubble{background:#2f3a63;border-radius:16px 16px 5px 16px}
+
+  footer{background:var(--indigo);color:#aeb3c9;padding:30px 0;margin-top:50px;font-size:13px}
+  footer b{color:var(--cream)}
+</style>
+</head>
+<body>
+
+  <div class="demobar">▸ Interactive demo — your full command center with every source connected. Storm data is real; nothing texts from this page.</div>
+  <div class="topbar"><div class="wrap">
+    <div class="mark">yourco<span class="dot">.</span></div>
+    <div class="tag">Sample Product · demo</div>
+  </div></div>
+
+  <!-- hero -->
+  <section class="hero"><div class="wrap">
+    <div class="eyebrow">built for Prospect A · roofing · Florida</div>
+    <h1>Every verified storm, <span class="accent">straight to your crew.</span></h1>
+    <p>yourco cross-references the storm sources you already use across Florida, <b style="color:#fff">confirms each storm is actually real</b>, and hands you a ready-to-send alert. You pick the call — door-knock now or hold — and tap once. <b style="color:#fff">First crew to the neighborhood wins the job.</b> No more nightly research. No more texting them one by one.</p>
+    <span class="now"><span class="dotlive"></span> running on live data — <span id="livewin"></span></span>
+  </div></section>
+
+  <!-- sources -->
+  <section class="band"><div class="wrap">
+    <div class="eyebrow">where the data comes from</div>
+    <h2 class="sec">Multiple sources — because one is never enough.</h2>
+    <p class="lede" style="margin-top:8px">You told us some sites are more accurate than others. So we pull several and let the AI cross-check them. Swap in the exact sources you trust anytime — the system is built to add them.</p>
+    <div class="srcs" id="srcs"></div>
+  </div></section>
+
+  <!-- pipeline -->
+  <section class="band"><div class="wrap">
+    <div class="eyebrow">how it works</div>
+    <h2 class="sec">Four steps. You only touch one.</h2>
+    <div class="pipe">
+      <div class="node"><h4>1 · Pull</h4><p>Every storm source, together — not just one map you have to go check.</p></div>
+      <div class="arrow">→</div>
+      <div class="node verify"><h4>2 · Verify</h4><p>The AI cross-checks the sources. Flagged <b style="color:#fff">HIGH confidence</b> only when they agree — so you never chase a storm that wasn't real.</p></div>
+      <div class="arrow">→</div>
+      <div class="node out"><h4>3 · You approve → 4 · Crew rolls</h4><p>The confirmed alert hits your phone with the call pre-picked. One tap and your crew's door-knocking — by person, area, or team. Speed is the whole game.</p></div>
+    </div>
+  </div></section>
+
+  <!-- storms -->
+  <section class="band"><div class="wrap">
+    <div class="eyebrow">what you'd have gotten this window</div>
+    <h2 class="sec">Real verified Florida storms.</h2>
+    <p class="lede" style="margin-top:8px">Straight from your sources, cross-checked — every one confirmed before it would reach you. This is exactly the research you do by hand; yourco does it automatically.</p>
+    <div class="stats" id="stats"></div>
+    <div class="grid" id="grid"></div>
+    <div class="aicatch" id="aicatch"></div>
+  </div></section>
+
+  <!-- map -->
+  <section class="band"><div class="wrap">
+    <div class="eyebrow">on the map</div>
+    <h2 class="sec">Where they hit.</h2>
+    <div class="maprow">
+      <div class="mapcard"><svg id="flmap" viewBox="0 0 700 625" xmlns="http://www.w3.org/2000/svg" aria-label="Florida storm map"></svg></div>
+      <div class="legend">
+        <p style="margin:0 0 6px;color:var(--ink);font-weight:600">This window, by county</p>
+        <div class="row"><span class="k h"></span> HIGH confidence — cross-verified, ready to dispatch</div>
+        <div class="row"><span class="k m"></span> MEDIUM — single source, confirm first</div>
+        <p style="margin-top:14px;font-size:12.5px;color:var(--muted)">Bigger dot = more severe. In production, hail zones show as swaths, not just points.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- phones -->
+  <section class="band" style="border-bottom:none"><div class="wrap">
+    <div class="eyebrow">on your phone</div>
+    <h2 class="sec">Pick the call. Your crew gets it.</h2>
+    <div class="phones">
+      <div class="phonewrap">
+        <p class="cap"><b>Your phone</b> — the verified alert with the action pre-picked. Change it in a tap; you're the only human in the loop.</p>
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>yourco Sample Product</span><span>now</span></div>
+          <div class="alert" id="approve"></div>
+          <div class="verline" id="verline">✓ Cross-verified across sources — safe to dispatch.</div>
+          <div class="trigsel"><div class="tl">action → your crew</div><div class="trigbtns" id="trigbtns"></div></div>
+          <div class="draft"><div class="dl">ready to send</div><span id="draftmsg"></span></div>
+          <div class="cta"><div class="btn no">Hold</div><div class="btn go">Send ▸</div></div>
+        </div></div>
+      </div>
+      <div class="phonewrap">
+        <p class="cap"><b>Your roofers</b> — the moment you tap send, by person / area / team.</p>
+        <div class="phone"><div class="screen">
+          <div class="bar"><span>Messages</span><span>now</span></div>
+          <div class="sms" id="crew"></div>
+        </div></div>
+      </div>
+    </div>
+  </div></section>
+
+  <footer><div class="wrap">
+    <b>Interactive demo — every storm shown is real; no texts send from this page.</b> Pulling live now: NOAA Local Storm Reports, NOAA SPC, NWS Live Alerts (free — NOAA is the insurance source of record). Shown connected for the demo: Xweather (Nick's key), HailTrace, Interactive Hail Maps — illustrated with the 1"+ hail events Nick verified by hand this week that NOAA's free feed missed. Add the keys and those pull live too. Built by yourco — we own the reliability; you get the outcome.
+  </div></footer>
+
+<script src="demo_data.js"></script>
+<script>
+  const D = window.STORM_DEMO || {storms:[],totals:{},sources:[],triggers:[]};
+  const esc = s => (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const fmt = s => { const [y,m,d]=s.split('-'); return new Date(y,m-1,d).toLocaleDateString('en-US',{month:'short',day:'numeric'}); };
+  const trigLabel = k => (D.triggers.find(t=>t.key===k)||{}).label || k;
+
+  document.getElementById('livewin').textContent = `${D.state} · ${D.window_days}-day window through ${fmt(D.generated)}`;
+
+  // sources
+  document.getElementById('srcs').innerHTML = (D.sources||[]).map(s=>`
+    <div class="src ${s.status}"><span class="d"></span>${esc(s.label)}
+      <span class="st">${s.status==='live'?'live':'ready to connect'}</span></div>`).join('');
+
+  // funnel
+  const t=D.totals||{};
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="n">${t.raw||0}</div><div class="l">raw storm reports pulled</div></div>
+    <div class="stat"><div class="n">${t.verified||0}</div><div class="l">verified &amp; de-duplicated</div></div>
+    <div class="stat hi"><div class="n">${t.relevant||0}</div><div class="l">roofing-relevant alerts</div></div>`;
+
+  // storm cards + AI verdict pill
+  const vlabel = a => a.verdict==='GO' ? ('✓ AI-verified'+(a.claim_grade?' · claim-grade':'')) : (a.verdict==='HOLD'?'⚠ AI hold':'✕ AI filtered');
+  const aiOf = s => s.ai || {verdict:'GO',claim_grade:true,reason:''};
+  const gradeTitle = {A:'severe',B:'significant',C:'marginal',D:'below threshold'};
+  document.getElementById('grid').innerHTML = (D.storms||[]).map(s=>{const a=aiOf(s);return `
+    <div class="card ${a.verdict==='REJECT'?'rejected':''}">
+      <div class="top"><div><div class="county">${esc(s.county)} County</div><div class="date">${fmt(s.date)}, ${D.state}</div></div>
+        <div class="badgewrap">${s.grade?`<span class="gradepill ${s.grade}" title="severity grade — ${gradeTitle[s.grade]||''}">Grade ${s.grade}</span>`:''}<span class="badge ${s.confidence}">${s.confidence}</span></div></div>
+      <div class="hz">${esc(s.hazard)}</div>
+      <div class="src2">verified by <b>${esc(s.sources)}</b></div>
+      <div class="act">▸ ${esc(trigLabel(s.trigger))}</div><span class="vpill ${a.verdict}">${vlabel(a)}</span>
+      ${a.verdict!=='GO'?`<div class="vreason">${esc(a.reason)}</div>`:''}
+    </div>`;}).join('');
+
+  // "what the AI caught" callout — the junk it filtered so crews don't chase it
+  const held=(D.storms||[]).filter(s=>aiOf(s).verdict!=='GO'), ai=D.ai_stats||{cleared:0,held:0};
+  document.getElementById('aicatch').innerHTML =
+    `<div class="h">🛡 The AI read every report — cleared ${ai.cleared}, filtered ${ai.held} this window.</div>`+
+    (held.length ? held.map(s=>`<div class="row"><b>Filtered:</b> ${esc(s.county)} ${fmt(s.date)} — ${esc(aiOf(s).reason)}</div>`).join('')
+                 : `<div class="row">Nothing marginal this window — every alert was measured and worth the trip.</div>`)+
+    `<div class="row" style="margin-top:9px;color:var(--muted)">Each filtered storm is a trip your crews didn't waste — and a claim that won't fall apart.</div>`;
+
+  // FL map
+  const BB={lonMin:-87.8,lonMax:-79.9,latMin:24.9,latMax:31.15}, W=700,H=625;
+  const px=lon=>(lon-BB.lonMin)/(BB.lonMax-BB.lonMin)*W, py=lat=>(BB.latMax-lat)/(BB.latMax-BB.latMin)*H;
+  const FL=[[-87.63,30.90],[-85.00,30.99],[-84.90,30.71],[-83.13,30.62],[-82.21,30.57],[-82.04,30.37],
+    [-81.50,30.72],[-81.44,30.71],[-81.39,30.10],[-81.10,29.42],[-80.90,28.76],[-80.53,28.46],
+    [-80.07,27.05],[-80.09,26.57],[-80.12,25.79],[-80.35,25.24],[-81.08,25.14],[-81.36,25.81],
+    [-81.72,26.45],[-82.06,26.90],[-82.25,27.09],[-82.71,27.44],[-82.65,27.76],[-82.63,28.17],
+    [-82.75,28.97],[-83.17,29.28],[-83.42,29.67],[-84.03,30.10],[-84.34,29.90],[-85.02,29.73],
+    [-85.41,29.95],[-86.20,30.40],[-86.63,30.40],[-87.20,30.32],[-87.52,30.31]];
+  const path='M'+FL.map(p=>px(p[0]).toFixed(1)+' '+py(p[1]).toFixed(1)).join(' L')+' Z';
+  let svg=`<path class="flshape" d="${path}"/>`;
+  // one marker per county (keep the highest-confidence storm) so same-county dots don't stack
+  const byCounty={};
+  (D.storms||[]).filter(s=>s.lat&&s.lon).forEach(s=>{
+    const rank=x=>x.confidence==='HIGH'?2:1, cur=byCounty[s.county];
+    if(!cur||rank(s)>rank(cur)) byCounty[s.county]=s;
+  });
+  Object.values(byCounty).forEach(s=>{
+    const x=px(s.lon),y=py(s.lat),hi=s.confidence==='HIGH',r=hi?9:6.5;
+    svg+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" class="${hi?'dot-h':'dot-m'}"><title>${esc(s.county)} — ${esc(s.hazard)} (${s.confidence})</title></circle>`;
+    const left=x>W*0.64, lx=left?(x-r-4):(x+r+4);   // flip east-coast labels inward
+    svg+=`<text class="dot-lbl" x="${lx.toFixed(1)}" y="${(y+3).toFixed(1)}"${left?' text-anchor="end"':''}>${esc(s.county)}</text>`;
+  });
+  document.getElementById('flmap').innerHTML=svg;
+
+  // approval phone + trigger selector
+  const hero=(D.storms||[]).find(s=>s.confidence==='HIGH')||(D.storms||[])[0];
+  let cur=hero?hero.trigger:null;
+  function paint(){
+    if(!hero)return;
+    document.getElementById('draftmsg').textContent=hero.messages[cur];
+    document.getElementById('crew').innerHTML=`
+      <div class="from">yourco storm alert · from Nick</div>
+      <div class="bubble">${esc(hero.messages[cur])}</div>
+      <div class="meta">Delivered to your roofers — by person / area / team</div>
+      <div class="sent"><div class="bubble">On it 👍</div></div>`;
+    document.querySelectorAll('.tbtn').forEach(b=>b.classList.toggle('on',b.dataset.k===cur));
+  }
+  if(hero){
+    document.getElementById('approve').innerHTML=`
+      <div class="kick">storm confirmed · ${hero.confidence} confidence</div>
+      <div class="big">${esc(hero.county)} County</div>
+      <div class="sub">${fmt(hero.date)}, ${D.state} — ${esc(hero.hazard)}</div>
+      <div class="row"><span class="chip ok">✓ ${esc(hero.sources)}</span><span class="chip">roofing-relevant</span></div>`;
+    const ha=hero.ai||{reason:'',claim_grade:true};
+    document.getElementById('verline').innerHTML = `✓ AI read the reports — ${esc(ha.reason)}${ha.claim_grade?' <b style="color:#a9e7c2">Claim-grade evidence retained.</b>':''}`;
+    document.getElementById('trigbtns').innerHTML=(D.triggers||[]).map(t=>
+      `<span class="tbtn" data-k="${t.key}" title="${esc(t.desc)}">${esc(t.label)}</span>`).join('');
+    document.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>{cur=b.dataset.k;paint();});
+    paint();
+  }
+</script>
+</body>
+</html>

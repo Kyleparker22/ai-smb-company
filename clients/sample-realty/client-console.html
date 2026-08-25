@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Your employee's workspace — yourco</title>
+<!--
+  CLIENT CONSOLE — the template every engagement inherits (overlay per client, like yourco-template).
+  This is the client-facing surface: where a paying client watches their employee work, approves drafts,
+  sees outcomes + reliability — daily, not once a week. It shows ONLY this client's employee(s) —
+  never yourco internals, cost, pipeline, or other clients.
+  Sections: top bar (status/controls) · this-week metrics · "Your engagement" (project status — the
+  delivery-loop milestones + current phase + next deliverable + project-level "Waiting on you" asks;
+  mirrors the internal delivery state, one source two audiences) · daily live activity + per-message
+  approvals · reliability/eval. The engagement band shows project tasks (client-facing only); the
+  "Needs your okay" card shows per-message sends. Distinct on purpose.
+  Owner: web/conversion (builds/maintains) · customer-health (DRI for the client-facing experience).
+  Populated below with a SAMPLE client (Northside Dental / "Remi") so it's viewable. Real data feeds
+  from the same runtime sources as the internal dashboard, scoped to one tenant. Nothing here auto-sends.
+-->
+<style>
+  :root{--indigo:#161B33;--indigo-deep:#0F1226;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;
+    --brass-bright:#D4B27A;--oxblood:#6B1E29;--pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);
+    --hairline:rgba(22,27,51,.12);--green:#3f7d52;--human:#5a6b8c;--stop:#9c3a2c;--amber:#9a7a2e;}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .top{background:var(--indigo);color:var(--cream);border-bottom:1px solid rgba(244,239,230,.12)}
+  .top .wrap{display:flex;align-items:center;gap:16px;height:64px}
+  .mark{font-size:18px;font-weight:600;color:var(--cream);text-decoration:none;opacity:.85}.mark .dot{color:var(--brass)}
+  .sep{width:1px;height:26px;background:rgba(244,239,230,.18)}
+  .who{display:flex;align-items:center;gap:11px}
+  .who .av{width:38px;height:38px;border-radius:50%;background:rgba(212,178,122,.18);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .who .nm{font-size:15px;font-weight:650}.who .sub{font-size:11.5px;color:rgba(244,239,230,.6)}
+  .status{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(244,239,230,.85)}
+  .status .dot{width:8px;height:8px;border-radius:50%;background:#5fbf7e;box-shadow:0 0 0 3px rgba(95,191,126,.25);animation:pulse 2s infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(95,191,126,0)}}
+  .ctrl{display:flex;gap:8px}
+  .ctrl button{background:transparent;border:1px solid rgba(244,239,230,.28);color:var(--cream);border-radius:8px;padding:7px 13px;font-size:12.5px;cursor:pointer;font-family:inherit}
+  .ctrl button:hover{border-color:var(--brass)}
+  .ctrl .pause:hover{border-color:var(--stop);color:#f0b8ad}
+
+  .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:24px 0}
+  .metric{background:#fff;border:1px solid var(--hairline);border-radius:13px;padding:16px 16px 14px}
+  .metric .v{font-size:27px;font-weight:680;letter-spacing:-.02em}
+  .metric .l{font-size:12px;color:var(--pewter);margin-top:3px;line-height:1.3}
+  .metric .v b{color:var(--brass)}
+  @media(max-width:820px){.metrics{grid-template-columns:repeat(2,1fr)}}
+
+  .cols{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--hairline);border-radius:15px;overflow:hidden}
+  .card h3{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pewter);padding:16px 18px 10px;display:flex;align-items:center;gap:8px}
+  .card h3 .ct{margin-left:auto;font-size:11px;background:var(--brass);color:var(--indigo);border-radius:9999px;padding:2px 9px;font-weight:700;letter-spacing:0}
+
+  .feed{padding:4px 18px 14px}
+  .ev{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--hairline)}
+  .ev:first-child{border-top:none}
+  .ev .t{flex:none;font-size:11.5px;color:var(--pewter);width:52px;padding-top:2px;font-variant-numeric:tabular-nums}
+  .ev .tag{flex:none;font-size:10px;font-weight:700;border-radius:6px;padding:3px 7px;height:fit-content;white-space:nowrap;margin-top:1px}
+  .tag.a{background:rgba(184,150,90,.16);color:#8a6f3c}
+  .tag.h{background:rgba(90,107,140,.16);color:var(--human)}
+  .tag.g{background:rgba(63,125,82,.14);color:var(--green)}
+  .ev .x{font-size:13.5px;color:#2a3142;line-height:1.4}.ev .x b{font-weight:650}
+
+  .appr{padding:6px 18px 16px}
+  .ai{border:1px solid var(--hairline);border-radius:12px;padding:13px 14px;margin-top:11px}
+  .ai .ah{font-size:13.5px;font-weight:650;margin-bottom:4px}
+  .ai .ab{font-size:13px;color:var(--ink-muted);line-height:1.45;background:#fbfaf7;border-left:2px solid var(--brass);padding:8px 11px;border-radius:6px;margin:8px 0 11px}
+  .ai .row{display:flex;gap:7px}
+  .ai button{border:none;border-radius:8px;padding:7px 13px;font-size:12.5px;font-weight:650;cursor:pointer;font-family:inherit}
+  .ai .ok{background:var(--green);color:#fff}.ai .ok:hover{filter:brightness(1.07)}
+  .ai .ed{background:transparent;border:1px solid var(--hairline);color:var(--indigo)}
+  .ai .no{background:transparent;border:1px solid var(--hairline);color:var(--stop)}
+  .ai.done{opacity:.6}.ai .res{font-size:12.5px;font-weight:650;margin-top:4px}
+  .empty{font-size:13px;color:var(--pewter);padding:14px 0 4px;text-align:center}
+
+  .proj{background:#fff;border:1px solid var(--hairline);border-radius:15px;padding:18px 20px;margin-bottom:16px}
+  .proj .ph{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .proj .ph h3{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pewter)}
+  .proj .ph .now{margin-left:auto;font-size:12.5px;color:var(--pewter)}.proj .ph .now b{color:var(--indigo);font-weight:650}
+  .proj .ph .now .nx{color:var(--brass)}
+  .steps{display:flex}
+  .step{flex:1;position:relative;padding-top:28px;text-align:center}
+  .step::before{content:"";position:absolute;top:9px;left:0;right:0;height:2px;background:var(--hairline)}
+  .step:first-child::before{left:50%}.step:last-child::before{right:50%}
+  .step.done::before,.step.now::before{background:var(--brass)}
+  .step .dot{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:var(--cream);border:2px solid var(--hairline);z-index:1;font-size:10px;line-height:12px;color:#fff;font-weight:800}
+  .step.done .dot{background:var(--brass);border-color:var(--brass)}
+  .step.now .dot{background:var(--brass-bright);border-color:var(--brass);box-shadow:0 0 0 4px rgba(184,150,90,.2);animation:pulse 2s infinite}
+  .step .sl{font-size:12.5px;font-weight:650;color:var(--indigo)}
+  .step.upcoming .sl{color:var(--pewter);font-weight:600}.step.now .sl{color:#8a6f3c}
+  .step .sd{font-size:11px;color:var(--pewter);margin-top:2px}
+  @media(max-width:680px){.steps{flex-direction:column;gap:0}.step{flex:none;text-align:left;padding:0 0 16px 28px;min-height:30px}
+    .step::before{top:3px;bottom:-3px;left:7px;right:auto;width:2px;height:auto}
+    .step:first-child::before{top:8px}.step:last-child::before{bottom:auto;height:11px}
+    .step .dot{top:1px;left:0;transform:none}.step .sd{display:inline;margin-left:9px}}
+  .waiting{margin-top:18px;border-top:1px solid var(--hairline);padding-top:14px}
+  .waiting .wt{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pewter);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .waiting .wt .ct{font-size:11px;background:var(--amber);color:#fff;border-radius:9999px;padding:2px 8px;font-weight:700;letter-spacing:0}
+  .witem{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--hairline)}.witem:first-of-type{border-top:none}
+  .witem .wi{flex:none;color:var(--amber);font-weight:800;font-size:14px;padding-top:1px}
+  .witem .wx{font-size:13.5px;color:#2a3142}.witem .wx b{font-weight:650}.witem .wd{font-size:11.5px;color:var(--pewter);margin-top:1px}
+  .rely{background:var(--indigo-deep);color:var(--cream);border-radius:15px;margin-top:16px;padding:20px 22px}
+  .rely h3{color:var(--brass-bright);padding:0 0 4px}
+  .rely .sub{font-size:12.5px;color:rgba(244,239,230,.6);margin-bottom:16px}
+  .rgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:820px){.rgrid{grid-template-columns:repeat(2,1fr)}}
+  .rb{background:rgba(244,239,230,.05);border:1px solid rgba(244,239,230,.1);border-radius:11px;padding:14px}
+  .rb .rh{font-size:11.5px;color:rgba(244,239,230,.6);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .rb .rv{font-size:16px;font-weight:650;line-height:1.3}
+  .rb .rv .g{color:#7bd49b}
+  .gates{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+  .gate{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:rgba(244,239,230,.9)}
+  .gate .gi{flex:none;color:#7bd49b;font-weight:800}
+
+  .honest{max-width:760px;margin:22px auto 0;text-align:center;font-size:12px;color:var(--pewter);line-height:1.55}
+  .honest b{color:var(--indigo)}
+  footer{padding:34px 0 44px;text-align:center}
+  .pwr{font-size:12px;color:var(--pewter)}.pwr b{color:var(--indigo);font-weight:600}.pwr .p{color:var(--brass)}
+</style>
+</head>
+<body>
+  <div class="top"><div class="wrap">
+    <a class="mark" href="#">yourco<span class="dot">.</span></a>
+    <div class="sep"></div>
+    <div class="who"><div class="av">🦷</div><div><div class="nm">Remi</div><div class="sub">Front desk · Northside Dental · live since May 28</div></div></div>
+    <div class="status"><span class="dot"></span> Live · healthy</div>
+    <div class="ctrl"><button>Message a human</button><button class="pause">Pause Remi</button></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="metrics">
+      <div class="metric"><div class="v">73</div><div class="l">calls &amp; texts handled this week</div></div>
+      <div class="metric"><div class="v">28</div><div class="l">appointments booked</div></div>
+      <div class="metric"><div class="v">11</div><div class="l">after-hours leads captured</div></div>
+      <div class="metric"><div class="v">6</div><div class="l">correctly escalated to your staff</div></div>
+      <div class="metric"><div class="v"><b>~14</b></div><div class="l">staff hours saved this week</div></div>
+    </div>
+
+    <div class="proj">
+      <div class="ph">
+        <h3>Your engagement</h3>
+        <div class="now">Now: <b>Weekly iteration</b> &nbsp;·&nbsp; Next: <span class="nx">30-day readout &amp; expansion review</span> (Jun 27)</div>
+      </div>
+      <div class="steps">
+        <div class="step done"><div class="dot">✓</div><div class="sl">Discovery</div><div class="sd">May 20</div></div>
+        <div class="step done"><div class="dot">✓</div><div class="sl">Build</div><div class="sd">May 26</div></div>
+        <div class="step done"><div class="dot">✓</div><div class="sl">Eval &amp; gates</div><div class="sd">May 27</div></div>
+        <div class="step done"><div class="dot">✓</div><div class="sl">Go-live (48h)</div><div class="sd">May 28</div></div>
+        <div class="step now"><div class="dot"></div><div class="sl">Weekly iteration</div><div class="sd">in progress</div></div>
+      </div>
+      <div class="waiting">
+        <div class="wt">Waiting on you <span class="ct" id="wcount">2</span></div>
+        <div class="witem"><span class="wi">●</span><div><div class="wx"><b>Confirm your updated Delta Dental payer list</b> — so Remi verifies coverage before quoting.</div><div class="wd">Asked Jun 12 · needed for this week's verifications</div></div></div>
+        <div class="witem"><span class="wi">●</span><div><div class="wx"><b>Pick 2 services to add to Remi's booking flow</b> — for the month-2 expansion.</div><div class="wd">By Jun 20 · feeds the next iteration</div></div></div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="card">
+        <h3>Live activity <span class="ct">today</span></h3>
+        <div class="feed">
+          <div class="ev"><span class="t">1:40p</span><span class="tag a">🤖 agent</span><span class="x">Captured an <b>after-hours voicemail</b> from last night and booked a callback for this afternoon.</span></div>
+          <div class="ev"><span class="t">12:20p</span><span class="tag g">✅ your okay</span><span class="x">Drafted a reply to a <b>billing question</b> — waiting in your approvals →</span></div>
+          <div class="ev"><span class="t">11:05a</span><span class="tag a">🤖 agent</span><span class="x">Rescheduled a patient and <b>freed the 2:00 slot</b>, then offered it to the waitlist.</span></div>
+          <div class="ev"><span class="t">10:30a</span><span class="tag h">🧍 escalated</span><span class="x">Caller asked a <b>clinical question</b> (tooth pain). Remi did <b>not</b> advise — routed to your nurse line in under 2 min.</span></div>
+          <div class="ev"><span class="t">9:02a</span><span class="tag a">🤖 agent</span><span class="x">New-patient call → booked a <b>cleaning + exam (Tue 4:00)</b>; flagged Delta Dental for your team to verify.</span></div>
+          <div class="ev"><span class="t">8:47a</span><span class="tag g">✅ your okay</span><span class="x">You approved → sent <b>appointment reminders to 14 patients</b>.</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Needs your okay <span class="ct" id="aprcount">3</span></h3>
+        <div class="appr" id="appr">
+          <div class="ai">
+            <div class="ah">Reply to a billing question</div>
+            <div class="ab">"Hi Janet — that charge is your portion after Delta Dental's adjustment; I've attached the EOB. Happy to walk through it by phone — does tomorrow morning work?"</div>
+            <div class="row"><button class="ok">Approve &amp; send</button><button class="ed">Edit</button><button class="no">Decline</button></div>
+          </div>
+          <div class="ai">
+            <div class="ah">Nudge 3 new patients to finish their forms</div>
+            <div class="ab">A friendly reminder + the secure form link, to 3 patients booked this week who haven't completed intake.</div>
+            <div class="row"><button class="ok">Approve</button><button class="ed">Edit</button><button class="no">Decline</button></div>
+          </div>
+          <div class="ai">
+            <div class="ah">Reply to a new 5-star review</div>
+            <div class="ab">"Thank you, Marcus — the team will be so glad to hear it. See you at your next visit!"</div>
+            <div class="row"><button class="ok">Approve &amp; post</button><button class="ed">Edit</button><button class="no">Decline</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rely">
+      <h3>Reliability — the part you're paying for</h3>
+      <div class="sub">This is why Remi can be trusted with your front desk. Watched continuously; nothing customer-facing sends without your rules.</div>
+      <div class="rgrid">
+        <div class="rb"><div class="rh">Eval status</div><div class="rv"><span class="g">✅ Passing</span><br><span style="font-size:12px;color:rgba(244,239,230,.55)">last check 2h ago</span></div></div>
+        <div class="rb"><div class="rh">Auto-sends</div><div class="rv"><span class="g">0</span><br><span style="font-size:12px;color:rgba(244,239,230,.55)">nothing sent without your okay</span></div></div>
+        <div class="rb"><div class="rh">Escalations</div><div class="rv">6 to humans<br><span style="font-size:12px;color:rgba(244,239,230,.55)">avg handoff &lt; 2 min</span></div></div>
+        <div class="rb"><div class="rh">Uptime</div><div class="rv"><span class="g">99.9%</span><br><span style="font-size:12px;color:rgba(244,239,230,.55)">always answering</span></div></div>
+      </div>
+      <div class="gates">
+        <div class="gate"><span class="gi">✓</span><span>Never gave clinical advice — <b>6 of 6</b> clinical questions routed to your staff.</span></div>
+        <div class="gate"><span class="gi">✓</span><span>Insurance always verified by a human before it's promised — never quoted by Remi.</span></div>
+        <div class="gate"><span class="gi">✓</span><span>You approved <b>41 of 43</b> drafts; you edited 2. Every send was yours.</span></div>
+      </div>
+    </div>
+
+    <div class="honest">
+      <b>What this is.</b> Your employee lives in your own tools — your phone line, your inbox, your calendar. This workspace is where you watch it work, approve anything customer-facing, and see the outcomes and reliability — any time, not just in the weekly readout. You can pause it or reach a human at yourco from the top bar. yourco runs the models, the reliability, and the security underneath. You own the outcome.
+    </div>
+  </div>
+
+  <footer><div class="wrap"><div class="pwr">Powered by <b>yourco<span class="p">.</span></b> · your team's reliability, eval &amp; approval layer</div></div></footer>
+
+<script>
+document.querySelectorAll('.ai .row').forEach(row=>{
+  const card=row.closest('.ai');
+  row.querySelectorAll('button').forEach(btn=>btn.onclick=()=>{
+    if(card.classList.contains('done'))return;
+    const ok=btn.classList.contains('ok'), no=btn.classList.contains('no'), ed=btn.classList.contains('ed');
+    if(ed){btn.textContent='Editing…';return;}
+    card.classList.add('done');
+    row.outerHTML=`<div class="res" style="color:${ok?'#3f7d52':'#9c3a2c'}">${ok?'✓ Approved — Remi will handle it.':'✕ Declined — Remi won\'t send it.'}</div>`;
+    const c=document.getElementById('aprcount');const n=Math.max(0,parseInt(c.textContent,10)-1);c.textContent=n;
+    if(n===0){const a=document.getElementById('appr');a.insertAdjacentHTML('beforeend','<div class="empty">All caught up — nothing waiting on you.</div>');}
+  });
+});
+</script>
+</body>
+</html>

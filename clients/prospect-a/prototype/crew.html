@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Crew — Sample Product · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EAE1CD;--brass:#B8965A;--ink:#161B33;--muted:#6b6f83;--line:rgba(22,27,51,.12);
+    --knocked:#9aa0b5;--nothome:#c7a24a;--interested:#2b64d9;--booked:#6b4fa8;--signed:#3f7d5a}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--cream)}
+  .top{background:var(--indigo);color:var(--cream);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:17px}.mark .dot{color:var(--brass)}
+  .top .who{font-size:12px;color:#b9bdd0}
+  .top select{background:#1f2547;color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 8px;font-size:12px}
+  .seg{display:flex;background:var(--parchment);margin:12px 16px;border-radius:12px;padding:4px}
+  .seg button{flex:1;border:none;background:transparent;padding:9px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--muted);cursor:pointer;font-family:inherit}
+  .seg button.on{background:#fff;color:var(--indigo);box-shadow:0 1px 3px rgba(22,27,51,.1)}
+  .pane{padding:0 16px 40px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:12px}
+  .storm{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+  .storm .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .storm .big{font-family:Fraunces,serif;font-size:20px;font-weight:700;margin:4px 0 2px}
+  .storm .sub{font-size:13px;color:#c7cbe0}
+  .storm select{margin-top:8px;width:100%;background:#0e1226;color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:9px;font-size:14px}
+  label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin:2px 0 7px}
+  input,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:15px;font-family:inherit;background:#fff}
+  textarea{min-height:44px;resize:vertical}
+  .status{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:6px 0 12px}
+  .status button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 6px;font-size:13px;font-weight:600;color:#3a3f55;cursor:pointer;font-family:inherit}
+  .status button.sel{color:#fff;border-color:transparent}
+  .status button[data-s=knocked].sel{background:var(--knocked)} .status button[data-s=nothome].sel{background:var(--nothome)}
+  .status button[data-s=interested].sel{background:var(--interested)} .status button[data-s=booked].sel{background:var(--booked)}
+  .status button[data-s=signed].sel{background:var(--signed)}
+  .amt{margin-bottom:12px}
+  .btn{width:100%;background:var(--brass);color:#20160a;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+  .ack{display:flex;gap:8px}
+  .ack button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;color:#3a3f55}
+  .ack button.on{background:var(--signed);color:#fff;border-color:transparent}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .row:last-child{border-bottom:none}
+  .pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;color:#fff;text-transform:capitalize}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .tile .n{font-family:Fraunces,serif;font-size:24px;font-weight:700} .tile.hi .n{color:var(--signed)}
+  .tile .l{font-size:11px;color:var(--muted)}
+  .map{background:#eef0f6;border:1px solid var(--line);border-radius:12px;height:150px;position:relative;overflow:hidden;margin-bottom:12px}
+  .map .d{position:absolute;width:11px;height:11px;border-radius:50%;border:1.5px solid #fff;transform:translate(-50%,-50%)}
+  .hd{font-family:Fraunces,serif;font-size:16px;font-weight:600;margin:2px 0 9px}
+  .muted{color:var(--muted);font-size:13px}
+  .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:#3a3f55;margin-top:8px}
+  .legend span{display:inline-flex;align-items:center;gap:5px} .legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="mark">yourco<span class="dot">.</span> crew</div>
+    <div><span class="who">crew:</span> <select id="crew"></select></div>
+  </div>
+  <div class="seg"><button id="tabRoofer" class="on" onclick="setMode('roofer')">Roofer</button><button id="tabRoute" onclick="setMode('route')">Route</button><button id="tabCov" onclick="setMode('coverage')">Coverage</button></div>
+
+  <div class="pane" id="roofer">
+    <div class="card storm">
+      <div class="k">active storm</div>
+      <div class="big" id="stName">—</div>
+      <div class="sub" id="stSub"></div>
+      <select id="stSel" onchange="render()"></select>
+      <div style="margin-top:12px"><label>Your status on this storm</label>
+        <div class="ack"><button id="ackOn" onclick="ack('on_it')">On it</button><button id="ackDone" onclick="ack('done')">Done</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="hd">Log a door</div>
+      <label>Address</label><input id="addr" placeholder="123 Oak St" />
+      <label style="margin-top:12px">Outcome</label>
+      <div class="status" id="statusBtns">
+        <button data-s="knocked">Knocked</button><button data-s="nothome">Not home</button><button data-s="interested">Interested</button>
+        <button data-s="booked">Booked</button><button data-s="signed">Signed ✓</button><button data-s="" style="visibility:hidden"></button>
+      </div>
+      <div class="amt" id="amtWrap" style="display:none"><label>Job value ($)</label><input id="amt" type="number" inputmode="numeric" placeholder="9500" /></div>
+      <label>Note (optional)</label><textarea id="note" placeholder="hail dents on north slope…"></textarea>
+      <button class="btn" style="margin-top:12px" onclick="logDoor()">Log door</button>
+    </div>
+    <div class="card"><div class="hd">Your doors today <span class="muted" id="myCount"></span></div><div id="myList"></div></div>
+  </div>
+
+  <div class="pane" id="route" style="display:none">
+    <div class="card"><div class="hd">Your route — <span id="rtCounty">—</span></div>
+      <div class="muted" id="rtMeta" style="margin-bottom:10px"></div>
+      <div id="rtTop"></div>
+    </div>
+    <div class="card"><div class="hd">Optimized route <span class="muted">· least driving</span></div><div id="rtList"></div></div>
+    <div class="card storm"><div class="k">door-knock script — NOAA proof</div><div id="rtScript" style="margin-top:8px;font-size:14px;line-height:1.55;color:#e9ebf4"></div></div>
+  </div>
+
+  <div class="pane" id="coverage" style="display:none">
+    <div class="tiles" id="covTiles"></div>
+    <div class="card"><div class="hd">Coverage</div><div class="map" id="map"></div>
+      <div class="legend">
+        <span><i style="background:var(--knocked)"></i>knocked</span><span><i style="background:var(--nothome)"></i>not home</span>
+        <span><i style="background:var(--interested)"></i>interested</span><span><i style="background:var(--booked)"></i>booked</span>
+        <span><i style="background:var(--signed)"></i>signed</span></div>
+    </div>
+    <div class="card"><div class="hd">Crews</div><div id="crewStatus"></div></div>
+    <div class="card"><div class="hd">Recent activity</div><div id="feed"></div></div>
+  </div>
+</div>
+
+<script src="demo_data.js"></script>
+<script src="canvass_data.js"></script>
+<script>
+  const CREWS = ["Mike","Luis","Tanner","Dave","Carlos"];
+  const SC = {knocked:'var(--knocked)',nothome:'var(--nothome)',interested:'var(--interested)',booked:'var(--booked)',signed:'var(--signed)'};
+  const esc = s => (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  // active storms = the GO storms from the demo data (production: today's approved dispatches)
+  const STORMS = ((window.STORM_DEMO||{}).storms||[]).filter(s=>!s.ai||s.ai.verdict==='GO').slice(0,6)
+                 .map(s=>({key:s.county+'|'+s.date, county:s.county, date:s.date, hazard:s.hazard, lat:s.lat, lon:s.lon}));
+
+  // ---- data layer: backend if available (crew_server.py), else localStorage ----
+  const LS='crewState_v1';
+  function local(){ try{return JSON.parse(localStorage.getItem(LS))||seed();}catch(e){return seed();} }
+  function save(st){ localStorage.setItem(LS, JSON.stringify(st)); }
+  function seed(){
+    const st={doors:[],acks:{}}; const now=Date.now();
+    const demo=[["Mike","interested","210 Oak St",0],["Mike","signed","44 Palmetto St",9800],["Luis","knocked","881 Heron Way",0],
+                ["Luis","booked","132 Cypress Dr",0],["Dave","signed","67 Sabal Ln",12400],["Mike","nothome","19 Ibis Ct",0]];
+    const sk=(STORMS[0]||{key:'Duval|2026-06-23'}).key;
+    demo.forEach((d,i)=>st.doors.push({id:now-i*1e5,crew:d[0],storm:sk,address:d[2],status:d[1],amount:d[3]||0,note:'',ts:now-i*6e5}));
+    st.acks[('Mike|'+sk)]={status:'on_it'}; st.acks[('Luis|'+sk)]={status:'on_it'}; st.acks[('Dave|'+sk)]={status:'done'};
+    save(st); return st;
+  }
+  let backend=false, STATE=local();
+  async function pull(){ try{const r=await fetch('/api/state'); if(r.ok){backend=true; STATE=await r.json(); return;}}catch(e){} STATE=local(); }
+  async function postDoor(d){ if(backend){try{await fetch('/api/door',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});await pull();return;}catch(e){}} STATE.doors.unshift(d); save(STATE); }
+  async function postAck(a){ if(backend){try{await fetch('/api/ack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)});await pull();return;}catch(e){}} STATE.acks[a.crew+'|'+a.storm]={status:a.status}; save(STATE); }
+
+  // ---- UI state ----
+  let mode='roofer', sel=0, crew='Mike';
+  const $=id=>document.getElementById(id);
+  const TABID={roofer:'tabRoofer',route:'tabRoute',coverage:'tabCov'};
+  function setMode(m){ mode=m; ['roofer','route','coverage'].forEach(x=>{ $(TABID[x]).classList.toggle('on',m===x); $(x).style.display=m===x?'':'none'; }); render(); }
+  function renderRoute(){
+    const C=window.CANVASS;
+    if(!C||!C.route){ $('rtCounty').textContent='—'; $('rtMeta').textContent='No route dispatched yet.'; $('rtTop').innerHTML=''; $('rtList').innerHTML=''; $('rtScript').textContent=''; return; }
+    const topIds=new Set(C.top_targets||[]);
+    $('rtCounty').textContent=C.county+' County';
+    $('rtMeta').textContent=`${C.hazard} · ${C.route.length} doors · knock the ★ first`;
+    const top=C.route.filter(s=>topIds.has(s.id)).sort((a,b)=>b.priority-a.priority);
+    $('rtTop').innerHTML='<div style="font-weight:600;margin-bottom:6px">★ Knock these first</div>'+top.map((s,i)=>`<div class="row"><span><b>${i+1}.</b> ${esc(s.address)}</span><span class="muted">${(s.property||{}).roof_age}yr · $${Math.round(((s.property||{}).home_value||0)/1000)}k</span></div>`).join('');
+    $('rtList').innerHTML=C.route.map((s,i)=>`<div class="row"><span>${i+1}. ${esc(s.address)}${topIds.has(s.id)?' <span style="color:var(--brass)">★</span>':''}</span><span class="muted">${(s.property||{}).roof_age}yr</span></div>`).join('');
+    $('rtScript').textContent=C.script||'';
+  }
+  function curStorm(){ return STORMS[Math.min(sel,STORMS.length-1)] || {key:'—',county:'—',date:'',hazard:''}; }
+
+  // status button selection
+  let selStatus=null;
+  $('statusBtns').querySelectorAll('button[data-s]').forEach(b=>{ if(!b.dataset.s)return;
+    b.onclick=()=>{selStatus=b.dataset.s; $('statusBtns').querySelectorAll('button').forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+      $('amtWrap').style.display = selStatus==='signed'?'':'none'; }; });
+
+  async function logDoor(){
+    const addr=$('addr').value.trim(); if(!addr||!selStatus){ alert('Address + outcome required'); return; }
+    await postDoor({id:Date.now(),crew,storm:curStorm().key,address:addr,status:selStatus,amount:Number($('amt').value||0),note:$('note').value.trim(),ts:Date.now()});
+    $('addr').value=''; $('note').value=''; $('amt').value=''; selStatus=null;
+    $('statusBtns').querySelectorAll('button').forEach(x=>x.classList.remove('sel')); $('amtWrap').style.display='none';
+    render();
+  }
+  async function ack(s){ await postAck({crew,storm:curStorm().key,status:s}); render(); }
+
+  function dotXY(address){ let h=0; for(const c of address) h=(h*31+c.charCodeAt(0))>>>0; return [8+(h%84), 8+((h>>7)%84)]; }
+
+  function render(){
+    // crew select
+    if(!$('crew').options.length){ CREWS.forEach(c=>{const o=document.createElement('option');o.value=o.textContent=c;$('crew').appendChild(o);}); $('crew').value=crew; $('crew').onchange=e=>{crew=e.target.value;render();}; }
+    // storm select
+    const ss=$('stSel'); if(ss.options.length!==STORMS.length){ ss.innerHTML=STORMS.map((s,i)=>`<option value="${i}">${esc(s.county)} — ${esc(s.hazard)}</option>`).join(''); }
+    ss.value=sel; const st=curStorm();
+    $('stName').textContent=st.county+' County'; $('stSub').textContent=(st.date?st.date+' · ':'')+st.hazard;
+    const myAck=(STATE.acks[crew+'|'+st.key]||{}).status;
+    $('ackOn').classList.toggle('on',myAck==='on_it'); $('ackDone').classList.toggle('on',myAck==='done');
+
+    const forStorm=STATE.doors.filter(d=>d.storm===st.key);
+    const mine=forStorm.filter(d=>d.crew===crew);
+    $('myCount').textContent=mine.length?`· ${mine.length}`:'';
+    $('myList').innerHTML=mine.slice(0,8).map(d=>`<div class="row"><span>${esc(d.address)}${d.amount?` · $${(d.amount/1000).toFixed(1)}k`:''}</span><span class="pill" style="background:${SC[d.status]}">${d.status}</span></div>`).join('')||'<div class="muted">No doors logged yet.</div>';
+
+    // coverage
+    const cnt=s=>forStorm.filter(d=>d.status===s).length;
+    const signedRev=forStorm.filter(d=>d.status==='signed').reduce((a,d)=>a+(d.amount||0),0);
+    $('covTiles').innerHTML=`
+      <div class="tile"><div class="n">${forStorm.length}</div><div class="l">doors</div></div>
+      <div class="tile"><div class="n">${cnt('interested')+cnt('booked')}</div><div class="l">interested</div></div>
+      <div class="tile hi"><div class="n">${cnt('signed')}</div><div class="l">signed · $${(signedRev/1000).toFixed(0)}k</div></div>`;
+    $('map').innerHTML=forStorm.map(d=>{const[x,y]=dotXY(d.address);return `<div class="d" style="left:${x}%;top:${y}%;background:${SC[d.status]}" title="${esc(d.address)} — ${d.status}"></div>`;}).join('');
+    // crews
+    const byCrew={}; forStorm.forEach(d=>{byCrew[d.crew]=(byCrew[d.crew]||0)+1;});
+    $('crewStatus').innerHTML=CREWS.filter(c=>byCrew[c]||STATE.acks[c+'|'+st.key]).map(c=>{
+      const a=(STATE.acks[c+'|'+st.key]||{}).status;
+      const badge=a==='done'?'<span class="pill" style="background:var(--signed)">done</span>':a==='on_it'?'<span class="pill" style="background:var(--interested)">on it</span>':'<span class="muted">—</span>';
+      return `<div class="row"><span>${esc(c)} <span class="muted">· ${byCrew[c]||0} doors</span></span>${badge}</div>`;}).join('')||'<div class="muted">No crews on this storm yet.</div>';
+    // feed
+    $('feed').innerHTML=forStorm.slice(0,10).map(d=>`<div class="row"><span>${esc(d.crew)} — ${esc(d.address)}</span><span class="pill" style="background:${SC[d.status]}">${d.status}</span></div>`).join('')||'<div class="muted">Nothing yet.</div>';
+    renderRoute();
+  }
+
+  (async()=>{ await pull(); if(location.hash==='#coverage'){setMode('coverage');}else{render();} setInterval(async()=>{ if(backend){await pull(); render();} }, 5000); })();
+</script>
+</body>
+</html>

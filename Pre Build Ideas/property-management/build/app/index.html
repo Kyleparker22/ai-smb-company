@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5fd8">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+<style>
+  .hero { padding: 60px 0 34px; max-width: 720px; }
+  .doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 1fr)); gap: 15px; }
+  .door { display: block; text-decoration: none; color: inherit; transition: .16s; }
+  .door:hover { transform: translateY(-2px); }
+  .door:hover .card { box-shadow: var(--raise-2); border-color: color-mix(in srgb, var(--brand) 40%, transparent); }
+  .door .ic { font-size: 26px; margin-bottom: 11px; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 7px 15px; font-size: 13.5px; }
+  .kv dt { color: var(--ink-3); white-space: nowrap; }
+  .kv dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="bar-in">
+  <div class="logo"><span class="mark">◈</span><span>Property OS</span></div>
+  <div class="grow"></div>
+  <button class="btn ghost sm" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+</div></div>
+
+<main class="wrap">
+  <div class="hero">
+    <h1 style="font-size:34px;margin-bottom:12px">Three doors into one system</h1>
+    <p class="muted" style="font-size:16px;line-height:1.6">
+      A resident files a request in about twenty seconds. Seven agents triage it, pick the vendor,
+      watch the clock, and tell the owner what it cost — and what it avoided. Everything a human
+      still decides is collected in one queue that says why.
+    </p>
+  </div>
+
+  <div class="doors" style="margin-bottom:26px">
+    <a class="door" href="/tenant.html" id="tenantLink">
+      <div class="card"><div class="card-b">
+        <div class="ic">📱</div>
+        <h2>Resident</h2>
+        <p class="muted small" style="margin-top:6px">Report something, watch it move, say whether
+          it was actually fixed. Installs to a phone home screen.</p>
+        <div class="pill brand" style="margin-top:9px" id="tenantName">loading…</div>
+      </div></div>
+    </a>
+    <a class="door" href="/staff.html">
+      <div class="card"><div class="card-b">
+        <div class="ic">🛠</div>
+        <h2>Manager</h2>
+        <p class="muted small" style="margin-top:6px">The board, the approvals the agents refused to
+          make alone, the vendor market, and the lease clock.</p>
+        <div class="pill mute" style="margin-top:9px" id="staffStat">loading…</div>
+      </div></div>
+    </a>
+    <a class="door" href="/owner.html">
+      <div class="card"><div class="card-b">
+        <div class="ic">📈</div>
+        <h2>Owner</h2>
+        <p class="muted small" style="margin-top:6px">Open requests, average resolution time, the
+          60-day lease tracker — and the cost that never landed.</p>
+        <div class="pill mute" style="margin-top:9px" id="ownerStat">loading…</div>
+      </div></div>
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>What's actually in the store right now</h2>
+      <span class="muted small">every number below is counted, not asserted</span></div>
+    <div class="card-b"><dl class="kv" id="facts"><dd class="muted">loading…</dd></dl></div>
+  </div>
+
+  <div class="card" style="margin-top:15px">
+    <div class="card-b">
+      <div class="missing">
+        Synthetic portfolio, deterministic seed. The distributions are drawn from what a 20–300 unit
+        operator actually sees; the residents, vendors and buildings are invented. No figure here is a
+        claim about a real property, and nothing in the product will state a number its own inputs
+        can't support — where the data is thin you'll see the reason instead of a zero.
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/app.js"></script>
+<script>
+(async () => {
+  const [staff, tenants] = await Promise.all([
+    API.get('/bootstrap?role=staff'), API.get('/requests?limit=1')]);
+  const m = staff.metrics;
+  const t = (await API.get('/bootstrap?role=tenant')).tenant;
+  $('#tenantLink').href = '/tenant.html?id=' + encodeURIComponent(t.id);
+  $('#tenantName').textContent = 'Signed in as ' + t.name;
+  $('#staffStat').textContent = m.requests.open + ' open · ' + m.approvals_pending + ' need you';
+  $('#ownerStat').textContent = m.leases_60d + ' leases expiring in 60 days';
+
+  const rows = [
+    ['Portfolio', `${m.portfolio.units} units across ${m.portfolio.properties} properties, ${pct(m.portfolio.occupancy)} occupied`],
+    ['Requests', `${m.requests.total} on file · ${m.requests.open} open right now`],
+    ['Average resolution', m.avg_resolution._missing || `${hrs(m.avg_resolution.hours)} mean, ${hrs(m.avg_resolution.median)} median (n=${m.avg_resolution.n}, 90d)`],
+    ['Emergencies', m.avg_resolution_p1._missing || `${hrs(m.avg_resolution_p1.hours)} average against a 24-hour target`],
+    ['SLA', `${m.sla.on_track} on track · ${m.sla.at_risk} at risk · ${m.sla.breached} breached`],
+    ['Deflected', `${m.deflection.deflected} requests resolved by the resident — ${money(m.deflection.avoided_cost)} of dispatches avoided`],
+    ['Reopen rate', pct(m.reopen_rate) + ' of resolved requests came back'],
+    ['Leases', `${m.leases_60d} expiring in 60 days · ${money(m.turnover_exposure_60d)} of turnover exposure`],
+    ['Silent units', `${m.silent_units} occupied 18+ months with no request — a question, not a verdict`],
+    ['Running unattended', m.automation._missing || `${pct(m.automation.rate)} of ${m.automation.moving} pipeline-moving actions`],
+  ];
+  $('#facts').innerHTML = rows.map(([k, v]) =>
+    `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+})();
+</script>
+</body>
+</html>

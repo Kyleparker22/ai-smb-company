@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Neighborhood Guides — Ballantyne, Yourtown &amp; Marvin, Indian Land &amp; Fort Mill · Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:76px 0 64px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(32px,4.2vw,50px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:54ch}
+  header.page .jump{display:flex;gap:18px;margin-top:28px;flex-wrap:wrap}
+  header.page .jump a{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-dark);text-decoration:none;border:1px solid var(--line-dark);padding:10px 18px;border-radius:9999px}
+  header.page .jump a:hover{border-color:var(--red);color:var(--red)}
+
+  .hood{padding:92px 0}
+  .hood.alt{background:var(--warm)}
+  .hood h2{font-family:Didot,Georgia,serif;font-size:clamp(28px,3.4vw,42px);font-weight:400;line-height:1.15;margin-top:14px}
+  .hood h2 em{font-style:italic;color:var(--red)}
+  .hood .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:16px;max-width:60ch}
+  .hood .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:start;margin-top:14px}
+  @media(max-width:900px){.hood .grid{grid-template-columns:1fr}}
+  .hood p.body{font-size:15px;color:var(--ink-2);margin-top:16px;max-width:62ch}
+
+  .factsheet{border:1px solid var(--line);background:#fff;padding:26px 28px}
+  .factsheet .t{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .fr{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13.5px;align-items:baseline}
+  .fr:last-child{border-bottom:0}
+  .fr b{font-family:Didot,Georgia,serif;font-weight:400;font-size:15px;text-align:right}
+  .proof{margin-top:22px;padding-top:18px;border-top:2px solid var(--red)}
+  .proof .t{color:var(--red)}
+  .proof .p{font-family:Didot,Georgia,serif;font-size:13.5px;font-style:italic;color:var(--ink-2);margin-top:8px;line-height:1.8}
+
+  .hoodcta{margin-top:30px}
+  .hoodcta a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none;border-bottom:2px solid var(--red);padding-bottom:3px}
+  .hoodcta a:hover{color:var(--red)}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:78px 0}
+  .ctaband h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,38px);font-weight:400;margin-top:12px}
+  .ctaband h2 em{font-style:italic;color:var(--red)}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:26px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:80ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · price bands from our own Canopy MLS transactions</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="listings/">Listings</a>
+      <a href="tools/carolina-compare.html">NC vs SC</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">Neighborhood Guides</div>
+    <h1>The neighborhoods we actually <em>work in.</em></h1>
+    <div class="lede">Not scraped city data — the streets where we've listed, sold, and represented buyers, described by people who drive them every week.</div>
+    <div class="jump">
+      <a href="#ballantyne">Ballantyne &amp; Blakeney</a>
+      <a href="#Yourtown">Yourtown · Marvin · Weddington</a>
+      <a href="#indianland">Indian Land &amp; Fort Mill</a>
+    </div>
+  </div>
+</header>
+
+<section class="hood" id="ballantyne">
+  <div class="wrap">
+    <div class="kicker">South Yourtown</div>
+    <h2>Ballantyne &amp; <em>Blakeney.</em></h2>
+    <div class="grid">
+      <div>
+        <p class="lede">Yourtown's polished southern edge — corporate campuses, manicured greenways, and every errand within a golf-cart radius.</p>
+        <p class="body">Ballantyne works because everything is close: Blakeney's and StoneCrest's shopping and restaurants, top-rated schools, quick access to I-485, and fifteen minutes to Uptown on a good morning. Housing runs from well-kept townhome communities like Elizabeth Townes and Blakeney Greens to executive single-family streets — dense, walkable-ish, and relentlessly convenient.</p>
+        <p class="body">It's the right fit for first-and-second-home buyers who want lock-and-leave ease, and for anyone who commutes in any direction. Townhomes here also hold rental demand, which keeps investors circling.</p>
+        <div class="hoodcta"><a href="listings/">See our current South Yourtownlistings</a></div>
+      </div>
+      <div class="factsheet">
+        <div class="t">The Fact Sheet</div>
+        <div class="fr"><span>What your money buys</span><b>Townhomes ≈$350–450k<br/>Single-family $500k+</b></div>
+        <div class="fr"><span>Schools</span><b>Hawk Ridge · Community House · Ardrey Kell</b></div>
+        <div class="fr"><span>Commute to Uptown</span><b>≈25 min</b></div>
+        <div class="fr"><span>Property tax feel</span><b>Mecklenburg Co. — standard ST</b></div>
+        <div class="fr"><span>Who it fits</span><b>Convenience-first buyers &amp; investors</b></div>
+        <div class="proof">
+          <div class="t">Our recent work here</div>
+          <div class="p">9725 Mattforest Cir (Elizabeth Townes) — active at $359,900 · 12727 Bullock Greenway Blvd (Blakeney Greens) — active at $435,000 · multiple buyer-side closings in Brixton, 2024–2026.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hood alt" id="Yourtown">
+  <div class="wrap">
+    <div class="kicker">Union County, ST</div>
+    <h2>Yourtown, Marvin &amp; <em>Weddington.</em></h2>
+    <div class="grid">
+      <div>
+        <p class="lede">Estate lots, top-of-the-state schools, and a downtown that still feels like a small town — this is where Yourtowngoes when it wants land.</p>
+        <p class="body">The Marvin Ridge and Cuthbertson school zones are the engine of this market: communities like Weddington Chase, Innisbrook at Firethorne, and Silver Creek trade on acreage, custom builds, and district lines. Downtown Yourtown's shops and restaurants anchor the weekends; Union County's lower tax rate sweetens the monthly math.</p>
+        <p class="body">Homes here range from the mid-$600s into the multi-millions, and the strongest listings move fast when they're presented right — we've proven that twice this summer.</p>
+        <div class="hoodcta"><a href="results.html">Read the Meadowgate &amp; Wingfoot case studies</a></div>
+      </div>
+      <div class="factsheet">
+        <div class="t">The Fact Sheet</div>
+        <div class="fr"><span>What your money buys</span><b>$650k – $2M+<br/>estate lots &amp; custom builds</b></div>
+        <div class="fr"><span>Schools</span><b>Marvin Ridge · Cuthbertson — among ST's best</b></div>
+        <div class="fr"><span>Commute to Uptown</span><b>≈40 min</b></div>
+        <div class="fr"><span>Property tax feel</span><b>Union Co. — lower than Mecklenburg</b></div>
+        <div class="fr"><span>Who it fits</span><b>Space, schools &amp; forever-home buyers</b></div>
+        <div class="proof">
+          <div class="t">Our recent work here</div>
+          <div class="p">7518 Meadowgate Ln (Weddington Chase) — sold $1.2M, under contract in 4 days · 401 Wingfoot Dr (Innisbrook) — sold $1.445M, over asking · 1208 High Brook Dr (Silver Creek) — coming soon at $724,900.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hood" id="indianland">
+  <div class="wrap">
+    <div class="kicker">Lancaster &amp; York County, SC</div>
+    <h2>Indian Land &amp; <em>Fort Mill.</em></h2>
+    <div class="grid">
+      <div>
+        <p class="lede">Across the state line, the same commute buys more house, a smaller tax bill, and some of the fastest-growing communities in the region.</p>
+        <p class="body">The Highway 521 corridor has grown its own gravity — shopping, dining, and medical without crossing back into Yourtown. South Carolina's owner-occupied tax treatment keeps monthly costs noticeably lighter, Fort Mill's schools are a longtime draw, and Indian Land's 10/10-rated elementary anchors the newer rooftops. From Sun City's active-adult streets to Toll Brothers' new estates at The Pines at Sugar Creek, the range is wide.</p>
+        <p class="body">We close on both sides of the line — so the ST-vs-SC decision gets made with real numbers, not folklore.</p>
+        <div class="hoodcta"><a href="tools/carolina-compare.html">Run the ST vs SC numbers on your budget</a></div>
+      </div>
+      <div class="factsheet">
+        <div class="t">The Fact Sheet</div>
+        <div class="fr"><span>What your money buys</span><b>Townhomes ≈$260–280k<br/>SFH $400k – $1M+ new builds</b></div>
+        <div class="fr"><span>Schools</span><b>Fort Mill district · Indian Land (10/10 elem.)</b></div>
+        <div class="fr"><span>Commute to Uptown</span><b>≈35–45 min</b></div>
+        <div class="fr"><span>Property tax feel</span><b>SC primary-residence — often ≈half of ST</b></div>
+        <div class="fr"><span>Who it fits</span><b>Value hunters, retirees &amp; new-build buyers</b></div>
+        <div class="proof">
+          <div class="t">Our recent work here</div>
+          <div class="p">1210 Sheldon Brook Ln (Brookchase) — active at $273,500 · 2275 Whitebark Dr #148 (The Pines at Sugar Creek) — $1.003M Toll Brothers build, buyer side, under contract · closings in Windsor Trace, Hanover Place &amp; Sun City, 2024–2026.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">Can't Decide Between Them?</div>
+    <h2>Tell us how you live. We'll tell you <em>where.</em></h2>
+    <a href="index.html#contact">Start a conversation</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine">Price bands reflect our own recent transactions and current listings (Canopy MLS); school assignments change — verify with the district. Sample Realty Home &amp; Land, LLC · Licensed in ST &amp; SC.</div>
+  </div>
+</footer>
+
+</body>
+</html>

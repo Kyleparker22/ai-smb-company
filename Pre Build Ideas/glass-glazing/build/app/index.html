@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pane OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-orders"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. No order releases to the
+fabricator without two recorded measurements that match within the recorded tolerance and a
+recorded deposit; annealed glass is never quoted into a recorded safety location — we don't
+sell code violations cheaper; lead times cite the fabricator's recorded date or refuse; a
+break-in is a security event and the board-up dispatches first. Nothing sends externally.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'orders',label:'Orders & gates'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,orders,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board, g = b.pipeline.held_at_measure_gate;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.crews} install crews · fabricator: ${d.config.fabricator}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The pipeline, counted', b.pipeline.note,
+      `<div class="grid">
+        ${stat('Held at the measure-twice gate', fmt.num(g.single + g.mismatched),
+               `${g.single} single reading · ${g.mismatched} mismatched pair(s)`, (g.single+g.mismatched)?'warn':'')}
+        ${stat('Awaiting deposit', fmt.money(b.deposits.value),
+               `${b.deposits.count} accepted order(s) — the wall holds fabrication`, b.deposits.count?'alert':'')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the board-up reads first', b.messages_open?'bad':'')}
+        ${stat('Remake rate (counted)', val(b.remake_rate,'rate',fmt.pct),
+               b.remake_rate&&b.remake_rate.rate!=null?`${b.remake_rate.remakes} remake(s) / ${b.remake_rate.completed} completed — the shop's own number`:'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', fmt.money(b.recovered.deposits_collected),
+               `${b.recovered.deposit_count} deposit(s) · ${b.recovered.boardups_dispatched} board-up(s) dispatched · ${b.recovered.releases_approved} release(s) approved · ${b.recovered.installs_done} install(s)`)}</div>`) +
+    `<div class="grid" style="margin-top:14px">
+      ${stat('Quote', fmt.num(b.pipeline.stages.quote))}
+      ${stat('Deposit / measure', fmt.num(b.pipeline.stages.deposit))}
+      ${stat('At the fabricator', fmt.num(b.pipeline.stages.fabrication))}
+      ${stat('Install scheduled', fmt.num(b.pipeline.stages.install))}
+     </div>`;
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The smashed storefront is a <b>security event</b>, not a glass
+      order yet — the board-up crew dispatches first (R2, logged), the reply drafts second, and
+      it never queues behind a shower quote.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='breakin_boardup'?'bad':m.label==='warranty_claim'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function orders(){
+  const d = await API.get('/api/orders');
+  document.getElementById('v-orders').innerHTML =
+    `<div class="banner warn">Try it: release the order with one measurement — refused naming
+      the gap; the mismatched pair — refused citing the tolerance (${d.tolerance_in}&quot;) and
+      both values; the matched pair — queues for your R1 click; no deposit — the wall holds.
+      Quote annealed into a door — refused with the rule cited. Ask for an undated lead time —
+      refused; a dated one — the fabricator's record is cited.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="release('or_demo_single')">Release: one measurement</button>
+      <button class="act" onclick="release('or_demo_mismatch')">Release: mismatched pair</button>
+      <button class="act primary" onclick="release('or_demo_matched')">Release: matched pair</button>
+      <button class="act" onclick="release('or_demo_nodeposit')">Release: no deposit</button>
+      <button class="act" onclick="quoteCheck('door','annealed')">Quote: annealed in a door</button>
+      <button class="act" onclick="leadtime('or_demo_undated')">Lead time: no fabricator date</button>
+      <button class="act" onclick="leadtime('or_demo_dated')">Lead time: recorded date</button>
+     </div><div id="oout"></div>` +
+    panel('Orders', `measurement pairs are recorded acts — who, when, values; tolerance ${d.tolerance_in}"`,
+      table([{label:'Order'},{label:'Customer'},{label:'Job'},{label:'Stage'},{label:'Value',num:true},{label:'Measurements'},{label:'Deposit'},{label:'Fabricator date'}],
+      d.rows, o=>`<td>${esc(o.id)}${o.demo_tag?' '+pill('demo','brand'):''}</td>
+        <td>${esc(o.customer||'')}</td><td>${esc(o.job_type||'')}</td><td>${pill(o.stage)}</td>
+        <td class="num">${fmt.money(o.amount)}</td>
+        <td>${pill(o.measurements, o.measurements==='matched'?'good':o.measurements==='none'?'':o.measurements==='single'?'warn':'bad')}</td>
+        <td>${o.deposit?pill('recorded','good'):pill('none','warn')}</td>
+        <td>${o.fab_date?fmt.date(o.fab_date):blank('no recorded fabricator date')}</td>`), true) +
+    `<div id="rem"></div>`;
+  remakes();
+}
+async function release(id){
+  const r = await API.post(`/api/orders/${id}/release`);
+  document.getElementById('oout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Queued for your click', '', `<div class="strong">R1 — both gates passed; the release waits on a human.</div>
+        <div class="why">${esc(r.reason||'')}</div>`);
+}
+async function quoteCheck(loc, glass){
+  const r = await API.post('/api/quotes/check',{location:loc,glass_type:glass});
+  document.getElementById('oout').innerHTML = r.refused
+    ? panel('Refused', esc(r.rules_source||''), `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Safety check passed', '', `<div class="strong">${esc(r.note||'ok')}</div>`);
+}
+async function leadtime(id){
+  const r = await API.get(`/api/orders/${id}/leadtime`);
+  document.getElementById('oout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('The recorded date, cited', '', `<div class="strong">${fmt.date(r.date)} — ${esc(r.basis)}</div>
+        <div class="why">${esc(r.note||'')}</div>`);
+}
+async function remakes(){
+  const d = await API.get('/api/remakes');
+  const bc = d.rate && d.rate.by_cause ? Object.entries(d.rate.by_cause).map(([k,v])=>`${k} ${v}`).join(' · ') : '';
+  document.getElementById('rem').innerHTML =
+    panel('The remake ledger', 'every remake carries a cause code — the rate is the shop\'s own number, never estimated',
+      `<div class="grid">
+        ${stat('Remake rate (counted)', val(d.rate,'rate',fmt.pct), bc)}
+        ${stat('Remake cost, 12 mo', d.rate&&d.rate.cost!=null?fmt.money(d.rate.cost):val(d.rate,'cost',fmt.money), d.rate&&d.rate.avg_cost!=null?`avg ${fmt.money(d.rate.avg_cost)} each`:'')}
+       </div>` +
+      table([{label:'When'},{label:'Order'},{label:'Cause'},{label:'Cost',num:true}], d.rows,
+        r=>`<td>${fmt.date(r.at)}</td><td>${esc(r.order_id)}</td>
+          <td>${pill(r.cause, r.cause==='measure'?'bad':'')}</td><td class="num">${fmt.money(r.cost)}</td>`));
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['remakes_12mo','Remakes, 12 mo','counted from the ledger'],
+    ['avg_remake_cost','Avg remake cost','recorded from the ledger'],
+    ['remake_lift','Gate lift','your number (0–1)'],
+    ['deposits_uncollected','Deposits uncollected','counted'],
+    ['board_up_jobs','Board-up jobs','counted'],
+    ['avg_boardup_ticket','Avg board-up ticket','your number'],
+    ['office_hours_wk','Office hrs/wk','your number'],
+    ['office_rate','Office rate','your number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

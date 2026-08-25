@@ -1,0 +1,9 @@
+[Unit]
+Description=YourCo agent-registry watchdog — Mondays 07:45 ET, just before the Monday briefing (which surfaces any drift)
+
+[Timer]
+OnCalendar=Mon *-*-* 07:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

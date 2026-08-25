@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leak meter — client console band</title>
+<!--
+  LEAK METER — client-console band template (offerings/leak-meter/SPEC.md, frontier #16).
+  A section template beside client-console.html, same look; per-client it merges INTO the console
+  as a band. Form factor 3 (embedded surface) — no agent attached; the meter takes no actions (R0).
+
+  Reads two files beside it:
+    leak-config.json   — the client-approved assumption schedule (signed multipliers; versioned)
+    leak-events.jsonl  — one real logged OS event per line. Event contract:
+      {"id":"evt_001","ts":"2026-08-07T02:14:00-04:00","category":"missed_intake",
+       "detail":"after-hours call, no answer","amount":null,"days_late":null,"days_past_terms":null}
+
+  THE HONESTY PROTOCOL, ENFORCED IN CODE (spec §1/§8):
+  - Every line traces to a real logged event. Zero events => the meter shows zero. No modeled,
+    inferred, or "businesses like yours" lines, no backfilled history. Ever.
+  - A category whose assumption is not signed renders COUNTS ONLY, unpriced, labeled
+    "no approved assumption". An unsigned multiplier does not run.
+  - The words are "estimated leak", never "lost revenue" as a fact claim. The standing caption
+    renders always and is never dropped for a cleaner screenshot.
+  - Pricing is deterministic arithmetic below (priceEvent) — no LLM in the math path.
+  - Demo state ships with zero events and all assumptions unsigned: nothing invented.
+  White-label per external-surface rules: client brand only on the deployed console.
+-->
+<style>
+  :root{--indigo:#161B33;--indigo-deep:#0F1226;--cream:#F4EFE6;--parchment:#EFE8DA;--brass:#B8965A;
+    --brass-bright:#D4B27A;--oxblood:#6B1E29;--pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);
+    --hairline:rgba(22,27,51,.12);--green:#3f7d52;--human:#5a6b8c;--stop:#9c3a2c;--amber:#9a7a2e;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--indigo);font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .top{background:var(--indigo);color:var(--cream);border-bottom:1px solid rgba(244,239,230,.12)}
+  .top .wrap{display:flex;align-items:center;gap:16px;height:64px}
+  .mark{font-size:18px;font-weight:600;color:var(--cream)}.mark .dot{color:var(--brass)}
+  .sep{width:1px;height:26px;background:rgba(244,239,230,.18)}
+  .bandname{font-size:14px;font-weight:650}.bandname .sub{font-size:11.5px;color:rgba(244,239,230,.6);font-weight:400}
+  .asof{margin-left:auto;font-size:12.5px;color:rgba(244,239,230,.75)}
+
+  .hero{background:#fff;border:1px solid var(--hairline);border-radius:15px;padding:20px 22px;margin:24px 0 16px}
+  .hero .hh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .hero .big{font-size:34px;font-weight:680;letter-spacing:-.02em}
+  .hero .big.muted{color:var(--pewter);font-size:22px}
+  .hero .hl{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pewter)}
+  .caption{margin-top:10px;font-size:12.5px;color:var(--ink-muted);line-height:1.55;border-left:2px solid var(--brass);background:#fbfaf7;padding:8px 12px;border-radius:6px}
+
+  .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  @media(max-width:820px){.cats{grid-template-columns:1fr}}
+  .cat{background:#fff;border:1px solid var(--hairline);border-radius:13px;padding:16px}
+  .cat .cl{font-size:13px;font-weight:650}
+  .cat .cv{font-size:26px;font-weight:680;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .cat .cv .unit{font-size:13px;font-weight:600;color:var(--pewter)}
+  .cat .cs{font-size:11.5px;color:var(--pewter);line-height:1.4}
+  .badge{display:inline-block;font-size:10px;font-weight:700;border-radius:6px;padding:3px 7px;margin-top:9px;white-space:nowrap}
+  .badge.na{background:rgba(154,122,46,.14);color:var(--amber)}
+  .badge.ok{background:rgba(63,125,82,.14);color:var(--green)}
+  .badge.cov{background:rgba(90,107,140,.14);color:var(--human);margin-left:5px}
+
+  .card{background:#fff;border:1px solid var(--hairline);border-radius:15px;overflow:hidden;margin-bottom:16px}
+  .card h3{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pewter);padding:16px 18px 10px;display:flex;align-items:center;gap:8px}
+  .card h3 .ct{margin-left:auto;font-size:11px;background:var(--brass);color:var(--indigo);border-radius:9999px;padding:2px 9px;font-weight:700;letter-spacing:0}
+  .feed{padding:4px 18px 16px}
+  .ln{border-top:1px solid var(--hairline);padding:11px 0}
+  .ln:first-child{border-top:none}
+  .ln .lr{display:flex;gap:12px;align-items:baseline;cursor:pointer}
+  .ln .t{flex:none;font-size:11.5px;color:var(--pewter);width:118px;font-variant-numeric:tabular-nums}
+  .ln .x{font-size:13.5px;color:#2a3142;flex:1}
+  .ln .amt{font-size:13.5px;font-weight:650;font-variant-numeric:tabular-nums}
+  .ln .amt.na{color:var(--pewter);font-weight:600;font-size:12px}
+  .trace{display:none;margin:9px 0 2px 130px;font-size:12px;color:var(--ink-muted);background:#fbfaf7;border-left:2px solid var(--brass);padding:8px 11px;border-radius:6px;line-height:1.6}
+  .ln.open .trace{display:block}
+  .trace b{color:var(--indigo);font-weight:650}
+  .empty{font-size:13px;color:var(--pewter);padding:16px 4px 8px;text-align:center;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  .sched{padding:0 18px 16px}
+  th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pewter);padding:8px 10px 8px 0;border-bottom:1px solid var(--hairline)}
+  td{padding:9px 10px 9px 0;border-bottom:1px solid var(--hairline);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--ink-muted)}
+
+  .honest{max-width:760px;margin:22px auto 0;text-align:center;font-size:12px;color:var(--pewter);line-height:1.55}
+  .honest b{color:var(--indigo)}
+  footer{padding:34px 0 44px;text-align:center}
+  .pwr{font-size:12px;color:var(--pewter)}.pwr b{color:var(--indigo);font-weight:600}.pwr .p{color:var(--brass)}
+</style>
+</head>
+<body>
+  <div class="top"><div class="wrap">
+    <span class="mark" id="brand">[[CLIENT BRAND]]<span class="dot">.</span></span>
+    <div class="sep"></div>
+    <div class="bandname">Leak meter<div class="sub">what didn't happen, priced only by your own approved numbers</div></div>
+    <div class="asof" id="asof">Assumptions as of — <b>none approved yet</b></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="hh"><span class="hl">Estimated leak · this month</span><span class="big" id="total">—</span></div>
+      <!-- The standing caption. Renders always; never dropped (spec §8). -->
+      <div class="caption" id="caption"><b>These are estimates, not measured losses.</b> Every line traces to a real event this system logged, multiplied by assumptions you approved in writing — your own average job value and close rates, shown with each line. Categories without an approved assumption show counts only, unpriced. Nothing here is modeled from industry averages.</div>
+    </div>
+
+    <div class="cats" id="cats"></div>
+
+    <div class="card">
+      <h3>Leak lines — every one traces to a logged event <span class="ct" id="lncount">0</span></h3>
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <div class="card">
+      <h3>Your assumption schedule <span class="ct" id="schedver">v0</span></h3>
+      <div class="sched"><table id="schedtbl">
+        <thead><tr><th>Category</th><th>Formula</th><th>Your numbers</th><th>Approved</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </div>
+
+    <div class="honest" id="honest">
+      <b>How this works.</b> The meter reads events your system already logs — it never invents one, never backfills history, and never uses "businesses like yours" numbers. Change an assumption any time; changes take effect only after your dated re-approval, and the schedule version is stamped on every line. The meter informs — it never takes an action on its own numbers.
+    </div>
+  </div>
+
+  <footer><div class="wrap"><div class="pwr">Powered by <b>yourco<span class="p">.</span></b> · white-label per engagement — client brand only on deployed consoles</div></div></footer>
+
+<script>
+/* ---------- deterministic pricing engine — pure arithmetic, no LLM (spec §3) ---------- */
+function priceEvent(ev, cat){
+  // Returns {priced:false} unless the category's assumption is SIGNED and complete.
+  if(!cat || !cat.signed) return {priced:false, reason:'no approved assumption'};
+  const p = cat.params || {};
+  let v = null, formula = cat.formula;
+  if(cat.id==='missed_intake'){
+    if(p.avg_job_value==null || p.close_rate==null) return {priced:false, reason:'no approved assumption'};
+    v = p.avg_job_value * p.close_rate;
+  } else if(cat.id==='slow_quotes'){
+    if(p.avg_job_value==null || p.close_rate==null || p.decay_per_day==null || ev.days_late==null) return {priced:false, reason:'no approved assumption'};
+    v = p.avg_job_value * p.close_rate * Math.min(1, p.decay_per_day * ev.days_late);
+  } else if(cat.id==='aging_invoices'){
+    if(p.collection_decay_per_30d==null || ev.amount==null || ev.days_past_terms==null) return {priced:false, reason:'no approved assumption'};
+    v = ev.amount * Math.min(1, p.collection_decay_per_30d * (ev.days_past_terms/30));
+  } else return {priced:false, reason:'no approved assumption'};
+  return {priced:true, value:v, formula:formula};
+}
+const usd = n => '$' + n.toLocaleString('en-US',{maximumFractionDigits:0});
+
+/* ---------- data load: the real files beside this page; embedded demo fallback (file://) ---------- */
+/* Fallback mirrors the shipped demo state exactly: zero events, all assumptions unsigned. */
+const FALLBACK_CONFIG = {client:"[[CLIENT NAME]]",schedule_version:"v0-unsigned",assumptions_as_of:null,
+  categories:[
+    {id:"missed_intake",label:"Missed & after-hours calls",covered_by_os:false,signed:false,formula:"events × avg_job_value × close_rate",params:{}},
+    {id:"slow_quotes",label:"Quotes sent slow",covered_by_os:false,signed:false,formula:"events × avg_job_value × close_rate × decay(days_late)",params:{}},
+    {id:"aging_invoices",label:"Invoices aging past terms",covered_by_os:false,signed:false,formula:"invoice_amount × collection_odds_lost(days_past_terms)",params:{}}
+  ]};
+async function load(){
+  let config = FALLBACK_CONFIG, events = [];
+  try{
+    const r = await fetch('leak-config.json'); if(r.ok) config = await r.json();
+    const e = await fetch('leak-events.jsonl');
+    if(e.ok){ const txt = await e.text();
+      events = txt.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>JSON.parse(s)); }
+  }catch(_){/* file:// — fall back to the identical embedded demo state */}
+  render(config, events);
+}
+
+/* ---------- render ---------- */
+function render(config, events){
+  const cats = config.categories || [];
+  const byId = Object.fromEntries(cats.map(c=>[c.id,c]));
+  const anySigned = cats.some(c=>c.signed);
+
+  // header
+  document.getElementById('asof').innerHTML = 'Assumptions as of — <b>' +
+    (config.assumptions_as_of ? config.assumptions_as_of : 'none approved yet') + '</b>';
+  document.getElementById('schedver').textContent = config.schedule_version || 'v0';
+
+  // price every event (unsigned categories contribute counts only)
+  let total = 0, pricedAny = false;
+  const lines = events.map(ev=>{
+    const cat = byId[ev.category];
+    const res = priceEvent(ev, cat);
+    if(res.priced){ total += res.value; pricedAny = true; }
+    return {ev, cat, res};
+  });
+
+  // headline: never a dollar figure unless a signed assumption produced one
+  const totalEl = document.getElementById('total');
+  if(pricedAny){ totalEl.textContent = usd(total) + ' (estimated)'; }
+  else { totalEl.textContent = anySigned ? usd(0) + ' (estimated)' : 'counts only — no approved assumptions yet'; totalEl.classList.add('muted'); }
+
+  // category cards
+  document.getElementById('cats').innerHTML = cats.map(c=>{
+    const evs = lines.filter(l=>l.ev.category===c.id);
+    const priced = evs.filter(l=>l.res.priced);
+    const sum = priced.reduce((a,l)=>a+l.res.value,0);
+    const covBadge = '<span class="badge cov">' + (c.covered_by_os ? 'OS covers this — avoided leak' : 'not yet covered') + '</span>';
+    const val = c.signed
+      ? '<div class="cv">'+usd(sum)+' <span class="unit">est.</span></div><div class="cs">'+evs.length+' logged event'+(evs.length===1?'':'s')+' · '+c.formula+'</div><span class="badge ok">approved '+(c.signed_date||'')+'</span>'+covBadge
+      : '<div class="cv">'+evs.length+' <span class="unit">event'+(evs.length===1?'':'s')+' · unpriced</span></div><div class="cs">counts only until you approve an assumption for this category</div><span class="badge na">no approved assumption</span>'+covBadge;
+    return '<div class="cat"><div class="cl">'+c.label+'</div>'+val+'</div>';
+  }).join('');
+
+  // leak lines + per-line trace (click to open)
+  document.getElementById('lncount').textContent = lines.length;
+  const feed = document.getElementById('feed');
+  if(lines.length===0){
+    feed.innerHTML = '<div class="empty">No events logged yet. The meter reads only what the system actually records — it starts at zero and stays honest.<br>Nothing is modeled, estimated from industry data, or backfilled from before logging began.</div>';
+  } else {
+    feed.innerHTML = lines.map(l=>{
+      const t = new Date(l.ev.ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+      const amt = l.res.priced ? '<span class="amt">'+usd(l.res.value)+' est.</span>' : '<span class="amt na">count only · no approved assumption</span>';
+      const trace = '<div class="trace"><b>Trace:</b> event <b>'+(l.ev.id||'—')+'</b> · '+l.ev.ts+
+        ' · schedule <b>'+(config.schedule_version||'—')+'</b>'+
+        (l.res.priced ? ' · formula: '+l.res.formula+' · assumption approved by <b>'+(l.cat.signed_by||'[[approver]]')+'</b> on '+(l.cat.signed_date||'—')
+                      : ' · unpriced: this category has no client-approved multiplier, so the meter shows the event without a dollar figure')+
+        '</div>';
+      return '<div class="ln"><div class="lr" onclick="this.parentNode.classList.toggle(\'open\')"><span class="t">'+t+'</span><span class="x">'+(l.ev.detail||l.cat.label)+'</span>'+amt+'</div>'+trace+'</div>';
+    }).join('');
+  }
+
+  // assumption schedule table
+  document.querySelector('#schedtbl tbody').innerHTML = cats.map(c=>{
+    const p = c.params||{};
+    const nums = c.signed
+      ? Object.entries(p).filter(([k,v])=>typeof v==='number').map(([k,v])=>k+': '+v).join(' · ')
+      : '<span class="mono">not yet stated — this category stays counts-only</span>';
+    const appr = c.signed ? '<span class="badge ok">'+(c.signed_by||'')+' · '+(c.signed_date||'')+'</span>'
+                          : '<span class="badge na">no approved assumption</span>';
+    return '<tr><td><b>'+c.label+'</b><br><span class="mono">'+(c.event_source||'OS event stream')+'</span></td><td class="mono">'+c.formula+'</td><td>'+nums+'</td><td>'+appr+'</td></tr>';
+  }).join('');
+}
+load();
+</script>
+</body>
+</html>

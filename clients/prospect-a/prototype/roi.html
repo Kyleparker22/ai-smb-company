@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Storm-command ROI — Prospect A · yourco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--parchment:#EAE1CD;--brass:#B8965A;--ink:#161B33;--muted:#6b6f83;--high:#3f7d5a;--line:rgba(22,27,51,.12)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  h1,h2{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .demobar{background:var(--brass);color:#20160a;font-size:12.5px;font-weight:600;text-align:center;padding:8px 16px}
+  .topbar{background:var(--indigo);color:var(--cream);padding:16px 0}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+  .mark{font-family:Fraunces,serif;font-weight:700;font-size:20px} .mark .dot{color:var(--brass)}
+  .topbar .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#b9bdd0}
+  .hero{background:var(--indigo);color:var(--cream);padding:40px 0 44px}
+  .hero h1{font-size:clamp(26px,4vw,40px);color:var(--cream);margin:12px 0 6px}
+  .hero p{color:#d7dae6;max-width:60ch}
+  section{padding:34px 0;border-bottom:1px solid var(--line)}
+  .big{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;flex:1;min-width:200px}
+  .kpi.hero-kpi{background:var(--indigo);border-color:var(--indigo)}
+  .kpi .n{font-family:Fraunces,serif;font-size:40px;font-weight:700;line-height:1}
+  .kpi.hero-kpi .n{color:var(--brass)} .kpi.hero-kpi .l{color:#c7cbe0}
+  .kpi .l{font-size:13px;color:var(--muted);margin-top:8px}
+  .kpi .sub{font-size:12.5px;color:var(--high);margin-top:6px;font-weight:600}
+  .funnel{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+  .fstep{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;text-align:center;flex:1;min-width:120px}
+  .fstep .n{font-family:Fraunces,serif;font-size:26px;font-weight:700}
+  .fstep .l{font-size:12px;color:var(--muted)}
+  .arrow{color:var(--brass);font-weight:700;font-size:18px}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+  .bar{height:8px;background:var(--parchment);border-radius:6px;overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--brass)}
+  .sec{font-size:24px} .lede{color:#3a3f55;margin-top:6px}
+  footer{background:var(--indigo);color:#aeb3c9;padding:26px 0;font-size:12.5px} footer b{color:var(--cream)}
+</style>
+</head>
+<body>
+  <div class="demobar">▸ ROI dashboard — sample outcomes; live once the crew app + CRM feed real jobs. No fabricated figures.</div>
+  <div class="topbar"><div class="wrap"><div class="mark">yourco<span class="dot">.</span></div><div class="tag">storm-command · ROI</div></div></div>
+
+  <section class="hero" style="border:none"><div class="wrap">
+    <div class="eyebrow">built for Prospect A · roofing · Florida</div>
+    <h1>What storm-command made you.</h1>
+    <p>Every closed job traced back to a storm the system flagged, dispatched, and put a crew on — minus the trips the AI kept your crews from wasting.</p>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="big" id="kpis"></div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="eyebrow">the pipeline</div>
+    <h2 class="sec">Storms → doors → jobs → revenue.</h2>
+    <div class="funnel" id="funnel"></div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="eyebrow">what converts</div>
+    <h2 class="sec">Where the money actually comes from.</h2>
+    <p class="lede">The system learns this from your field outcomes and prioritizes the storm profiles that pay — so crews chase the storms that convert, not just the biggest ones.</p>
+    <table id="profile"><thead><tr><th>Storm profile</th><th class="r">$ / door</th><th class="r">close rate</th><th>relative value</th></tr></thead><tbody></tbody></table>
+  </div></section>
+
+  <section style="border:none"><div class="wrap">
+    <div class="eyebrow">by area</div>
+    <h2 class="sec">Top areas this period.</h2>
+    <table id="area"><thead><tr><th>Area</th><th class="r">jobs</th><th class="r">revenue</th></tr></thead><tbody></tbody></table>
+  </div></section>
+
+  <footer><div class="wrap">
+    <b>Sample outcomes — the dashboard goes live when the crew app + CRM feed real doors and jobs.</b> Revenue is attributed to jobs sourced through storm-command dispatches. "Trips saved" = marginal storms the AI filtered × a crew's trip cost. Built by yourco.
+  </div></footer>
+
+<script src="roi_data.js"></script>
+<script>
+  const D = window.ROI_DATA || {totals:{},cost:{},trips_saved:{},by_profile:[],by_area:[]};
+  const $ = id => document.getElementById(id);
+  const money = n => '$'+Number(n||0).toLocaleString();
+  const t = D.totals||{};
+
+  $('kpis').innerHTML = `
+    <div class="kpi hero-kpi"><div class="n">${money(t.revenue)}</div><div class="l">revenue sourced · ${D.months||0} mo</div></div>
+    <div class="kpi"><div class="n">${t.jobs||0}</div><div class="l">jobs closed</div><div class="sub">avg ${money(D.avg_job)} / job</div></div>
+    <div class="kpi"><div class="n">$${D.cost_per_job||0}</div><div class="l">cost per job sourced</div><div class="sub">vs $${(D.lead_cost_range||[50,200])[0]}–${(D.lead_cost_range||[50,200])[1]} to buy a lead</div></div>
+    <div class="kpi"><div class="n">${money((D.trips_saved||{}).dollars)}</div><div class="l">wasted trips avoided</div><div class="sub">${(D.trips_saved||{}).count||0} false storms filtered by AI</div></div>`;
+
+  $('funnel').innerHTML = [
+    ['storms',t.storms],['doors knocked',t.doors],['jobs closed',t.jobs],['revenue',money(t.revenue)]
+  ].map((s,i)=>`${i?'<span class="arrow">→</span>':''}<div class="fstep"><div class="n">${typeof s[1]==='number'?s[1].toLocaleString():s[1]}</div><div class="l">${s[0]}</div></div>`).join('');
+
+  const maxRpd = Math.max(...(D.by_profile||[]).map(p=>p.rev_per_door),1);
+  $('profile').querySelector('tbody').innerHTML = (D.by_profile||[]).map(p=>`
+    <tr><td>${p.profile}</td><td class="r">$${p.rev_per_door.toLocaleString()}</td><td class="r">${p.conv}%</td>
+    <td><div class="bar"><i style="width:${Math.round(100*p.rev_per_door/maxRpd)}%"></i></div></td></tr>`).join('');
+
+  $('area').querySelector('tbody').innerHTML = (D.by_area||[]).map(a=>`
+    <tr><td>${a.area}</td><td class="r">${a.jobs}</td><td class="r">${money(a.revenue)}</td></tr>`).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fade &amp; Co. — AI Front Desk Demo</title>
+<style>
+  :root{
+    --ink:#101014;
+    --ink2:#17171d;
+    --panel:#1e1e26;
+    --panel2:#26262f;
+    --line:rgba(255,255,255,.08);
+    --brass:#c9a227;
+    --brass-soft:rgba(201,162,39,.14);
+    --cream:#f4efe6;
+    --muted:#9a9aa6;
+    --green:#3ecf8e;
+    --blue:#5b9cf5;
+    --red:#ef6a6a;
+    --radius:16px;
+    font-size:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+  /* ---------- header ---------- */
+  header{
+    padding:22px 0;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:rgba(16,16,20,.88);backdrop-filter:blur(12px);z-index:50;
+  }
+  header .wrap{display:flex;align-items:center;justify-content:space-between}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.06em;font-size:1.05rem}
+  .logo .mark{
+    width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--brass),#8a6d10);
+    display:flex;align-items:center;justify-content:center;color:#141414;font-size:1.1rem;font-weight:800;
+  }
+  .badge{
+    font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);
+    border:1px solid rgba(201,162,39,.4);border-radius:99px;padding:5px 12px;background:var(--brass-soft);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 40px;text-align:center}
+  .hero h1{font-size:clamp(1.9rem,4vw,3rem);font-weight:800;letter-spacing:-.02em;line-height:1.12}
+  .hero h1 em{font-style:normal;color:var(--brass)}
+  .hero p{max-width:620px;margin:18px auto 0;color:var(--muted);font-size:1.05rem}
+  .live-dot{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+  .live-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(62,207,142,.5)}70%{box-shadow:0 0 0 9px rgba(62,207,142,0)}100%{box-shadow:0 0 0 0 rgba(62,207,142,0)}}
+
+  /* ---------- demo grid ---------- */
+  .demo{display:grid;grid-template-columns:400px 1fr;gap:28px;padding:34px 0 20px;align-items:start}
+  @media(max-width:960px){.demo{grid-template-columns:1fr}}
+
+  /* phone */
+  .phone{
+    background:linear-gradient(180deg,#0c0c10,#141419);
+    border:1px solid rgba(255,255,255,.12);border-radius:38px;padding:18px 16px 22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    position:sticky;top:96px;
+  }
+  .phone .notch{width:110px;height:22px;border-radius:99px;background:#000;margin:0 auto 14px}
+  .callbar{
+    display:flex;align-items:center;gap:12px;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px;
+  }
+  .callbar .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--brass),#7c620e);display:flex;align-items:center;justify-content:center;font-weight:800;color:#121212}
+  .callbar .who{flex:1;min-width:0}
+  .callbar .who b{display:block;font-size:.92rem}
+  .callbar .who span{font-size:.75rem;color:var(--muted)}
+  .callbar .timer{font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--green)}
+  .chat{height:430px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px;scroll-behavior:smooth}
+  .bubble{max-width:86%;padding:10px 14px;border-radius:16px;font-size:.9rem;line-height:1.45;opacity:0;transform:translateY(8px);animation:in .35s forwards}
+  @keyframes in{to{opacity:1;transform:none}}
+  .bubble.caller{align-self:flex-end;background:#2f3b52;border-bottom-right-radius:5px}
+  .bubble.agent{align-self:flex-start;background:var(--panel2);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .bubble.agent::before{content:"AI front desk";display:block;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);margin-bottom:4px}
+  .bubble.sys{align-self:center;background:transparent;border:1px dashed rgba(255,255,255,.2);color:var(--muted);font-size:.75rem;text-align:center}
+  .typing{align-self:flex-start;display:none;gap:5px;padding:12px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:16px;border-bottom-left-radius:5px}
+  .typing.show{display:flex}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+  /* right column */
+  .scenarios{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+  .scen{
+    border:1px solid var(--line);background:var(--panel);color:var(--cream);
+    border-radius:12px;padding:11px 18px;font-size:.88rem;cursor:pointer;transition:.18s;font-weight:600;
+  }
+  .scen:hover{border-color:rgba(201,162,39,.5)}
+  .scen.active{background:var(--brass-soft);border-color:var(--brass);color:var(--brass)}
+  .panel{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .panel h3{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .events{display:flex;flex-direction:column;gap:0}
+  .ev{
+    display:flex;gap:14px;padding:13px 4px;border-bottom:1px solid var(--line);
+    opacity:.28;transition:.4s;font-size:.9rem;
+  }
+  .ev:last-child{border-bottom:none}
+  .ev.done{opacity:1}
+  .ev .ic{
+    width:34px;height:34px;flex:none;border-radius:10px;background:var(--panel2);
+    display:flex;align-items:center;justify-content:center;font-size:.95rem;border:1px solid var(--line);
+  }
+  .ev.done .ic{background:var(--brass-soft);border-color:rgba(201,162,39,.45)}
+  .ev b{display:block;font-size:.9rem}
+  .ev span{color:var(--muted);font-size:.8rem}
+  .ev .check{margin-left:auto;color:var(--green);font-weight:700;visibility:hidden}
+  .ev.done .check{visibility:visible}
+  .gate{
+    margin-top:16px;border:1px solid rgba(91,156,245,.4);background:rgba(91,156,245,.08);
+    border-radius:12px;padding:14px 16px;font-size:.84rem;color:#b9d3fb;display:flex;gap:10px;align-items:flex-start;
+  }
+
+  /* stats */
+  .stats-band{padding:44px 0 8px}
+  .stats-band h2, .section h2{font-size:1.5rem;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+  .sub{color:var(--muted);margin-bottom:24px;font-size:.95rem}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .stat .num{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--brass)}
+  .stat .lbl{font-size:.85rem;color:var(--muted);margin-top:4px}
+  .stat .note{font-size:.72rem;color:var(--green);margin-top:10px}
+
+  /* coverage */
+  .section{padding:48px 0}
+  .cov{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:860px){.cov{grid-template-columns:1fr}}
+  .cov .card{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .cov .card.ai{border-color:rgba(201,162,39,.45)}
+  .cov h4{font-size:1.02rem;margin-bottom:14px}
+  .hours{display:flex;height:14px;border-radius:99px;overflow:hidden;margin:10px 0 8px;border:1px solid var(--line)}
+  .hours i{display:block;height:100%}
+  .legend{font-size:.76rem;color:var(--muted)}
+  .cov ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:.88rem}
+  .cov ul li{display:flex;gap:9px;align-items:flex-start}
+  .cov ul li b{color:var(--green)}
+  .cov ul li s{color:var(--red);text-decoration:none;font-weight:700}
+  .cov ul li span{color:#cfcfda}
+
+  footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:.76rem;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logo"><div class="mark">F</div>FADE &amp; CO. <span style="color:var(--muted);font-weight:400">· Barbershop &amp; Studio</span></div>
+    <div class="badge">Demo · AI Front Desk</div>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div class="live-dot">Answering live · 24/7</div>
+  <h1>Every call answered.<br>Every chair <em>filled</em>.</h1>
+  <p>Fade &amp; Co.'s phone is answered by an AI front desk that books, reschedules, and answers questions in a natural voice — while the team stays on the clippers. This is a simulation of a real call.</p>
+</section>
+
+<section class="demo wrap">
+  <!-- phone -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="callbar">
+      <div class="avatar">☎</div>
+      <div class="who"><b id="callerName">Incoming call…</b><span id="callerMeta">Fade &amp; Co. main line</span></div>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+    <div class="chat" id="chat">
+      <div class="typing" id="typing"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
+  <!-- right -->
+  <div>
+    <div class="scenarios">
+      <button class="scen active" data-s="book">📅 New booking</button>
+      <button class="scen" data-s="resched">🔁 Reschedule</button>
+      <button class="scen" data-s="after">🌙 After-hours call</button>
+    </div>
+
+    <div class="panel">
+      <h3>What the system does during the call</h3>
+      <div class="events" id="events"></div>
+      <div class="gate" id="gate" style="display:none">
+        <span>🛡️</span>
+        <div><b>Approval gate.</b> <span id="gateText">Anything outside the playbook — refunds, complaints, pricing exceptions — is drafted and held for the owner. The AI never freelances.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-band wrap">
+  <h2>A month at the front desk</h2>
+  <div class="sub">Illustrative dashboard for a single-location shop — the owner sees this live, updated after every call.</div>
+  <div class="stats">
+    <div class="stat"><div class="num" id="st1">0</div><div class="lbl">Calls answered</div><div class="note">0 sent to voicemail</div></div>
+    <div class="stat"><div class="num" id="st2">0</div><div class="lbl">Appointments booked by phone</div><div class="note">Synced to the book instantly</div></div>
+    <div class="stat"><div class="num" id="st3">0</div><div class="lbl">After-hours &amp; on-hold saves</div><div class="note">Calls a human desk would miss</div></div>
+    <div class="stat"><div class="num" id="st4">0%</div><div class="lbl">No-show reduction</div><div class="note">Automatic SMS reminders</div></div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <h2>Front desk coverage, side by side</h2>
+  <div class="sub">The phone rings whether or not someone is free to grab it.</div>
+  <div class="cov">
+    <div class="card">
+      <h4>👤 Human front desk</h4>
+      <div class="hours">
+        <i style="width:37%;background:#3a3a44"></i><i style="width:26%;background:#5a8f6e"></i><i style="width:37%;background:#3a3a44"></i>
+      </div>
+      <div class="legend">Covered ~9am–6pm, when they're not with a walk-in, at lunch, or off sick</div>
+      <ul>
+        <li><s>✗</s><span>Busy with the person at the counter → callers hit voicemail</span></li>
+        <li><s>✗</s><span>Closed evenings, Sundays, holidays</span></li>
+        <li><s>✗</s><span>One call at a time</span></li>
+        <li><s>✗</s><span>Turnover, training, call-outs</span></li>
+      </ul>
+    </div>
+    <div class="card ai">
+      <h4>🤖 AI front desk</h4>
+      <div class="hours">
+        <i style="width:100%;background:linear-gradient(90deg,var(--brass),#e6c85a)"></i>
+      </div>
+      <div class="legend">Covered 24/7 — nights, weekends, and every simultaneous caller</div>
+      <ul>
+        <li><b>✓</b><span>Answers on the first ring, every time — including 3 calls at once</span></li>
+        <li><b>✓</b><span>Books straight into the real calendar, no double-booking</span></li>
+        <li><b>✓</b><span>Confirms + reminds by text automatically</span></li>
+        <li><b>✓</b><span>Escalates anything sensitive to the owner — with a drafted reply</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Internal illustrative demo — fictional shop, simulated conversation and metrics. Not a client deliverable.
+</footer>
+
+<script>
+const SCEN = {
+  book:{
+    caller:"(404) 555-0132", meta:"New caller · main line",
+    lines:[
+      ["sys","Incoming call · answered on first ring"],
+      ["agent","Thanks for calling Fade & Co., this is the front desk. How can I help you today?"],
+      ["caller","Hey — can I get a haircut and beard trim this Saturday? Sometime in the morning if you've got it."],
+      ["agent","Absolutely. Saturday morning I have 9:30 with Marcus or 10:15 with Dre — both open for a cut and beard trim, about 45 minutes. Any preference?"],
+      ["caller","10:15 with Dre works."],
+      ["agent","Perfect. Can I grab a first name and the best number for a confirmation text?"],
+      ["caller","Jordan — this number's fine."],
+      ["agent","You're all set, Jordan: Saturday, 10:15am, cut and beard trim with Dre. You'll get a text confirmation now and a reminder Friday evening. Anything else?"],
+      ["caller","Nope, that's it. Thanks!"],
+      ["agent","See you Saturday, Jordan. Have a good one!"],
+      ["sys","Call complete · 1m 42s · booking confirmed"]
+    ],
+    events:[
+      ["📅","Checked real availability","Live read of Saturday's book — both chairs, service duration"],
+      ["✂️","Booked: Sat 10:15 · Dre","Cut + beard trim · 45 min · placed on the actual calendar"],
+      ["💬","SMS confirmation sent","+ automatic reminder Friday 6pm"],
+      ["👤","Client record created","Jordan · new client · source: phone"]
+    ], gate:null
+  },
+  resched:{
+    caller:"Maya R.", meta:"Existing client · recognized number",
+    lines:[
+      ["sys","Incoming call · caller recognized from client records"],
+      ["agent","Thanks for calling Fade & Co.! Hi Maya — are you calling about your appointment tomorrow at 2:00 with Marcus?"],
+      ["caller","Yeah… something came up at work. Can I move it to later this week?"],
+      ["agent","No problem. Marcus has Thursday at 4:30 or Friday at 11:00 — same service, silk press and trim. Would either work?"],
+      ["caller","Friday at 11 is perfect."],
+      ["agent","Done — I've moved you to Friday 11:00am with Marcus and freed up tomorrow's slot. Updated confirmation is on its way by text."],
+      ["caller","You're a lifesaver, thank you!"],
+      ["agent","Anytime, Maya. See you Friday!"],
+      ["sys","Call complete · 58s · reschedule processed"]
+    ],
+    events:[
+      ["🪪","Caller identified","Matched to client record before the first hello"],
+      ["🔁","Rescheduled: Fri 11:00","Old slot released back to the book instantly"],
+      ["📣","Open slot re-marketed","Tomorrow 2:00 offered to the waitlist by SMS"],
+      ["💬","Updated confirmation sent","New reminder sequence scheduled"]
+    ], gate:null
+  },
+  after:{
+    caller:"(404) 555-0177", meta:"9:42 PM · shop closed",
+    lines:[
+      ["sys","Incoming call · 9:42 PM — shop closed 3 hours ago"],
+      ["agent","Thanks for calling Fade & Co.! We're closed for the evening, but I can book you in right now. What can I do for you?"],
+      ["caller","Oh nice, I figured I'd get voicemail. I need a skin fade before a wedding Friday — kind of last minute."],
+      ["agent","Congrats to the couple! For Friday I have 12:30 with Dre or 3:00 with Marcus. The 3:00 would have you fresh for the evening."],
+      ["caller","Let's do 3:00 with Marcus."],
+      ["agent","Booked — Friday 3:00pm, skin fade with Marcus. Confirmation text is on its way. Anything else tonight?"],
+      ["caller","No that's perfect. Wild that I just booked this at 10pm."],
+      ["agent","That's what we're here for. See you Friday!"],
+      ["sys","Call complete · 1m 12s · booked while the shop slept"]
+    ],
+    events:[
+      ["🌙","After-hours answer","No voicemail, no lost caller — answered on ring one"],
+      ["✂️","Booked: Fri 3:00 · Marcus","Skin fade · placed on the live calendar"],
+      ["💬","SMS confirmation sent","+ reminder Thursday evening"],
+      ["📊","Logged as an after-hours save","Owner's morning digest shows revenue captured overnight"]
+    ],
+    gate:"This caller was routine. If they'd asked for a refund or complained about a cut, the AI would take the details, apologize, and hold a drafted resolution for the owner's approval — it never freelances on sensitive calls."
+  }
+};
+
+const chat=document.getElementById('chat'), typing=document.getElementById('typing'),
+      evWrap=document.getElementById('events'), timer=document.getElementById('timer'),
+      gate=document.getElementById('gate'), gateText=document.getElementById('gateText');
+let playToken=0, secs=0, tickInt=null;
+
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+":"+String(s%60).padStart(2,'0')}
+
+async function play(key){
+  const token=++playToken, sc=SCEN[key];
+  document.getElementById('callerName').textContent=sc.caller;
+  document.getElementById('callerMeta').textContent=sc.meta;
+  chat.querySelectorAll('.bubble').forEach(b=>b.remove());
+  evWrap.innerHTML='';
+  gate.style.display='none';
+  sc.events.forEach(e=>{
+    const d=document.createElement('div');d.className='ev';
+    d.innerHTML=`<div class="ic">${e[0]}</div><div><b>${e[1]}</b><span>${e[2]}</span></div><div class="check">✓</div>`;
+    evWrap.appendChild(d);
+  });
+  clearInterval(tickInt);secs=0;timer.textContent="00:00";
+  tickInt=setInterval(()=>{secs++;timer.textContent=fmt(secs)},1000);
+
+  const evEls=evWrap.querySelectorAll('.ev');
+  let evIdx=0;
+  for(let i=0;i<sc.lines.length;i++){
+    if(token!==playToken)return;
+    const [who,text]=sc.lines[i];
+    if(who==='agent'){typing.classList.add('show');chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
+      await wait(900);typing.classList.remove('show');}
+    else await wait(who==='sys'?500:800);
+    if(token!==playToken)return;
+    const b=document.createElement('div');b.className='bubble '+who;b.textContent=text;
+    chat.insertBefore(b,typing);chat.scrollTop=chat.scrollHeight;
+    // reveal a backstage event roughly every other agent line
+    if(who==='agent'&&evIdx<evEls.length&&i>=2){evEls[evIdx++].classList.add('done')}
+    await wait(who==='sys'?700:1400+text.length*8);
+  }
+  if(token!==playToken)return;
+  evEls.forEach(e=>e.classList.add('done'));
+  clearInterval(tickInt);
+  if(sc.gate){gateText.textContent=sc.gate;}
+  gate.style.display='flex';
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+document.querySelectorAll('.scen').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.scen').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');play(btn.dataset.s);
+}));
+
+// stat counters
+function count(el,target,suffix='',dur=1400){
+  const t0=performance.now();
+  (function f(t){const p=Math.min(1,(t-t0)/dur);
+    el.textContent=Math.round(target*(1-Math.pow(1-p,3)))+suffix;
+    if(p<1)requestAnimationFrame(f);})(t0);
+}
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  count(document.getElementById('st1'),412);
+  count(document.getElementById('st2'),268);
+  count(document.getElementById('st3'),61);
+  count(document.getElementById('st4'),38,'%');
+  io.disconnect();}})},{threshold:.4});
+io.observe(document.querySelector('.stats'));
+
+play('book');
+</script>
+</body>
+</html>

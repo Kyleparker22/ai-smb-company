@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Route OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-billing"></section>
+  <section class="view" id="v-churn"></section>
+  <section class="view" id="v-language"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Chemical-safety questions are
+answered by licensed applicators only, exposure signals show Poison Control language immediately,
+a skipped stop can never be billed as completed, and no elimination promise is ever made.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'billing',label:'Billing integrity'},
+      {id:'churn',label:'Churn watch'},{id:'language',label:'Language check'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,billing,churn,language,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.routes} routes · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The book, counted', '',
+      `<div class="grid">
+        ${stat('Accounts at churn risk', fmt.num(b.at_risk), `${b.single_signal} more show one signal only`, b.at_risk?'warn':'')}
+        ${stat('Reservice rate (180d)', val(b.reservice,'rate',fmt.pct),
+          b.reservice._missing?'':`${b.reservice.reservices} of ${b.reservice.of} services`)}
+        ${stat('Skipped stops', fmt.num(b.skips.count), Object.entries(b.skips.by_reason).map(([k,v])=>`${k}: ${v}`).join(' · '))}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), '')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.reservices_booked} · ${b.recovered.save_visits_sent} · ${b.recovered.services_billed}`,
+               'reservices booked · save visits sent · services billed — from the log')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An exposure signal shows Poison Control language <b>immediately</b>
+      and a human calls. A chemical-safety question is routed to a licensed applicator
+      <b>unanswered</b> — the label is the law.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='exposure'?'bad':m.label==='safety_question'||m.label==='reservice'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">“${esc(s.said)}”</div>`:''}
+      ${s.refused?`<div class="banner warn" style="margin-top:10px">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function billing(){
+  const d = await API.get('/api/skips');
+  document.getElementById('v-billing').innerHTML =
+    `<div class="banner warn">A service that was not completed <b>cannot be billed as completed</b>.
+      Try both demo buttons.</div>` +
+    `<div style="margin:10px 0"><button class="act" onclick="bill('sv_demo_skip')">Bill the SKIPPED stop</button>
+     <button class="act primary" onclick="bill('sv_demo_done')">Bill the completed stop</button></div>
+     <div id="bout"></div>` +
+    panel('Recent skips', 'typed, visible, unbilled', table(
+      [{label:'Service'},{label:'Scheduled'},{label:'Reason'}], d.rows,
+      s=>`<td class="mono">${esc(s.id)}${s.demo_tag?' '+pill(s.demo_tag,'brand'):''}</td>
+        <td>${fmt.date(s.scheduled_at)}</td><td>${pill(s.skip_reason||'untyped','warn')}</td>`), true);
+}
+async function bill(id){
+  const r = await API.post(`/api/services/${id}/bill`);
+  document.getElementById('bout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Billed', '', `<div class="strong">executed at ${esc(r.rung)} and logged</div>`);
+}
+
+async function churn(){
+  const d = await API.get('/api/churn');
+  document.getElementById('v-churn').innerHTML =
+    `<div class="banner">${esc(d.note)}</div>` +
+    panel('At risk', `${d.n} with ${d.floor}+ signals · ${d.single_signal} with one only`, table(
+      [{label:'Account'},{label:'Signals',num:true},{label:'What we can see'}], d.rows,
+      r=>`<td>${esc(r.name)}</td><td class="num strong">${r.count}</td>
+        <td><ul class="reasons">${(r.signals||[]).map(s=>`<li>${esc(s.detail)}</li>`).join('')}</ul></td>`), true);
+}
+
+async function language(){
+  document.getElementById('v-language').innerHTML =
+    `<div class="banner">Every outward draft passes the guarantee-language check. Coverage language
+      only — no elimination promises.</div>` +
+    panel('Try it', '', `
+      <textarea id="ltext" rows="3" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);background:none;color:inherit">We guarantee your ants will be gone for good — 100% eliminated!</textarea>
+      <div style="margin-top:8px"><button class="act primary" onclick="checkLang()">Check the draft</button></div>
+      <div id="lout" style="margin-top:10px"></div>`);
+}
+async function checkLang(){
+  const r = await API.post('/api/outreach/check', {text: document.getElementById('ltext').value});
+  document.getElementById('lout').innerHTML = r.refused
+    ? `<div class="banner warn">${esc(r.refused)}</div>`
+    : `<div class="banner">Language OK — queued at R1 for a human to send.</div>`;
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['at_risk','At-risk accounts','counted'],['save_rate','Save rate','your number (0–1)'],
+    ['annual_value','Avg annual account value','counted (median)'],
+    ['office_hours_wk','Office hrs/wk on callbacks','your number'],['office_rate','Office rate','your number'],
+    ['skip_disputes_yr','Skip-billing disputes/yr','your history'],
+    ['exposure_value','Clean exposure stop worth','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

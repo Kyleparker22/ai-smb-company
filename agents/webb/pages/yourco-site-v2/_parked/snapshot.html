@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- The online Revenue Leak Snapshot: a lead-gated, vertical-specific mini-diagnostic that renders an
+     yourco-branded snapshot report on screen, and (staged) writes the prospect into the CRM as a
+     warm lead + Slacks/emails the findings to the Founder. A teaser for the full Audit. Owned by Bella.
+     Content from snapshot-config.js. Decision: decisions/2026-06-16_online-snapshot.md.
+     ROI is computed from the prospect's OWN inputs (math shown) — no fabricated numbers. -->
+<title>Free Revenue Leak Snapshot — yourco</title>
+<meta name="description" content="A free, two-minute online Revenue Leak Snapshot: see where your business is leaking revenue — in your own numbers — and what an AI system could recover. A taste of yourco's full audit." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--brass:#B8965A;--ink:#15192e;--muted:#5b617a;--line:#e7e1d4;--warn:#b5542f}
+  .form-wrap{max-width:680px}
+  .q{margin:20px 0}
+  .q label{display:block;font-weight:600;font-size:15.5px;margin-bottom:7px}
+  .q .hint{font-weight:400;color:var(--muted);font-size:13.5px}
+  .q input,.q select{width:100%;padding:12px 13px;border:1px solid #d9d3c5;border-radius:9px;font:inherit;background:#fff}
+  .q input:focus,.q select:focus{outline:2px solid var(--brass);border-color:var(--brass)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .submit{margin-top:10px;cursor:pointer;border:0}
+  .gatebox{background:#faf7f0;border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:26px}
+  .gatebox .eyebrow{margin-top:0}
+  .staged{font-size:12.5px;color:var(--muted);margin-top:14px}
+  .progresshint{color:var(--muted);font-size:13.5px;margin-bottom:6px}
+
+  /* ===== the report (yourco-branded) ===== */
+  #report{display:none}
+  .rpage{max-width:820px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.10);overflow:hidden}
+  .rhead{background:radial-gradient(120% 120% at 90% -30%,rgba(184,150,90,.22),transparent),var(--indigo);color:var(--cream);padding:34px 40px}
+  .rhead .wm{font-weight:700;letter-spacing:.02em;opacity:.92}
+  .rhead h1{margin:12px 0 4px;font-size:27px;color:var(--cream)}
+  .rhead .meta{color:rgba(244,239,230,.72);font-size:13px}
+  .rbody{padding:32px 40px}
+  .rbody h2{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);border-bottom:1px solid var(--line);padding-bottom:8px;margin:30px 0 14px}
+  .rlead{font-size:18px;line-height:1.5}
+  .big{background:var(--indigo);color:var(--cream);border-radius:14px;padding:22px 24px;margin:16px 0;text-align:center}
+  .big .n{font-size:42px;font-weight:800;color:#f1d9a8;line-height:1}
+  .big .l{font-size:14px;color:rgba(244,239,230,.82);margin-top:6px}
+  .math{background:#faf7f0;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px}
+  .math code{background:#efe9dc;padding:1px 6px;border-radius:5px}
+  .bn{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:10px 0}
+  .bn h3{margin:0 0 4px;font-size:16px}.bn p{margin:0;color:var(--muted);font-size:14px}
+  .bn.flag{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass) inset}
+  .bn .tag{display:inline-block;background:var(--brass);color:#1a1d2e;font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;margin-left:8px;vertical-align:middle}
+  ul.outc{margin:6px 0;padding-left:20px}ul.outc li{margin:7px 0}
+  .statrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px}
+  .stat{background:#faf7f0;border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stat .n{font-size:24px;font-weight:800;color:var(--indigo)}
+  .stat .l{font-size:13px;color:var(--muted);margin-top:4px}.stat .src{font-size:11px;color:#a59a82;margin-top:6px}
+  .first{background:radial-gradient(120% 120% at 90% -20%,rgba(184,150,90,.18),transparent),var(--indigo);color:var(--cream);border-radius:14px;padding:22px 24px;margin:14px 0}
+  .first h3{margin:0 0 6px;font-size:19px;color:var(--cream)}
+  .first p{color:rgba(244,239,230,.9);margin:0}
+  .rcta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .rcta a{display:inline-block;text-decoration:none;font-weight:700;border-radius:10px;padding:12px 22px}
+  .rcta .p{background:var(--brass);color:#1a1d2e}.rcta .g{background:transparent;color:var(--indigo);border:1px solid var(--indigo)}
+  .rfoot{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);margin-top:28px;padding-top:14px}
+  @media(max-width:600px){.two,.statrow{grid-template-columns:1fr}.rhead,.rbody{padding-left:24px;padding-right:24px}}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="verticals.html">Industries</a><a href="positioning.html">How it works</a>
+      <a href="audit.html">The audit</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill sm">Book a call</a>
+    </div>
+  </div></nav>
+
+  <!-- intake -->
+  <section class="tile hero" id="introSec"><div class="wrap narrow">
+    <div class="eyebrow" id="eyebrow">free revenue leak snapshot</div>
+    <h1 id="title">See what your business is leaking.</h1>
+    <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+    <p id="intro">—</p>
+  </div></section>
+
+  <section class="tile parchment" id="formSec"><div class="wrap narrow form-wrap">
+    <form id="qaForm">
+      <div class="eyebrow">your numbers</div>
+      <div class="progresshint">Rough answers are fine — this is a quick snapshot, not the full audit.</div>
+      <div id="questions"></div>
+
+      <div class="gatebox">
+        <div class="eyebrow">where should we send your findings?</div>
+        <p style="margin-top:0;color:var(--muted);font-size:14px">Enter your details to see your results. We'll also send a copy and (only if you want it) reach out to walk you through the full picture.</p>
+        <div class="two">
+          <div class="q"><label>Your name</label><input name="name" required placeholder="Jordan Smith" /></div>
+          <div class="q"><label>Email</label><input name="email" type="email" required placeholder="you@business.com" /></div>
+        </div>
+        <div class="two">
+          <div class="q"><label>Business name</label><input name="company" required placeholder="YourCo Outdoor" /></div>
+          <div class="q"><label>Phone <span class="hint">(optional)</span></label><input name="phone" placeholder="(555) 123-4567" /></div>
+        </div>
+        <div class="q" style="margin-top:4px">
+          <label style="font-weight:400;font-size:13px;display:flex;gap:8px;align-items:flex-start">
+            <input type="checkbox" name="sms_consent" value="yes" style="width:auto;margin-top:3px" />
+            <span>Text me too (optional): I agree to receive SMS/RCS text messages from yourco about my inquiry. Message frequency varies; message &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of any purchase. See our <a href="sms-terms.html" target="_blank" rel="noopener">SMS Terms</a> &amp; <a href="privacy.html" target="_blank" rel="noopener">Privacy</a>.</span>
+          </label>
+        </div>
+      </div>
+
+      <button class="pill submit" type="submit">See my findings →</button>
+      <div class="staged">Your snapshot appears instantly on this page. Staged — at launch your details also land in yourco's CRM so we can follow up. Nothing is shared until launch.</div>
+    </form>
+  </div></section>
+
+  <!-- report (rendered after submit) -->
+  <section class="tile" id="report"><div class="wrap">
+    <div class="rpage">
+      <div class="rhead">
+        <div class="wm">yourco</div>
+        <h1>Revenue Leak Snapshot — <span id="rCompany">—</span></h1>
+        <div class="meta"><span id="rVertical">—</span> · prepared <span id="rDate">—</span> · preliminary snapshot</div>
+      </div>
+      <div class="rbody">
+        <h2>The headline</h2>
+        <p class="rlead" id="rHeadline">—</p>
+        <div class="big"><div class="n" id="rBigNum">—</div><div class="l" id="rBigLabel">—</div></div>
+
+        <h2>The math — on your own numbers</h2>
+        <div class="math" id="rMath">—</div>
+
+        <h2>What's likely leaking</h2>
+        <div id="rFindings"></div>
+
+        <h2>What it could look like with yourco</h2>
+        <p id="rOutcomeLead" class="rlead" style="font-size:16px">If you recover even a fraction of that, here's what changes:</p>
+        <ul class="outc" id="rOutcomes"></ul>
+        <div class="math" id="rRoi" style="margin-top:12px">—</div>
+
+        <h2 id="rStatsHead">The industry reality</h2>
+        <div class="statrow" id="rStats"></div>
+
+        <h2>What we'd build first</h2>
+        <div class="first"><h3 id="rFbName">—</h3><p id="rFbDesc">—</p></div>
+
+        <div class="rcta">
+          <a class="p" href="https://calendly.com/the Founder-yourco/30min">Book your discovery call →</a>
+          <a class="g" href="audit.html">See the full audit</a>
+        </div>
+
+        <div class="rfoot">This is a <b>preliminary snapshot</b> based on the numbers you entered — the math is shown so you can check it. The full yourco Audit goes far deeper: we observe your real workflows, quantify every leak, and hand you a build-ready roadmap. The audit fee is credited toward your first build on a minimum six-month engagement. Prepared by yourco · founder@yourco.example.com</div>
+      </div>
+    </div>
+  </div></section>
+
+<script src="snapshot-config.js"></script>
+<script>
+  const $=id=>document.getElementById(id), s=(id,v)=>{const e=$(id); if(e) e.textContent=v;};
+  const slug = (new URLSearchParams(location.search).get("v") || "landscaping").toLowerCase();
+  const V = (window.YOURCO_VERTICALS && window.YOURCO_VERTICALS[slug]) || null;
+
+  if(!V){
+    document.body.innerHTML = '<div style="max-width:620px;margin:80px auto;font:16px/1.6 -apple-system,Helvetica,Arial,sans-serif;padding:0 24px;color:#15192e">'
+      + '<a href="index.html" style="font-weight:700;color:#161B33;text-decoration:none">yourco.</a>'
+      + '<h1 style="margin-top:20px">Pick your industry first.</h1>'
+      + '<p style="color:#5b617a"><a href="verticals.html" style="color:#B8965A;font-weight:600">See the industries we cover →</a> or <a href="audit-intake.html" style="color:#B8965A;font-weight:600">start the full audit →</a></p></div>';
+  } else {
+    s("eyebrow", "free revenue leak snapshot · " + V.name.toLowerCase());
+    s("intro", V.quickAudit.intro);
+    // render questions
+    const qhtml = V.quickAudit.questions.map((q,i)=>{
+      const hint = q.hint ? `<span class="hint"> ${q.hint}</span>` : "";
+      let field;
+      if(q.type === "select"){
+        field = `<select name="${q.k}" data-idx="${i}" required><option value="" disabled selected>Choose one…</option>`
+          + q.options.map((o,j)=>`<option value="${j}">${o}</option>`).join("") + `</select>`;
+      } else {
+        const t = q.type === "number" ? "text" : "text"; // text inputmode numeric to allow "$1,000"
+        field = `<input name="${q.k}" data-idx="${i}" type="text" inputmode="numeric" placeholder="${q.placeholder||""}" />`;
+      }
+      return `<div class="q"><label>${q.label}${hint}</label>${field}</div>`;
+    }).join("");
+    $("questions").innerHTML = qhtml;
+
+    // helpers
+    const num = v => { const n = parseFloat(String(v||"").replace(/[^0-9.]/g,"")); return isFinite(n)?n:0; };
+    const money = n => "$" + Math.round(n).toLocaleString();
+    const qByKey = k => V.quickAudit.questions.find(q=>q.k===k);
+
+    $("qaForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const fd = Object.fromEntries(new FormData(this).entries());
+
+      // ---- leak math, from THEIR numbers ----
+      const leads = num(fd.leads);
+      const missQ = qByKey("missed");
+      const missedFrac = (missQ && missQ.pct && fd.missed!=="") ? (missQ.pct[+fd.missed]||0) : 0;
+      const jobValue = num(fd.job_value);
+      const adminHours = num(fd.admin_hours);
+      const BOOK_RATE = 0.30;            // conservative: ~30% of missed leads would have booked
+      const RECOVER = 0.33;              // we frame recovery as "even a third"
+      // Display the missed-lead count we actually compute on, so the shown arithmetic reconciles exactly
+      // (>=1 → whole number; <1 → one decimal, so tiny volumes don't collapse the math to $0).
+      const missedLeadsRaw = leads * missedFrac;
+      const missedLeads = missedLeadsRaw >= 1 ? Math.round(missedLeadsRaw) : Math.round(missedLeadsRaw * 10) / 10;
+      const monthlyLeak = missedLeads * BOOK_RATE * jobValue;
+      const annualLeak = monthlyLeak * 12;
+      const hoursYr = adminHours * 52;
+      const haveNums = leads>0 && jobValue>0 && missedFrac>0;
+
+      // ---- headline keyed to their top pain ----
+      const painIdx = qByKey("top_pain") ? +fd.top_pain : -1;
+      const painText = (qByKey("top_pain") && fd.top_pain!=="") ? qByKey("top_pain").options[painIdx] : "";
+      let headline;
+      if(haveNums){
+        headline = `On the numbers you gave us, roughly ${money(monthlyLeak)} a month is leaking out of your business before you ever quote it — and most of it is recoverable with a system that simply doesn't drop the ball.`;
+      } else {
+        headline = `Even without exact numbers, the pattern is clear: leads, quotes, and follow-ups are slipping through the cracks — and that's exactly what an AI system is built to catch.`;
+      }
+
+      // ---- render report ----
+      s("rCompany", fd.company || "your business");
+      s("rVertical", V.name);
+      s("rDate", new Date().toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"}));
+      s("rHeadline", headline);
+
+      if(haveNums){
+        s("rBigNum", money(monthlyLeak) + " / mo");
+        s("rBigLabel", "estimated revenue leaking from missed & dropped leads (your numbers)");
+        $("rMath").innerHTML = `About <code>${missedLeads} missed/slow leads a month</code> × <code>~${Math.round(BOOK_RATE*100)}% would have booked</code> × <code>${money(jobValue)} avg job</code> ≈ <b>${money(monthlyLeak)}/mo</b> — roughly <b>${money(annualLeak)}/yr</b> walking to whoever answered first.`;
+      } else {
+        s("rBigNum", "Let's quantify it");
+        s("rBigLabel", "add your lead volume + average job value for the dollar figure — the full audit nails it down");
+        $("rMath").innerHTML = `Give us your monthly lead count, your miss rate, and an average job value and we'll show the exact leak. The full audit measures it directly from your phone and CRM data.`;
+      }
+
+      // findings: the vertical's known leaks, with the prospect's top pain flagged
+      const painMap = ["calls","quote","follow","admin"]; // rough alignment to bottlenecks order
+      $("rFindings").innerHTML = V.bottlenecks.map((b,i)=>{
+        const flag = (i===painIdx);
+        return `<div class="bn ${flag?'flag':''}"><h3>${b.title}${flag?'<span class="tag">you flagged this</span>':''}</h3><p>${b.desc}</p></div>`;
+      }).join("");
+
+      // outcomes + ROI framing
+      $("rOutcomes").innerHTML = V.report.outcomes.map(o=>`<li>${o}</li>`).join("");
+      if(haveNums){
+        $("rRoi").innerHTML = `Recover even <b>a third</b> of that leak and you're adding roughly <b>${money(annualLeak*RECOVER)}/yr</b> — plus the <b>${Math.round(hoursYr).toLocaleString()} hours a year</b> you'd stop spending on admin. The system typically pays for itself many times over.`;
+      } else {
+        $("rRoi").innerHTML = `Even modest recovery of dropped leads usually pays for the system many times over — the full audit puts the exact return on it, in your figures.`;
+      }
+
+      // stats (with source labels — unverified shows [verify])
+      s("rStatsHead", "The reality in " + V.name.toLowerCase());
+      $("rStats").innerHTML = (V.stats||[]).map(x=>`<div class="stat"><div class="n">${x.n}</div><div class="l">${x.l}</div><div class="src">source: ${x.url?`<a href="${x.url}" target="_blank" rel="noopener" style="color:#a59a82">${x.src}</a>`:x.src}</div></div>`).join("");
+
+      // first build
+      s("rFbName", V.report.firstBuild.name);
+      s("rFbDesc", V.report.firstBuild.desc);
+
+      // ---- staged: send lead + findings to backend (CRM warm lead + Slack/email to the Founder) ----
+      const smsConsent = fd.sms_consent === "yes";
+      const payload = {
+        source: "online-snapshot",
+        vertical: V.name, slug,
+        name: fd.name, email: fd.email, company: fd.company, phone: fd.phone||"",
+        answers: fd,
+        // TCPA: record explicit opt-in + the exact disclosure shown + a timestamp (proof of consent)
+        sms_consent: smsConsent,
+        consent: smsConsent ? { channel: "sms/rcs", ts: new Date().toISOString(), text: "I agree to receive SMS/RCS text messages from yourco about my inquiry. Msg frequency varies; msg & data rates may apply. STOP to opt out, HELP for help. Consent not a condition of purchase.", page: "snapshot" } : null,
+        computed: { monthlyLeak: Math.round(monthlyLeak), annualLeak: Math.round(annualLeak), hoursYr: Math.round(hoursYr), topPain: painText, haveNums }
+      };
+      try{ fetch("/api/snapshot",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}); }
+      catch(_){ /* staged: no backend yet */ }
+
+      // swap views
+      $("introSec").style.display="none"; $("formSec").style.display="none";
+      $("report").style.display="block";
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  }
+</script>
+</body>
+</html>

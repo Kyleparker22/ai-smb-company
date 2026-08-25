@@ -1,0 +1,2280 @@
+{
+  "_note": "Drives Sadie's intent collection across industries. Per vertical: youtube_queries (official Data API; --comments = prospect-level), keywords (filter comments/RSS/social to the actual pain), alert_phrases (→ Google News RSS auto + set as Google Alerts and paste feed URLs into rss_feeds). OPTIONAL per vertical: bluesky_queries (defaults to youtube_queries; needs runtime/.bluesky.env login), mastodon_tags (+ mastodon_instance), yelp_term/yelp_location (needs runtime/.yelp.env), rss_feeds (Google Alerts + forum feeds). Each vertical → its own 'Intent — <vertical>' Instantly campaign. Add verticals freely. Landscaping shows every optional field; the rest inherit the no-config defaults (YouTube comments + Google News + Bluesky).",
+  "shared_keywords": [
+    "missed call",
+    "missed calls",
+    "voicemail",
+    "can't keep up",
+    "cant keep up",
+    "losing jobs",
+    "lost a customer",
+    "answering service",
+    "booked solid",
+    "no time to answer",
+    "phone rings all day",
+    "after hours calls"
+  ],
+  "verticals": [
+    {
+      "vertical": "Landscaping",
+      "youtube_queries": [
+        "landscaping business missing calls",
+        "landscaping too many leads",
+        "grow landscaping business overwhelmed"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "can't keep up",
+        "losing jobs",
+        "answering",
+        "estimate",
+        "quote",
+        "booked"
+      ],
+      "alert_phrases": [
+        "missed calls landscaping",
+        "lawn care missed calls",
+        "landscaping answering service",
+        "lawn care answering service",
+        "landscaping virtual receptionist",
+        "landscaping too many leads",
+        "landscaping business overwhelmed",
+        "landscaping booked solid",
+        "landscaping follow up leads",
+        "landscaping AI"
+      ],
+      "bluesky_queries": [
+        "landscaping missed calls",
+        "lawn care business overwhelmed"
+      ],
+      "mastodon_tags": [
+        "landscaping",
+        "smallbusiness"
+      ],
+      "yelp_term": "landscaping",
+      "yelp_location": "Yourtown",
+      "rss_feeds": [
+        "https://www.lawnsite.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13228354066795382509",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4789577212201058983",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9252971143609610513",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10357985001304553645",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2593538083776049447",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15723248557922656282",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7411390596270608872",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18129170096912003173",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13939954516038252075",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3399691698500238747"
+      ]
+    },
+    {
+      "vertical": "Hardscaping",
+      "youtube_queries": [
+        "hardscaping business missing calls",
+        "hardscape contractor too busy quoting",
+        "paver patio business leads"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "can't keep up",
+        "booked",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "hardscaping missed calls",
+        "hardscaping answering service",
+        "hardscaping leads",
+        "hardscape contractor answering service",
+        "hardscaping too busy to quote",
+        "paver patio business leads",
+        "hardscaping booked out",
+        "hardscape contractor overwhelmed",
+        "hardscaping AI",
+        "hardscape instant quote"
+      ],
+      "rss_feeds": [
+        "https://www.lawnsite.com/forums/-/index.rss",
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9783348037625050311",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4194243312380658304",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4194243312380659634",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4194243312380660863",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14782511881287225169",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17410693190437133662",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17410693190437133740",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17410693190437134090",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8614881408707072871",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18089463844321119783"
+      ]
+    },
+    {
+      "vertical": "HVAC",
+      "youtube_queries": [
+        "HVAC company missing calls",
+        "HVAC too many service calls",
+        "HVAC answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "after hours",
+        "dispatch",
+        "can't keep up",
+        "booking",
+        "emergency call"
+      ],
+      "alert_phrases": [
+        "HVAC missed calls",
+        "HVAC answering service",
+        "HVAC after hours calls",
+        "HVAC dispatch overwhelmed",
+        "HVAC too many service calls",
+        "HVAC virtual receptionist",
+        "HVAC booked solid",
+        "HVAC scheduling software",
+        "HVAC lead follow up",
+        "HVAC AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17077652490424469210",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16279573949213329895",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12736982652038746969",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5260278691757175114",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1568902600817429385",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1568902600817428999",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10183448653906365329",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7619172650383933887",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7619172650383933541",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4889383523264359194"
+      ]
+    },
+    {
+      "vertical": "Plumbing",
+      "youtube_queries": [
+        "plumbing business missing calls",
+        "plumber too many calls",
+        "plumbing answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "after hours",
+        "emergency",
+        "dispatch",
+        "can't keep up",
+        "booking"
+      ],
+      "alert_phrases": [
+        "plumber missed calls",
+        "plumbing answering service",
+        "plumber after hours calls",
+        "plumbing emergency calls overwhelmed",
+        "plumber too many calls",
+        "plumbing virtual receptionist",
+        "plumbing dispatch",
+        "plumber booked solid",
+        "plumbing lead follow up",
+        "plumbing AI"
+      ],
+      "rss_feeds": [
+        "https://www.plumbingzone.com/forums/-/index.rss",
+        "https://terrylove.com/forums/index.php?forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7700196817266960771",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16882165102959300284",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16882165102959299746",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11333579084810174909",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7222659806655730199",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7653636207143699713",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7653636207143702097",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7411560569399744339",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4410773025923781434",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4410773025923780689"
+      ]
+    },
+    {
+      "vertical": "Roofing",
+      "youtube_queries": [
+        "roofing company missing calls",
+        "roofing storm leads overwhelmed",
+        "roofing answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "storm",
+        "leads",
+        "can't keep up",
+        "estimate",
+        "inspection",
+        "booking"
+      ],
+      "alert_phrases": [
+        "roofing missed calls",
+        "roofing answering service",
+        "roofing storm leads",
+        "roofing too many leads",
+        "roofer overwhelmed",
+        "roofing virtual receptionist",
+        "roofing inspection scheduling",
+        "roofing follow up leads",
+        "roofing booked solid",
+        "roofing AI"
+      ],
+      "rss_feeds": [
+        "https://www.roofingtalk.com/forums/-/index.rss",
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/369664336435148885",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6350739353254218966",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16365150045963032341",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14150730051377968869",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10749925224303549878",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9054535846939782035",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8819659026260882423",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10487345037646575099",
+        "https://www.google.com/alerts/feeds/02402413122533763327/815788846213929242"
+      ]
+    },
+    {
+      "vertical": "Electrical",
+      "youtube_queries": [
+        "electrician business missing calls",
+        "electrical contractor too many calls",
+        "electrician answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "after hours",
+        "dispatch",
+        "can't keep up",
+        "booking",
+        "estimate"
+      ],
+      "alert_phrases": [
+        "electrician missed calls",
+        "electrical answering service",
+        "electrician after hours calls",
+        "electrical contractor overwhelmed",
+        "electrician too many calls",
+        "electrical virtual receptionist",
+        "electrician scheduling",
+        "electrician booked solid",
+        "electrical lead follow up",
+        "electrical AI"
+      ],
+      "rss_feeds": [
+        "https://www.electriciantalk.com/forums/-/index.rss",
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15622290115501342744",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12870086333572741836",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12870086333572741482",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17733574512098723983",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11572723982356842776",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14560845241422741370",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11855155479983168829",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11855155479983167748",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8839489844265482933",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10984876216637492655",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16360594570114002577"
+      ]
+    },
+    {
+      "vertical": "Dental",
+      "youtube_queries": [
+        "dental practice missed calls",
+        "dental front desk overwhelmed",
+        "dental office answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "no-show",
+        "scheduling",
+        "recall",
+        "answering",
+        "patients"
+      ],
+      "alert_phrases": [
+        "dental practice missed calls",
+        "dental office answering service",
+        "dental front desk overwhelmed",
+        "dental no-shows",
+        "dental appointment scheduling",
+        "dental patient recall",
+        "dental virtual receptionist",
+        "dental practice too busy",
+        "dental phone calls",
+        "dental AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/13770305047490168369",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13770305047490166943",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4551627690959571146",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7454685883521591512",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15947288389787516909",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17778540903438955655",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4347233936391579325",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4347233936391579902",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4730602765408289750",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1264015473725712451"
+      ]
+    },
+    {
+      "vertical": "Law Firms",
+      "youtube_queries": [
+        "law firm missing calls",
+        "law firm intake overwhelmed",
+        "attorney answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "intake",
+        "new client",
+        "after hours",
+        "can't keep up",
+        "leads",
+        "consultation"
+      ],
+      "alert_phrases": [
+        "law firm missed calls",
+        "law firm intake service",
+        "attorney answering service",
+        "law firm client intake overwhelmed",
+        "law firm after hours calls",
+        "attorney virtual receptionist",
+        "law firm lead follow up",
+        "law firm scheduling",
+        "solo attorney overwhelmed",
+        "law firm AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/7487908165950892718",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4526062295407223519",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11171796048202711139",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1845298936613678457",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1845298936613678891",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15283497852790669615",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1353106339843439501",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1353106339843436568",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1353106339843437136",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13405404475813756743"
+      ]
+    },
+    {
+      "vertical": "Med Spa",
+      "youtube_queries": [
+        "med spa missed calls",
+        "med spa front desk overwhelmed",
+        "med spa booking leads"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "booking",
+        "no-show",
+        "front desk",
+        "leads",
+        "scheduling",
+        "consult"
+      ],
+      "alert_phrases": [
+        "med spa missed calls",
+        "med spa answering service",
+        "med spa no-shows",
+        "med spa front desk overwhelmed",
+        "med spa booking",
+        "med spa appointment scheduling",
+        "med spa virtual receptionist",
+        "med spa lead follow up",
+        "med spa too busy",
+        "med spa AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/309812235485093785",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7386024778860751921",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6401234012224043563",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6401234012224041270",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16789006454327134498",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16789006454327133798",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12790084224416432120",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8948394842439454777",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4564551824250683308",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7025118545836033763"
+      ]
+    },
+    {
+      "vertical": "Auto Repair",
+      "youtube_queries": [
+        "auto repair shop missing calls",
+        "mechanic shop too many calls",
+        "auto shop answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "can't keep up",
+        "booking",
+        "estimate"
+      ],
+      "alert_phrases": [
+        "auto repair missed calls",
+        "auto shop answering service",
+        "mechanic shop overwhelmed",
+        "auto repair scheduling",
+        "auto shop front desk",
+        "auto repair virtual receptionist",
+        "auto shop too many calls",
+        "auto repair booked solid",
+        "auto repair follow up",
+        "auto repair AI"
+      ],
+      "rss_feeds": [
+        "https://www.garagejournal.com/forum/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10912504730137069462",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3465095400657365271",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17892465701698148712",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12382888859484886898",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6075075113639768656",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16555422193730223919",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16555422193730221012",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2298048763027559796",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10646533102648045268",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16025512105107401128"
+      ]
+    },
+    {
+      "vertical": "Real Estate",
+      "youtube_queries": [
+        "real estate agent missing calls",
+        "realtor lead follow up overwhelmed",
+        "real estate answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "lead",
+        "follow up",
+        "after hours",
+        "can't keep up",
+        "showing",
+        "inquiry"
+      ],
+      "alert_phrases": [
+        "realtor missed calls",
+        "real estate answering service",
+        "real estate lead follow up",
+        "realtor overwhelmed leads",
+        "real estate after hours calls",
+        "realtor virtual receptionist",
+        "real estate showing scheduling",
+        "realtor too many leads",
+        "real estate lead response time",
+        "real estate AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/5366815703431389888",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3409476263927579854",
+        "https://www.google.com/alerts/feeds/02402413122533763327/610199757689925920",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3985541499839192295",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7730822400845730143",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13820530516412672237",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14006190579088333314",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14006190579088333313",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18404946992440021811"
+      ]
+    },
+    {
+      "vertical": "Veterinary",
+      "youtube_queries": [
+        "veterinary clinic missed calls",
+        "vet front desk overwhelmed",
+        "veterinary answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "no-show",
+        "scheduling",
+        "appointment",
+        "answering",
+        "after hours"
+      ],
+      "alert_phrases": [
+        "veterinary clinic missed calls",
+        "vet answering service",
+        "veterinary front desk overwhelmed",
+        "vet appointment scheduling",
+        "veterinary no-shows",
+        "vet virtual receptionist",
+        "veterinary phone calls",
+        "vet clinic too busy",
+        "veterinary after hours calls",
+        "veterinary AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/16863707767944483562",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15475784554904193546",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6347118789010787894",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13767716020903767264",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9566661129762305530",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9566661129762304073",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9566661129762306189",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3909000354446215274",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12263376254174394822",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12263376254174394414"
+      ]
+    },
+    {
+      "vertical": "Cleaning Services",
+      "youtube_queries": [
+        "cleaning business missing calls",
+        "cleaning company too many leads",
+        "maid service answering"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "booking",
+        "can't keep up",
+        "scheduling",
+        "estimate"
+      ],
+      "alert_phrases": [
+        "cleaning business missed calls",
+        "maid service answering service",
+        "cleaning company too many leads",
+        "cleaning business scheduling",
+        "cleaning service quotes",
+        "cleaning business overwhelmed",
+        "cleaning virtual receptionist",
+        "maid service booking",
+        "cleaning business follow up",
+        "cleaning business AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Pest Control",
+      "youtube_queries": [
+        "pest control business missing calls",
+        "pest control too many calls",
+        "pest control answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "scheduling",
+        "booking",
+        "after hours",
+        "can't keep up",
+        "estimate"
+      ],
+      "alert_phrases": [
+        "pest control missed calls",
+        "pest control answering service",
+        "pest control scheduling",
+        "pest control too many calls",
+        "pest control after hours",
+        "pest control virtual receptionist",
+        "pest control booking",
+        "pest control overwhelmed",
+        "pest control follow up",
+        "pest control AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Restoration",
+      "youtube_queries": [
+        "water damage restoration missed calls",
+        "restoration company storm leads",
+        "fire damage restoration answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "emergency",
+        "after hours",
+        "storm",
+        "insurance",
+        "mitigation"
+      ],
+      "alert_phrases": [
+        "water damage restoration missed calls",
+        "restoration company answering service",
+        "restoration after hours emergency calls",
+        "fire damage restoration leads",
+        "mold remediation answering service",
+        "restoration storm surge overwhelmed",
+        "restoration 24/7 call answering",
+        "restoration company too many leads",
+        "restoration virtual receptionist",
+        "restoration company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6435688763349395203",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16114831812228001795",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7695469145776655026",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9146704324545464185",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7265429979129952294",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1419293080257994191",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1419293080257991849",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10748919982658219660",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9618182073524316929",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9618182073524316063"
+      ]
+    },
+    {
+      "vertical": "Garage Door",
+      "youtube_queries": [
+        "garage door company missed calls",
+        "garage door repair too many calls",
+        "garage door answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "scheduling",
+        "after hours",
+        "booking",
+        "dispatch"
+      ],
+      "alert_phrases": [
+        "garage door missed calls",
+        "garage door answering service",
+        "garage door repair scheduling",
+        "garage door after hours calls",
+        "garage door company overwhelmed",
+        "garage door virtual receptionist",
+        "garage door booking",
+        "garage door too many calls",
+        "garage door lead follow up",
+        "garage door company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14041306541794158765",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16174775261913027061",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8306985740246099835",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6182137079876050857",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6182137079876049118",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11167019930407949510",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17523039580967709395",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9806085418448585811",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17997582966447807559",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6533153128017393024"
+      ]
+    },
+    {
+      "vertical": "Tree Service",
+      "youtube_queries": [
+        "tree service missed calls",
+        "tree removal company too many leads",
+        "tree service answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "estimate",
+        "quote",
+        "scheduling",
+        "storm"
+      ],
+      "alert_phrases": [
+        "tree service missed calls",
+        "tree service answering service",
+        "tree removal leads",
+        "tree service estimate scheduling",
+        "arborist answering service",
+        "tree service storm overwhelmed",
+        "tree service virtual receptionist",
+        "tree service too many calls",
+        "tree service follow up leads",
+        "tree service company AI"
+      ],
+      "rss_feeds": [
+        "https://www.lawnsite.com/forums/-/index.rss",
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15108063934638204750",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10741674143381686606",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6487328578170050191",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4942726205451583664",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4942726205451583607",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12067712034339217168",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13039517973628757529",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14504300583589369312",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14504300583589369329",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10421496243585378176"
+      ]
+    },
+    {
+      "vertical": "Pool Service",
+      "youtube_queries": [
+        "pool service missed calls",
+        "pool company too many leads",
+        "pool builder answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "scheduling",
+        "quote",
+        "seasonal",
+        "booking"
+      ],
+      "alert_phrases": [
+        "pool service missed calls",
+        "pool company answering service",
+        "pool installation leads",
+        "pool service scheduling",
+        "pool builder overwhelmed",
+        "pool service virtual receptionist",
+        "pool service booking",
+        "pool company too many leads",
+        "pool service follow up",
+        "pool company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss"
+      ]
+    },
+    {
+      "vertical": "Solar",
+      "youtube_queries": [
+        "solar installer missed calls",
+        "solar company lead follow up",
+        "solar answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "lead",
+        "follow up",
+        "quote",
+        "consultation"
+      ],
+      "alert_phrases": [
+        "solar installer missed calls",
+        "solar company answering service",
+        "solar lead follow up",
+        "solar consultation scheduling",
+        "solar installer overwhelmed leads",
+        "solar virtual receptionist",
+        "solar company too many leads",
+        "solar appointment booking",
+        "solar lead response time",
+        "solar company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss"
+      ]
+    },
+    {
+      "vertical": "Fencing & Decks",
+      "youtube_queries": [
+        "fence company missed calls",
+        "deck builder too many leads",
+        "fencing answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "scheduling",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "fence company missed calls",
+        "fencing answering service",
+        "deck builder leads",
+        "fence company estimate scheduling",
+        "fencing company overwhelmed",
+        "fence company virtual receptionist",
+        "deck builder booked out",
+        "fencing too many leads",
+        "fence company follow up",
+        "fencing company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7479148008325468136",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4071403568976133313",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4071403568976132299",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16423649228156132720",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11103696104705594265",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11103696104705595126",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14469416048272091077",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16718807680640559193",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16856413327435266167",
+        "https://www.google.com/alerts/feeds/02402413122533763327/261804034358851277"
+      ]
+    },
+    {
+      "vertical": "Painting",
+      "youtube_queries": [
+        "painting contractor missed calls",
+        "painting company too many leads",
+        "painters answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "scheduling",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "painting contractor missed calls",
+        "painting company answering service",
+        "painting estimate scheduling",
+        "painter leads",
+        "painting company overwhelmed",
+        "painting virtual receptionist",
+        "painting company booked solid",
+        "painting too many leads",
+        "painting contractor follow up",
+        "painting company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18067937292459001108",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9120698887493015808",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9120698887493016011",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9120698887493017441",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5640719990606656989",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3438769556912452153",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3438769556912454223",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7741325630243055077",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6409666930333733258",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16114370210550168913"
+      ]
+    },
+    {
+      "vertical": "Window & Door",
+      "youtube_queries": [
+        "window replacement company missed calls",
+        "window installer too many leads",
+        "window company answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "consultation",
+        "scheduling"
+      ],
+      "alert_phrases": [
+        "window replacement missed calls",
+        "window company answering service",
+        "window installer leads",
+        "window replacement scheduling",
+        "door installer overwhelmed",
+        "window company virtual receptionist",
+        "window replacement consultation booking",
+        "window company too many leads",
+        "window installer follow up",
+        "window replacement company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11434675430128228159",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1889442549224098841",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14065764568214963567",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5087940736571736508",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15246335432758627402",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8988690180803028415",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8988690180803027355",
+        "https://www.google.com/alerts/feeds/02402413122533763327/277417145342177604",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16896410349212229603",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16896410349212226955"
+      ]
+    },
+    {
+      "vertical": "General Contractors",
+      "youtube_queries": [
+        "general contractor missed calls",
+        "remodeling company too many leads",
+        "contractor answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "bid",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "general contractor missed calls",
+        "contractor answering service",
+        "remodeling company leads",
+        "contractor estimate scheduling",
+        "general contractor overwhelmed",
+        "contractor virtual receptionist",
+        "remodeler booked solid",
+        "contractor too many leads",
+        "general contractor follow up",
+        "contractor company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1602404142875455145",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13555988741347182886",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13555988741347182275",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5894175704944065408",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5025371584300312229",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5025371584300311650",
+        "https://www.google.com/alerts/feeds/02402413122533763327/573886478752228059",
+        "https://www.google.com/alerts/feeds/02402413122533763327/573886478752227537",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1334109401589502090",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14502727986861779994"
+      ]
+    },
+    {
+      "vertical": "Home Builders",
+      "youtube_queries": [
+        "home builder missed calls",
+        "custom home builder leads",
+        "builder answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "lead",
+        "consultation",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "custom home builder missed calls",
+        "home builder answering service",
+        "home builder leads",
+        "builder consultation scheduling",
+        "home builder overwhelmed",
+        "builder virtual receptionist",
+        "custom home builder follow up",
+        "home builder too many leads",
+        "home builder lead response",
+        "home builder AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18347485221823394886",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18347485221823394776",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16937577491481105271",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4448961703319860912",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1275401042625194114",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1275401042625194893",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11572567137672548483",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11305368537815589483",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11305368537815590993",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12989848825762466973"
+      ]
+    },
+    {
+      "vertical": "Concrete & Masonry",
+      "youtube_queries": [
+        "concrete contractor missed calls",
+        "masonry company too many leads",
+        "concrete answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "bid",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "concrete contractor missed calls",
+        "concrete company answering service",
+        "masonry leads",
+        "concrete estimate scheduling",
+        "concrete contractor overwhelmed",
+        "concrete virtual receptionist",
+        "masonry booked out",
+        "concrete too many leads",
+        "concrete contractor follow up",
+        "concrete company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18160690272350700261",
+        "https://www.google.com/alerts/feeds/02402413122533763327/998189905457360242",
+        "https://www.google.com/alerts/feeds/02402413122533763327/998189905457357628",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14501998124507055157",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4321574145970053846",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7832107371129721481",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7832107371129720836",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16242518163893428771",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7252137246772994226",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7252137246772996881"
+      ]
+    },
+    {
+      "vertical": "Foundation Repair",
+      "youtube_queries": [
+        "foundation repair missed calls",
+        "foundation company too many leads",
+        "foundation repair answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "inspection",
+        "estimate",
+        "quote"
+      ],
+      "alert_phrases": [
+        "foundation repair missed calls",
+        "foundation repair answering service",
+        "foundation repair leads",
+        "foundation inspection scheduling",
+        "foundation company overwhelmed",
+        "foundation repair virtual receptionist",
+        "foundation repair too many calls",
+        "foundation repair follow up",
+        "foundation repair booking",
+        "foundation repair company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15797145169484621895",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10528671997251502595",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7018929274442410174",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18003272222349257250",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3918214353144050194",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13266208379196601357",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3154744409813376792",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5665809577251704714",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12154200871546890881",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12154200871546889711"
+      ]
+    },
+    {
+      "vertical": "Flooring",
+      "youtube_queries": [
+        "flooring company missed calls",
+        "flooring contractor too many leads",
+        "flooring answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "scheduling",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "flooring company missed calls",
+        "flooring answering service",
+        "flooring contractor leads",
+        "flooring estimate scheduling",
+        "flooring company overwhelmed",
+        "flooring virtual receptionist",
+        "flooring company booked solid",
+        "flooring too many leads",
+        "flooring contractor follow up",
+        "flooring company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3021287852928688191",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15116834165752618904",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2868990605249771836",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2868990605249770967",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7778415040944857125",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5937408005059730976",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5937408005059730843",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5937408005059728259",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17160276392676838457",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4233215730794206301"
+      ]
+    },
+    {
+      "vertical": "Kitchen & Bath Sample Company 47",
+      "youtube_queries": [
+        "kitchen remodeler missed calls",
+        "bathroom remodeling leads",
+        "remodeling answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "consultation",
+        "backlog"
+      ],
+      "alert_phrases": [
+        "kitchen remodeler missed calls",
+        "bath remodeling answering service",
+        "kitchen remodel leads",
+        "remodeling consultation scheduling",
+        "kitchen bath remodeler overwhelmed",
+        "remodeling virtual receptionist",
+        "kitchen remodeler booked solid",
+        "bathroom remodel too many leads",
+        "kitchen bath follow up",
+        "kitchen bath remodeling AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12757718708425100023",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12757718708425098188",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2578929543476579455",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3545502561856109913",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1690838533511094545",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5765778805162696109",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11631977005908472815",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1283926231836307994",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10739349857290940175",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10739349857290937474"
+      ]
+    },
+    {
+      "vertical": "Septic & Well",
+      "youtube_queries": [
+        "septic company missed calls",
+        "well drilling too many calls",
+        "septic answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "emergency",
+        "after hours",
+        "dispatch",
+        "booking"
+      ],
+      "alert_phrases": [
+        "septic company missed calls",
+        "septic answering service",
+        "well drilling leads",
+        "septic service scheduling",
+        "septic company after hours calls",
+        "septic virtual receptionist",
+        "septic pumping booking",
+        "septic company too many calls",
+        "septic service follow up",
+        "septic company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3722412099277896907",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14489970674296395231",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9282875749404809830",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18343146939500330263",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9837970966563205958",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13171913430850863637",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5344325745204056068",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10467430845235928742",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17650694189718113343",
+        "https://www.google.com/alerts/feeds/02402413122533763327/411362389116882542"
+      ]
+    },
+    {
+      "vertical": "Excavation",
+      "youtube_queries": [
+        "excavation company missed calls",
+        "grading contractor leads",
+        "excavation answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "bid",
+        "estimate"
+      ],
+      "alert_phrases": [
+        "excavation company missed calls",
+        "excavation answering service",
+        "site work contractor leads",
+        "excavation estimate scheduling",
+        "grading contractor overwhelmed",
+        "excavation virtual receptionist",
+        "excavation too many bids",
+        "excavation company follow up",
+        "site work leads",
+        "excavation company AI"
+      ],
+      "rss_feeds": [
+        "https://www.contractortalk.com/forums/-/index.rss",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4870028028005834777",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11707929583189171817",
+        "https://www.google.com/alerts/feeds/02402413122533763327/79976972063964481",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2757977028562169339",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4296079726022839067",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4904681403378269700",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4904681403378268815",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18201598516000204734",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17559132215539458275",
+        "https://www.google.com/alerts/feeds/02402413122533763327/741086198542239227"
+      ]
+    },
+    {
+      "vertical": "Commercial Cleaning",
+      "youtube_queries": [
+        "commercial cleaning missed calls",
+        "janitorial company too many leads",
+        "cleaning company answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "bid",
+        "contract",
+        "scheduling"
+      ],
+      "alert_phrases": [
+        "commercial cleaning missed calls",
+        "janitorial answering service",
+        "commercial cleaning leads",
+        "cleaning company bid scheduling",
+        "janitorial company overwhelmed",
+        "commercial cleaning virtual receptionist",
+        "cleaning company too many leads",
+        "janitorial follow up",
+        "commercial cleaning quote requests",
+        "commercial cleaning company AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Moving & Storage",
+      "youtube_queries": [
+        "moving company missed calls",
+        "movers too many leads",
+        "moving company answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "estimate",
+        "booking"
+      ],
+      "alert_phrases": [
+        "moving company missed calls",
+        "movers answering service",
+        "moving company leads",
+        "moving quote scheduling",
+        "moving company overwhelmed",
+        "movers virtual receptionist",
+        "moving company booked solid",
+        "movers too many leads",
+        "moving company follow up",
+        "moving company AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Peptide Clinics",
+      "youtube_queries": [
+        "peptide clinic missed calls",
+        "peptide therapy patient scheduling",
+        "peptide clinic front desk"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "intake",
+        "patient"
+      ],
+      "alert_phrases": [
+        "peptide clinic missed calls",
+        "peptide clinic answering service",
+        "peptide therapy scheduling",
+        "peptide clinic front desk overwhelmed",
+        "peptide clinic no-shows",
+        "peptide clinic virtual receptionist",
+        "peptide clinic patient intake",
+        "peptide clinic booking",
+        "peptide clinic lead follow up",
+        "peptide clinic AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/4054444651371673612",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1320251573800193835",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1320251573800191614",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7461402835543102555",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14228506124351319973",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4207482962484118023",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4207482962484119874",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10674153736328687268",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18238013168818486940",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8288797930325743539"
+      ]
+    },
+    {
+      "vertical": "Wellness Clinics",
+      "youtube_queries": [
+        "wellness clinic missed calls",
+        "longevity clinic front desk",
+        "wellness clinic scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "intake",
+        "membership"
+      ],
+      "alert_phrases": [
+        "wellness clinic missed calls",
+        "wellness clinic answering service",
+        "longevity clinic scheduling",
+        "wellness clinic front desk overwhelmed",
+        "wellness clinic no-shows",
+        "wellness clinic virtual receptionist",
+        "wellness clinic intake",
+        "wellness clinic booking",
+        "wellness clinic membership follow up",
+        "wellness clinic AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/9836565325142159969",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6732759297827447652",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6732759297827449807",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14903569515831996808",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3051116569571901945",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11035841708421680717",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11035841708421677867",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16914271459786739999",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13779819786556437944",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13779819786556439044"
+      ]
+    },
+    {
+      "vertical": "IV Therapy",
+      "youtube_queries": [
+        "IV therapy missed calls",
+        "IV hydration booking",
+        "IV therapy clinic front desk"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "booking",
+        "scheduling",
+        "no-show",
+        "mobile"
+      ],
+      "alert_phrases": [
+        "IV therapy missed calls",
+        "IV therapy answering service",
+        "IV hydration booking",
+        "IV therapy scheduling",
+        "IV therapy no-shows",
+        "IV therapy virtual receptionist",
+        "mobile IV therapy dispatch",
+        "IV therapy clinic overwhelmed",
+        "IV therapy follow up",
+        "IV therapy clinic AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/7305454930306459025",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7305454930306458751",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4692553350900504297",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6586349455959662023",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6586349455959662197",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3207755538622874852",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7398554033842920890",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4460913750135090633",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4460913750135087565",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15943410283774855872"
+      ]
+    },
+    {
+      "vertical": "Hormone / TRT Clinics",
+      "youtube_queries": [
+        "TRT clinic missed calls",
+        "hormone clinic scheduling",
+        "TRT clinic front desk"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "intake",
+        "refill"
+      ],
+      "alert_phrases": [
+        "TRT clinic missed calls",
+        "hormone clinic answering service",
+        "TRT clinic scheduling",
+        "hormone clinic front desk overwhelmed",
+        "TRT clinic no-shows",
+        "hormone clinic virtual receptionist",
+        "TRT clinic intake",
+        "hormone clinic refill requests",
+        "TRT clinic follow up",
+        "hormone clinic AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/713533497831500329",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14408150243146095395",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16615056386888670494",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16615056386888670637",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11541193010491838358",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4103578091328232735",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16222354183082331542",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13679229809250313546",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7558386001501840908",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2515012671085598341"
+      ]
+    },
+    {
+      "vertical": "Recovery & Cold Plunge",
+      "youtube_queries": [
+        "cold plunge studio missed calls",
+        "recovery studio booking overwhelmed",
+        "mobile sauna business leads"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "booking",
+        "membership",
+        "no-show",
+        "scheduling",
+        "leads",
+        "mobile"
+      ],
+      "alert_phrases": [
+        "cold plunge studio missed calls",
+        "recovery studio answering service",
+        "mobile sauna booking",
+        "cold plunge membership follow up",
+        "recovery studio scheduling",
+        "sauna studio no-shows",
+        "cryotherapy studio front desk",
+        "recovery studio virtual receptionist",
+        "contrast therapy studio leads",
+        "cold plunge studio AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/16076342508752142710",
+        "https://www.google.com/alerts/feeds/02402413122533763327/224764804190678551",
+        "https://www.google.com/alerts/feeds/02402413122533763327/224764804190678412",
+        "https://www.google.com/alerts/feeds/02402413122533763327/175213990287785471",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2345599949884084209",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6712018003698800081",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14172999397339998653",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14172999397339996429",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15949073244112808646",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1805082924462693694"
+      ]
+    },
+    {
+      "vertical": "Family Medical",
+      "youtube_queries": [
+        "family practice missed calls",
+        "medical office front desk overwhelmed",
+        "family medical scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "intake",
+        "refill"
+      ],
+      "alert_phrases": [
+        "family practice missed calls",
+        "medical office answering service",
+        "family medical scheduling",
+        "medical front desk overwhelmed",
+        "family practice no-shows",
+        "medical office virtual receptionist",
+        "family practice patient intake",
+        "medical office refill requests",
+        "family practice phone calls",
+        "family medical practice AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/3058590825001428528",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5167619801293953904",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5167619801293954374",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10954783133897615841",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13094838960583744110",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6216308640922349892",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13557864244990138148",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13557864244990139538",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1299556633092869093",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1163209616619395460"
+      ]
+    },
+    {
+      "vertical": "Orthodontics",
+      "youtube_queries": [
+        "orthodontist missed calls",
+        "ortho practice front desk",
+        "orthodontics scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "consultation"
+      ],
+      "alert_phrases": [
+        "orthodontist missed calls",
+        "orthodontics answering service",
+        "ortho consultation scheduling",
+        "orthodontist front desk overwhelmed",
+        "orthodontics no-shows",
+        "orthodontist virtual receptionist",
+        "ortho new patient intake",
+        "orthodontics booking",
+        "orthodontist lead follow up",
+        "orthodontics practice AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/1056017813087140106",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9619800244513707104",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17417602537523999756",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17417602537524000441",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9892442571953121685",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8047569581921770830",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8047569581921768076",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7336200018067035193",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12710444691162377324",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13340719643302976143"
+      ]
+    },
+    {
+      "vertical": "Chiropractic",
+      "youtube_queries": [
+        "chiropractor missed calls",
+        "chiropractic front desk",
+        "chiropractic scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "new patient"
+      ],
+      "alert_phrases": [
+        "chiropractor missed calls",
+        "chiropractic answering service",
+        "chiropractic scheduling",
+        "chiropractor front desk overwhelmed",
+        "chiropractic no-shows",
+        "chiropractor virtual receptionist",
+        "chiropractic new patient intake",
+        "chiropractic booking",
+        "chiropractor follow up",
+        "chiropractic practice AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/14482430798118716366",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12484642076301084598",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3409913993181452309",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5746889077511449623",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13075988254219945780",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3785797365725554217",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3785797365725555289",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7083432160216260493",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4335356966498137962",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6799795232042509461"
+      ]
+    },
+    {
+      "vertical": "Physical Therapy",
+      "youtube_queries": [
+        "physical therapy missed calls",
+        "PT clinic front desk",
+        "physical therapy scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "scheduling",
+        "no-show",
+        "referral"
+      ],
+      "alert_phrases": [
+        "physical therapy missed calls",
+        "physical therapy answering service",
+        "PT clinic scheduling",
+        "physical therapy front desk overwhelmed",
+        "physical therapy no-shows",
+        "PT virtual receptionist",
+        "physical therapy referral intake",
+        "PT clinic booking",
+        "physical therapy follow up",
+        "physical therapy clinic AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/17263132654623832945",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17263132654623830877",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7241145613764983436",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14200921191545131063",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14200921191545131246",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14200921191545132650",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6357375999880793337",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11296032247312882553",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11296032247312882348",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7741807826882167823"
+      ]
+    },
+    {
+      "vertical": "Plastic Surgery",
+      "youtube_queries": [
+        "plastic surgery missed calls",
+        "cosmetic surgery front desk",
+        "plastic surgery consultation scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "consultation",
+        "no-show",
+        "lead"
+      ],
+      "alert_phrases": [
+        "plastic surgery missed calls",
+        "plastic surgery answering service",
+        "cosmetic surgery consultation scheduling",
+        "plastic surgery front desk overwhelmed",
+        "plastic surgery no-shows",
+        "plastic surgery virtual receptionist",
+        "cosmetic surgery lead follow up",
+        "plastic surgery booking",
+        "plastic surgery patient intake",
+        "plastic surgery practice AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/13265846269199362400",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13265846269199361886",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13265846269199361235",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18437288079730851668",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11093529612257164385",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11093529612257162279",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12125754136206607549",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12611038191372730247",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14522598790334667323",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14522598790334667315"
+      ]
+    },
+    {
+      "vertical": "Dermatology",
+      "youtube_queries": [
+        "dermatology practice missed calls",
+        "dermatology front desk overwhelmed",
+        "dermatology office scheduling"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "front desk",
+        "no-show",
+        "scheduling",
+        "intake",
+        "consult",
+        "patient"
+      ],
+      "alert_phrases": [
+        "dermatology missed calls",
+        "dermatology answering service",
+        "dermatology front desk overwhelmed",
+        "dermatology no-shows",
+        "dermatology appointment scheduling",
+        "dermatology patient intake",
+        "dermatology virtual receptionist",
+        "cosmetic dermatology lead follow up",
+        "dermatology practice too busy",
+        "dermatology practice AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/10407477427653290357",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10407477427653291961",
+        "https://www.google.com/alerts/feeds/02402413122533763327/9822344198034172220",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14765961621635991160",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14765961621635992217",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10993525665493907923",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16908566116053514826",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1973964901203335020",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7588160530018675786",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12312878867282572702"
+      ]
+    },
+    {
+      "vertical": "Accounting / CPA",
+      "youtube_queries": [
+        "CPA firm missed calls",
+        "accounting firm client intake",
+        "CPA firm answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "intake",
+        "client",
+        "tax season",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "CPA firm missed calls",
+        "accounting firm answering service",
+        "CPA client intake",
+        "accounting firm scheduling",
+        "CPA firm overwhelmed tax season",
+        "accounting virtual receptionist",
+        "CPA firm lead follow up",
+        "accounting firm new client intake",
+        "CPA firm too many calls",
+        "accounting firm AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/875230976710047704",
+        "https://www.google.com/alerts/feeds/02402413122533763327/875230976710049258",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14099901995565205014",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11642176830491535915",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11642176830491535550",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2983505167384328144",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12764375373160474619",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17029845966588697452",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17029845966588696839",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4055785208510925755"
+      ]
+    },
+    {
+      "vertical": "Sample Contact",
+      "youtube_queries": [
+        "wealth management missed calls",
+        "financial advisor lead follow up",
+        "RIA client intake"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "intake",
+        "lead",
+        "client",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "wealth management missed calls",
+        "financial advisor answering service",
+        "RIA client intake",
+        "financial advisor lead follow up",
+        "wealth management scheduling",
+        "financial advisor virtual receptionist",
+        "wealth management too many leads",
+        "financial advisor appointment booking",
+        "RIA lead response time",
+        "wealth management firm AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/14077621087189088470",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14077621087189087023",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14077621087189089247",
+        "https://www.google.com/alerts/feeds/02402413122533763327/5426509767252364866",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16242656196236392871",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16242656196236392409",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16689589870760587110",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2250619241750074294",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12103717331268553783",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12103717331268554125"
+      ]
+    },
+    {
+      "vertical": "Insurance Agencies",
+      "youtube_queries": [
+        "insurance agency missed calls",
+        "insurance agent lead follow up",
+        "insurance agency answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "quote",
+        "lead",
+        "renewal",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "insurance agency missed calls",
+        "insurance agency answering service",
+        "insurance agent lead follow up",
+        "insurance quote requests",
+        "insurance agency overwhelmed",
+        "insurance virtual receptionist",
+        "insurance agency too many leads",
+        "insurance renewal follow up",
+        "insurance agent lead response",
+        "insurance agency AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/179762118959611561",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8211493291209495599",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6413598576095647226",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6002323578419868504",
+        "https://www.google.com/alerts/feeds/02402413122533763327/916812966486925618",
+        "https://www.google.com/alerts/feeds/02402413122533763327/916812966486928045",
+        "https://www.google.com/alerts/feeds/02402413122533763327/916812966486928973",
+        "https://www.google.com/alerts/feeds/02402413122533763327/991765745467020429",
+        "https://www.google.com/alerts/feeds/02402413122533763327/991765745467019793",
+        "https://www.google.com/alerts/feeds/02402413122533763327/991765745467022048"
+      ]
+    },
+    {
+      "vertical": "Public Adjusters",
+      "youtube_queries": [
+        "public adjuster missed calls",
+        "public adjusting leads",
+        "public adjuster answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "claim",
+        "lead",
+        "storm",
+        "intake"
+      ],
+      "alert_phrases": [
+        "public adjuster missed calls",
+        "public adjuster answering service",
+        "public adjusting leads",
+        "public adjuster claim intake",
+        "public adjuster storm surge overwhelmed",
+        "public adjuster virtual receptionist",
+        "public adjusting too many leads",
+        "public adjuster follow up",
+        "public adjuster lead response",
+        "public adjuster AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/3237027788248970807",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11187963306909001572",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12894321567936374656",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12894321567936372777",
+        "https://www.google.com/alerts/feeds/02402413122533763327/1380750786991837547",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2866679839985750710",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17955714698492983569",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4494071050611094297",
+        "https://www.google.com/alerts/feeds/02402413122533763327/14885694896274901574",
+        "https://www.google.com/alerts/feeds/02402413122533763327/431868075778995731"
+      ]
+    },
+    {
+      "vertical": "Mortgage Brokers",
+      "youtube_queries": [
+        "mortgage broker missed calls",
+        "loan officer lead follow up",
+        "mortgage answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "lead",
+        "intake",
+        "application",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "mortgage broker missed calls",
+        "mortgage broker answering service",
+        "loan officer lead follow up",
+        "mortgage lead intake",
+        "mortgage broker overwhelmed",
+        "mortgage virtual receptionist",
+        "mortgage broker too many leads",
+        "loan officer lead response time",
+        "mortgage application follow up",
+        "mortgage broker AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/5764766308513691049",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6862329499858005908",
+        "https://www.google.com/alerts/feeds/02402413122533763327/12806731890327482059",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16965184733066714878",
+        "https://www.google.com/alerts/feeds/02402413122533763327/158934727640315732",
+        "https://www.google.com/alerts/feeds/02402413122533763327/158934727640313958",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2757443194873428771",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8634257492393137751",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6479440107797886204",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6479440107797886785"
+      ]
+    },
+    {
+      "vertical": "Property Management",
+      "youtube_queries": [
+        "property management missed calls",
+        "property manager after hours calls",
+        "property management answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "after hours",
+        "maintenance",
+        "tenant",
+        "leasing"
+      ],
+      "alert_phrases": [
+        "property management missed calls",
+        "property management answering service",
+        "property manager after hours calls",
+        "property management maintenance requests",
+        "property manager overwhelmed",
+        "property management virtual receptionist",
+        "leasing inquiry follow up",
+        "property management too many calls",
+        "tenant call handling",
+        "property management AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/951121099343385840",
+        "https://www.google.com/alerts/feeds/02402413122533763327/951121099343386984",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15330618001644083856",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3136679818709610618",
+        "https://www.google.com/alerts/feeds/02402413122533763327/2469630901134794587",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7252868825972118965",
+        "https://www.google.com/alerts/feeds/02402413122533763327/7252868825972119772",
+        "https://www.google.com/alerts/feeds/02402413122533763327/13507034242847922307",
+        "https://www.google.com/alerts/feeds/02402413122533763327/4449460244806992743",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17609615339423281683"
+      ]
+    },
+    {
+      "vertical": "Title & Escrow",
+      "youtube_queries": [
+        "title company missed calls",
+        "escrow office front desk",
+        "title company answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "intake",
+        "closing",
+        "order",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "title company missed calls",
+        "title company answering service",
+        "escrow office intake",
+        "title company scheduling",
+        "title company overwhelmed",
+        "title virtual receptionist",
+        "title order follow up",
+        "escrow too many calls",
+        "title company closing coordination",
+        "title company AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/11647312026650356413",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11647312026650357528",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10158414055797019148",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18259963301350084470",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18259963301350081859",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3162969207775809058",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17173789758142251688",
+        "https://www.google.com/alerts/feeds/02402413122533763327/17173789758142251864",
+        "https://www.google.com/alerts/feeds/02402413122533763327/8770330439032221389",
+        "https://www.google.com/alerts/feeds/02402413122533763327/11990383333942157715"
+      ]
+    },
+    {
+      "vertical": "Bookkeeping",
+      "youtube_queries": [
+        "bookkeeping firm missed calls",
+        "bookkeeper client intake",
+        "bookkeeping answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "intake",
+        "client",
+        "onboarding",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "bookkeeping firm missed calls",
+        "bookkeeping answering service",
+        "bookkeeper client intake",
+        "bookkeeping firm scheduling",
+        "bookkeeping firm overwhelmed",
+        "bookkeeping virtual receptionist",
+        "bookkeeping client onboarding",
+        "bookkeeping too many leads",
+        "bookkeeper lead follow up",
+        "bookkeeping firm AI"
+      ],
+      "rss_feeds": [
+        "https://www.google.com/alerts/feeds/02402413122533763327/10840581261095246530",
+        "https://www.google.com/alerts/feeds/02402413122533763327/10840581261095245238",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15730180336546654154",
+        "https://www.google.com/alerts/feeds/02402413122533763327/15730180336546654008",
+        "https://www.google.com/alerts/feeds/02402413122533763327/18396011680867760692",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3050882017827623004",
+        "https://www.google.com/alerts/feeds/02402413122533763327/6357059681995323717",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3968551632587623725",
+        "https://www.google.com/alerts/feeds/02402413122533763327/3968551632587623743",
+        "https://www.google.com/alerts/feeds/02402413122533763327/16809899429043805478"
+      ]
+    },
+    {
+      "vertical": "Boutique Hotels",
+      "youtube_queries": [
+        "boutique hotel missed calls",
+        "independent hotel front desk",
+        "hotel reservation answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "reservation",
+        "booking",
+        "concierge",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "boutique hotel missed calls",
+        "hotel reservation answering service",
+        "independent hotel booking",
+        "boutique hotel front desk overwhelmed",
+        "hotel concierge after hours",
+        "boutique hotel virtual receptionist",
+        "event venue inquiry follow up",
+        "wedding venue booking calls",
+        "boutique hotel too many inquiries",
+        "boutique hotel AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Sports & Fitness Facilities",
+      "youtube_queries": [
+        "sports academy missed calls",
+        "training facility membership",
+        "golf club front desk"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "membership",
+        "booking",
+        "lead",
+        "tee time"
+      ],
+      "alert_phrases": [
+        "sports academy missed calls",
+        "training facility answering service",
+        "golf club tee time booking",
+        "sports academy membership follow up",
+        "fitness facility front desk overwhelmed",
+        "sports facility virtual receptionist",
+        "training academy lead follow up",
+        "golf club member calls",
+        "sports facility too many inquiries",
+        "sports facility AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Funeral Homes",
+      "youtube_queries": [
+        "funeral home missed calls",
+        "funeral home after hours calls",
+        "funeral home answering service"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "after hours",
+        "intake",
+        "arrangement",
+        "follow up"
+      ],
+      "alert_phrases": [
+        "funeral home missed calls",
+        "funeral home answering service",
+        "funeral home after hours calls",
+        "funeral home arrangement intake",
+        "funeral home overwhelmed",
+        "funeral home virtual receptionist",
+        "funeral home pre-need follow up",
+        "funeral home 24/7 answering",
+        "funeral home call handling",
+        "funeral home AI"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Caregiving",
+      "youtube_queries": [
+        "caring for aging parents overwhelmed",
+        "how to manage elderly parent care",
+        "caregiver burnout aging parent"
+      ],
+      "keywords": [
+        "overwhelmed",
+        "burnout",
+        "can't keep up",
+        "mom",
+        "dad",
+        "appointments",
+        "medicare",
+        "help"
+      ],
+      "alert_phrases": [
+        "caring for aging parent overwhelmed",
+        "how to care for elderly parent",
+        "aging parent cant live alone",
+        "navigating medicare for parent",
+        "caregiver burnout",
+        "managing parents medical appointments",
+        "elderly parent care help",
+        "sandwich generation caregiver",
+        "long distance caregiving parent",
+        "aging parent AI"
+      ],
+      "bluesky_queries": [
+        "caring for aging parent",
+        "caregiver burnout"
+      ],
+      "mastodon_tags": [
+        "caregiving",
+        "caregivers"
+      ],
+      "rss_feeds": []
+    },
+    {
+      "vertical": "Porta Potty & Portable Sanitation",
+      "youtube_queries": [
+        "porta potty rental business missed calls",
+        "portable toilet rental business grow",
+        "porta potty business overwhelmed"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "rental",
+        "quote",
+        "route",
+        "delivery",
+        "event",
+        "construction",
+        "can't keep up",
+        "booked"
+      ],
+      "alert_phrases": [
+        "porta potty rental missed calls",
+        "portable toilet rental answering service",
+        "porta potty business overwhelmed",
+        "portable sanitation too many calls",
+        "porta potty rental leads",
+        "portable restroom rental software",
+        "porta potty rental after hours calls",
+        "portable toilet business booked solid",
+        "porta potty rental virtual receptionist",
+        "porta potty rental AI"
+      ]
+    },
+    {
+      "vertical": "Waste Hauling & Junk Removal",
+      "youtube_queries": [
+        "junk removal business missed calls",
+        "dumpster rental business grow",
+        "waste hauling business overwhelmed"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "junk removal",
+        "dumpster",
+        "roll off",
+        "hauling",
+        "quote",
+        "route",
+        "can't keep up",
+        "booked"
+      ],
+      "alert_phrases": [
+        "junk removal missed calls",
+        "junk removal answering service",
+        "dumpster rental missed calls",
+        "dumpster rental answering service",
+        "roll off dumpster rental leads",
+        "waste hauling business overwhelmed",
+        "junk removal too many leads",
+        "junk removal after hours calls",
+        "dumpster rental virtual receptionist",
+        "junk removal AI"
+      ]
+    },
+    {
+      "vertical": "Biohazard Cleanup",
+      "youtube_queries": [
+        "crime scene cleanup business leads",
+        "biohazard cleanup business grow",
+        "trauma cleanup business missed calls"
+      ],
+      "keywords": [
+        "missed call",
+        "voicemail",
+        "emergency",
+        "after hours",
+        "dispatch",
+        "insurance",
+        "remediation",
+        "estimate",
+        "on call"
+      ],
+      "alert_phrases": [
+        "crime scene cleanup answering service",
+        "biohazard cleanup missed calls",
+        "trauma cleanup after hours calls",
+        "biohazard remediation leads",
+        "crime scene cleanup business overwhelmed",
+        "biohazard cleanup dispatch",
+        "trauma scene cleanup answering service",
+        "biohazard cleanup 24/7 calls",
+        "crime scene cleanup virtual receptionist",
+        "biohazard cleanup AI"
+      ]
+    }
+  ]
+}

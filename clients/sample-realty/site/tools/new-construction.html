@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The New-Construction Buyer's Guide — Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  img{display:block;max-width:100%}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  .hero{position:relative;min-height:64vh;display:flex;align-items:flex-end;background:var(--ink)}
+  .hero .bg{position:absolute;inset:0;background:url("../assets/listings/2275-whitebark-drive/photo-0.jpg") center 45%/cover no-repeat}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,24,.92) 0%,rgba(19,19,24,.3) 60%)}
+  .hero .content{position:relative;width:100%;padding:0 0 56px;color:var(--on-dark)}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  .hero h1{font-family:Didot,Georgia,serif;font-size:clamp(34px,4.6vw,56px);font-weight:400;line-height:1.1;margin-top:14px;max-width:22ch}
+  .hero h1 em{font-style:italic}
+  .hero .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:52ch}
+
+  section{padding:90px 0}
+  section.alt{background:var(--warm)}
+  h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3.2vw,40px);font-weight:400;line-height:1.15;margin-top:12px}
+  h2 em{font-style:italic;color:var(--red)}
+  .lede2{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;line-height:1.7;color:var(--ink-2);margin-top:16px;max-width:58ch}
+  p.body{font-size:15px;color:var(--ink-2);margin-top:14px;max-width:66ch}
+  .pull{margin-top:26px;padding-left:22px;border-left:2px solid var(--red);font-family:Didot,Georgia,serif;font-size:19px;font-style:italic;line-height:1.6;max-width:56ch}
+
+  .stages{margin-top:50px;display:grid;gap:64px}
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+  @media(max-width:860px){.stage{grid-template-columns:1fr}}
+  .stage:nth-child(even) .ph{order:2}
+  @media(max-width:860px){.stage:nth-child(even) .ph{order:0}}
+  .stage .ph{position:relative;overflow:hidden}
+  .stage .ph img{width:100%;height:360px;object-fit:cover}
+  .stage .ph:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(19,19,24,.18)}
+  .stage .ph .cap{position:absolute;left:16px;bottom:12px;color:var(--on-dark);font-family:Didot,Georgia,serif;font-size:13px;font-style:italic;text-shadow:0 1px 8px rgba(0,0,0,.65)}
+  .stage .n{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);font-size:15px}
+  .stage h3{font-family:Didot,Georgia,serif;font-size:26px;font-weight:400;margin-top:6px}
+  .stage p{font-size:14.5px;color:var(--ink-2);margin-top:10px;line-height:1.75;max-width:56ch}
+
+  .traps .list{margin-top:36px;border-top:1px solid var(--line)}
+  .trap{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .trap i{font-family:Didot,Georgia,serif;font-style:italic;color:var(--red);min-width:26px}
+  .trap div b{font-family:Didot,Georgia,serif;font-weight:400;font-size:17.5px;display:block}
+  .trap div p{font-size:13.5px;color:var(--ink-soft);margin-top:4px;line-height:1.7;max-width:74ch}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:78px 0}
+  .ctaband h2{color:inherit}
+  .ctaband p{font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:54ch;margin-left:auto;margin-right:auto}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:26px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · photos from our own construction walks at 2275 Whitebark Drive</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../results.html">Results</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="bg"></div>
+  <div class="scrim"></div>
+  <div class="content"><div class="wrap">
+    <div class="kicker">The New-Construction Buyer's Guide</div>
+    <h1>The builder has an agent. <em>You should too.</em></h1>
+    <div class="lede">Everything on this page is illustrated with photos from our own construction walks on a $1,003,225 Toll Brothers build we're representing right now.</div>
+  </div></div>
+</header>
+
+<section class="traps">
+  <div class="wrap">
+    <div class="kicker">Before You Visit a Model Home</div>
+    <h2>Five things builders won't <em>tell you.</em></h2>
+    <div class="list">
+      <div class="trap"><i>i.</i><div><b>The on-site agent works for the builder</b><p>They're professional and helpful — and contractually loyal to the seller. Register your own agent on the <em>first</em> visit; walk in alone and many builders will refuse to let representation join later.</p></div></div>
+      <div class="trap"><i>ii.</i><div><b>Your representation typically doesn't raise the price</b><p>Builder pricing is set by the community's comp sheet, not by whether you brought an agent. You get a negotiator and an inspector-of-record at the table.</p></div></div>
+      <div class="trap"><i>iii.</i><div><b>The base price is the beginning of the conversation</b><p>Lot premiums, structural options, design-studio selections, and incentive packages (rate buydowns, closing-cost credits tied to the builder's lender) are all negotiable levers — some more than others, community by community.</p></div></div>
+      <div class="trap"><i>iv.</i><div><b>The builder's contract is not the standard state contract</b><p>Builder agreements are written by the builder's attorneys and favor the builder — deadlines, deposits, delay remedies, and warranty terms all deserve a careful read before signing.</p></div></div>
+      <div class="trap"><i>v.</i><div><b>New doesn't mean inspected</b><p>Municipal inspections check code minimums, not quality. An independent pre-drywall inspection and a final inspection routinely pay for themselves — and the builder's own punch-list standard only helps if someone holds them to it.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="kicker">How We Walk a Build</div>
+    <h2>From dirt to keys, <em>watched every step.</em></h2>
+    <div class="lede2">These photos are from our visits to 2275 Whitebark Drive #148 — a Toll Brothers "William Elite" in Indian Land we're representing on the buyer side.</div>
+    <div class="stages">
+      <div class="stage">
+        <div class="ph"><img src="../assets/listings/2275-whitebark-drive/photo-0.jpg" alt="Whitebark exterior during construction with SOLD sign"/><div class="cap">Home site 148 — sold, framing through finish</div></div>
+        <div>
+          <div class="n">Stage i.</div>
+          <h3>Contract &amp; selections</h3>
+          <p>Before the first nail: structural options locked, design-studio budget set with resale in mind, contract terms and timeline protections reviewed line by line. The decisions made this month are the ones you can't change later.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="ph"><img src="../assets/listings/2275-whitebark-drive/photo-4.jpg" alt="Staircase with iron balusters during construction"/><div class="cap">Millwork &amp; stair rail going in — details checked against selections</div></div>
+        <div>
+          <div class="n">Stage ii.</div>
+          <h3>The walks</h3>
+          <p>Pre-drywall is the one chance to see what the walls will hide — framing, wiring runs, plumbing, HVAC. Then we keep showing up: each visit checks progress against the selection sheet, because "close enough" isn't a standard we accept on your behalf.</p>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="ph"><img src="../assets/listings/2275-whitebark-drive/photo-1.jpg" alt="Kitchen during construction — island and cabinetry set"/><div class="cap">Cabinetry, counters &amp; island set — punch-list season begins</div></div>
+        <div>
+          <div class="n">Stage iii.</div>
+          <h3>Punch list, final walk, keys</h3>
+          <p>An independent inspection, a full punch-list pass, and a final walkthrough where every item gets a checkmark or a commitment in writing — before you close, while the leverage is still yours. Then the good part: keys.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pull">"The builder builds hundreds of homes a year. You're buying one. Our job is making sure yours gets built like it's the only one."</div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">Touring Models This Weekend?</div>
+    <h2>Take us with you — it costs the builder's price <em>either way.</em></h2>
+    <p>New communities are opening across Union County, Indian Land, and Fort Mill right now. Register us as your agent on the first visit and everything on this page is handled.</p>
+    <a href="../index.html#contact">Talk before you tour</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine">Sample Realty Home &amp; Land, LLC · Licensed in ST &amp; SC · Buyer representation on new construction, contract to keys</div>
+  </div>
+</footer>
+
+</body>
+</html>

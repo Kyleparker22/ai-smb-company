@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{TITLE}}</title>
+<style>
+  /* tokens verbatim per brand/DESIGN.md §1 */
+  :root{
+    --indigo:#161B33;--indigo-deep:#0F1226;--indigo-2:#1c2240;
+    --cream:#F4EFE6;--cream-2:#E8E1D3;--parchment:#EAE1CD;
+    --brass:#B8965A;--brass-bright:#D4B27A;--oxblood:#6B1E29;
+    /* --ink was USED twice and never defined (fixed 2026-08-24). An undefined var() with no
+       fallback makes the declaration invalid at computed-value time, so `color` fell back to
+       INHERIT — which meant `.staged strong` inherited the muted colour from `.staged` and
+       rendered emphasis at the same weight as the text it was meant to stand out from.
+       Defined as var(--indigo) rather than a new hex: --ink-muted is rgba(22,27,51,.62),
+       i.e. --indigo at 62%, so the solid partner IS --indigo. brand/DESIGN.md stays the
+       source of truth and no fourth value for 'dark text' enters the repo. */
+    --pewter:#6E7180;--ink-muted:rgba(22,27,51,.62);--ink:var(--indigo);
+    --on-dark:#F4EFE6;--on-dark-muted:rgba(244,239,230,.66);
+    --hairline:rgba(22,27,51,.12);--hairline-dark:rgba(244,239,230,.16);
+  }
+  /* ===== v4 shell: a rail, five rooms, and three weights of section =====================
+     WHY (2026-08-13): the console had grown to 16 full-bleed tiles and ~87,000px of scroll —
+     about 100 laptop screens — every one of them the same shape (brass tick → heading → lede →
+     card → fine print), at the same width, with 34 blocks of grey caveat text. the Founder read it as
+     "a lot of blocks with the same colors," and the cause was rhythm, not palette: nothing on
+     the page was heavier than anything else, so recolouring would only have produced a more
+     colourful 100-screen scroll.
+     The rail is lifted from crm/index.html, which solved this exact problem and left the note
+     "these were all one grey pill before, which is why three different screens read as one."
+     Sections now carry a ROOM (which of five views they belong to) and a WEIGHT:
+       .tile.head  — the one figure that matters in a room. Dark panel, big brass numeral.
+       .tile       — a working surface. Card on cream.
+       .tile.quiet — reference. No panel at all, hairline-separated, recedes.
+     Brass is scarce again: the tick survives only on `.tile.head` and the active rail item. */
+  .shell{max-width:1320px;margin:0 auto;padding:0 28px;display:grid;
+    grid-template-columns:216px minmax(0,1fr);gap:40px;align-items:start}
+  .rail{position:sticky;top:22px;padding:26px 0 40px}
+  .rail-lbl{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-muted);padding:0 12px 9px}
+  .rail-nav{display:flex;flex-direction:column;gap:1px}
+  .rnav{appearance:none;background:none;border:none;font:inherit;cursor:pointer;text-align:left;
+    display:flex;align-items:center;gap:10px;color:var(--ink-muted);font-size:13.5px;font-weight:500;
+    padding:9px 12px;border-radius:9px;border-left:2px solid transparent;width:100%}
+  .rnav:hover{background:rgba(22,27,51,.045);color:var(--indigo)}
+  .rnav.active{background:#FFFDF8;color:var(--indigo);font-weight:600;border-left-color:var(--brass);
+    box-shadow:0 1px 2px rgba(22,27,51,.06)}
+  .rnav .n{font-size:11px;font-weight:600;color:var(--brass);min-width:12px;font-variant-numeric:tabular-nums}
+  .rnav .ct{margin-left:auto;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;
+    color:var(--ink-muted)}
+  .rnav.active .ct{color:var(--brass)}
+  /* A count that means "something is waiting on you" must not look like a total. */
+  .rnav .ct.due{color:var(--oxblood);font-weight:700}
+  .rnav.active .ct.due{color:var(--oxblood)}
+  .room{display:none}
+  .room.on{display:block}
+  .main{min-width:0;padding:26px 0 60px}
+
+  /* ---- section weights ---------------------------------------------------------------- */
+  .tile{margin:0 0 22px;background:#FFFDF8;border:1px solid var(--hairline);border-radius:14px;
+    padding:34px 36px}
+  .tile > .wrap{max-width:none;padding:0}
+  .tile.head{background:var(--indigo);border-color:transparent;color:var(--on-dark);padding:40px 36px}
+  /* ONE place for on-dark colour, covering the whole utility family.
+     This bug was fixed three separate times in one day — .totalbox rendered cream-on-cream, .staged
+     washed out on a light tile, and .muted went dark-on-dark inside a table, each time hiding the
+     exact sentence that says a number is NOT real. The cause was always the same: a utility class
+     written for one surface being reused on the other. Adding a new muted/quiet class means adding
+     it to this block, not patching the section that first exposed it. */
+  .tile.head h2,.tile.head h3,.tile.head h4,.tile.head strong,.tile.head th{color:var(--on-dark)}
+  .tile.head,.tile.head p,.tile.head .lede,.tile.head td,.tile.head li{color:var(--on-dark-muted)}
+  .tile.head .muted,.tile.head .sub,.tile.head .fine,.tile.head .barnote,
+  .tile.head .math,.tile.head .s-name{color:var(--on-dark-muted)}
+  /* Round 4 of the same bug, found by measuring rather than by eye: `.step` (the A0/A1/A2 keys) and
+     `.editrow label` ("What we plan to send") both compute to rgb(22,27,51) on an rgb(22,27,51)
+     tile — identical values, so the text was not dim, it was gone. The A0/A1/A2 ladder on the
+     approval gate had no visible rung labels at all. */
+  .tile.head .step{color:var(--on-dark-muted);border-top-color:var(--hairline-dark)}
+  .tile.head .step.on{color:var(--on-dark);border-top-color:var(--brass)}
+  .tile.head .editrow label,.tile.head .kv .k,.tile.head .flabel{color:var(--on-dark-muted)}
+  .tile.head .editrow{border-top-color:var(--hairline-dark)}
+  .tile.head .kv .v{color:var(--on-dark)}
+  .tile.head .lede strong,.tile.head p strong,.tile.head .fine strong{color:var(--on-dark)}
+  .tile.head td,.tile.head th{border-bottom-color:var(--hairline-dark)}
+  .tile.head .card,.tile.head .rec,.tile.head .empty{background:rgba(255,255,255,.05);
+    border-color:var(--hairline-dark)}
+  .tile.head .bar{background:var(--hairline-dark)}
+  .tile.head .tag{border-color:var(--hairline-dark);color:var(--on-dark-muted)}
+  .tile.quiet{background:none;border:none;border-top:1px solid var(--hairline);border-radius:0;
+    padding:28px 0 6px;margin-bottom:14px}
+  .tile.parchment{background:#F7F2E6}
+  @media(max-width:900px){
+    .shell{grid-template-columns:minmax(0,1fr);gap:0;padding:0 18px}
+    .rail{position:static;padding:14px 0 6px}
+    .rail-lbl{display:none}
+    .rail-nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:8px}
+    .rnav{border-left:none;border-bottom:2px solid transparent;white-space:nowrap;width:auto;padding:8px 11px}
+    .rnav.active{border-left-color:transparent;border-bottom-color:var(--brass);box-shadow:none;background:none}
+    .tile{padding:26px 20px}
+  }
+
+  /* ---- the figure: money reads at a glance, not as body copy (DESIGN.md §4.10) --------- */
+  /* 175px is the floor a $300.00 at the largest numeral size actually needs; below it the
+     figure clipped mid-number on tablet ('$300.0('). The numeral is fluid as well, so the
+     column can narrow without the digits ever being cut. */
+  .figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:1px;
+    background:var(--hairline-dark);border-radius:12px;overflow:hidden;margin-top:26px}
+  .figure{background:var(--indigo);padding:22px 24px}
+  .figure .lbl{font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--on-dark-muted)}
+  .figure .val{font-family:Fraunces,Georgia,"Times New Roman",serif;
+    font-size:clamp(27px,3.6vw,38px);line-height:1.05;white-space:nowrap;
+    font-weight:600;letter-spacing:-.02em;color:var(--brass);margin-top:9px;font-variant-numeric:tabular-nums}
+  .figure .val.sm{font-size:clamp(21px,2.6vw,26px)}
+  /* A refusal must never look like a number. It is set in the body face, muted, and smaller —
+     "No figure" should read as a sentence, not as a total. */
+  .figure .val.none{font-family:inherit;font-size:18px;font-weight:600;white-space:normal;color:var(--on-dark-muted);
+    letter-spacing:-.01em}
+  .figure .sub{font-size:12.5px;color:var(--on-dark-muted);margin-top:7px;line-height:1.45}
+  .figure.act .val{color:var(--brass-bright)}
+  /* 4 figures in a 3-up grid leaves a dead cell on tablet; 2x2 is the only clean shape there. */
+  @media(min-width:620px) and (max-width:900px){.figures{grid-template-columns:1fr 1fr}}
+  .tile:not(.head) .figures{background:var(--hairline)}
+  .tile:not(.head) .figure{background:#FBF7EC}
+  .tile:not(.head) .figure .lbl,.tile:not(.head) .figure .sub{color:var(--ink-muted)}
+
+  /* ---- the one to-do list on the page -------------------------------------------------- */
+  .todo{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:1px}
+  .todo li{border-top:1px solid var(--hairline-dark)}
+  .todo li:last-child{border-bottom:1px solid var(--hairline-dark)}
+  .lnk{appearance:none;background:none;border:none;font:inherit;cursor:pointer;text-align:left;
+    width:100%;padding:13px 4px;color:var(--on-dark-muted);font-size:14.5px;display:flex;
+    flex-wrap:wrap;gap:0 8px;align-items:baseline}
+  .lnk strong{color:var(--on-dark);font-weight:600}
+  .lnk:hover{color:var(--on-dark)}
+  .lnk::after{content:"→";margin-left:auto;color:var(--brass);font-size:15px}
+  .tile:not(.head) .todo li{border-color:var(--hairline)}
+  .tile:not(.head) .lnk{color:var(--ink-muted)}
+  .tile:not(.head) .lnk strong{color:var(--indigo)}
+
+  /* The footer is not a section — it must not inherit the card chrome the tiles now carry. */
+  .tile.foot{background:none;border:none;border-radius:0;padding:34px 0 60px;max-width:1320px;
+    margin:0 auto}
+  .tile.foot .wrap{padding:0 28px}
+
+  /* ---- disclosures: the honesty stays, and stops shouting ------------------------------ */
+  details.why{margin-top:16px;border-top:1px solid var(--hairline);padding-top:12px}
+  .tile.head details.why{border-top-color:var(--hairline-dark)}
+  /* Measured at 2.6:1 by runtime/pixel_contrast.py — below the 4.5:1 body-text bar, on the control
+     that OPENS the honesty text. A disclosure nobody notices is a disclosure that isn't made. */
+  details.why > summary{cursor:pointer;list-style:none;font-size:12.5px;font-weight:600;
+    letter-spacing:.02em;color:rgba(22,27,51,.86);display:flex;align-items:center;gap:7px}
+  .tile.head details.why > summary{color:var(--on-dark-muted)}
+  details.why > summary::-webkit-details-marker{display:none}
+  details.why > summary::before{content:"+";font-weight:600;color:var(--brass);font-size:14px;line-height:1}
+  details.why[open] > summary::before{content:"–"}
+  details.why > summary:hover{color:var(--indigo)}
+  .tile.head details.why > summary:hover{color:var(--on-dark)}
+  details.why .fine{border-top:0;padding-top:10px;margin-top:0}
+  details.why .fine + .fine{margin-top:9px}
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--indigo);
+    font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.55;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .tile{padding:64px 0}
+  .tile.dark{background:var(--indigo);color:var(--on-dark)}
+  .tile.parchment{background:var(--parchment)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  .mark{font-size:19px;font-weight:600;text-decoration:none;color:inherit}
+  .mark .dot{color:var(--brass)}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
+  h1{font-size:clamp(32px,5vw,46px);line-height:1.08;font-weight:600;letter-spacing:-.03em}
+  h2{font-size:clamp(22px,3.2vw,30px);font-weight:600;letter-spacing:-.02em}
+  h3{font-size:17px;font-weight:600}
+  p.lede{font-size:18px;color:var(--ink-muted);margin-top:14px;max-width:62ch}
+  .tile.dark p.lede{color:var(--on-dark-muted)}
+  .muted{color:var(--ink-muted)}
+  .tile.dark .muted{color:var(--on-dark-muted)}
+  .tick{width:70px;height:6px;background:var(--brass);margin-bottom:18px}
+  .staged{border:1px solid var(--hairline-dark);border-left:3px solid var(--brass);
+    padding:14px 18px;margin-top:30px;font-size:14px;color:var(--on-dark-muted);max-width:76ch}
+  .staged strong{color:var(--on-dark)}
+  /* `.staged` was written for the dark hero and its on-dark colours washed out to near-invisible
+     when v3.1 put a staged notice on a light tile — on the one sentence that says a figure is NOT
+     payable (caught on screen 2026-08-13). Light tiles get ink; dark keeps the original. */
+  .tile.parchment .staged,.tile:not(.dark) .staged{color:var(--ink-muted);background:rgba(0,0,0,.03)}
+  .tile.parchment .staged strong,.tile:not(.dark) .staged strong{color:var(--ink)}
+  .rung-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;margin-top:6px}
+  .rung-key{font-size:44px;font-weight:600;letter-spacing:-.03em;color:var(--brass);line-height:1}
+  .rung-name{font-size:24px;font-weight:600}
+  .ladder{display:flex;gap:6px;margin-top:26px;flex-wrap:wrap}
+  .step{flex:1 1 90px;min-width:90px;border-top:3px solid var(--hairline);padding-top:9px;
+    font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+  .step.on{border-top-color:var(--brass);color:var(--indigo)}
+  .step .s-name{display:block;text-transform:none;letter-spacing:normal;font-weight:400;
+    font-size:13px;color:var(--ink-muted);margin-top:2px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:32px}
+  @media(max-width:760px){.cols{grid-template-columns:1fr}}
+  .card{background:#FBF8F1;border:1px solid var(--hairline);border-radius:8px;padding:22px 24px}
+  .tile.parchment .card{background:#F6F0E2}
+  .card h3{margin-bottom:8px}
+  .card p,.card li{font-size:15px;color:var(--ink-muted)}
+  ul{padding-left:19px;margin-top:9px}li{margin-bottom:6px;font-size:15px}
+  .checks{list-style:none;padding:0;margin-top:12px}
+  .checks li{display:grid;grid-template-columns:22px 1fr;gap:9px;align-items:start;font-size:15px;
+    color:var(--ink-muted);margin-bottom:9px}
+  .checks .box{font-weight:600;color:var(--brass)}
+  .checks .box.off{color:var(--pewter)}
+  .bar{height:6px;background:var(--cream-2);border-radius:9999px;margin-top:16px;overflow:hidden}
+  .tile.parchment .bar{background:#DCD2BC}
+  .bar span{display:block;height:100%;background:var(--brass);border-radius:9999px}
+  .barnote{font-size:13px;color:var(--ink-muted);margin-top:8px}
+  table{width:100%;border-collapse:collapse;margin-top:22px;font-size:15px}
+  /* A table is the one thing here with a hard minimum width. It scrolls inside its own box so it
+     can never stretch the column (which is what broke the phone layout). */
+  @media(max-width:760px){
+    .tile table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+    .tile table td,.tile table th{white-space:normal;min-width:110px}
+  }
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--hairline)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+  tr.total td{border-bottom:0;border-top:2px solid var(--indigo);font-weight:600;padding-top:14px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    padding:3px 9px;border-radius:9999px;border:1px solid var(--hairline);color:var(--ink-muted)}
+  .tag.live{border-color:var(--oxblood);color:var(--oxblood)}
+  .tag.mode{border-color:var(--indigo);color:var(--indigo);margin-left:6px}
+  /* Practice (2026-08-24). A missed drill is information, not a failure state — it gets the muted
+     neutral, never a red. The oxblood `.live` already means "passed" elsewhere on this page, so
+     `solid` reuses it rather than inventing a second success colour. */
+  .tag.warn{border-color:var(--pewter);color:var(--pewter)}
+  .drill .rechead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .drillmark{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .drillmark button{font:inherit;font-size:13px;padding:7px 14px;border:1px solid var(--hairline);
+    background:transparent;color:var(--indigo);border-radius:2px;cursor:pointer}
+  .drillmark button:hover{border-color:var(--brass);color:var(--brass)}
+  .drillmark button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .rev{margin-top:12px;border-top:1px solid var(--hairline);padding-top:10px}
+  .rev summary{cursor:pointer;font-size:13px;color:var(--pewter)}
+  .rev p{margin:8px 0 0;font-size:14px;line-height:1.5}
+  /* submission bounty (v2) — table reuses the base `table` rules; these only add what is new */
+  .tbl td .sub,.rec .sub{display:block;font-size:13px;color:var(--ink-muted);margin-top:3px}
+  .totalbox{margin-top:22px;padding:18px 20px;border-left:3px solid var(--brass);background:#F6F0E2}
+  .tile.parchment .totalbox{background:#EFE7D5}
+  /* On a dark tile the text is already light, so the cream fill rendered cream-on-cream and the
+     headline figure vanished (caught on screen 2026-08-13, invisible in every text-based check).
+     Keep the brass rule, drop the light fill. */
+  .tile.dark .totalbox{background:rgba(255,255,255,.06)}
+  .totalbox .big{font-size:26px;font-weight:600;letter-spacing:-.01em;margin:0}
+  .totalbox .muted{font-size:14px;color:var(--ink-muted);margin-top:4px}
+  .req{font-weight:600;color:var(--oxblood);text-transform:none;letter-spacing:0}
+  .editrow select{width:100%;margin-top:6px;padding:9px 11px;border:1px solid var(--hairline-dark);
+    border-radius:6px;background:#FFF;font:inherit;font-size:15px;color:var(--ink)}
+  .mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .math{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;
+    color:var(--ink-muted)}
+  .gated{border:1px dashed var(--brass);border-radius:8px;padding:22px 24px;margin-top:30px;background:transparent}
+  .gated .flag{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--brass)}
+  .gated h3{margin-top:8px}
+  .gated p,.gated li{font-size:15px;color:var(--ink-muted)}
+  .timeline{margin-top:26px;border-left:1px solid var(--hairline-dark);padding-left:24px}
+  .tl{position:relative;padding:0 0 22px}
+  .tl:last-child{padding-bottom:0}
+  .tl::before{content:"";position:absolute;left:-29px;top:6px;width:9px;height:9px;border-radius:9999px;
+    background:var(--brass)}
+  .tl .when{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--on-dark-muted)}
+  .tl .what{font-size:16px;font-weight:600;margin-top:3px}
+  .tl .detail{font-size:14px;color:var(--on-dark-muted);margin-top:3px}
+  .tl .ref{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;
+    color:var(--on-dark-muted);opacity:.7;margin-top:4px}
+  .empty{border:1px solid var(--hairline);border-radius:8px;padding:26px;margin-top:22px}
+  .tile.dark .empty{border-color:var(--hairline-dark)}
+  .empty h3{margin-bottom:8px}
+  .empty p{font-size:15px;color:var(--ink-muted);max-width:64ch}
+  .tile.dark .empty p{color:var(--on-dark-muted)}
+  .fine{font-size:13px;color:var(--ink-muted);line-height:1.65;border-top:1px solid var(--hairline);
+    padding-top:20px;margin-top:8px;max-width:78ch}
+  .foot{padding:40px 0 60px}
+  /* ---- v2: working records, goals, reporting, downline ---- */
+  h4{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);
+    margin-top:20px}
+  .recs,.dls{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+  @media(max-width:860px){.recs,.dls{grid-template-columns:1fr}}
+  .rec,.dl{background:#FBF8F1;border:1px solid var(--hairline);border-radius:8px;padding:20px 22px}
+  .tile.parchment .rec,.tile.parchment .dl{background:#F6F0E2}
+  .rechead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .kvs{margin-top:12px}
+  .kv{display:flex;justify-content:space-between;gap:14px;font-size:14px;padding:5px 0;
+    border-bottom:1px solid var(--hairline)}
+  .kv:last-child{border-bottom:0}
+  .kv .k{color:var(--ink-muted)}
+  .kv .v{font-variant-numeric:tabular-nums;text-align:right}
+  .editrow{margin-top:14px;border-top:1px solid var(--hairline);padding-top:14px}
+  .editrow label{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px}
+  input,textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:14.5px;
+    letter-spacing:normal;text-transform:none;font-weight:400;color:var(--indigo);
+    background:var(--cream);border:1px solid var(--hairline);border-radius:6px;padding:9px 11px}
+  textarea{resize:vertical}
+  input:focus,textarea:focus{outline:2px solid var(--brass);outline-offset:-1px}
+  .saveline{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .btn{font:inherit;font-size:14px;font-weight:600;color:var(--on-dark);background:var(--indigo);
+    border:0;border-radius:6px;padding:9px 18px;cursor:pointer}
+  .btn:disabled{opacity:.5;cursor:default}
+  .status{font-size:13px;color:var(--ink-muted)}
+  .status.ok{color:var(--indigo)}
+  .status.err{color:var(--oxblood)}
+  .goalgrid{margin-top:20px}
+  .grow{display:grid;grid-template-columns:1.4fr .8fr 1fr 1.2fr 1.6fr;gap:14px;align-items:center;
+    padding:11px 0;border-bottom:1px solid var(--hairline);font-size:14.5px}
+  @media(max-width:860px){.grow{grid-template-columns:1fr 1fr;gap:8px}.grow .gpb{display:none}
+    .grow.ghead{display:none}}   /* a 5-column header makes no sense once the row stacks */
+  .grow.ghead{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);
+    font-weight:600}
+  .grow .gc{font-variant-numeric:tabular-nums;font-weight:600}
+  .grow .gt input{margin-top:0;padding:6px 9px;font-size:14px}
+  .gpb{height:5px;background:var(--cream-2);border-radius:9999px;overflow:hidden}
+  .tile.parchment .gpb{background:#DCD2BC}
+  .gpb i{display:block;height:100%;background:var(--brass)}
+  .gpb.unset{opacity:.4}
+  .gpace{font-size:12.5px;color:var(--ink-muted)}
+  .gpace.ahead{color:var(--indigo)}
+  .gpace.behind{color:var(--oxblood)}
+  .months,.funnel{margin-top:12px}
+  .mrow,.frow{display:grid;grid-template-columns:1fr 2fr 1.4fr;gap:12px;align-items:center;
+    font-size:13.5px;padding:6px 0}
+  .mrow .mb,.frow .fb{height:6px;background:var(--cream-2);border-radius:9999px;overflow:hidden}
+  .tile.parchment .mrow .mb,.tile.parchment .frow .fb{background:#DCD2BC}
+  .mrow .mb i,.frow .fb i{display:block;height:100%;background:var(--brass)}
+  .mrow .mv,.frow .fv{text-align:right;color:var(--ink-muted);font-variant-numeric:tabular-nums}
+  .frow .fl{font-weight:600}
+  .pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  .pill{font-size:12px;padding:4px 10px;border-radius:9999px;border:1px solid var(--hairline);
+    color:var(--ink-muted)}
+  /* learnings + resources */
+  .badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  details{margin-top:14px;border-top:1px solid var(--hairline);padding-top:12px}
+  summary{cursor:pointer;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--brass)}
+  summary::marker{color:var(--brass)}
+  .lesson{margin-top:14px}
+  .lesson h3,.lesson h4{margin-top:18px;margin-bottom:6px}
+  .lesson h3{font-size:16px;text-transform:none;letter-spacing:-.01em;color:var(--indigo)}
+  .lesson p,.lesson li{font-size:15px;color:var(--ink-muted)}
+  .lesson p{margin-top:9px}
+  .lesson ol{padding-left:19px;margin-top:9px}
+  .lesson blockquote{border-left:3px solid var(--brass);padding:6px 0 6px 16px;margin-top:12px;
+    font-size:15px;color:var(--ink-muted)}
+  @media(prefers-reduced-motion:no-preference){
+    .reveal{opacity:0;transform:translateY(18px);
+      transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    .reveal.in{opacity:1;transform:none}
+  }
+  @media print{
+    @page{margin:0;size:letter}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .tile{padding:40px 0}.reveal{opacity:1;transform:none}
+    .card,table,.gated,.tl{break-inside:avoid;page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+{{BODY}}
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'-80px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

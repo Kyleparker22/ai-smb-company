@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NC vs SC — Same Budget, Both Sides of the Line · Sample Realty Home &amp; Land, LLC</title>
+<style>
+  :root{
+    --red:#EF0004; --ink:#131318; --ink-2:#20202a; --ink-soft:rgba(19,19,24,.6);
+    --paper:#FCFBF8; --warm:#F2EFE9; --line:rgba(19,19,24,.15);
+    --on-dark:#F7F5F0; --on-dark-soft:rgba(247,245,240,.66); --line-dark:rgba(247,245,240,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hoefler Text",Baskerville,Georgia,serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px}
+  .ribbon{background:var(--red);color:#fff;font-family:"Avenir Next",Avenir,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 14px}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(252,251,248,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  nav .mark{font-family:Didot,Georgia,serif;font-size:21px;text-decoration:none;color:var(--ink)}
+  nav .mark i{font-style:normal;color:var(--red)}
+  nav .mark span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-left:12px;vertical-align:2px}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{font-family:"Avenir Next",Avenir,sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none}
+  nav .links a:hover{color:var(--red)}
+
+  header.page{background:var(--ink);color:var(--on-dark);padding:76px 0 64px}
+  .kicker{font-family:"Avenir Next",Avenir,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--red)}
+  header.page h1{font-family:Didot,Georgia,serif;font-size:clamp(32px,4.2vw,50px);font-weight:400;line-height:1.12;margin-top:16px}
+  header.page h1 em{font-style:italic}
+  header.page .lede{font-family:Didot,Georgia,serif;font-size:17px;font-style:italic;color:var(--on-dark-soft);margin-top:16px;max-width:56ch}
+
+  .tool{padding:72px 0 96px}
+  .pricefield{max-width:420px}
+  .pricefield label{font-family:"Avenir Next",Avenir,sans-serif;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .pricefield input{width:100%;font-family:"Avenir Next",Avenir,sans-serif;font-size:16px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:4px}
+  .pricefield input:focus{outline:2px solid var(--red);outline-offset:-1px}
+
+  .duel{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px}
+  @media(max-width:840px){.duel{grid-template-columns:1fr}}
+  .side{border:1px solid var(--line);background:#fff}
+  .side .hd{padding:24px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+  .side .hd h2{font-family:Didot,Georgia,serif;font-size:24px;font-weight:400}
+  .side .hd h2 i{font-style:normal;color:var(--red)}
+  .side .hd span{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+  .side .rows{padding:8px 28px 24px}
+  .r{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:baseline}
+  .r:last-child{border-bottom:0}
+  .r span em{font-family:Didot,Georgia,serif;font-style:italic;color:var(--ink-soft);font-size:12px;display:block}
+  .r b{font-family:Didot,Georgia,serif;font-weight:400;font-size:16px;white-space:nowrap}
+  .r.hl b{color:var(--red)}
+  .fine{font-family:"Avenir Next",Avenir,sans-serif;font-size:9.5px;letter-spacing:.05em;color:var(--ink-soft);margin-top:22px;line-height:1.9;max-width:88ch}
+
+  section.notes{background:var(--warm);padding:88px 0}
+  section.notes h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;margin-top:12px}
+  section.notes h2 em{font-style:italic;color:var(--red)}
+  .faq{margin-top:34px;border-top:1px solid var(--line)}
+  details{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:19px 0;font-family:Didot,Georgia,serif;font-size:18.5px}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"+";font-family:Didot,Georgia,serif;color:var(--red);font-size:22px;flex:0 0 auto}
+  details[open] summary:after{content:"−"}
+  details .a{padding:0 0 20px;font-size:14.5px;color:var(--ink-2);max-width:74ch}
+  details .a p+p{margin-top:10px}
+
+  .ctaband{background:#0d0d11;color:var(--on-dark);text-align:center;padding:78px 0}
+  .ctaband h2{font-family:Didot,Georgia,serif;font-size:clamp(26px,3vw,38px);font-weight:400;margin-top:12px}
+  .ctaband h2 em{font-style:italic;color:var(--red)}
+  .ctaband p{font-family:Didot,Georgia,serif;font-size:15px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:52ch;margin-left:auto;margin-right:auto}
+  .ctaband a{display:inline-block;font-family:"Avenir Next",Avenir,sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;text-decoration:none;padding:15px 32px;border-radius:9999px;margin-top:26px}
+  .ctaband a:hover{background:#c70004}
+
+  footer{background:#0d0d11;color:var(--on-dark);padding:44px 0;text-align:center;border-top:1px solid var(--line-dark)}
+  footer .monogram{font-family:Didot,Georgia,serif;font-size:30px}
+  footer .monogram i{font-style:normal;color:var(--red)}
+  footer .fine2{font-family:Didot,Georgia,serif;font-size:11.5px;font-style:italic;color:var(--on-dark-soft);margin-top:14px;max-width:80ch;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept redesign — internal demo · planning estimates, verify current rates before deciding</div>
+
+<nav>
+  <div class="wrap bar">
+    <a class="mark" href="../index.html">P<i>·</i>R<span>Sample Realty Home &amp; Land</span></a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../listings/">Listings</a>
+      <a href="../neighborhoods.html">Neighborhoods</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="wrap">
+    <div class="kicker">The Border Question</div>
+    <h1>Same budget, <em>both sides of the line.</em></h1>
+    <div class="lede">Yourtown's market straddles two states — and the same money lives differently in Yourtown than it does in Fort Mill. One broker, licensed in both Carolinas, can show you the whole picture. Here it is.</div>
+  </div>
+</header>
+
+<div class="wrap tool">
+  <div class="pricefield">
+    <label for="bprice">Your budget</label>
+    <input id="bprice" type="text" inputmode="numeric" value="500,000"/>
+  </div>
+
+  <div class="duel">
+    <div class="side">
+      <div class="hd"><h2>North <i>Carolina</i></h2><span>Yourtown · Marvin · Ballantyne · Yourtown</span></div>
+      <div class="rows" id="ncRows"></div>
+    </div>
+    <div class="side">
+      <div class="hd"><h2>South <i>Carolina</i></h2><span>Fort Mill · Indian Land · Tega Cay</span></div>
+      <div class="rows" id="scRows"></div>
+    </div>
+  </div>
+  <div class="fine">Estimates for orientation only, using typical effective rates for Mecklenburg/Union County ST and Lancaster/York County SC on an owner-occupied primary residence (2026): property tax ≈0.85%/yr ST vs ≈0.55%/yr SC (SC's 4% legal-residence assessment); transfer at sale $1 per $500 ST vs $1.85 per $500 SC; income tax ST ≈4.25% flat vs SC graduated to ≈6.2% (effective often lower). Actual bills vary by county, municipality, exemptions, and year — we'll run your exact scenario.</div>
+</div>
+
+<section class="notes">
+  <div class="wrap">
+    <div class="kicker">What the Numbers Don't Show</div>
+    <h2>The rest of the border <em>math.</em></h2>
+    <div class="faq">
+      <details open>
+        <summary>Why are SC property taxes so much lower?</summary>
+        <div class="a"><p>South Carolina assesses owner-occupied primary residences at just 4% of value with school-operating taxes largely exempt — that's why Indian Land and Fort Mill bills often run roughly half of a comparable Mecklenburg County bill. Careful though: <b>second homes and rentals are assessed at 6%</b> and lose the exemption, which can triple the bill. Investors, do this math before you cross the line.</p></div>
+      </details>
+      <details>
+        <summary>What about vehicle and income taxes?</summary>
+        <div class="a"><p>Both states tax vehicles annually and both tax income — ST at a flat ~4.25%, SC on a graduated scale that tops out near 6.2% but with brackets and deductions that often land the effective rate below ST's for many households. Retirees: SC's retirement-income deductions and homestead exemption at 65 are a genuine draw. Your CPA gets the final word; we'll flag what to ask them.</p></div>
+      </details>
+      <details>
+        <summary>And the schools?</summary>
+        <div class="a"><p>Both sides have standouts: Marvin Ridge, Cuthbertson, and Ardrey Kell feed some of the strongest results in the Carolinas on the ST side; Fort Mill's district and Indian Land's fast-growing schools (10/10-rated elementary) hold their own across the line. District boundaries decide more than state lines do — we map them house by house.</p></div>
+      </details>
+      <details>
+        <summary>Commutes, airports, and the everyday</summary>
+        <div class="a"><p>Uptown Yourtownand the airport pull from both sides — Ballantyne and Blakeney sit closest, Yourtown trades minutes for acreage, and Indian Land's Highway 521 corridor has grown its own shopping, dining, and medical so "crossing the border" rarely means crossing back daily.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div class="ctaband">
+  <div class="wrap">
+    <div class="kicker">One Broker, Two States</div>
+    <h2>Most agents can only show you <em>half the map.</em></h2>
+    <p>Sample Contact is licensed in North and South Carolina — ST #202429, SC #54996 — and has closed on both sides of the line. Tell us your budget; we'll show you everything it buys.</p>
+    <a href="../index.html#contact">Start a conversation</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="monogram">P<i>·</i>R</div>
+    <div class="fine2">Not tax, legal, or lending advice — rates change and situations differ; confirm with your CPA and attorney. Sample Realty Home &amp; Land, LLC.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const num = el => parseFloat(String(el.value).replace(/[^0-9.]/g, "")) || 0;
+  const fmt = n => "$" + Math.round(n).toLocaleString("en-US");
+  const row = (label, note, val, hl) =>
+    '<div class="r' + (hl ? ' hl' : '') + '"><span>' + label +
+    (note ? '<em>' + note + '</em>' : '') + '</span><b>' + val + '</b></div>';
+
+  function calc(){
+    const p = num($("bprice"));
+    const ncTax = p * 0.0085, scTax = p * 0.0055;
+    const ncXfer = p / 500 * 1, scXfer = p / 500 * 1.85;
+    $("ncRows").innerHTML =
+      row("Property tax / year", "≈0.85% effective, primary residence", fmt(ncTax)) +
+      row("Property tax / month", "inside your payment", fmt(ncTax/12)) +
+      row("Transfer tax when you sell", "$1 per $500 (excise)", fmt(ncXfer), true) +
+      row("Income tax", "flat rate", "≈4.25%") +
+      row("Signature districts", "", "Marvin Ridge · Cuthbertson · Ardrey Kell") +
+      row("What it feels like", "", "Estate lots &amp; top districts");
+    $("scRows").innerHTML =
+      row("Property tax / year", "≈0.55% effective, primary residence", fmt(scTax)) +
+      row("Property tax / month", "inside your payment", fmt(scTax/12)) +
+      row("Transfer tax when you sell", "$1.85 per $500 (deed fee)", fmt(scXfer), true) +
+      row("Income tax", "graduated, tops ≈6.2%", "brackets apply") +
+      row("Signature districts", "", "Fort Mill · Indian Land (10/10 elem.)") +
+      row("What it feels like", "", "More house per dollar, ~" + fmt(Math.max(0,ncTax-scTax)) + "/yr tax savings");
+  }
+  $("bprice").addEventListener("input", calc);
+  calc();
+})();
+</script>
+
+</body>
+</html>

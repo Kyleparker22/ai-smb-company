@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slip OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-yard"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. A spill is logged verbatim with
+cause never asserted, yard work clocks in only on the owner's recorded authorization, storage
+stops at the recorded departure, and seaworthiness is a surveyor's word, never software's.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'yard',label:'Yard & slips'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,yard,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.slips} slips · ${d.config.dry_stack} dry stack`;
+  document.getElementById('v-board').innerHTML =
+    panel('The harbor, counted', '',
+      `<div class="grid">
+        ${stat('Open slips', fmt.num(b.open_slips), 'the waitlist arithmetic fills them', '')}
+        ${stat('Waitlist depth', fmt.num(b.waitlist_depth), 'recorded order, fit-checked — no shoebox')}
+        ${stat('Vessels in the yard', fmt.num(b.vessels_in_yard), 'storage on recorded stamps')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the spill read comes first', b.messages_open?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.workorders_started} · ${b.recovered.slips_filled} · ${b.recovered.spills_escalated}`,
+               'work orders started · slips filled · spills escalated')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">A sheen on the water gets the dockmaster NOW and a verbatim log —
+      <b>a spill entry is a USCG exhibit</b>; nothing about cause is asserted or denied.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='spill'?'bad':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function yard(){
+  const d = await API.get('/api/workorders');
+  document.getElementById('v-yard').innerHTML =
+    `<div class="banner warn">Try it: clock in on the verbal-only work order — refused; record the
+      owner's authorization and it starts. Check the splashed vessel's storage — the meter stopped
+      at the recorded departure. Offer the open slip — the fit arithmetic picks who hears first.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="start(false)">Clock in: verbal only</button>
+      <button class="act primary" onclick="start(true)">Clock in: authorization recorded</button>
+      <button class="act" onclick="storage()">Storage: splashed vessel</button>
+      <button class="act primary" onclick="offer()">Offer the open slip</button>
+     </div><div id="yout"></div>` +
+    panel('Work orders', '', table([{label:'Order'},{label:'Owner'},{label:'Scope'},{label:'Auth'},{label:'State'}],
+      d.rows, w=>`<td class="mono">${esc(w.id)}${w.demo_tag?' '+pill(w.demo_tag,'brand'):''}</td>
+        <td>${esc(w.owner||'')}</td><td>${esc(w.scope_requested||'')}</td>
+        <td>${w.authorization?pill('recorded','good'):w.verbal_note?pill('VERBAL ONLY','bad'):pill('none','warn')}</td>
+        <td>${w.started_at?pill('started','good'):pill('waiting','warn')}</td>`), true);
+}
+async function start(withAuth){
+  const r = await API.post('/api/workorders/wo_demo_verbal/start',
+    withAuth?{by:'Renner (owner)',scope:'haul, pressure wash, bottom paint',rate_basis:'posted yard rates'}:{});
+  document.getElementById('yout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Started', '', `<div class="strong">${esc(r.why)}</div>`);
+  yard();
+}
+async function storage(){
+  const r = await API.get('/api/vessels/vs_demo_splashed/storage');
+  document.getElementById('yout').innerHTML =
+    panel('Storage bill', '', `<div class="strong">${r.days} days × ${fmt.money(r.rate)} = ${fmt.money(r.total)}</div>
+      <div class="why">ends at ${esc(r.ends_at)}</div>`);
+}
+async function offer(){
+  const r = await API.post('/api/slips/sl_demo_open/offer');
+  document.getElementById('yout').innerHTML =
+    panel('Ranked offer', esc(r.note),
+      `<div class="strong">first refusal: ${r.candidates.length?esc(r.candidates[0].name):'—'}</div>
+       <div class="why">blocked by fit: ${(r.blocked||[]).map(b=>esc(b.name)+' ('+esc(b.why)+')').join('; ')||'none'}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['open_slips','Open slips','counted'],['slips_filled_yr','Slips filled/yr','your number'],
+    ['annual_slip','Annual slip revenue','your number'],
+    ['disputes_yr','Yard disputes last yr','your history'],['avg_writedown','Avg write-down','your number'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['spill_value','The spill log','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

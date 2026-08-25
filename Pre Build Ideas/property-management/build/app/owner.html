@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f5fd8">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>Owner · Property OS</title>
+<link rel="stylesheet" href="/shared.css">
+</head>
+<body>
+
+<div class="bar"><div class="bar-in">
+  <div class="logo"><span class="mark">◈</span><span id="ownerName">Owner</span></div>
+  <div class="grow"></div>
+  <select class="in" id="ownerPick" style="width:auto;padding:6px 11px;font-size:13.5px"></select>
+  <button class="btn ghost sm" onclick="toggleTheme()" aria-label="Toggle theme">◐</button>
+</div></div>
+
+<main class="wrap" id="main"><div class="empty"><div class="big">◈</div>Loading…</div></main>
+
+<script src="/app.js"></script>
+<script>
+let D = null, OWNERS = [], CUR = null;
+
+async function boot() {
+  const staff = await API.get('/bootstrap?role=staff');
+  OWNERS = staff.owners;
+  CUR = new URLSearchParams(location.search).get('id') || OWNERS[0]?.id;
+  $('#ownerPick').innerHTML = OWNERS.map(o =>
+    `<option value="${esc(o.id)}" ${o.id === CUR ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
+  $('#ownerPick').onchange = e => { CUR = e.target.value; load(); };
+  load();
+}
+
+async function load() {
+  D = await API.get('/bootstrap?role=owner&id=' + encodeURIComponent(CUR));
+  $('#ownerName').textContent = D.owner.name;
+  render();
+}
+
+function render() {
+  const r = D.report, leases = D.leases;
+  const turnExposure = leases.reduce((s, l) => s + (l.turn_cost?.total || 0), 0);
+  const highRisk = leases.filter(l => l.risk?.band === 'high');
+
+  $('#main').innerHTML = `
+  <div style="padding:24px 0 18px">
+    <h1>${esc(r.owner)}</h1>
+    <div class="muted small">${esc(r.properties.join(' · '))} — ${r.units} units,
+      ${pct(r.occupancy)} occupied · last ${r.window_days} days</div>
+  </div>
+
+  <!-- The two numbers the brief asked for, first and unmissable. -->
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:16px">
+    <div class="card"><div class="card-b">
+      <div class="k tiny" style="color:var(--ink-3);text-transform:uppercase;letter-spacing:.055em;font-weight:640">Open requests</div>
+      <div style="font-size:46px;font-weight:680;letter-spacing:-.035em;margin:7px 0 3px" class="num">${r.open_now}</div>
+      <div class="small muted">${r.requests_received} received and ${r.resolved} resolved in the window</div>
+    </div></div>
+    <div class="card"><div class="card-b">
+      <div class="k tiny" style="color:var(--ink-3);text-transform:uppercase;letter-spacing:.055em;font-weight:640">Average resolution time</div>
+      ${r.avg_resolution._missing
+        ? `<div class="missing" style="margin-top:11px">${esc(r.avg_resolution._missing)}</div>`
+        : `<div style="font-size:46px;font-weight:680;letter-spacing:-.035em;margin:7px 0 3px" class="num">${esc(hrs(r.avg_resolution.hours))}</div>
+           <div class="small muted">median ${esc(hrs(r.avg_resolution.median))} · n=${r.avg_resolution.n}
+             ${r.p1_resolution.hours != null ? ` · emergencies ${esc(hrs(r.p1_resolution.hours))}` : ''}</div>`}
+    </div></div>
+  </div>
+
+  <div class="tiles" style="margin-bottom:16px">
+    ${tile('Maintenance spend', { value: r.maintenance_spend },
+      r.spend_per_unit != null ? money(r.spend_per_unit) + ' per unit' : '', money)}
+    ${tile('SLA hit rate', statOrMissing({ v: r.sla_hit_rate, _missing: r.sla_hit_rate == null ? 'no resolved requests in the window' : null }, 'v'),
+      'resolved inside target', pct)}
+    ${tile('Cost avoided', { value: r.avoided_cost.value },
+      `${r.avoided_cost.deflected_dispatches} dispatches never happened`, money)}
+    ${tile('Leases expiring · 60d', { value: leases.length },
+      highRisk.length ? `${highRisk.length} at high risk of leaving` : 'none flagged high risk')}
+    ${tile('Turnover exposure', { value: turnExposure }, 'if all of them left', money)}
+    ${tile('Capital flagged', { value: r.capital_flagged.length }, 'past the repair-vs-replace line')}
+  </div>
+
+  <!-- Most owner statements are a list of bills. This is the half nobody sends. -->
+  <div class="card" style="margin-bottom:16px;border-color:color-mix(in srgb,var(--ok) 32%,transparent)">
+    <div class="card-h"><h2>What didn't happen</h2><span class="pill ok">${esc(money(r.avoided_cost.value))} avoided</span></div>
+    <div class="card-b">
+      <div class="small" style="color:var(--ink-2);margin-bottom:11px">
+        ${r.avoided_cost.deflected_dispatches} request${r.avoided_cost.deflected_dispatches === 1 ? '' : 's'}
+        were resolved by the resident with a guided fix, so no vendor was dispatched and you were
+        not invoiced. That is the line an ordinary statement can't show you, because an ordinary
+        statement only records what was spent.
+      </div>
+      <div class="missing">${esc(r.avoided_cost.basis)}. It is an avoided-cost estimate, not a
+        realised saving — no money moved, and the counterfactual is a model.</div>
+    </div>
+  </div>
+
+  ${D.statement ? `<div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>Statement · ${esc(D.statement.month)}</h2>
+      <span class="pill ${D.statement.net >= 0 ? 'ok' : 'warn'}">net ${esc(money(D.statement.net))}</span></div>
+    <div class="card-b">
+      ${[['Rent collected', D.statement.rent_collected], ['Maintenance paid', -D.statement.maintenance_paid],
+         ['Management fee', -D.statement.management_fee]]
+        .map(([k, v]) => `<div class="spread" style="padding:6px 0">
+          <span class="small muted">${esc(k)}</span>
+          <span class="small num">${v < 0 ? '−' + esc(money(-v)) : esc(money(v))}</span></div>`).join('')}
+      <div class="spread" style="padding:6px 0;border-top:1px solid var(--line-2)">
+        <span class="small">Net operating result</span>
+        <strong class="small num">${esc(money(D.statement.net))}</strong></div>
+      <div class="spread" style="padding:6px 0">
+        <span class="small muted">Your draws this month <span class="tiny">(a distribution, not a cost)</span></span>
+        <span class="small num">−${esc(money(D.statement.owner_draws))}</span></div>
+      <div class="sep"></div>
+      <div class="spread"><strong>Held for you in trust right now</strong>
+        <strong class="num">${esc(money(D.statement.trust_balance_now))}</strong></div>
+      <div class="missing" style="margin-top:11px">${esc(D.statement.basis)}. Disbursements are
+        drafted by the system and executed by a person at the bank — software here never moves money.</div>
+    </div></div>` : ''}
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>Lease expirations · next 60 days</h2>
+      <span class="muted small">ranked by non-renewal risk</span></div>
+    <div class="tbl-wrap">
+      ${leases.length ? `<table class="tbl"><thead><tr>
+        <th>Days left</th><th>Unit</th><th>Resident</th><th>Ends</th><th>Rent</th>
+        <th>Risk of leaving</th><th>Costs if they go</th></tr></thead><tbody>
+        ${leases.map(l => {
+          const k = l.risk || {};
+          const band = k.score == null ? 'mute' : k.band === 'high' ? 'bad' : k.band === 'watch' ? 'warn' : 'ok';
+          return `<tr style="cursor:default">
+            <td><span class="pill ${l.days_left < 21 ? 'bad' : l.days_left < 45 ? 'warn' : 'mute'}">${l.days_left}d</span></td>
+            <td class="small">${esc(l.property || '')} ${esc(l.unit)}</td>
+            <td class="small muted">${esc(l.tenant || '')}</td>
+            <td class="small num muted">${esc(dateOnly(l.ends))}</td>
+            <td class="small num">${esc(money(l.rent))}</td>
+            <td>${k.score == null ? '<span class="pill mute">unscored</span>'
+              : `<span class="pill ${band}">${k.band} · ${k.score}</span>`}</td>
+            <td class="small num muted">${esc(money(l.turn_cost?.total))}</td></tr>`;
+        }).join('')}</tbody></table>`
+        : '<div class="empty"><div class="big">✓</div>Nothing expiring in the next 60 days.</div>'}
+    </div>
+    <div class="card-b" style="border-top:1px solid var(--line)">
+      <div class="missing">"Unscored" means the unit has no maintenance history to reason from.
+        It is not the same as low risk, and the system will not round it down to zero for you.</div>
+    </div>
+  </div>
+
+  ${r.capital_flagged.length ? `
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>Stop repairing these</h2>
+      <span class="muted small">repair spend has passed the replacement line</span></div>
+    <div class="card-b" style="display:flex;flex-direction:column;gap:11px">
+      ${r.capital_flagged.map(c => `
+        <div style="border:1px solid var(--line);border-radius:11px;padding:13px">
+          <div class="spread" style="margin-bottom:8px">
+            <strong class="small">${esc(c.label)} · Unit ${esc(c.unit || '')}</strong>
+            <span class="pill bad">replace</span></div>
+          <div class="small" style="color:var(--ink-2)">${(c.why || []).map(esc).join('<br>')}</div>
+          <div class="row wrap-r" style="gap:6px;margin-top:9px">
+            <span class="pill mute">${esc(c.age_years)}y of ${esc(c.life_years)}</span>
+            <span class="pill mute">${esc(c.repairs)} repairs</span>
+            <span class="pill warn">${esc(money(c.repair_spend))} spent</span>
+            <span class="pill mute">${esc(money(c.replace_cost))} to replace</span>
+            <span class="pill bad">${esc(money(c.next_failure_exposure))} if it fails instead</span></div>
+        </div>`).join('')}
+    </div>
+    <div class="card-b" style="border-top:1px solid var(--line)">
+      <div class="missing">Every figure above is arithmetic on your own repair history against a
+        published service life — not a vendor's recommendation. Nothing here has been approved or
+        ordered; an agent may not commit your capital, and this list is the whole of what it does.</div>
+    </div>
+  </div>` : ''}
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>How much of this ran without a person</h2></div>
+    <div class="card-b">
+      ${D.metrics.automation._missing
+        ? `<div class="missing">${esc(D.metrics.automation._missing)}</div>`
+        : `<div class="row" style="gap:13px;align-items:baseline;margin-bottom:11px">
+            <span style="font-size:38px;font-weight:680;letter-spacing:-.03em" class="num">${esc(pct(D.metrics.automation.rate))}</span>
+            <span class="small muted">${D.metrics.automation.autonomous} of ${D.metrics.automation.moving}
+              pipeline-moving actions over ${D.metrics.automation.window_days} days</span></div>
+          <div class="missing">${esc(D.metrics.automation.note)}. Approvals, spend above your limit,
+            renewals and anything legal are excluded on purpose — those are decisions, not throughput.</div>`}
+    </div>
+  </div>
+
+  <!-- The referral hook. An owner who likes this report is the whole growth
+       engine — and the ask lives on the page that earned it. -->
+  <div class="card">
+    <div class="card-h"><h2>Know an owner who'd want this?</h2></div>
+    <div class="card-b">
+      ${D.share_url ? `<div class="spread wrap-r" style="gap:9px;margin-bottom:14px;padding:11px;border:1px solid var(--line);border-radius:11px">
+        <div class="stack grow">
+          <strong class="small">Share how this portfolio is run</strong>
+          <span class="tiny muted">A live one-page performance record — the same numbers on this
+            dashboard, computed fresh every time it's opened. No names, no balances.</span>
+        </div>
+        <button class="btn sm" onclick="copyShare()">Copy link</button>
+      </div>` : ''}
+      <div class="stack" style="gap:9px">
+        <div class="row wrap-r" style="gap:9px">
+          <input class="in grow" id="refName" placeholder="Their name">
+          <input class="in grow" id="refContact" placeholder="Email or phone">
+        </div>
+        <input class="in" id="refNote" placeholder="Anything useful — how you know them, what they own (optional)">
+        <button class="btn primary" style="align-self:flex-start" onclick="sendReferral()">Make the introduction</button>
+      </div>
+      ${(D.my_referrals || []).length ? `<div style="margin-top:13px;border-top:1px solid var(--line-2);padding-top:11px">
+        ${D.my_referrals.map(r => `<div class="spread" style="padding:5px 0">
+          <span class="small">${esc(r.name)}</span>
+          <span class="pill ${r.status === 'won' ? 'ok' : r.status === 'contacted' ? 'brand' : 'mute'}">${esc(r.status)}</span>
+        </div>`).join('')}</div>` : ''}
+      <div class="missing" style="margin-top:12px">A referral hands us a name — nothing more.
+        A person makes the first contact, never software, and only after you've told them to expect it.</div>
+    </div>
+  </div>`;
+}
+
+function copyShare() {
+  const url = location.origin + D.share_url;
+  navigator.clipboard?.writeText(url).then(() => toast('Link copied'))
+    .catch(() => toast(url, 6000));
+}
+
+async function sendReferral() {
+  const name = $('#refName').value.trim(), contact = $('#refContact').value.trim();
+  if (!name || !contact) return toast('A name and a way to reach them are both required');
+  try {
+    await API.post('/referrals', { name, contact, note: $('#refNote').value,
+                                   source: 'owner:' + CUR });
+    toast('Introduction recorded — a person will take it from here');
+    load();
+  } catch (e) { toast(e.message); }
+}
+
+boot();
+</script>
+</body>
+</html>

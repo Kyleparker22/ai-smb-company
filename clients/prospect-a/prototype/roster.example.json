@@ -1,0 +1,13 @@
+{
+  "business": "Prospect A Roofing",
+  "reply_signature": "Nick",
+  "_note": "Copy to roster.json and fill with real roofers. roster.json is gitignored (never committed). Phones must be E.164: +1XXXXXXXXXX. area/team are Nick's own groupings — target by any of them.",
+  "roofers": [
+    {"name": "Mike R.",  "phone": "+19045550101", "area": "Jacksonville", "team": "A"},
+    {"name": "Luis G.",  "phone": "+19045550102", "area": "Jacksonville", "team": "B"},
+    {"name": "Tanner W.","phone": "+19045550103", "area": "Jacksonville", "team": "A"},
+    {"name": "Dave P.",  "phone": "+15615550110", "area": "Palm Beach",   "team": "A"},
+    {"name": "Carlos M.","phone": "+15615550111", "area": "Palm Beach",   "team": "B"},
+    {"name": "Sam T.",   "phone": "+18505550120", "area": "Panhandle",    "team": "A"}
+  ]
+}

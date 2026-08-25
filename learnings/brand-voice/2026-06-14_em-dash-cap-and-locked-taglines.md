@@ -1,0 +1,8 @@
+2026-06-14 — The em-dash cap holds in drafts; don't riff the locked tagline on the seal line
+
+Source: Kolby's eval (`loops/eval-review/2026-06-14.md`), failure mode #1 + #2 — Katie's content 6/12 LinkedIn draft and the 6/14 eval-gate post.
+Pattern: Two external-facing drafts exceeded `brand/writing-rules.md`'s em-dash cap ("at most one per paragraph"): the 6/12 LinkedIn piece stacked two in a paragraph ("the obvious question — the right question — is", "the part that takes the time — and the part you're actually paying for — is…"), and the eval-gate variant hook did the same. The em-dash is the brand's self-declared "worst tell." Separately, the eval-gate post altered the locked primary tagline to "AI does the work — and knows when not to" — a clever, on-theme riff, but the tagline is locked by decision (`decisions/2026-06-10_brand-tagline.md`) and the footer/close is its seal spot, where verbatim usually matters.
+Implication: (a) Before any external content is finalized, count em-dashes per paragraph; a real read-aloud rhythm rarely needs two in one paragraph — swap one for a comma, colon, or period. (b) Treat the primary tagline as verbatim on its blessed seal spots (footers, close of post/deck/readout); if a riff is genuinely better for the piece, flag it to the Founder/Luka as a proposed line, don't ship the altered seal silently. The read-aloud override is a license for natural speech, not for stacking the brand's worst tell.
+Audience: Katie (content), Luka (brand/credibility), Reilly (outbound — same em-dash cap), Kolby (eval)
+
+Triggers: agent:katie, agent:luka, agent:michelle, external copy, em dash, locked tagline, loop:content, loop:brand-audit

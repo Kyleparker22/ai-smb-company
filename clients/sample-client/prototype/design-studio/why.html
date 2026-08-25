@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client — Why doing it right pays</title>
+<style>
+  :root{
+    --bg:#151310; --bg2:#1D1A15; --card:#211D17; --line:rgba(240,232,216,.10);
+    --cream:#F3ECDE; --muted:#B7AC97; --dim:#8B8069;
+    --bronze:#C98A4B; --bronze2:#E0A868; --sage:#8FA27C; --red:#C4684E;
+    --shadow:0 30px 80px -30px rgba(0,0,0,.75);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.08;letter-spacing:-.01em;margin:0}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze2)}
+  .muted{color:var(--muted)} .dim{color:var(--dim)}
+  .top{position:sticky;top:0;z-index:30;background:rgba(21,19,16,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:Fraunces,serif;font-weight:600;font-size:19px}
+  .brand .sq{width:34px;height:34px;border-radius:9px;background:var(--bronze);color:#1a1206;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:12px 20px;font-weight:600;font-size:14.5px;text-decoration:none;border:0;cursor:pointer}
+  .btn-p{background:var(--bronze);color:#1a1206} .btn-p:hover{background:var(--bronze2)}
+  section{padding:56px 0;border-bottom:1px solid var(--line)}
+  .hero{padding:64px 0 48px}
+  .hero h1{font-size:clamp(30px,5vw,52px);max-width:16ch}
+  .hero .sub{font-size:18px;color:var(--muted);max-width:60ch;margin-top:18px}
+  .k{font-size:clamp(23px,3.2vw,32px);margin-bottom:8px}
+  .lead{font-size:16px;color:var(--muted);max-width:66ch;margin-top:8px}
+  /* contrast */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+  @media(max-width:720px){.vs{grid-template-columns:1fr}}
+  .vcard{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card)}
+  .vcard .imwrap{position:relative;aspect-ratio:3/2;background:#0f0d0a}
+  .vcard img{width:100%;height:100%;object-fit:cover;display:block}
+  .vcard .tag{position:absolute;top:12px;left:12px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:9px}
+  .vcard.bad .tag{background:rgba(196,104,78,.9);color:#160b08} .vcard.good .tag{background:rgba(143,162,124,.92);color:#0f1409}
+  .placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;border:1.5px dashed rgba(196,104,78,.5);color:var(--dim);font-size:13px}
+  .placeholder .ic{font-size:30px}
+  .vcard .body{padding:16px 18px}
+  .vcard .body h4{margin:0 0 9px;font-size:15px;font-family:Inter,sans-serif;font-weight:600}
+  .vcard ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+  .vcard li{font-size:12.5px;color:var(--muted);padding-left:20px;position:relative;line-height:1.45}
+  .vcard.bad li:before{content:"✕";position:absolute;left:0;color:var(--red);font-weight:700}
+  .vcard.good li:before{content:"✓";position:absolute;left:0;color:var(--sage);font-weight:700}
+  /* cost table */
+  .cost{width:100%;border-collapse:collapse;margin-top:22px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .cost th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:13px 16px;background:var(--bg2)}
+  .cost th.r,.cost td.r{text-align:right}
+  .cost td{padding:13px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .cost td.lbl{color:var(--cream)}
+  .cost tr.tot td{border-top:2px solid var(--bronze);font-weight:700;color:var(--cream);font-size:15.5px}
+  .cost .cheap{color:var(--red)} .cost .right{color:var(--sage)}
+  .punch{font-family:Fraunces,serif;font-size:clamp(20px,2.8vw,27px);color:var(--cream);margin-top:22px;line-height:1.25;max-width:24ch}
+  .punch b{color:var(--bronze2)}
+  /* grids */
+  .grid{display:grid;gap:14px;margin-top:24px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:1fr 1fr}
+  @media(max-width:760px){.g3{grid-template-columns:1fr 1fr}} @media(max-width:520px){.g3,.g2{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card .ic{font-size:20px;margin-bottom:9px}
+  .card h4{margin:0 0 5px;font-size:15px;font-family:Inter,sans-serif;font-weight:600}
+  .card p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+  /* warranty */
+  .warr{width:100%;border-collapse:collapse;margin-top:22px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .warr th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:12px 16px;background:var(--bg2)}
+  .warr td{padding:12px 16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+  .warr td.item{color:var(--cream);font-weight:600} .warr td.term{color:var(--bronze2);font-weight:600;white-space:nowrap}
+  /* reviews template */
+  .tmpl{border:1.5px dashed rgba(201,138,75,.45);background:rgba(201,138,75,.05);border-radius:12px;padding:13px 16px;font-size:12.5px;color:var(--bronze2);margin-top:18px}
+  .rev{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+  @media(max-width:760px){.rev{grid-template-columns:1fr}}
+  .rcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px}
+  .rcard .stars{color:var(--bronze2);font-size:14px;letter-spacing:2px}
+  .rcard p{font-size:13px;color:var(--muted);line-height:1.5;margin:9px 0 11px}
+  .rcard .who{font-size:12px;color:var(--dim)}
+  .refs{margin-top:16px;display:grid;gap:9px}
+  .ref{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 15px;font-size:13px}
+  .ref .n{color:var(--cream);font-weight:600} .ref .p{color:var(--dim)}
+  .cta{text-align:center;padding:60px 0}
+  .cta h2{font-size:clamp(24px,3.4vw,34px)}
+  .foot{font-size:11.5px;color:var(--dim);line-height:1.6;padding:26px 0 60px;text-align:center}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="brand"><span class="sq">SC</span>Sample Client</div>
+  <a class="btn btn-p" href="#book">Book your free design →</a>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Before you take the cheaper bid</div>
+  <h1>The lowest bid is the most expensive line on the page.</h1>
+  <p class="sub">We get it — someone quoted you less. But a patio isn't a price, it's a thing you live on for 20 years. Here's what "cheaper" actually costs, what "done right" actually means, and why the number on the bid is the last thing you should compare.</p>
+</div></header>
+
+<section><div class="wrap">
+  <div class="eyebrow">Your yard, two ways</div>
+  <h2 class="k">The same project — cheap, vs. done right.</h2>
+  <p class="lead">This is your actual backyard, rendered both ways. One is what a lowball crew leaves you with after a season or two. The other is what Sample Client builds — and guarantees.</p>
+  <div class="vs">
+    <div class="vcard bad">
+      <div class="imwrap">
+        <span class="tag">The cheap bid · 2–3 years later</span>
+        <img src="cheap.jpg" alt="the same yard built cheap — settling pavers, weeds, poor drainage" />
+      </div>
+      <div class="body"><h4>What "cheaper" leaves you with</h4><ul>
+        <li>Pavers settling &amp; heaving — no proper compacted base</li>
+        <li>Weeds through the joints, efflorescence staining</li>
+        <li>Standing water — drainage skipped to save money</li>
+        <li>No permit, no engineering, no written warranty</li>
+        <li>The "contractor" is unreachable when it fails</li>
+      </ul></div>
+    </div>
+    <div class="vcard good">
+      <div class="imwrap">
+        <span class="tag">Sample Client · built right</span>
+        <img src="hero.jpg" alt="finished backyard, done right" />
+      </div>
+      <div class="body"><h4>What done-right looks like</h4><ul>
+        <li>Engineered base, proper compaction &amp; drainage</li>
+        <li>Premium materials, tight clean joints, crisp edges</li>
+        <li>Licensed, insured, permitted — a real company</li>
+        <li>You saw it before we built it — no surprises</li>
+        <li>Backed in writing — 5-year hardscape warranty</li>
+      </ul></div>
+    </div>
+  </div>
+</div></section>
+
+<section style="background:var(--bg2)"><div class="wrap">
+  <div class="eyebrow">The real math</div>
+  <h2 class="k">What's the price of not doing it right the first time?</h2>
+  <p class="lead">Say the other guy is $6,000 cheaper. Here's what that "savings" actually costs when a cut-rate patio fails and has to be torn out and rebuilt — which is exactly what happens without a proper base and drainage. <span class="dim">(Illustrative figures — the pattern is what matters.)</span></p>
+  <table class="cost">
+    <tr><th>&nbsp;</th><th class="r">The cheap bid</th><th class="r">Sample Client</th></tr>
+    <tr><td class="lbl">Up-front price</td><td class="r cheap">$16,500</td><td class="r right">$22,500</td></tr>
+    <tr><td class="lbl">Tear-out of the failed work (yr 2–3)</td><td class="r cheap">+ $7,000</td><td class="r right">$0</td></tr>
+    <tr><td class="lbl">Rebuild it properly</td><td class="r cheap">+ $24,000</td><td class="r right">$0 — warrantied</td></tr>
+    <tr class="tot"><td class="lbl">Total you actually pay</td><td class="r cheap">$47,500</td><td class="r right">$22,500</td></tr>
+  </table>
+  <div class="punch">The $6,000 you "saved" ended up costing you <b>$25,000</b> — and two years of a yard you couldn't use.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">Done right, the first time</div>
+  <h2 class="k">Exactly how you want it — before a shovel hits the ground.</h2>
+  <p class="lead">The biggest cost of a cheap job isn't the redo. It's living with something that isn't what you pictured. We remove that risk entirely.</p>
+  <div class="grid g3">
+    <div class="card"><div class="ic">👁️</div><h4>See it before you build it</h4><p>We render your actual yard, finished, on the first visit — and you build it live with us. What you approve is exactly what gets built.</p></div>
+    <div class="card"><div class="ic">🏗️</div><h4>Built on a real foundation</h4><p>Engineered base, correct compaction, real drainage. The parts you can't see are the parts that fail on cheap jobs.</p></div>
+    <div class="card"><div class="ic">📋</div><h4>Licensed, insured, permitted</h4><p>A real Design &amp; Build company — permits pulled, code-compliant, fully insured. Not a truck and a Craigslist ad.</p></div>
+    <div class="card"><div class="ic">🛡️</div><h4>Guaranteed in writing</h4><p>Every element carries a written warranty (below). When something's covered, we come back — because we're still here.</p></div>
+    <div class="card"><div class="ic">💎</div><h4>Materials that last</h4><p>Belgard and natural stone, not the cheapest pallet at the yard. It looks better on day one and still looks right in year ten.</p></div>
+    <div class="card"><div class="ic">🤝</div><h4>One accountable team</h4><p>One company owns the whole job and your warranty. No finger-pointing between a "designer" and whoever they subbed it to.</p></div>
+  </div>
+</div></section>
+
+<section style="background:var(--bg2)"><div class="wrap">
+  <div class="eyebrow">Guaranteed in writing</div>
+  <h2 class="k">Our warranty — the part cheap bids don't come with.</h2>
+  <p class="lead">This is straight from the Sample Client Design &amp; Build limited warranty in your contract. A discount crew doesn't put any of this in writing.</p>
+  <table class="warr">
+    <tr><th>What's covered</th><th>How long</th></tr>
+    <tr><td class="item">Concrete pavers, patios, walkways &amp; outdoor-living</td><td class="term">5 years — settling, shifting, structural</td></tr>
+    <tr><td class="item">Retaining walls</td><td class="term">3 years — structural</td></tr>
+    <tr><td class="item">Natural stone, veneers &amp; brickwork</td><td class="term">1 year — installation</td></tr>
+    <tr><td class="item">Lighting — brass fixtures / LED lamps / labor</td><td class="term">Lifetime / 5 yr / 1 yr</td></tr>
+    <tr><td class="item">Irrigation — components &amp; heads / labor</td><td class="term">5 years / 1 year</td></tr>
+    <tr><td class="item">Drainage &amp; water features</td><td class="term">1 year</td></tr>
+    <tr><td class="item">Sod, trees, shrubs &amp; groundcover</td><td class="term">30 days, one-time replacement</td></tr>
+  </table>
+  <p class="dim" style="font-size:12px;margin-top:12px">Full terms, exclusions and the warranty-claim process are in your Sample Client Design &amp; Build agreement.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow">Don't take our word for it</div>
+  <h2 class="k">Talk to people whose yards we built.</h2>
+  <p class="lead">Cheap crews can't hand you a list of neighbors to call. We can.</p>
+  <div class="tmpl">→ <b>Sample Client:</b> replace the cards and reference list below with your real Google/Houzz reviews and 2–3 recent customers who've agreed to take a call. Never send fabricated reviews — real ones close, fake ones sink you.</div>
+  <div class="rev">
+    <div class="rcard"><div class="stars">★★★★★</div><p>"[ Paste a real review here — a few sentences on the result and the experience. ]"</p><div class="who">— [ Customer first name ], [ neighborhood ]</div></div>
+    <div class="rcard"><div class="stars">★★★★★</div><p>"[ Paste a real review here. ]"</p><div class="who">— [ Customer first name ], [ neighborhood ]</div></div>
+    <div class="rcard"><div class="stars">★★★★★</div><p>"[ Paste a real review here. ]"</p><div class="who">— [ Customer first name ], [ neighborhood ]</div></div>
+  </div>
+  <h3 style="font-size:17px;margin-top:26px">Call our references</h3>
+  <div class="refs">
+    <div class="ref"><span class="n">[ Reference name ] — [ project, e.g. paver patio + fire pit ]</span><span class="p">[ phone — with their permission ]</span></div>
+    <div class="ref"><span class="n">[ Reference name ] — [ project ]</span><span class="p">[ phone ]</span></div>
+    <div class="ref"><span class="n">[ Reference name ] — [ project ]</span><span class="p">[ phone ]</span></div>
+  </div>
+</div></section>
+
+<div class="cta" id="book"><div class="wrap">
+  <div class="eyebrow">One visit. Same day.</div>
+  <h2>Let's build it right — and see it before you commit.</h2>
+  <p class="lead" style="margin:12px auto 0;max-width:52ch">Book a free on-site visit. You'll walk away having seen your finished yard and a real quote — no obligation, no pressure. Then compare <i>that</i> to the cheap bid.</p>
+  <a class="btn btn-p" href="#" style="margin-top:24px">Book my free same-day design</a>
+</div></div>
+
+<div class="foot"><div class="wrap">
+  Renders are premium AI visualizations of your actual property, produced to show the finished design; final build may vary in minor detail. Cost figures above are illustrative examples of failure-and-rebuild economics, not a quote. Warranty terms summarize the Sample Client Design &amp; Build limited warranty — the signed agreement governs.
+</div></div>
+</body>
+</html>

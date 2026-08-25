@@ -1,0 +1,11 @@
+[Unit]
+Description=YourCo Monday briefing — Mondays 07:55 (server-local time)
+
+[Timer]
+# Server timezone should be America/New_York (see runtime/README.md) so this = 07:55 ET.
+# Runs after the sales (07:08) and finance (07:24) loops per the roster cadence.
+OnCalendar=Mon *-*-* 07:55:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

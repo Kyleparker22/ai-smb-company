@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yourco — one-pager</title>
+<style>
+  :root{
+    --indigo:#161B33;--indigo-2:#1c2240;--cream:#F4EFE6;--parchment:#EFE8DA;
+    --brass:#B8965A;--brass-bright:#D4B27A;--pewter:#6E7180;--ink:#1c2030;
+    --hairline:rgba(22,27,51,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#cfcabd;font-family:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    color:var(--indigo);line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;padding:24px}
+  .sheet{width:8.5in;min-height:11in;margin:0 auto;background:var(--cream);box-shadow:0 12px 40px rgba(0,0,0,.22);
+    display:flex;flex-direction:column;overflow:hidden}
+  /* header band */
+  .head{background:var(--indigo);color:var(--cream);padding:30px 46px 28px}
+  .lockup{display:flex;align-items:center;gap:11px;margin-bottom:20px}
+  .lockup .dia{width:6px;height:6px;background:var(--brass);transform:rotate(45deg)}
+  .lockup .rule{height:1px;width:34px;background:var(--brass)}
+  .lockup .word{font-size:19px;font-weight:600;letter-spacing:-.01em}
+  .head h1{font-size:33px;font-weight:650;letter-spacing:-.02em;line-height:1.05}
+  .head .sub{font-size:15.5px;color:rgba(244,239,230,.82);margin-top:9px;max-width:6.4in;font-weight:500}
+  .head .sub b{color:var(--brass-bright);font-weight:650}
+  /* body */
+  .body{flex:1;padding:26px 46px 6px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--brass);margin-bottom:5px}
+  .lead{font-size:14px;color:var(--ink);max-width:6.6in}
+  .sec{margin-bottom:19px}
+  .sec h2{font-size:17px;font-weight:650;letter-spacing:-.01em;margin-bottom:4px}
+  /* steps */
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:11px 26px;margin-top:4px}
+  .step{display:flex;gap:11px}
+  .step .n{flex:none;width:23px;height:23px;border-radius:50%;background:var(--indigo);color:var(--brass-bright);
+    font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .step .t{font-size:13px;color:var(--ink)}.step .t b{color:var(--indigo)}
+  /* two-up */
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .twoup .card{background:#fff;border:1px solid var(--hairline);border-left:3px solid var(--brass);border-radius:9px;padding:13px 16px}
+  .twoup h2{font-size:15px;margin-bottom:4px}.twoup p{font-size:12.5px;color:var(--ink)}
+  /* footer band */
+  .foot{background:var(--parchment);border-top:1px solid var(--hairline);padding:18px 46px 22px;text-align:center;margin-top:auto}
+  .foot .glock{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:11px}
+  .foot .glock .dia{width:6px;height:6px;background:var(--brass);transform:rotate(45deg)}
+  .foot .glock .rule{height:1px;width:64px;background:var(--brass)}
+  .foot .glock .word{font-size:20px;font-weight:600;color:var(--indigo)}
+  .foot .tag{font-size:15px;font-weight:600;color:var(--indigo)}.foot .tag .p{color:var(--brass)}
+  .foot .cta{font-size:13px;color:var(--pewter);margin-top:8px}.foot .cta b{color:var(--indigo)}
+  @page{size:letter;margin:0}
+  @media print{body{background:#fff;padding:0}.sheet{box-shadow:none;width:100%;min-height:auto}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="head">
+    <div class="lockup"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span></div>
+    <h1>A hire that doesn't sleep.</h1>
+    <div class="sub">yourco builds you a <b>named digital employee</b> — live in 48 hours, working inside your business.</div>
+  </div>
+
+  <div class="body">
+    <div class="sec">
+      <div class="eyebrow">The work that eats your week</div>
+      <p class="lead">Calls you miss. Leads you mean to follow up. Quotes and replies that pile up. Hiring for it is slow and expensive; another software tool is just one more thing to manage. Most businesses are stuck in that gap.</p>
+    </div>
+
+    <div class="sec">
+      <h2>Not a tool. An employee.</h2>
+      <p class="lead">You don't get software to configure. You get a named digital employee — with its own email, inside your business — scoped to a real job: intake, follow-up, scheduling, drafting, back-office. It does the work. You own the outcome.</p>
+    </div>
+
+    <div class="sec">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><div class="t"><b>We learn your business</b> — a short discovery on the job you want off your plate.</div></div>
+        <div class="step"><div class="n">2</div><div class="t"><b>We start from a proven blueprint</b> — an employee pattern we've run before, tailored to your voice, tools, and rules.</div></div>
+        <div class="step"><div class="n">3</div><div class="t"><b>It goes live in 48 hours</b> — its own email, in your tenant, doing the work. Customer-facing actions wait for your approval until you say otherwise.</div></div>
+        <div class="step"><div class="n">4</div><div class="t"><b>We keep it sharp</b> — evals, watchdogs, and weekly improvement are ours. You just keep getting the outcome.</div></div>
+      </div>
+    </div>
+
+    <div class="sec twoup">
+      <div class="card">
+        <h2>The hard part is ours</h2>
+        <p>Anyone can wire up an agent. Making it reliable enough to run inside your business — eval gates, watchdogs, approvals, observability, security — is the real job. That's what we own, and it's why this works when a no-code experiment doesn't.</p>
+      </div>
+      <div class="card">
+        <h2>Simple, predictable pricing</h2>
+        <p>One fixed fee to build your employee. One monthly retainer to run and improve it — and <b>all</b> the infrastructure behind it (tokens, models, hosting). You never see a usage bill. Add more employees as you grow.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>We run yourco on the employees we build</h2>
+      <p class="lead">Our own sales, finance, content, and operations run on a roster of named digital employees — the same kind we build for clients, held to the same eval and approval standards. We don't recommend anything we haven't already trusted with our own business.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="glock"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+    <div class="tag">We learn your business. AI does the work<span class="p">.</span></div>
+    <div class="cta"><b>Book 30 minutes →</b> yourco.com · founder@yourco.example.com</div>
+  </div>
+</div>
+</body>
+</html>

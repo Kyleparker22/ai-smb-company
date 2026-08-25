@@ -1,0 +1,27 @@
+ASPIRE — SIGNED PROPOSAL EXPORT  (SAMPLE / FICTIONAL — for the yourco dry run only)
+=====================================================================================
+Proposal #: SC-2026-0488
+Status: Signed
+Division: Installation
+Signed: 2026-06-12
+
+Client: Robert & Amanda Chen
+Property: 412 Birkdale Commons Pkwy, Yourtown, ST 28078
+Email: r.chen@example.com
+Phone: (704) 555-0142
+
+Project: Backyard paver patio + seating wall + landscape lighting
+Project window: 2026-07-06 to 2026-07-17
+Proposal total: $48,500.00
+
+LINE ITEMS
+-------------------------------------------------------------------------------------
+# | Description                         | Qty       | Cost category | Supplier
+1 | Belgard Holland pavers (pallets)    | 14 pallets| MATERIAL      | Carolina Stone Supply
+2 | Bulk paver base / screenings        | 22 tons   | MATERIAL      | Carolina Stone Supply
+3 | Seating-wall block + caps           | 6 pallets | MATERIAL      | Carolina Stone Supply
+4 | Low-voltage lighting fixtures       | 9 units   | MATERIAL      | Volt Lighting (boxed)
+5 | Transformer + wire spool            | 1 box     | MATERIAL      | Volt Lighting (boxed)
+6 | Excavation + subgrade grading       | 1 lot     | SUB           | Precision Grading LLC
+-------------------------------------------------------------------------------------
+Notes: Standard install. No HOA review pending. Access via side yard.

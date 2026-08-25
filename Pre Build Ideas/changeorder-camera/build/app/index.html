@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delta OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-deltas"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. No delta is priced without a human
+confirmation, no notice letter drafts without the recorded clause cited verbatim, no price leaves
+the recorded rate schedule, and a verbal go-ahead is a note, not a signed change order. The field
+vision model is a deployment seam — this demo records structured photo observations behind it.
+Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'deltas',label:'Plan vs field'},{id:'inbox',label:'Inbox'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,deltas,inbox,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board, j = await API.get('/api/jobs');
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.trade} · ${d.config.active_jobs} active jobs`;
+  const det = b.detection;
+  document.getElementById('v-board').innerHTML =
+    panel('The deltas, counted', '',
+      `<div class="grid">
+        ${stat('Open deltas', fmt.num(b.open_deltas), `${b.unconfirmed} still a draft — a human confirms`, b.open_deltas?'alert':'')}
+        ${stat('Same-day detection', `${det.same_day} / ${det.same_day+det.found_later}`, esc(det.note), det.found_later?'warn':'good')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the backcharge reads first', b.messages_open?'bad':'')}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('This week, counted', `${b.week.deltas_detected} detected · ${b.week.deltas_confirmed} confirmed`,
+               `${b.week.notices_sent} notice(s) sent · ${b.week.cos_signed} CO(s) signed (${fmt.money(b.week.co_value_signed)})`)}</div>`) +
+    panel('The plan register', 'per job: recorded plan lines + the recorded notice clause',
+      table([{label:'Job'},{label:'GC'},{label:'Notice clause'},{label:'Plan lines',num:true},{label:'Open deltas',num:true}],
+        j.rows, r=>`<td>${esc(r.name)}</td><td>${esc(r.gc)}</td>
+          <td class="why">${r.notice_clause.startsWith('NO CLAUSE')?`<span class="pill bad">no clause recorded</span> ${esc(r.notice_clause)}`:esc(r.notice_clause)}</td>
+          <td class="num">${r.plan_lines}</td><td class="num">${r.open_deltas}</td>`), true);
+}
+
+async function deltas(){
+  const d = await API.get('/api/deltas');
+  document.getElementById('v-deltas').innerHTML =
+    `<div class="banner warn">The demo path: <b>Run the diff</b> → today's photos vs the plan lines.
+      A matching observation produces no delta. A departure becomes a DELTA with the photo ref and
+      plan rev cited, its classification <b>drafted, not final</b> — confirm it, and the change
+      order (recorded rates only) and the notice letter (recorded clause, verbatim) draft the same
+      day.</div>
+     <div style="margin:10px 0">
+      <button class="act primary" onclick="runDiff()">Run the diff</button>
+      <button class="act" onclick="demoUnconfirmed()">Price unconfirmed → refused</button>
+      <button class="act" onclick="demoOffsched()">Off-schedule spec → refused</button>
+      <button class="act" onclick="demoNoClause()">Notice, no clause → refused</button>
+      <button class="act" onclick="demoExpired()">Notice, window expired → honest letter</button>
+     </div><div id="dout"></div>` +
+    panel('The delta ledger', 'detected → confirmed → noticed → priced → signed / rejected',
+      table([{label:'Job / location'},{label:'Plan says'},{label:'Field shows'},{label:'Photo · rev'},
+             {label:'Class'},{label:'State'},{label:''}],
+        d.rows, r=>`<td><div class="strong">${esc(r.job_name||'')}</div><div class="why">${esc(r.location)}${r.unplanned?' '+pill('UNPLANNED','bad'):''}</div></td>
+          <td class="why">${esc(r.plan_says)}</td><td class="why">${esc(r.field_shows)}</td>
+          <td class="mono">${esc(r.photo_ref||'')}<div class="why">rev ${r.plan_rev==null?'—':esc(r.plan_rev)}</div></td>
+          <td>${pill(r.confirmed?(r.confirmed_class+' ✓'):(r.classification_draft+' (draft)'), r.confirmed?'good':'warn')}</td>
+          <td>${pill(r.state, r.state==='signed'?'good':r.state==='rejected'?'bad':'')}</td>
+          <td class="right">${r.confirmed?'':`<button class="act primary" onclick="confirmD('${r.id}')">Confirm</button>`}
+            <button class="act" onclick="co('${r.id}')">CO</button>
+            <button class="act" onclick="notice('${r.id}')">Notice</button></td>`), true);
+}
+function show(r, title){
+  document.getElementById('dout').innerHTML = r.refused
+    ? panel('Refused — '+title, '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel(title, '', `${r.math?`<div class="strong">${fmt.money2(r.math.amount)} — ${esc(r.math.basis)}</div>
+        <div class="why">${esc(r.math.schedule_source||'')}</div>`:''}
+       ${r.status?`<div class="why">window: ${r.status.days_remaining} day(s) remaining of ${r.status.days_allowed} — ${esc(r.status.label)}</div>`:''}
+       ${r.draft?`<div class="strong" style="white-space:pre-wrap;margin-top:8px">${esc(r.draft)}</div>`:''}
+       ${r.confirmed?`<div class="why">confirmed as ${esc(r.classification)}</div>`:''}`);
+}
+async function runDiff(){ const r = await API.post('/api/diff/run');
+  document.getElementById('dout').innerHTML = panel('Diff complete','',
+    `<div class="strong">${r.created} delta(s) created · ${r.clean_matches} clean matches (no delta — the field matched the plan)</div>`);
+  setTimeout(deltas, 900); }
+async function confirmD(id){ show(await API.post(`/api/deltas/${id}/confirm`,{human:'pm'}), 'Confirmed'); setTimeout(deltas, 900); }
+async function co(id){ show(await API.post(`/api/deltas/${id}/co`), 'Change order draft'); }
+async function notice(id){ show(await API.post(`/api/deltas/${id}/notice`), 'Notice letter draft'); }
+async function demoUnconfirmed(){ await API.post('/api/diff/run');
+  show(await API.post('/api/deltas/dl_ob_demo_spec/co'), 'price an unconfirmed delta'); }
+async function demoOffsched(){ await API.post('/api/diff/run');
+  await API.post('/api/deltas/dl_ob_demo_offsched/confirm',{human:'pm'});
+  show(await API.post('/api/deltas/dl_ob_demo_offsched/co'), 'price off the rate schedule'); }
+async function demoNoClause(){ await API.post('/api/diff/run');
+  await API.post('/api/deltas/dl_ob_demo_noclause/confirm',{human:'pm'});
+  show(await API.post('/api/deltas/dl_ob_demo_noclause/notice'), 'notice with no recorded clause'); }
+async function demoExpired(){ await API.post('/api/diff/run');
+  await API.post('/api/deltas/dl_ob_demo_expired/confirm',{human:'pm'});
+  show(await API.post('/api/deltas/dl_ob_demo_expired/notice'), 'Notice letter — window expired, says so'); }
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">The backcharge accusation gets the record pulled — dated photos, plan
+      revs, the delta ledger — <b>never conceded, never argued by software</b>. The verbal go-ahead
+      gets recorded verbatim and quoted back: a note, not a signed change order.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='backcharge'?'bad':m.label==='verbal_directive'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      ${s.evidence?`<div class="why">record pulled: ${s.evidence.observations.length} dated photo(s) · ${s.evidence.plan_lines} plan line(s), revs ${esc((s.evidence.plan_revs||[]).join(', '))} · ${s.evidence.deltas.length} delta(s)</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['deltas_detected','Deltas detected','counted'],['avg_co_value','Avg CO value','fills from your priced COs, or yours'],
+    ['confirm_rate','Confirm rate','your number (0–1)'],['kept_window_value','Notice-kept CO value','counted'],
+    ['closeout_writeoffs','Closeout write-offs','your history, your number'],
+    ['pm_hours_wk','PM hrs/wk on change paper','your number'],['pm_rate','PM rate','your number']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

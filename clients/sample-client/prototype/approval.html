@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample Client — approve before it sends</title>
+<!--
+  ONE-TAP APPROVAL MOCK — what Charlene sees on her phone when the agent has a client message ready.
+  Dry-run prototype (sample data). In production this opens from a SECURE ONE-TIME link in a text/email;
+  tapping Approve is what actually releases the email + SMS. The dollar amount is computed by code and
+  is NOT editable here — reinforcing "money is math, not AI." Built + run by yourco.
+-->
+<style>
+  :root{
+    --bg:#e9eae6; --card:#ffffff; --ink:#1c2419; --muted:#6b7280; --line:#e6e7e2;
+    --green:#2f7d52; --green-d:#256643; --red:#b23b32; --amber:#9a6b1e; --sc:#2c5f2d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,system-ui,"Inter","Segoe UI",Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;min-height:100vh;padding:22px 14px}
+  /* phone frame on larger screens; full-bleed on real phones */
+  .phone{width:100%;max-width:390px;background:var(--card);border-radius:30px;overflow:hidden;box-shadow:0 20px 60px rgba(28,36,25,.22);align-self:flex-start}
+  @media(max-width:430px){.phone{border-radius:0;box-shadow:none}body{padding:0}}
+
+  .bar{background:var(--sc);color:#fff;padding:16px 18px 14px;display:flex;align-items:center;gap:10px}
+  .bar .logo{font-weight:700;letter-spacing:.02em}
+  .bar .secure{margin-left:auto;font-size:11px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:9999px}
+
+  .body{padding:18px}
+  .lede{font-size:13px;color:var(--muted)}
+  .h{font-size:19px;font-weight:680;margin:3px 0 14px;letter-spacing:-.01em}
+  .h b{color:var(--sc)}
+
+  .req{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .req .rt{padding:13px 15px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .req .rt b{color:var(--ink);font-weight:650;font-size:14px}
+  .amt{display:flex;align-items:center;gap:9px;padding:13px 15px;background:#f3f7f3;border-bottom:1px solid var(--line)}
+  .amt .lk{font-size:15px}
+  .amt .v{font-size:23px;font-weight:720;letter-spacing:-.01em}
+  .amt .sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .amt .tag{margin-left:auto;font-size:10px;font-weight:700;color:var(--green-d);background:#dcefe0;border-radius:9999px;padding:3px 9px;text-transform:uppercase;letter-spacing:.03em}
+
+  .msg{padding:14px 15px}
+  .msg .lbl{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .msg .email{font-size:13.5px;color:#283226;white-space:pre-wrap;line-height:1.5}
+  .msg .email .subj{font-weight:650}
+  .msg textarea{width:100%;min-height:190px;font:inherit;font-size:13.5px;color:#283226;border:1px solid var(--sc);border-radius:9px;padding:10px;resize:vertical;line-height:1.5}
+  .sms{margin-top:13px}
+  .bubble{background:#eef4ee;border-radius:14px 14px 14px 4px;padding:10px 13px;font-size:13px;color:#283226;display:inline-block;max-width:92%}
+  .together{font-size:11.5px;color:var(--muted);margin-top:10px;display:flex;align-items:center;gap:6px}
+
+  .actions{display:grid;gap:9px;margin-top:16px}
+  .btn{appearance:none;border:none;font:inherit;font-size:15px;font-weight:650;border-radius:12px;padding:14px;cursor:pointer}
+  .approve{background:var(--green);color:#fff}.approve:active{background:var(--green-d)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .decline{background:#fff;border:1px solid #eccfcc;color:var(--red)}
+
+  .note{font-size:11.5px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
+  .pwr{font-size:11px;color:var(--muted)}.pwr b{color:var(--sc)}
+
+  .result{padding:26px 18px;text-align:center}
+  .result .ic{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 12px}
+  .result.ok .ic{background:#dcefe0;color:var(--green-d)}
+  .result.no .ic{background:#f6e2e0;color:var(--red)}
+  .result h2{font-size:19px;font-weight:680;margin-bottom:6px}
+  .result p{font-size:13.5px;color:var(--muted);max-width:30ch;margin:0 auto}
+  .result .log{font-size:11.5px;color:var(--muted);margin-top:14px;background:#f5f6f3;border-radius:9px;padding:9px 12px;display:inline-block}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="bar"><span class="logo">Sample Client</span><span class="secure">🔒 secure link</span></div>
+
+    <!-- review state -->
+    <div class="body" id="review">
+      <div class="lede">Hi Charlene — one message is ready for your okay.</div>
+      <div class="h">Approve before it <b>sends</b>.</div>
+
+      <div class="req">
+        <div class="rt">Deposit request → <b>Robert &amp; Amanda Chen</b><br>Backyard paver patio + seating wall + lighting</div>
+        <div class="amt">
+          <span class="lk">🔒</span>
+          <div><div class="v">$16,975.00</div><div class="sub">35% of $48,500.00 · computed by code</div></div>
+          <span class="tag">locked</span>
+        </div>
+        <div class="msg">
+          <div class="lbl">Email to the client</div>
+          <div class="email" id="emailView"><span class="subj">Deposit Request — Your Backyard Patio Project</span>
+
+Hi Robert and Amanda,
+
+Thank you for choosing Sample Client for your backyard paver patio, seating wall, and landscape lighting project. We're excited to get started!
+
+To reserve your spot on our schedule, we're requesting your deposit of $16,975.00, which represents 35% of the $48,500.00 project total.
+
+You can pay by Zelle, check, or card. Once your deposit is received, we'll confirm your start date and keep you posted every step of the way.
+
+Warm regards,
+Sample Client</div>
+          <textarea id="emailEdit" class="hidden"></textarea>
+
+          <div class="sms">
+            <div class="lbl">Text to the client</div>
+            <div class="bubble">Hi Robert &amp; Amanda! Your Sample Client deposit of $16,975.00 is ready, and a detailed email is on its way. Thanks so much!</div>
+          </div>
+          <div class="together">✉️＋💬 Sends as email and text together, from Sample Client's own number.</div>
+        </div>
+      </div>
+
+      <div class="actions" id="actions">
+        <button class="btn approve" id="approveBtn">Approve &amp; send</button>
+        <div class="row2">
+          <button class="btn ghost" id="editBtn">Edit</button>
+          <button class="btn decline" id="declineBtn">Decline</button>
+        </div>
+      </div>
+      <div class="actions hidden" id="editActions">
+        <button class="btn approve" id="saveBtn">Save &amp; send</button>
+        <button class="btn ghost" id="cancelBtn">Cancel</button>
+      </div>
+
+      <div class="note">Nothing goes to the client until you tap approve. The amount is computed and can't be changed here.<br><span class="pwr">Built &amp; run by <b>yourco</b></span></div>
+    </div>
+
+    <!-- result state -->
+    <div class="result ok hidden" id="resultOk">
+      <div class="ic">✓</div>
+      <h2>Approved — on its way</h2>
+      <p>Sample Client is sending the email and text to the Chens now.</p>
+      <div class="log" id="okLog">approved by Charlene</div>
+      <div class="note" style="margin-top:18px"><span class="pwr">Built &amp; run by <b>yourco</b></span></div>
+    </div>
+    <div class="result no hidden" id="resultNo">
+      <div class="ic">✕</div>
+      <h2>Declined — nothing sent</h2>
+      <p>The draft goes back to Sample Client. No email or text went to the client.</p>
+      <div class="note" style="margin-top:18px"><span class="pwr">Built &amp; run by <b>yourco</b></span></div>
+    </div>
+  </div>
+
+<script>
+  const $=id=>document.getElementById(id);
+  const show=(el,on)=>el.classList.toggle('hidden',!on);
+  function finishOk(){
+    show($('review'),false); show($('resultOk'),true);
+    const t=new Date().toLocaleString('en-US',{hour:'numeric',minute:'2-digit'});
+    $('okLog').textContent='approved by Charlene · '+t+' · logged';
+  }
+  $('approveBtn').onclick=finishOk;
+  $('saveBtn').onclick=finishOk;
+  $('declineBtn').onclick=()=>{ show($('review'),false); show($('resultNo'),true); };
+  $('editBtn').onclick=()=>{
+    const ta=$('emailEdit'); ta.value=$('emailView').innerText;
+    show($('emailView'),false); show(ta,true); ta.focus();
+    show($('actions'),false); show($('editActions'),true);
+  };
+  $('cancelBtn').onclick=()=>{
+    show($('emailEdit'),false); show($('emailView'),true);
+    show($('editActions'),false); show($('actions'),true);
+  };
+</script>
+</body>
+</html>

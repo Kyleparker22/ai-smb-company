@@ -1,0 +1,69 @@
+{
+  "_readme": "Goals targets — the Founder edits these (here or inline on the Goals tab). Currents are NEVER stored: the server computes them live from crm/data.json on every /api/goals call. null target = 'set target' in the UI. _sources notes mark prefills sourced from 06_business-plan.md; editing a target inline drops its note.",
+  "northstar": {
+    "metric": "liveClients",
+    "setBy": "the Founder",
+    "setOn": "2026-08-25",
+    "why": "Nine co-equal goal metrics is zero goals. One is the north star and the other eight are supporting — they are still tracked, still true, and explicitly subordinate. liveClients wins over MRR because MRR at brotherhood pricing ($1,000/mo against a $3,000 Core floor) measures the discount as much as the business, and because every one of the other eight either feeds live clients or protects the runway to reach them. Rejected: dealsInMotion (3 today, and a board can be busy without ever signing) and mrr (see above).",
+    "target": "read from targets.liveClients — never restated here. One number, one target, one place to change it.",
+    "supporting": [
+      "mrr",
+      "dealsInMotion",
+      "newProspects",
+      "activeConnectors",
+      "prospectiveConnectors",
+      "activeAdvisors",
+      "referredMRR",
+      "marginPct"
+    ],
+    "changeRule": "the Founder's, and only the Founder's. Melanie may propose a change and may never adopt one (decisions/2026-07-08_melanie-initiative-loop.md). Changing it sweeps to runtime/agent-registry.json agent_metrics (every 'ladders' value is a claim about THIS number) and is checked by runtime/consistency-check.py."
+  },
+  "updated": "2026-08-25",
+  "year": {
+    "label": "2026",
+    "targets": {
+      "mrr": 36000,
+      "liveClients": 15,
+      "dealsInMotion": 10,
+      "newProspects": 50,
+      "activeConnectors": 8,
+      "prospectiveConnectors": 50,
+      "activeAdvisors": 1,
+      "referredMRR": 9000,
+      "marginPct": 72
+    },
+    "_sources": {}
+  },
+  "quarters": {
+    "2026-Q3": {
+      "targets": {
+        "mrr": 13000,
+        "liveClients": 5,
+        "dealsInMotion": 5,
+        "newProspects": 40,
+        "activeConnectors": 3,
+        "prospectiveConnectors": 40,
+        "activeAdvisors": 0,
+        "referredMRR": 3000,
+        "marginPct": 65
+      },
+      "_sources": {
+        "marginPct": "06_business-plan.md §Assumptions: gross margin ~78–82% Y1; early quarters discounted for brotherhood pricing + hardening iteration — edit me"
+      }
+    },
+    "2026-Q4": {
+      "targets": {
+        "mrr": 28000,
+        "liveClients": 10,
+        "dealsInMotion": 10,
+        "newProspects": 50,
+        "activeConnectors": 8,
+        "prospectiveConnectors": 40,
+        "activeAdvisors": null,
+        "referredMRR": 9000,
+        "marginPct": 70
+      },
+      "_sources": {}
+    }
+  }
+}

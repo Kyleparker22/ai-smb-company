@@ -1,0 +1,14 @@
+last_run.json
+roster.json
+.env
+.watch_state.json
+learned_priorities.json
+canvass_*.json
+claim_*.md
+crew_state.json
+outcomes_live.json
+storm_history.json
+xweather_events.json
+.mesh.grib2
+.vc_cache.json
+.sent_journal.jsonl

@@ -1,0 +1,5 @@
+# runtime-generated project/shared data — stays on the serving machine, not in git
+data/projects/
+data/shared/
+# credentials — NEVER committed
+.env

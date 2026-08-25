@@ -1,0 +1,8 @@
+2026-06-21 — Write a flag as a concrete checklist, and the agent applies it next cycle; write it as a narrative, and it doesn't
+
+Source: Kolby's eval (`loops/eval-review/2026-06-21.md`), observing the close of the 06-11 → 06-21 feed-forward chain on Katie/content. The 06-14 flag (em-dash cap exceeded + locked-tagline riffed) was written to `learnings/brand-voice/2026-06-14_em-dash-cap-and-locked-taglines.md` as an explicit, do-this checklist ("count em-dashes per paragraph before finalizing"; "treat the tagline as verbatim on seal spots"). Both 06-19 content drafts then applied it by name and the slip did not recur — the second consecutive cycle (after the 06-11 grounding flag → 06-12 fix) where a Kolby flag became changed behavior within one run.
+Pattern: Flags written as a countable/checkable instruction ("count X", "treat Y as verbatim", "skip the WebSearch that tempts unsourced stats") get internalized at Step 0 and cited back in the next artifact. The mechanism is the checklist, not the prose explaining why — the agent needs the *action*, pre-formatted to drop into its pre-publish pass.
+Implication: When Kolby writes a learning from a flag, phrase the Implication as a literal pre-finalize checklist line the owning agent can run, not a narrative of the failure. One concrete verb per slip. The "why" is context; the checklist is the payload.
+Audience: Kolby (eval — how to write learnings), and any cross-cutting observer (Brett) writing feed-forward entries.
+
+Triggers: skill:write-learning, writing a learning, agent:kolby, agent:brett, feed-forward entry, always

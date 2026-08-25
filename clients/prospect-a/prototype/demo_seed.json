@@ -1,0 +1,17 @@
+{
+  "_note": "DEMO-ONLY seed. These are REAL storms Nick verified by hand the week of 06/2026 that NOAA's free ground reports missed — the 1-inch-plus hail days. Used only in the demo to show what the premium hail sources (HailTrace / Interactive Hail Maps / Xweather) add once connected. The live engine (storm_poc.py) never uses this file; it only pulls what it can actually fetch.",
+  "storms": [
+    {"county": "Sumter",  "date": "2026-06-24", "max_hail_in": 1.25, "max_wind_mph": 59, "tornado": false,
+     "lat": 28.85, "lon": -82.05, "confidence": "HIGH",
+     "sources_hit": ["HailTrace", "Interactive Hail Maps", "Xweather"], "trigger": "knock_all"},
+    {"county": "Osceola", "date": "2026-06-24", "max_hail_in": 1.25, "max_wind_mph": 60, "tornado": false,
+     "lat": 28.29, "lon": -81.41, "confidence": "HIGH",
+     "sources_hit": ["HailTrace", "Interactive Hail Maps", "Xweather"], "trigger": "knock_all"},
+    {"county": "Flagler", "date": "2026-06-26", "max_hail_in": 1.25, "max_wind_mph": null, "tornado": false,
+     "lat": 29.47, "lon": -81.26, "confidence": "HIGH",
+     "sources_hit": ["HailTrace", "Interactive Hail Maps"], "trigger": "knock_all"},
+    {"county": "Pasco",   "date": "2026-06-26", "max_hail_in": 0.75, "max_wind_mph": null, "tornado": false,
+     "lat": 28.24, "lon": -82.33, "confidence": "HIGH",
+     "sources_hit": ["HailTrace", "Xweather"], "trigger": "knock"}
+  ]
+}

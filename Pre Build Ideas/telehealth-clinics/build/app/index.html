@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encounter OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-routing"></section>
+  <section class="view" id="v-intakes"></section>
+  <section class="view" id="v-unseen"></section>
+  <section class="view" id="v-docs"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. This system never routes a patient to
+a clinician unlicensed in their state, never answers a clinical question, and cannot close an
+encounter whose documentation is incomplete.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'routing',label:'Licensure routing'},{id:'intakes',label:'Async intakes'},
+      {id:'unseen',label:'Paid, not seen'},{id:'docs',label:'Documentation'},
+      {id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,routing,intakes,unseen,docs,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.kind} · ${d.config.staff}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The clinic, counted','',
+      `<div class="grid">
+        ${stat('States with no licensed clinician', fmt.num(b.gap_states), 'you have patients there', b.gap_states?'alert':'')}
+        ${stat('Patients in those states', fmt.num(b.gap_patients), 'nobody on the roster may see them', b.gap_patients?'alert':'')}
+        ${stat('Paid → seen', val(b.conversion,'rate',fmt.pct),
+          b.conversion._missing?'':`${b.conversion.seen} of ${b.conversion.paid} paid encounters`)}
+        ${stat('Paid and still waiting', fmt.num(b.paid_not_seen), 'the leak after payment', b.paid_not_seen?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">
+        ${stat('Encounters missing documentation', fmt.num(b.doc_gaps), 'cannot be closed', b.doc_gaps?'warn':'')}
+        ${stat('Untriaged intakes', fmt.num(b.intakes_open), 'an urgent one never waits in a queue')}
+        ${stat('Active clinicians', fmt.num(b.clinicians), 'inactive licences never count')}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'patient messages are R1')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}</div>`) +
+    panel('Coverage gaps','the growth constraint most telehealth clinics cannot see',
+      table([{label:'State'},{label:'Patients'},{label:'Why it matters'}], b.gaps,
+        g=>`<td><b>${esc(g.state)}</b></td><td>${g.patients}</td><td>${esc(g.why)}</td>`, true));
+}
+
+async function routing(){
+  const [p,c] = await Promise.all([API.get('/api/patients'),API.get('/api/clinicians')]);
+  document.getElementById('v-routing').innerHTML =
+    panel('The roster','an inactive licence is not a licence',
+      table([{label:'Clinician'},{label:'Licensed in'},{label:'Active'}], c.rows,
+        r=>`<td>${esc(r.name)}</td><td>${(r.licences||[]).map(esc).join(', ')}</td>
+            <td>${pill(r.active?'active':'inactive', r.active?'good':'bad')}</td>`, true)) +
+    panel('Route a patient','pick someone in an uncovered state and watch it refuse',
+      table([{label:'Patient'},{label:'State'},{label:''}], p.rows,
+        r=>`<td>${esc(r.name)}</td><td>${esc(r.state)}</td>
+            <td class="right"><button class="act" onclick="doRoute('${r.id}')">Route</button></td>`, true)) +
+    `<div id="rout"></div>`;
+}
+async function doRoute(id){
+  const r = await API.post(`/api/route/${id}`,{});
+  document.getElementById('rout').innerHTML = panel('Routing result','',
+    r.refused
+      ? `<div class="banner bad"><b>Refused — ${esc(r.refused)}.</b><br>${esc(r.why)}
+         <div class="f" style="margin-top:6px">${esc(r.action||'')}
+         ${r.clinicians_available_elsewhere!=null?` (${r.clinicians_available_elsewhere} clinicians are active, none licensed here)`:''}</div></div>`
+      : `<div class="banner good">${esc(r.note)}</div>` +
+        table([{label:'Clinician'},{label:'Open encounters'},{label:'Why'}], r.candidates,
+          c=>`<td>${esc(c.name)}</td><td>${c.open_encounters}</td><td>${esc(c.why)}</td>`, true));
+}
+
+async function intakes(){
+  const d = await API.get('/api/intakes');
+  document.getElementById('v-intakes').innerHTML =
+    `<div class="banner warn">An urgent signal <b>stops the async flow</b> and says:
+      “${esc(d.instruction)}” It is never queued and never gets a chart prepared for it.</div>` +
+    panel('Submitted intakes','',
+      table([{label:'When'},{label:'Patient'},{label:'What they wrote'},{label:'Label'},{label:''}],
+        d.rows, i=>`<td>${fmt.stamp(i.at)}</td><td>${esc(i.patient)}</td><td>${esc(i.narrative)}</td>
+          <td>${i.label?pill(i.label,i.label==='urgent'?'bad':''):'—'}</td>
+          <td class="right"><button class="act primary" onclick="tri('${i.id}')">Triage</button></td>`, true)) +
+    `<div id="iout"></div>`;
+}
+async function tri(id){
+  const r = await API.post(`/api/intakes/${id}/triage`);
+  document.getElementById('iout').innerHTML = panel('What happened','',
+    r.stopped
+      ? `<div class="banner bad"><b>Async flow stopped — ${esc(r.kind)}.</b> ${esc(r.why)}
+         <br>Said verbatim: “${esc(r.said)}”</div>`
+      : `<div class="banner">Chart prepared. ${esc(r.chart.note)}
+         ${r.chart.missing.length?`<br><b>Unanswered:</b> ${r.chart.missing.map(esc).join(', ')}`
+           :'<br>Every question was answered.'}</div>` +
+        table([{label:'Field'},{label:'Answer'}], Object.entries(r.chart.chart),
+          e=>`<td>${esc(e[0])}</td><td>${e[1]?esc(e[1]):blank('not answered')}</td>`, true));
+  intakes();
+}
+
+async function unseen(){
+  const d = await API.get('/api/unseen');
+  document.getElementById('v-unseen').innerHTML =
+    `<div class="banner">In telehealth the leak between <b>paying</b> and <b>attending</b> is usually
+     bigger than the one before payment — and almost nobody measures it.</div>` +
+    panel('Paid and still waiting','',
+      table([{label:'Patient'},{label:'State'},{label:'Days since paid'},{label:'Amount'},{label:''}],
+        d.rows, r=>`<td>${esc(r.name||r.patient)}</td><td>${esc(r.state||'')}</td>
+          <td>${r.days_since_paid}</td><td>${r.amount?fmt.money(r.amount):'—'}</td>
+          <td class="right"><button class="act" onclick="reeng('${r.encounter}')">Draft</button></td>`, true)) +
+    `<div id="uout"></div>`;
+}
+async function reeng(id){
+  const r = await API.post(`/api/unseen/${id}/draft`);
+  document.getElementById('uout').innerHTML = panel('Draft','',
+    `<div class="banner">Queued at the approval gate — ${esc(r.why||'')}
+      <div style="margin-top:8px;padding:10px;background:var(--bg2);border-radius:6px">${esc(r.draft||'')}</div></div>`);
+}
+
+async function docs(){
+  const d = await API.get('/api/documentation');
+  document.getElementById('v-docs').innerHTML =
+    `<div class="banner">Every encounter must carry: ${d.required.map(esc).join(', ')}.
+     An encounter missing any of them <b>cannot be closed by anyone</b>.</div>` +
+    panel('Encounters with gaps','',
+      table([{label:'Encounter'},{label:'Patient'},{label:'Closed'},{label:'Missing'},{label:''}],
+        d.rows, r=>`<td>${esc(r.encounter)}</td><td>${esc(r.patient)}</td>
+          <td>${r.closed?pill('closed','warn'):pill('open')}</td>
+          <td><span class="pill bad">${r.missing.map(esc).join(', ')}</span></td>
+          <td class="right"><button class="act" onclick="cls('${r.encounter}')">Try to close</button></td>`, true)) +
+    `<div id="dout"></div>`;
+}
+async function cls(id){
+  const r = await API.post(`/api/encounters/${id}/close`,{human:'clinician'});
+  document.getElementById('dout').innerHTML = panel('Result','',
+    r.refused
+      ? `<div class="banner bad"><b>Refused — ${esc(r.refused)}.</b> ${esc(r.why)}
+         <br>Missing: ${r.missing.map(esc).join(', ')}</div>`
+      : `<div class="banner good">Closed by ${esc(r.closed_by)}. ${esc(r.note||'')}</div>`);
+  docs();
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi'+(Object.keys(roiIn).length?'?'+new URLSearchParams(roiIn):''));
+  const rec=d.recorded||{};
+  const f=[['unseen_count','Paid but unseen','counted'],
+           ['visit_value','Visit value','median of recorded amounts'],
+           ['recovery_rate','Recovery rate (0–1)','yours'],
+           ['encounters_year','Encounters per year','counted'],
+           ['minutes_saved','Clinician minutes saved per encounter','yours'],
+           ['clinician_rate','Clinician hourly rate','yours'],
+           ['routing_hours_wk','Coordination hours / week','yours'],
+           ['staff_rate','Staff hourly rate','yours'],
+           ['coverage_value','Value of closing a coverage gap','you decide'],
+           ['exposure_value','Value of never routing unlicensed','you decide']];
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    panel('The question we refuse','',`<button class="act" onclick="ask()">Ask "is this dose safe?"</button><div id="askout"></div>`) +
+    renderApprovals(ap.pending,'decide') + renderEval(ev.routing) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function ask(){
+  const r=await API.post('/api/ask',{text:'is this dose safe?'});
+  document.getElementById('askout').innerHTML =
+    `<div class="banner warn" style="margin-top:10px"><b>Refused, by class.</b> ${esc(r.reply)}
+     <div class="f" style="margin-top:6px">${esc(r.why)}</div></div>`;
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'coordinator'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

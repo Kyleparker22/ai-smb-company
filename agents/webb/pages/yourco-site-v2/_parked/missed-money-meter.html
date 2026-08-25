@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="yourco" />
+<meta property="og:title" content="The Missed-Money Meter — yourco" />
+<meta property="og:description" content="Three numbers, ten seconds: see how much revenue your business leaks every month to missed calls and slow follow-up. Free, no email required." />
+<meta property="og:image" content="https://yourco.com/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://yourco.com/og.png" />
+<title>The Missed-Money Meter — yourco</title>
+<meta name="description" content="Three numbers, ten seconds: see how much revenue your business leaks every month to missed calls and slow follow-up. Free, no email required." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23161B33'/%3E%3Ctext x='48' y='70' font-size='64' font-family='-apple-system,Helvetica,Arial,sans-serif' font-weight='600' text-anchor='middle' fill='%23F4EFE6'%3Ei%3C/text%3E%3Ccircle cx='66' cy='32' r='7' fill='%23B8965A'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="site.css" />
+<style>
+  :root{--indigo:#161B33;--cream:#F4EFE6;--brass:#B8965A;--ink:#15192e;--muted:#5b617a;--line:#e7e1d4}
+  .meter{max-width:560px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 44px rgba(22,27,51,.10);overflow:hidden}
+  .meter .head{background:radial-gradient(120% 120% at 90% -30%,rgba(184,150,90,.22),transparent),var(--indigo);color:var(--cream);padding:22px 26px}
+  .meter .head .wm{font-weight:700;opacity:.9;font-size:13px}
+  .meter .head h2{margin:6px 0 0;color:var(--cream);font-size:20px;border:0}
+  .meter .body{padding:24px 26px}
+  .fld{margin:16px 0}
+  .fld label{display:block;font-weight:600;font-size:14.5px;margin-bottom:6px}
+  .fld .hint{font-weight:400;color:var(--muted);font-size:12.5px}
+  .fld input,.fld select{width:100%;padding:12px 13px;border:1px solid #d9d3c5;border-radius:9px;font:inherit;background:#fff}
+  .fld input:focus,.fld select:focus{outline:2px solid var(--brass);border-color:var(--brass)}
+  .out{margin-top:8px;background:var(--indigo);color:var(--cream);border-radius:14px;padding:22px 24px;text-align:center;transition:opacity .2s}
+  .out .n{font-size:46px;font-weight:800;color:#f1d9a8;line-height:1}
+  .out .l{font-size:13.5px;color:rgba(244,239,230,.82);margin-top:7px}
+  .out.idle .n{font-size:30px;color:rgba(244,239,230,.75)}
+  .mathline{background:#faf7f0;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--ink);margin-top:12px}
+  .mathline code{background:#efe9dc;padding:1px 6px;border-radius:5px}
+  .cta{margin-top:16px;text-align:center}
+  .cta .pill{display:inline-block}
+  .disc{color:var(--muted);font-size:12px;margin-top:12px;text-align:center}
+</style>
+</head>
+<body>
+  <nav class="nav"><div class="wrap">
+    <a class="mark" href="index.html">yourco<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a><a href="verticals.html">Industries</a><a href="audit.html">The audit</a>
+      <a href="https://calendly.com/the Founder-yourco/30min" class="pill sm">Book a call</a>
+    </div>
+  </div></nav>
+
+  <section class="tile hero"><div class="wrap narrow" style="text-align:center">
+    <div class="eyebrow">the missed-money meter · free · 10 seconds</div>
+    <h1>How much is your phone costing you?</h1>
+    <div class="gate" aria-hidden="true"><span class="dia"></span><span class="line"></span><span class="dia"></span></div>
+    <p>Three numbers and you'll see — in your own figures — roughly how much revenue leaks out of your business every month before you ever quote it. No email required.</p>
+  </div></section>
+
+  <section class="tile parchment"><div class="wrap">
+    <div class="meter">
+      <div class="head"><div class="wm">yourco</div><h2 id="mTitle">Your monthly leak</h2></div>
+      <div class="body">
+        <div class="fld"><label>Inbound calls / leads a month <span class="hint">(rough is fine)</span></label><input id="leads" type="text" inputmode="numeric" placeholder="e.g. 120" /></div>
+        <div class="fld"><label>How many do you miss or answer too slowly?</label>
+          <select id="missed">
+            <option value="" disabled selected>Choose one…</option>
+            <option value="0.07">Under 10%</option>
+            <option value="0.17">10–25%</option>
+            <option value="0.37">25–50%</option>
+            <option value="0.6">More than half</option>
+          </select></div>
+        <div class="fld"><label>Average job / customer value</label><input id="job" type="text" inputmode="numeric" placeholder="$1,000" /></div>
+
+        <div class="out idle" id="out"><div class="n" id="num">Enter your numbers ↑</div><div class="l" id="lbl">we'll show your monthly leak instantly</div></div>
+        <div class="mathline" id="math" style="display:none"></div>
+
+        <div class="cta" id="cta" style="display:none">
+          <a class="pill" id="ctaLink" href="audit.html">See your full breakdown — free Revenue Leak Snapshot →</a>
+          <div class="disc">An estimate from your own inputs (math shown). The full Revenue Leak Snapshot goes deeper and shows what an AI system could recover.</div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="tile"><div class="wrap narrow prose" style="text-align:center">
+    <div class="eyebrow">what now</div>
+    <h2 class="sec">That leak is recoverable.</h2>
+    <p>yourco builds and operates an AI system that answers every call, books the job, and follows up — so the money on the meter stops walking to whoever picked up first. We run it; you take the booked work.</p>
+    <div class="ctas" style="justify-content:center"><a class="pill" href="verticals.html">Find your industry →</a><a class="pill ghost" href="audit.html">The full audit</a></div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap">yourco · the missed-money meter · <a href="mailto:founder@yourco.example.com">founder@yourco.example.com</a></div></footer>
+
+<script src="snapshot-config.js"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const num = v => { const n = parseFloat(String(v||"").replace(/[^0-9.]/g,"")); return isFinite(n)?n:0; };
+  const money = n => "$" + Math.round(n).toLocaleString();
+  const slug = (new URLSearchParams(location.search).get("v")||"").toLowerCase();
+  const BOOK_RATE = 0.30;
+
+  // optional: theme to a vertical if ?v= passed and config available
+  function applyVertical(){
+    try{
+      if(slug && window.YOURCO_VERTICALS && window.YOURCO_VERTICALS[slug]){
+        const v = window.YOURCO_VERTICALS[slug];
+        $("mTitle").textContent = "Your monthly leak — " + v.name;
+        $("ctaLink").href = "snapshot.html?v=" + slug;
+      } else {
+        $("ctaLink").href = "verticals.html";
+      }
+    }catch(_){ $("ctaLink").href = "verticals.html"; }
+  }
+
+  function recalc(){
+    const leads = num($("leads").value);
+    const frac = parseFloat($("missed").value) || 0;
+    const job = num($("job").value);
+    const out = $("out");
+    if(!(leads>0 && frac>0 && job>0)){
+      out.classList.add("idle");
+      $("num").textContent = "Enter your numbers ↑";
+      $("lbl").textContent = "we'll show your monthly leak instantly";
+      $("math").style.display = "none"; $("cta").style.display = "none";
+      return;
+    }
+    const missedRaw = leads*frac;
+    const missed = missedRaw>=1 ? Math.round(missedRaw) : Math.round(missedRaw*10)/10;
+    const monthly = missed * BOOK_RATE * job;
+    out.classList.remove("idle");
+    $("num").textContent = money(monthly) + " / mo";
+    $("lbl").textContent = "estimated revenue leaking from missed & slow-answered leads — about " + money(monthly*12) + "/yr";
+    $("math").style.display = "block";
+    $("math").innerHTML = `<code>${missed} missed/slow leads</code> × <code>~30% would've booked</code> × <code>${money(job)} avg job</code> = <b>${money(monthly)}/mo</b>`;
+    $("cta").style.display = "block";
+  }
+
+  applyVertical();
+  ["leads","missed","job"].forEach(id=>{ $(id).addEventListener("input",recalc); $(id).addEventListener("change",recalc); });
+</script>
+</body>
+</html>

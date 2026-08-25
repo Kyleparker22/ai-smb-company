@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Client — Field-to-Quote Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#151310; --bg2:#1D1A15; --card:#211D17; --card2:#262117; --line:rgba(240,232,216,.10);
+  --cream:#F3ECDE; --muted:#B7AC97; --dim:#8B8069;
+  --bronze:#C98A4B; --bronze2:#E0A868; --sage:#8FA27C; --red:#C96B5B;
+  --shadow:0 30px 80px -30px rgba(0,0,0,.75);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--cream);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;font-size:14px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.1;margin:0}
+button{font-family:Inter,sans-serif;cursor:pointer}
+input,select,textarea{font-family:Inter,sans-serif;background:var(--bg2);border:1px solid var(--line);color:var(--cream);border-radius:8px;padding:7px 10px;font-size:13px}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--bronze)}
+header{display:flex;align-items:center;gap:10px 14px;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--bg2);position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;font-family:Fraunces,serif;font-weight:700;font-size:18px}
+.brand .mk{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--bronze),#8a5a2a);display:flex;align-items:center;justify-content:center;color:#1a1206;font-weight:800;font-size:15px;font-family:Inter}
+.hsub{color:var(--dim);font-size:12px;margin-left:2px}
+.pill{font-size:11px;letter-spacing:.06em;padding:4px 10px;border-radius:12px;border:1px solid var(--line);color:var(--muted);max-width:230px}
+.pill.warn{color:var(--bronze2);border-color:rgba(201,138,75,.4)}
+.spacer{flex:1}
+nav{display:flex;gap:14px;padding:8px 22px 10px;border-bottom:1px solid var(--line);background:var(--bg2);position:sticky;top:59px;z-index:49;flex-wrap:wrap;align-items:flex-end}
+nav .phase{display:flex;flex-direction:column;gap:2px}
+nav .phase .tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav .phase+.phase{border-left:1px solid var(--line);padding-left:14px}
+nav button{background:none;border:1px solid transparent;color:var(--muted);padding:8px 14px;border-radius:9px;font-size:13px;font-weight:600}
+nav button.on{background:var(--card);border-color:var(--line);color:var(--cream)}
+nav button .b{display:inline-block;min-width:17px;padding:1px 5px;margin-left:6px;border-radius:99px;background:rgba(201,138,75,.18);color:var(--bronze2);font-size:11px}
+main{padding:22px;max-width:1280px;margin:0 auto}
+.tab{display:none}.tab.on{display:block}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{font-size:16px;margin-bottom:10px}
+.card .sub{color:var(--dim);font-size:12px;margin:-6px 0 12px}
+label{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin:10px 0 4px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{background:linear-gradient(135deg,var(--bronze),#a86c33);border:none;color:#1a1206;font-weight:700;padding:9px 16px;border-radius:9px;font-size:13px}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--cream);font-weight:600}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn.danger{background:none;border:1px solid rgba(201,107,91,.5);color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:99px;font-weight:600;letter-spacing:.03em}
+.tag.stock{background:rgba(143,162,124,.16);color:var(--sage)}
+.tag.special{background:rgba(201,107,91,.16);color:var(--red)}
+.tag.moasure{background:rgba(143,162,124,.16);color:var(--sage)}
+.tag.survey{background:rgba(201,138,75,.18);color:var(--bronze2)}
+.tag.manual{background:rgba(201,107,91,.16);color:var(--red)}
+.banner{border:1px solid rgba(201,138,75,.35);background:rgba(201,138,75,.07);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--muted);margin-bottom:18px}
+.banner b{color:var(--bronze2)}
+.big{font-family:Fraunces,serif;font-size:30px;color:var(--bronze2);line-height:1.1}
+.kpirow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.kpirow{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+.kpi .v{font-family:Fraunces,serif;font-size:24px;margin-top:4px}
+#board{background:#0f0e0b;border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative}
+#boardsvg{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+.palette{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.palette button{background:var(--card2);border:1px solid var(--line);color:var(--cream);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600}
+.palette button:hover{border-color:var(--bronze)}
+.inspector{position:absolute;top:12px;right:12px;width:270px;background:rgba(29,26,21,.97);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow)}
+.inspector h4{margin:0 0 8px;font-family:Fraunces,serif;font-size:15px}
+.insp-x{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:4px}
+.dimrow{display:grid;grid-template-columns:44px 70px 1fr;gap:6px;align-items:center;margin:6px 0}
+.dimrow .dl{font-size:11px;color:var(--dim);text-transform:uppercase}
+.scope-block{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.scope-block h4{margin:0 0 6px;font-family:Fraunces,serif;font-size:15px;color:var(--bronze2)}
+.scope-block [contenteditable]{outline:none;color:var(--cream);font-size:13.5px;line-height:1.6;white-space:pre-wrap}
+.flag{display:flex;gap:12px;align-items:flex-start;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:10px}
+.flag input{margin-top:3px;accent-color:var(--bronze)}
+.flag .t{font-weight:600}
+.flag .d{color:var(--muted);font-size:12.5px}
+.gate{border-radius:12px;padding:16px 18px;font-weight:600;margin-top:14px;border:1px solid}
+.gate.locked{border-color:rgba(201,107,91,.5);background:rgba(201,107,91,.08);color:var(--red)}
+.gate.open{border-color:rgba(143,162,124,.5);background:rgba(143,162,124,.08);color:var(--sage)}
+.mono{font-variant-numeric:tabular-nums}
+.hint{color:var(--dim);font-size:12px}
+.tierstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.tier{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:center;cursor:pointer}
+.tier.on{border-color:var(--bronze)}
+.tier .tn{font-family:Fraunces,serif;font-size:15px}
+.tier .tp{font-family:Fraunces,serif;font-size:20px;color:var(--bronze2)}
+#planCalWrap{position:relative;display:inline-block;max-width:100%}
+#planCalWrap img{max-width:100%;border-radius:10px;display:block}
+#planCalWrap .cp{position:absolute;width:14px;height:14px;border-radius:99px;background:var(--bronze2);border:2px solid #1a1206;transform:translate(-50%,-50%);pointer-events:none}
+footer{padding:26px 22px;color:var(--dim);font-size:12px;text-align:center;border-top:1px solid var(--line);margin-top:30px}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.thumb{position:relative;width:120px}
+.thumb img{width:120px;height:86px;object-fit:cover;border-radius:9px;border:1px solid var(--line);display:block}
+.thumb button{position:absolute;top:4px;right:4px;background:rgba(21,19,16,.8);border:none;color:var(--red);border-radius:6px;font-size:11px;padding:2px 6px}
+#clientView{background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:auto;padding:0}
+#clientView:fullscreen{border:none;border-radius:0;padding:0}
+.cv-hero{padding:44px 40px 30px;text-align:center;border-bottom:1px solid var(--line)}
+.cv-hero .kicker{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--bronze2);margin-bottom:12px}
+.cv-hero h1{font-size:clamp(26px,4vw,40px)}
+.cv-hero .addr{color:var(--muted);margin-top:10px;font-size:15px}
+.cv-sec{padding:30px 40px;border-bottom:1px solid var(--line)}
+.cv-sec h2{font-size:21px;margin-bottom:6px}
+.cv-sec .lead{color:var(--muted);font-size:13.5px;margin-bottom:16px}
+.cv-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.cv-gallery img{width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.cv-gallery .cap{font-size:11.5px;color:var(--dim);margin-top:5px}
+.cv-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:800px){.cv-tiers{grid-template-columns:1fr}}
+.cv-tier{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.cv-tier.on{border-color:var(--bronze)}
+.cv-tier .tn{font-family:Fraunces,serif;font-size:17px}
+.cv-tier .tp{font-family:Fraunces,serif;font-size:30px;color:var(--bronze2);margin:6px 0 4px}
+.cv-tier .td{color:var(--dim);font-size:12px}
+.cv-range{text-align:center;margin-top:18px;color:var(--muted);font-size:13px}
+.cv-range .r{font-family:Fraunces,serif;font-size:24px;color:var(--cream);display:block;margin-bottom:4px}
+.cv-scope{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px}
+.cv-scope h4{font-family:Fraunces,serif;font-size:15px;color:var(--bronze2);margin:0 0 6px}
+.cv-scope p{margin:0;font-size:13px;color:var(--muted);line-height:1.6;white-space:pre-wrap}
+.cv-foot{padding:22px 40px;color:var(--dim);font-size:12px;text-align:center}
+.addons{display:flex;flex-direction:column;gap:8px;max-width:640px}
+.addon{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 16px;font-size:14.5px;cursor:pointer}
+.addon.on{border-color:rgba(201,138,75,.45)}
+.addon.locked{color:var(--muted);cursor:default}
+.addon input{accent-color:var(--bronze);width:16px;height:16px;margin-right:8px}
+.addon span:last-child{font-family:Fraunces,serif;color:var(--bronze2);font-size:16px}
+.cv-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.cv-timeline{grid-template-columns:1fr}}
+.tlcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tlcard .k{font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
+.tlcard .v{font-family:Fraunces,serif;font-size:21px;margin:6px 0 4px;color:var(--cream)}
+.tlcard .s{font-size:12px;color:var(--muted);line-height:1.5}
+.hiw{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:900px){.hiw{grid-template-columns:1fr 1fr}}
+.hiw div{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.hiw b{display:block;font-family:Fraunces,serif;font-size:14px;color:var(--bronze2);margin-bottom:4px}
+.hiw span{font-size:11.5px;color:var(--muted);line-height:1.4}
+body.presenting header,body.presenting nav,body.presenting .banner,body.presenting .internal-tools,body.presenting .stepbar,body.presenting #boardLockNote{display:none!important}
+body.presenting #clientView{position:fixed;inset:0;overflow-y:auto;background:var(--bg);z-index:998;padding:28px min(6vw,70px) 60px}
+#presentExit{position:fixed;top:14px;right:16px;z-index:999;background:rgba(0,0,0,.45);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:8px 16px;font-size:13px;cursor:pointer}
+.cv-option{border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:14px 0;background:var(--card)}
+.cv-option.on{border-color:var(--bronze2);box-shadow:0 0 0 1px var(--bronze2)}
+.opt-head{display:flex;align-items:center;gap:14px;margin-bottom:10px;font-size:17px}
+.opt-price{font-family:'Playfair Display',serif;font-size:20px;color:var(--bronze2)}
+.opt-desc{color:var(--muted);font-size:14px;line-height:1.5;margin:-4px 0 10px}.opt-desc i{color:var(--cream);font-style:italic}
+.opt-pick{color:var(--bronze2);font-weight:700}
+.opt-head .btn{margin-left:auto}
+.internal-tools>summary{cursor:pointer;color:var(--muted);font-size:13px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px}
+.repchips{display:flex;gap:8px;margin:4px 0 8px;flex-wrap:wrap}
+.repchip{background:none;border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer}
+.repchip.on{background:rgba(201,138,75,.16);border-color:var(--bronze2);color:var(--cream)}
+.hint.blocker{color:var(--red);font-weight:700;font-size:14px}
+.stepbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin-bottom:12px;font-size:13px}
+.stepbar input{width:auto;margin-right:6px}
+.navgroup{font-size:9px;letter-spacing:.16em;color:var(--dim);padding-left:6px;white-space:nowrap}
+.confwrap{max-width:560px;margin:18px auto 0}
+.confbar{position:relative;height:14px;border-radius:99px;background:rgba(240,232,216,.07);overflow:hidden}
+.confbar .fill{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,rgba(201,138,75,.55),rgba(224,168,104,.85));border-radius:99px;transition:left .9s cubic-bezier(.2,.8,.2,1),right .9s cubic-bezier(.2,.8,.2,1)}
+.conflab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.tighten{margin-top:14px;text-align:left;display:inline-block}
+.tighten li{font-size:12.5px;color:var(--muted);margin:4px 0;list-style:none}
+.tighten li::before{content:'○ ';color:var(--dim)}
+.tighten li.done{color:var(--sage)}
+.tighten li.done::before{content:'● '}
+.accbadge{display:inline-flex;gap:9px;align-items:center;border:1px solid rgba(143,162,124,.4);background:rgba(143,162,124,.08);border-radius:12px;padding:9px 16px;margin-top:16px;font-size:13px;color:var(--sage)}
+.accbadge b{font-family:Fraunces,serif;font-size:17px}
+.statetabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.statetabs button{background:var(--card2);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:5px 13px;font-size:12px;font-weight:600}
+.statetabs button.on{color:var(--cream);border-color:var(--bronze)}
+.statetabs button:disabled{opacity:.4;cursor:default}
+.tl{border-left:2px solid rgba(201,138,75,.35);margin-left:8px;padding-left:20px}
+.tl-item{margin-bottom:18px;position:relative}
+.tl-item::before{content:'';position:absolute;left:-26px;top:4px;width:10px;height:10px;border-radius:99px;background:var(--bronze)}
+.tl-item .d{font-size:11px;letter-spacing:.06em;color:var(--bronze2);text-transform:uppercase}
+.tl-item .n{font-size:13.5px;color:var(--cream);margin:3px 0 8px}
+.tl-item .ph{display:flex;gap:8px;flex-wrap:wrap}
+.tl-item .ph img{width:130px;height:92px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.variants{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+@media(max-width:900px){.variants{grid-template-columns:1fr}}
+.variant{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer}
+.variant:hover{border-color:var(--bronze)}
+.variant h4{margin:0 0 4px;font-family:Fraunces,serif;font-size:14px;color:var(--bronze2)}
+.variant .vd{font-size:11.5px;color:var(--muted);line-height:1.5}
+.variant svg{width:100%;height:auto;background:#12100d;border-radius:8px;margin-top:8px}
+.rfq{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.rfq h4{margin:0 0 4px;font-family:Fraunces,serif;font-size:15px}
+.rfq .band{font-size:12px;color:var(--bronze2)}
+.rfq textarea{width:100%;height:120px;margin-top:8px;font-size:12px;line-height:1.5}
+.rfq .st{font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.rfq .st.replied{color:var(--sage);border-color:rgba(143,162,124,.4)}
+.tunerow{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.tunerow .tv{font-family:Fraunces,serif;font-size:26px;color:var(--bronze2)}
+#lightbox{position:fixed;inset:0;background:rgba(10,9,7,.96);z-index:9999;display:none;align-items:center;justify-content:center;overflow:hidden}
+#lightbox.on{display:flex}
+#lightbox img{max-width:none;transform-origin:0 0;cursor:grab;user-select:none}
+#lightbox .lb-ui{position:fixed;top:16px;right:16px;display:flex;gap:8px;z-index:10000}
+#lightbox .lb-ui button{background:var(--card);border:1px solid var(--line);color:var(--cream);border-radius:9px;padding:8px 14px;font-size:16px;font-weight:700}
+#lightbox .lb-hint{position:fixed;bottom:14px;left:0;right:0;text-align:center;color:var(--dim);font-size:12px}
+.cv-gallery img{cursor:zoom-in}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="mk">SC</div>Sample Client <span class="hsub">Design Studio · Field-to-Quote</span></div>
+  <span class="pill warn">STAGED — integrations ALL LIVE (Aspire · HubSpot · Shepherd's · renders) · pre-signature</span>
+  <div class="spacer"></div>
+  <select id="projSelect" onchange="switchProject(this.value)" style="max-width:200px"></select>
+  <button class="btn ghost sm" onclick="newProject()">+ New</button>
+  <span class="pill" id="savePill">saved</span>
+  <span class="pill" id="syncPill" title="Where this project is stored">…</span>
+  <button class="btn ghost sm" onclick="loadSample()">Load sample project</button>
+  <button class="btn danger sm" onclick="resetAll()">Reset</button>
+</header>
+<nav id="nav"></nav>
+<main>
+
+<!-- ============ PROJECT ============ -->
+<div class="tab" id="tab-project">
+  <div class="banner"><b>How this works:</b> intake here → ground-truth measurements → 2D board (scaled, from real dims only) → quote (SiteOne-basis pricing × labor benchmarks × difficulty) → scope in Sample Client voice → Noah's approval gate. <b>The AI never invents a dimension.</b></div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Client &amp; site</h3>
+      <label>Client name</label><input id="p_client" style="width:100%">
+      <div class="row" style="margin-top:6px"><button class="btn ghost sm" onclick="pullFromHubspot()">⇄ Pull from HubSpot</button><div class="hint" id="hsPullMsg" style="flex:1"></div></div>
+      <label>Site address</label><input id="p_address" style="width:100%">
+      <label>Job type</label>
+      <select id="p_type"><option value="hardscape">Hardscape</option><option value="landscape">Full landscape</option><option value="both">Both</option></select>
+      <label>Survey / site plan received?</label>
+      <select id="p_surveyed"><option value="no">No — wider ballpark variance applies</option><option value="yes">Yes — tight variance</option></select>
+      <div class="hint" style="margin-top:8px">Charlene asks for a site plan/survey on every install call — that habit is the accuracy foundation.</div>
+      <label>Budget range</label><input id="p_budget" style="width:100%" placeholder="e.g. $30–50k, or 'flexible for the right design'">
+      <label>Timeline — when do they want it?</label><input id="p_timeline" style="width:100%" placeholder="e.g. before Memorial Day / ASAP / spring 2027">
+      <label>Sample Client rep(s)</label><div id="p_repchips" class="repchips"></div>
+      <label>Date added</label><div class="hint" id="p_created" style="font-size:13px;color:var(--cream)"></div>
+    </div>
+    <div class="card">
+      <h3>Consult notes</h3>
+      <div class="sub">Paste on-site notes or a consult transcript — or tap the keyboard mic and talk 🎤. Feeds the scope writer.</div>
+      <textarea id="p_notes" style="width:100%;height:172px" placeholder="e.g. Wants bluestone patio w/ seating wall, pergola w/ hanging lights, privacy arborvitae along back fence. Access: 36in gate left side. Gas line marked through middle of yard."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VISIT MODE ============ -->
+<div class="tab" id="tab-visit">
+  <div class="banner"><b>Visit Mode — the driveway flow.</b> Four steps, top to bottom. The platform auto-designs and auto-fires the render set in the background while you talk, then you flip to Design Studio and show them. <span id="visitChips"></span></div>
+  <div class="grid g2">
+    <div class="card"><h3>① Who &amp; where</h3>
+      <label>Client</label><input id="v_client" style="width:100%">
+      <label>Address</label><input id="v_address" style="width:100%">
+      <label>Budget (ask casually)</label><input id="v_budget" style="width:100%" placeholder="$30–50k">
+      <label>Rep(s) on this visit — tap all who are here</label><div id="v_repchips" class="repchips"></div>
+      <label>What they want — <b>tap the mic and just talk 🎤</b> <span class="hint">(→ Option 1 · Your Vision)</span></label>
+      <textarea id="v_notes" style="width:100%;height:90px" placeholder="bluestone patio, pergola with lights, fire pit…"></textarea>
+      <label>Nice to have <span class="hint">(small upgrades → Option 2 · Vision +)</span> 🎤</label>
+      <textarea id="v_nice" style="width:100%;height:48px" placeholder="maybe a seating wall if it fits the budget…"></textarea>
+      <label>The dream <span class="hint">(if budget stretched → Option 3 · The Dream)</span> 🎤</label>
+      <textarea id="v_dream" style="width:100%;height:48px" placeholder="outdoor kitchen, pergola with a TV wall…"></textarea>
+      <label>Sample Client recommends <span class="hint">(optional → Option 4 · The Sample Client; auto-composed from our best work if left blank)</span> 🎤</label>
+      <textarea id="v_sc" style="width:100%;height:48px" placeholder="what the crew would add — leave blank and the platform proposes from what pairs well"></textarea>
+    </div>
+    <div class="card"><h3>② Capture the site</h3>
+      <label>Photos (camera roll)</label><input type="file" id="v_photos" accept="image/*" multiple>
+      <div class="thumbs" id="v_thumbs"></div>
+      <label style="margin-top:8px">Moasure — paste the trace</label>
+      <textarea id="v_trace" style="width:100%;height:64px" placeholder="# boundary&#10;x,y per line…"></textarea>
+      <div class="row" style="margin-top:6px;align-items:flex-end"><div><label>No Moasure? Tape it: width (ft)</label><input type="number" id="v_yw" style="width:100px" placeholder="60"></div>
+      <div><label>× depth (ft)</label><input type="number" id="v_yd" style="width:100px" placeholder="40"></div></div>
+      <div class="hint">tape numbers import as MANUAL measurements — everything stays flagged field-verify until a Moasure trace or survey lands</div>
+      <div class="row"><div><label>Grade (ft fall)</label><input type="number" step="0.1" id="v_gradeft" style="width:90px"></div>
+      <div style="flex:1"><label>Access <span id="v_accessval"></span>/10</label><input type="range" id="v_access" min="1" max="10" style="width:100%"><div class="hint" id="v_accessdesc"></div></div></div>
+      <label>Why that access?  🎤</label><input id="v_accesswhy" style="width:100%" placeholder="36-inch gate, left side">
+      <label style="margin-top:6px"><input type="checkbox" id="v_handdig" style="width:auto;margin-right:6px">Utility lines through the yard</label>
+    </div>
+    <div class="card"><h3>③ Drop in their vision <span class="hint">(optional)</span></h3>
+      <div class="sub">A photo of a yard they loved, a saved video frame, a link. The renders match what they're picturing instead of guessing.</div>
+      <input type="file" id="v_inspo" accept="image/*" multiple>
+      <div class="row" style="margin-top:8px"><input id="v_inspourl" placeholder="or paste a link…" style="flex:1"><button class="btn ghost sm" onclick="addInspoUrl()">Add</button></div>
+      <div class="thumbs" id="inspoThumbs"></div>
+    </div>
+    <div class="card"><h3>④ Design &amp; show</h3>
+      <div class="sub">One tap: trace → board → "what they asked for" → render set fires in the background (~3 min while you keep talking).</div>
+      <button class="btn" style="width:100%;margin-bottom:8px" onclick="visitAutoDesign()">✦ Auto-design &amp; start renders</button>
+      <button class="btn ghost sm" style="width:100%" onclick="visitFireSet()">⟳ Fire render set again (replaces the old options with fresh ones from the fields above)</button>
+      <div class="hint" id="visitMsg"></div>
+      <button class="btn" style="width:100%;margin-top:10px" onclick="showTab('client')">Show the client → Design Studio</button>
+      <div class="hint" id="visitGuard" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SITE ============ -->
+<div class="tab" id="tab-site">
+  <div class="banner"><b>Everything true about the site lives here.</b> Photos, notes, and ground-truth measurements: <span class="tag moasure">MOASURE</span> <span class="tag survey">SURVEY / SITE PLAN</span> or <span class="tag manual">MANUAL — FIELD-VERIFY</span>. Manual numbers are allowed but never silently trusted.</div>
+  <div class="grid g2" style="margin-bottom:16px">
+    <div class="card">
+      <h3>Site photos</h3>
+      <div class="sub">The crew's phone photos from the visit — the input to the design render.</div>
+      <input type="file" id="p_photos" accept="image/*" multiple>
+      <div class="thumbs" id="photoThumbs"></div>
+    </div>
+    <div class="card">
+      <h3>Consult notes</h3>
+      <div class="sub">Same notes as Intake — edit here as the site visit adds detail. Feeds the scope writer AND the layout generator.</div>
+      <textarea id="p_notes2" style="width:100%;height:120px"></textarea>
+      <h3 style="margin-top:14px">Site difficulty (measured &amp; observed)</h3>
+      <div class="sub">Grade, access, and utilities are facts about the site — they live here and drive the labor factors on the quote automatically.</div>
+      <label>Grade — actual fall across the work area (ft)</label>
+      <div class="row"><input type="number" step="0.1" id="q_gradeft" style="width:110px" placeholder="ft of fall"><span class="hint" id="gradeHint"></span></div>
+      <label style="margin-top:10px">Access difficulty: <span id="accessVal" class="mono"></span>/10</label>
+      <input type="range" id="q_access" min="1" max="10" step="1" style="width:100%">
+      <div class="hint" id="accessHint"></div>
+      <label>Why that access rating?</label><input id="q_accesswhy" style="width:100%" placeholder="e.g. 36-inch gate on the left side; material staged in driveway, wheelbarrow only">
+      <label style="margin-top:10px"><input type="checkbox" id="q_handdig" style="width:auto;margin-right:8px">Utilities through work area (NC811) — hand-dig buffer</label>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Measurement registry</h3>
+      <table id="measTable"><thead><tr><th>Label</th><th class="num">Feet</th><th>Source</th><th></th></tr></thead><tbody></tbody></table>
+      <div id="crossCheck"></div>
+      <div class="row" style="margin-top:12px">
+        <input id="m_label" placeholder="Label (e.g. patio width)" style="flex:1">
+        <input id="m_val" type="number" step="0.1" placeholder="ft" style="width:80px">
+        <select id="m_src"><option value="moasure">Moasure</option><option value="survey">Survey/plan</option><option value="manual">Manual</option></select>
+        <button class="btn sm" onclick="addMeasurement()">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Moasure import</h3>
+      <div class="sub">Paste segments from a Moasure export — one per line, <span class="mono">label, feet</span>. Real export-format parsing lands when Colton sends sample files.</div>
+      <textarea id="moasurePaste" style="width:100%;height:110px" placeholder="back patio width, 21.5&#10;back patio depth, 14&#10;fence run east, 62.3"></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn sm" onclick="importMoasure()">Import as Moasure</button><span class="hint" id="moasureMsg"></span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>Moasure perimeter trace → auto-drawn board</h3>
+    <div class="sub">Walk the yard with the Moasure; paste the trace and the board draws the property, house, and existing features to scale — "drawing the house is the longest part" collapses to seconds. Format: <span class="mono"># boundary / # house / # feature Name</span> headers, then <span class="mono">x,y</span> points in feet. Real Moasure export parsing lands when Colton sends sample files.</div>
+    <textarea id="tracePaste" style="width:100%;height:110px" placeholder="# boundary&#10;0,0&#10;98,0&#10;98,60&#10;0,60&#10;# house&#10;22,4&#10;70,4&#10;70,26&#10;22,26"></textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="btn sm" onclick="importTrace()">Import trace</button>
+      <button class="btn ghost sm" onclick="loadSampleTrace()">Load sample trace</button>
+      <button class="btn danger sm" onclick="clearTrace()">Clear</button>
+      <span class="hint" id="traceMsg"></span>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>Site plan / survey underlay</h3>
+    <div class="sub">Upload the client's plan, click <b>two points</b> with a known distance between them, enter that distance — the plan is now to scale under the 2D board.</div>
+    <div class="row">
+      <input type="file" id="planFile" accept="image/*">
+      <button class="btn ghost sm" onclick="startCalibration()" id="calBtn" disabled>Calibrate scale</button>
+      <button class="btn sm" onclick="surveyExtract()">✦ Read printed dimensions</button>
+      <span class="hint" id="calMsg">No plan loaded.</span>
+    </div>
+    <div class="hint" id="surveyMsg"></div>
+    <div id="surveyProps" style="max-width:560px"></div>
+    <div id="planCalWrap" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- ============ 2D BOARD ============ -->
+<div class="tab" id="tab-board">
+  <div class="banner"><b>The 2D is the product.</b> Renders sell the vision; this scaled board is what Colton adjusts and takes off from. Grid = 1 ft, heavy line = 5 ft. Drag to place. Dims bind to the measurement registry.</div>
+  <div class="palette">
+    <button onclick="addEl('patio')">+ Patio</button>
+    <button onclick="addEl('walkway')">+ Walkway</button>
+    <button onclick="addEl('wall')">+ Seating/Retaining wall</button>
+    <button onclick="addEl('pergola')">+ Pergola</button>
+    <button onclick="addEl('firepit')">+ Fire pit</button>
+    <button onclick="addEl('turf')">+ Turf</button>
+    <button onclick="addEl('bed')">+ Plant bed</button>
+    <button onclick="addEl('steps')">+ Steps</button>
+    <button onclick="addEl('porch')">+ Screened porch</button>
+    <button onclick="addEl('custom')" style="border-color:var(--bronze)">+ Custom (fountain, kitchen, deck…)</button>
+    <span class="spacer"></span>
+    <button onclick="proposeLayouts()" style="border-color:var(--bronze);color:var(--bronze2)">✦ Propose layouts (inside the fence)</button>
+    <button onclick="togglePlan()" id="planToggle">Plan underlay: on</button>
+  </div>
+  <div class="card" id="variantBox" style="display:none;margin-bottom:12px">
+    <h3>Layout options — constrained to the measured trace</h3>
+    <div class="sub">Generated INSIDE the traced geometry: setbacks respected, nothing overlaps the house, every dimension derived from the measured envelope. The generator is geometrically incapable of inventing space. Click one to apply (replaces current elements).</div>
+    <div class="variants" id="variantList"></div>
+  </div>
+  <div id="board">
+    <svg id="boardsvg" viewBox="0 0 800 500"></svg>
+    <div class="inspector" id="inspector" style="display:none"></div>
+  </div>
+  <div class="hint" style="margin-top:8px">Scale: 8 px = 1 ft · Board 100′ × 62′ · Select an element to bind its dimensions to a measurement source.</div>
+</div>
+
+<!-- ============ QUOTE ============ -->
+<div class="tab" id="tab-quote">
+  <div class="kpirow">
+    <div class="kpi"><div class="l">Ballpark range</div><div class="v" id="k_range">—</div></div>
+    <div class="kpi"><div class="l">Sell price (mid)</div><div class="v" id="k_price">—</div></div>
+    <div class="kpi"><div class="l">Est. gross margin</div><div class="v" id="k_margin">—</div></div>
+    <div class="kpi"><div class="l">Crew days</div><div class="v" id="k_days">—</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Site difficulty (read-only — set on the Site tab)</h3>
+      <div class="sub">The buffer that makes time-&amp;-materials honest. These are site facts; change them where they were measured.</div>
+      <div id="diffSummary" style="font-size:13.5px;line-height:2"></div>
+      <div class="hint" id="gradeQuoteLine" style="margin-top:6px"></div>
+    </div>
+    <div class="card">
+      <h3>Package (materials palette)</h3>
+      <div class="sub">Same design, two material palettes: <b>Standard</b> = quality pavers/block; <b>Premium</b> = the upgrade — natural stone, showpiece finishes. This picks the default material for every element (override per element on the board). In-stock-first; special order always badged.</div>
+      <div class="tierstrip" id="tierstrip"></div>
+      <div class="hint" id="validityNote"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="row"><h3>Estimate — Aspire-format line items</h3><span class="spacer"></span>
+      <button class="btn ghost sm" onclick="printDoc('internal')">Print / PDF — internal</button>
+      <button class="btn ghost sm" onclick="printDoc('client')">Print / PDF — client proposal</button>
+      <button class="btn ghost sm" onclick="exportAspireCSV()">→ Aspire CSV</button></div>
+    <div class="sub" id="quoteSub"></div>
+    <table id="quoteTable"><thead><tr><th>Item</th><th>Description</th><th class="num">Qty</th><th>Unit</th><th class="num">Unit cost</th><th class="num">Cost</th><th class="num">Price</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<!-- ============ SCOPE ============ -->
+<div class="tab" id="tab-scope">
+  <div class="banner"><b>Sample Client voice, best practice by default.</b> Every block is editable — delete the line you're not doing, exactly like Client Owner described. Regenerate wipes edits.</div>
+  <div class="row" style="margin-bottom:14px"><button class="btn sm" onclick="regenScopes(true)">Regenerate all scopes</button><span class="hint">Generated from the 2D board + materials. Edits persist until regenerate.</span></div>
+  <div id="scopeList"></div>
+</div>
+
+<!-- ============ APPROVALS ============ -->
+<div class="tab" id="tab-approve">
+  <div class="banner"><b>Noah's gate.</b> Nothing customer-facing moves until operations signs off on labor and means-and-methods. Same watchdog model as everything yourco runs — the control lives here, not on hope.</div>
+  <div id="flagList"></div>
+  <div class="gate locked" id="gateBox">Gate LOCKED — outstanding approvals above.</div>
+  <div class="card" style="margin-top:16px"><h3>Step sign-offs (from every tab)</h3>
+    <div class="sub">Each tab carries its own “Approve this step” box. When every step AND every gate flag above is green, the proposal unlocks here.</div>
+    <div id="stepList"></div></div>
+  <div class="gate locked" id="proposalBox">Proposal held — step sign-offs outstanding.</div>
+</div>
+
+<!-- ============ SUBS ============ -->
+<div class="tab" id="tab-subs">
+  <div class="banner"><b>Sub-quote autopilot.</b> Sub-dependent lines get a scoped RFQ package — the relevant slice of the plan, dims, scope, photos. <b>the Founder/Client Owner sends</b> (approval-gated, per house rules); replies land here and replace the allowances automatically. Meanwhile the engine's learned price bands keep allowances honest before any sub even answers — Client Owner's whiteboard idea from the 8/6 meeting, built.</div>
+  <div id="rfqList"></div>
+  <div class="card" style="margin-top:4px"><h3>Learned price bands</h3>
+    <div class="sub">Every reply tightens the band. Kenny's seed is Client Owner's own number from the meeting.</div>
+    <table id="bandTable"><thead><tr><th>Sub</th><th>Trade</th><th>Band</th><th class="num">Replies</th><th>Contact (for pings)</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<!-- ============ ACTUALS / SELF-TUNING ============ -->
+<div class="tab" id="tab-actuals">
+  <div class="grid" style="margin-bottom:16px">
+    <div class="card">
+      <h3>Build journal (internal entry — clients see the timeline after signing)</h3>
+      <div class="row">
+        <label style="margin:0">Project stage</label>
+        <select id="p_stage"><option value="pitch">Pitch (pre-signature)</option><option value="signed">Signed</option><option value="build">In progress</option><option value="complete">Complete</option></select>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <input type="date" id="j_date"><input id="j_note" placeholder="e.g. Base compacted, bluestone starts tomorrow" style="flex:1">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <input type="file" id="j_photos" accept="image/*" multiple style="max-width:190px">
+        <button class="btn sm" onclick="addJournal()">Add entry</button>
+      </div>
+      <div id="journalList" style="margin-top:14px"></div>
+      <div id="pfPublish" style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px;display:none">
+        <h3>★ Publish to portfolio</h3>
+        <div class="sub">Completed projects become "Projects like yours" proof in every future Design Studio. Review text must be the client's real words — never write one for them.</div>
+        <input id="pf_review" style="width:100%" placeholder="client's review, verbatim (optional)">
+        <div class="row" style="margin-top:8px">
+          <select id="pf_stars" style="width:110px"><option value="">no rating</option><option>5</option><option>4</option></select>
+          <button class="btn sm" onclick="publishPortfolio()">Publish this project</button>
+          <span class="hint" id="pfMsg"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="banner"><b>The self-tuning loop.</b> Aspire already captures estimated-vs-actual (Charlene enters labor weekly → daily). This closes the loop nobody closes: every completed job auto-tunes the labor benchmarks and difficulty math, and the track record goes ON the quote. <b>Currently running on sample history</b> — the real Aspire export replaces it and every number regenerates.</div>
+  <div class="kpirow">
+    <div class="kpi"><div class="l">Completed jobs learned</div><div class="v" id="t_n">—</div></div>
+    <div class="kpi"><div class="l">Ballpark accuracy (median)</div><div class="v" id="t_acc">—</div></div>
+    <div class="kpi"><div class="l">Labor calibration</div><div class="v" id="t_cal">—</div></div>
+    <div class="kpi"><div class="l">Within ±10% of final</div><div class="v" id="t_hit">—</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Job history (est vs actual)</h3>
+      <table id="actTable"><thead><tr><th>Job</th><th class="num">Quoted</th><th class="num">Final</th><th class="num">Δ%</th><th class="num">Est days</th><th class="num">Act days</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card"><h3>Log a completed job</h3>
+      <div class="sub">Manual entry until the Aspire export wires in. Each entry immediately re-tunes the engine.</div>
+      <label>Job name</label><input id="a_name" style="width:100%">
+      <div class="row"><div style="flex:1"><label>Quoted (mid) $</label><input id="a_quoted" type="number" style="width:100%"></div>
+      <div style="flex:1"><label>Final $</label><input id="a_final" type="number" style="width:100%"></div></div>
+      <div class="row"><div style="flex:1"><label>Est. crew-days</label><input id="a_est" type="number" step="0.1" style="width:100%"></div>
+      <div style="flex:1"><label>Actual crew-days</label><input id="a_act" type="number" step="0.1" style="width:100%"></div></div>
+      <button class="btn sm" style="margin-top:12px" onclick="addActual()">Log job → re-tune</button>
+      <div class="hint" style="margin-top:14px" id="tuneExplain"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DESIGN STUDIO — CLIENT VIEW ============ -->
+<div class="tab" id="tab-client">
+  <div class="banner"><b>Client-safe by construction.</b> The presentation below renders ONLY: renders, the plan, package prices, ballpark range, and scopes. Costs, margins, crew-days, difficulty math, and internal flags never reach it. The cards directly below are INTERNAL controls — they never appear in Present mode. <button class="btn sm" style="margin-left:10px" onclick="presentClient()">Present full screen</button> <button class="btn ghost sm" onclick="printDoc('client')">Print / PDF proposal</button></div>
+  <details class="internal-tools" style="margin-bottom:16px"><summary>🔧 Internal controls — rep only (render uploads · change requests · regenerate)</summary>
+  <div class="grid" style="margin-top:12px">
+    <div class="card">
+      <h3>Renders (internal controls)</h3>
+      <div class="sub">Tag by life-state ("watch your yard grow") and package. ⟳ regenerates from the current 2D board — chains off the latest render (or site photo on first run) so the yard stays consistent while elements change.</div>
+      <div class="row"><select id="renderState"><option value="day1">Day 1 (planting day)</option><option value="night">Night (lighting)</option></select>
+      <select id="renderPkg"><option value="standard">Standard package</option><option value="premium">Premium package</option></select>
+      <input type="file" id="p_renders" accept="image/*" multiple></div>
+      <label>Client change requests (spoken edits — feed every render)</label>
+      <input id="p_rendernotes" style="width:100%" placeholder="e.g. white pergola instead of cedar, add hydrangeas along the left fence, bigger fire pit">
+      <div class="row" style="margin-top:6px">
+      <button class="btn ghost sm" onclick="applyChangeRequests()">✓ Client said yes — add to design (board · quote · scope)</button></div>
+      <div class="hint" id="applyMsg"></div>
+      <div class="row" style="margin-top:8px">
+      <button class="btn sm" onclick="generateRenderSet()">⟳⟳ Generate render set — Day 1 ×2 · Night</button>
+      <button class="btn ghost sm" id="regenBtn" onclick="regenRender()">⟳ Just this state (~90s)</button>
+      </div>
+      <div class="hint" id="regenMsg" style="margin-top:6px">Needs GEMINI_API_KEY in .env; falls back to the queue until then.</div>
+      <div class="thumbs" id="renderThumbs"></div>
+    </div>
+  </div>
+  </details>
+  <div id="clientView"></div>
+</div>
+
+<!-- ============ INTEGRATIONS ============ -->
+<div class="tab" id="tab-integrations">
+  <div class="banner"><b>One system, not seven.</b> The integration layer exists NOW as file adapters — every export below is in the target system's import shape, every import accepts their export shape. When Client Owner's credentials land (Aspire API key, SiteOne login, HubSpot access — his email items), each adapter's transport flips from file to live API with no rebuild. Status pills tell the truth about what's live today.</div>
+  <div class="grid g2">
+    <div class="card"><div class="row"><h3>Aspire</h3><span class="spacer"></span><span class="pill warn" id="int-aspire">checking…</span><button class="btn ghost sm" onclick="testIntegration('aspire')">Test</button></div>
+      <div class="sub">Their core: pricing, job costing, est-vs-actual. Two-way by design: quotes go out, actuals come back.</div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm" onclick="deepPullAspire()">⟳ Deep pull — study-grade job records</button>
+        <button class="btn ghost sm" onclick="pullAspire()">⟳ Quick actuals only</button>
+        <button class="btn ghost sm" onclick="pullAspireCatalog()">⟳ Price catalog</button>
+        <button class="btn ghost sm" onclick="pullAspireSchedule()">⟳ Install calendar</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost sm" onclick="exportAspireCSV()">Export this quote → Aspire CSV</button>
+        <label class="btn ghost sm" style="margin:0;text-transform:none;letter-spacing:0;font-size:12px;cursor:pointer">Import actuals CSV<input type="file" accept=".csv" style="display:none" onchange="importActualsCSV(this)"></label>
+      </div>
+      <div class="hint" style="margin-top:8px" id="aspireMsg">Read-only credential — pulls their completed work tickets (est vs actual) straight into the self-tuning engine, and their live catalog. Write-back stays file-export until the signed agreement adds write scopes.</div>
+    </div>
+    <div class="card"><div class="row"><h3>HubSpot</h3><span class="spacer"></span><span class="pill warn" id="int-hubspot">checking…</span><button class="btn ghost sm" onclick="testIntegration('hubspot')">Test</button></div>
+      <div class="sub">Their pipeline + comms. The platform pushes deal-stage events (consultation → quoted → won) so Client Owner's buckets move themselves.</div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm" onclick="pullHubspot()">⟳ Pull CRM snapshot (live API)</button>
+        <button class="btn ghost sm" onclick="exportHubspotJSON()">Export deal-sync payload (JSON)</button></div>
+      <div class="hint" style="margin-top:8px" id="hubspotMsg">Read pull = deals/stages/pipeline snapshot for testing. Stage-sync push waits for the signed agreement. Their third party owns the Aspire→HubSpot bridge — we don't duplicate it.</div>
+    </div>
+    <div class="card"><div class="row"><h3>SiteOne</h3><span class="spacer"></span><span class="pill warn" id="int-siteone">checking…</span><button class="btn ghost sm" onclick="testIntegration('siteone')">Test</button></div>
+      <div class="sub">Their supplier pricing basis (deliberately their most expensive — conservative quotes). Portal login, no public API — price exports in, ToS-gated automation reviewed by counsel.</div>
+      <div class="row" style="margin-top:8px"><label class="btn ghost sm" style="margin:0;text-transform:none;letter-spacing:0;font-size:12px;cursor:pointer">Import SiteOne price CSV → updates catalog<input type="file" accept=".csv" style="display:none" onchange="importSiteOneCSV(this)"></label></div>
+      <div class="hint" style="margin-top:8px" id="siteoneMsg">CSV: material name or id, price. Matches against the catalog and updates this project's pricing basis.</div>
+    </div>
+    <div class="card"><div class="row"><h3>Ewing Outdoor Supply</h3><span class="spacer"></span><span class="pill warn" id="int-ewing">checking…</span><button class="btn ghost sm" onclick="testIntegration('ewing')">Test</button></div>
+      <div class="sub">Second supplier pricing source (irrigation/landscape supply). <b>Passwordless login — SMS code to 5488</b>, so the login stays human by design: Client Owner/Charlene signs in with the texted code, downloads the export, and it lands here via CSV. No stored secret, nothing to automate against their security.</div>
+      <div class="row" style="margin-top:8px"><label class="btn ghost sm" style="margin:0;text-transform:none;letter-spacing:0;font-size:12px;cursor:pointer">Import Ewing price CSV → updates catalog<input type="file" accept=".csv" style="display:none" onchange="importSiteOneCSV(this)"></label></div>
+    </div>
+    <div class="card"><div class="row"><h3>Latham's Nursery</h3><span class="spacer"></span><span class="pill warn" id="int-latham">checking…</span><button class="btn ghost sm" onclick="testIntegration('latham')">Test</button></div>
+      <div class="sub">Plant wholesale list at <span class="mono">lathamsnursery.com/wholesale</span> — no username, one shared password unlocks the page. Password stored in .env; a human unlocks the page and the price/availability list lands here via CSV import (or ask Latham to add us to an emailed list, same as Kirk Davis).</div>
+    </div>
+    <div class="card"><div class="row"><h3>Shepherd's Landscape Supply</h3><span class="spacer"></span><span class="pill warn" id="int-shepherds">checking…</span><button class="btn ghost sm" onclick="testIntegration('shepherds')">Test</button></div>
+      <div class="sub"><b>Fully automatic — no login at all.</b> Their online shop is public with live stock states on every product (robots.txt allows crawling; polite 1 req/sec with an identifying user-agent). The reader pulls name/SKU/price/in-stock from all ~1,400 products into the availability store.</div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm" onclick="pullShepherds()">Pull availability now</button>
+        <span class="hint" id="shepStatus"></span>
+      </div>
+    </div>
+    <div class="card"><div class="row"><h3>Kirk Davis Nursery</h3><span class="spacer"></span><span class="pill warn" id="int-kirkdavis">checking…</span><button class="btn ghost sm" onclick="testIntegration('kirkdavis')">Test</button></div>
+      <div class="sub">Login on file, but the portal is CAPTCHA-walled — the sanctioned path stays the <b>emailed weekly availability report</b> (Colton's call in the 8/6 meeting). Ingestion wires the moment the report email address is set in .env.</div>
+    </div>
+    <div class="card"><div class="row"><h3>Moasure</h3><span class="spacer"></span><span class="pill" style="color:var(--sage);border-color:rgba(143,162,124,.4)">LIVE (paste + trace) · file format pending samples</span></div>
+      <div class="sub">Ground truth in. Segment paste + perimeter trace work today (Measurements tab); native export-file parsing lands when Colton sends samples (email item #3).</div>
+    </div>
+    <div class="card"><div class="row"><h3>Nursery availability</h3><span class="spacer"></span><span class="pill warn">pending report address (item #7)</span></div>
+      <div class="sub">Wholesalers email weekly availability reports (skips the CAPTCHA-wall — Colton's call). Ingestion parses them into the plant catalog so designs lean available-now.</div>
+    </div>
+    <div class="card"><div class="row"><h3>Higgsfield render pipeline</h3><span class="spacer"></span><span class="pill warn">queue live · generation runs on yourco's side</span></div>
+      <div class="sub">"Generate render" (Project tab) composes a prompt from THIS project — photos, elements, materials, state — and queues it. yourco's production pipeline picks the queue up, generates on the real yard imagery, and the finished renders land back in the project.</div>
+      <div class="hint" id="rqStatus" style="margin-top:8px">Queue: —</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CATALOG ============ -->
+<div class="tab" id="tab-catalog">
+  <div class="banner">This is the <b>repository</b> from the meeting — Client Owner's master list lands in <span class="mono">data/catalog.json</span> + <span class="mono">data/labor.json</span>. Prices below are placeholders until the SiteOne export arrives. Edits here persist in this browser only.</div>
+  <div class="card"><h3>Materials — SiteOne pricing basis</h3>
+    <table id="catTable"><thead><tr><th>Material</th><th>Unit</th><th class="num">Price $</th><th>Stock rule</th><th>Tier</th><th>Note</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Labor benchmarks</h3><table id="labTable"><tbody></tbody></table></div>
+    <div class="card"><h3>Plants — availability by emailed report</h3>
+      <div class="sub">Wholesalers email weekly availability (skips the CAPTCHA login problem — Colton's call). Ingestion wires at go-live.</div>
+      <table id="plantTable"><thead><tr><th>Plant</th><th class="num">$</th><th>Availability source</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>Sample Client Field-to-Quote · staged prototype on sample data — dimensions from measurements only, quotes are ballparks until Aspire confirmation · nothing here has been sent to a client</footer>
+
+<script>
+const PXFT=8, BOARD_W=100, BOARD_H=62;
+let CAT=null, LAB=null, SUBS=null, ACT=null;
+let S=null; // state
+let selId=null, drag=null, cal={active:false,pts:[]};
+
+const TYPES={
+  patio:{name:'Patio',w:16,d:12,fill:'rgba(201,138,75,.30)',stroke:'#C98A4B',matCat:['paver','natstone']},
+  walkway:{name:'Walkway',w:20,d:4,fill:'rgba(201,138,75,.22)',stroke:'#a87b45',matCat:['paver','natstone']},
+  wall:{name:'Seating wall',w:14,d:1.5,h:1.8,fill:'rgba(139,128,105,.45)',stroke:'#8B8069',matCat:['wall']},
+  pergola:{name:'Pergola',w:14,d:12,fill:'rgba(143,162,124,.18)',stroke:'#8FA27C',matCat:[]},
+  firepit:{name:'Fire pit',w:5,d:5,fill:'rgba(201,107,91,.30)',stroke:'#C96B5B',matCat:[]},
+  turf:{name:'Turf',w:20,d:15,fill:'rgba(143,162,124,.30)',stroke:'#6f8560',matCat:['turf']},
+  bed:{name:'Plant bed',w:12,d:4,fill:'rgba(143,162,124,.22)',stroke:'#8FA27C',matCat:[]},
+  steps:{name:'Steps',w:6,d:3,fill:'rgba(240,232,216,.18)',stroke:'#B7AC97',matCat:['natstone']},
+  porch:{name:'Screened porch',w:14,d:12,fill:'rgba(122,158,159,.22)',stroke:'#7A9E9F',matCat:[]},
+  custom:{name:'Custom',w:10,d:8,fill:'rgba(224,168,104,.14)',stroke:'#E0A868',matCat:[]}
+};
+// Phase navigation (the Founder 2026-08-19): PRE-MEETING → ON-SITE (Visit Mode + client view) → BACK AT THE SHOP → LEARNING → SETUP
+const TABS=[['project','1 · Intake'],['visit','2 · Visit ▶'],['client','3 · Design Studio ✦'],['site','4 · Site'],['board','5 · 2D Board'],['scope','6 · Scope'],['subs','7 · Subs'],['quote','8 · Quote'],['approve','9 · Approvals'],['actuals','Actuals ⟳'],['integrations','Integrations'],['catalog','Catalog']];
+const NAVGROUPS=[['PRE-MEETING',['project']],['ON-SITE WITH THE CLIENT',['visit','client']],['BACK AT THE SHOP',['site','board','scope','subs','quote','approve']],['ALWAYS LEARNING',['actuals']],['SETUP',['integrations','catalog']]];
+
+function defState(){return {project:{client:'',address:'',type:'hardscape',surveyed:'no',notes:'',budget:'',timeline:'',renderNotes:'',created:new Date().toISOString().slice(0,10),photos:[],renders:[],stage:'pitch'},
+  measurements:[],elements:[],plan:{img:null,ftPerPx:null,show:true},trace:null,
+  q:{access:3,accessWhy:'',gradeFt:0,handdig:false,tier:'standard'},approvals:{},steps:{},scopes:{},catOverrides:{},
+  journal:[],rfqs:{},subBands:{},actualsLocal:[],tombstones:[],nextId:1};}
+function migrate(s){const d=defState();for(const k of ['project','measurements','elements','plan','q','approvals','scopes','catOverrides'])s[k]=s[k]||d[k];for(const k of ['journal','rfqs','subBands','actualsLocal'])s[k]=s[k]||d[k];if(s.nextId==null)s.nextId=1;s.trace=s.trace||null;s.project.photos=s.project.photos||[];s.project.renders=s.project.renders||[];s.project.stage=s.project.stage||'pitch';s.project.budget=s.project.budget||'';s.project.timeline=s.project.timeline||'';s.project.renderNotes=s.project.renderNotes||'';s.project.inspiration=s.project.inspiration||[];s.project.tours=s.project.tours||[];s.project.reps=s.project.reps||'';s.steps=s.steps||{};s.tombstones=s.tombstones||[];s.project.optionMeta=s.project.optionMeta||{};if(s.project.chosenOption===undefined)s.project.chosenOption=null;s.project.wants=s.project.wants||{nice:'',dream:'',sc:''};
+  if(!s.project.created)s.project.created=(s._updated?new Date(s._updated*1000):new Date()).toISOString().slice(0,10);
+  if(s.q.accessWhy==null)s.q.accessWhy='';s.project.renders.forEach(r=>r.state=r.state||'day1');
+  if(s.q.gradeFt==null)s.q.gradeFt=({flat:0,moderate:2,steep:4})[s.q.grade]||0; // old flat/moderate/steep select → measured feet
+  if(s.q.tier==='value')s.q.tier='standard'; // value tier retired client-side
+  return s;}
+
+// ---- persistence: server-backed multi-project, localStorage fallback ----
+let API=false, PROJECT_ID=null, SHARED_ACTUALS=[], putT=null;
+function save(){
+  try{localStorage.setItem('scq_state',JSON.stringify(S));}catch(e){}
+  flashSave();
+  if(API&&PROJECT_ID){
+    // snapshot body + target id NOW — a pending save must never follow a project switch (caused a cross-project write 2026-08-10)
+    const pid=PROJECT_ID, body=JSON.stringify(S);
+    clearTimeout(putT);document.getElementById('savePill').textContent='saving…';
+    putT=setTimeout(()=>fetch('/api/projects/'+pid,{method:'PUT',headers:{'Content-Type':'application/json'},body})
+      .then(()=>{document.getElementById('savePill').textContent='saved';refreshProjectList();})
+      .catch(()=>{document.getElementById('savePill').textContent='save failed — kept locally'}),400);}
+}
+let saveT=null;function flashSave(){const p=document.getElementById('savePill');if(!API)p.textContent='saved';clearTimeout(saveT);}
+function load(){try{const s=localStorage.getItem('scq_state');if(s)return JSON.parse(s);}catch(e){}return null;}
+function resetAll(){if(confirm('Reset THIS project? (Other projects and catalog files are untouched.)')){S=defState();save();bindAll();renderAll();}}
+async function refreshProjectList(){
+  if(!API)return;
+  const list=await fetch('/api/projects').then(r=>r.json()).catch(()=>[]);
+  const sel=document.getElementById('projSelect');
+  sel.innerHTML=list.map(p=>`<option value="${p.id}" ${p.id===PROJECT_ID?'selected':''}>${p.name||'(unnamed)'}${p.stage&&p.stage!=='pitch'?' · '+p.stage:''}</option>`).join('');
+}
+async function switchProject(id){
+  if(!API||!id)return;
+  const st=await fetch('/api/projects/'+id).then(r=>r.json()).catch(()=>null);
+  if(!st||st.error)return;
+  PROJECT_ID=id;localStorage.setItem('scq_current',id);
+  S=migrate(st);cvState='day1';bindAll();renderAll();refreshProjectList();
+}
+async function newProject(applyState){
+  if(!API){alert('Multi-project needs the platform server (launch.json: sample-client-platform). Running in single-project local mode.');return null;}
+  const state=applyState||defState();
+  const r=await fetch('/api/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({state})}).then(r=>r.json());
+  PROJECT_ID=r.id;localStorage.setItem('scq_current',r.id);
+  S=migrate(state);cvState='day1';bindAll();renderAll();await refreshProjectList();
+  return r.id;
+}
+async function initPersistence(){
+  let list=null;
+  try{const r=await fetch('/api/projects');if(r.ok)list=await r.json();}catch(e){}
+  API=Array.isArray(list);
+  document.getElementById('syncPill').textContent=API?'shared · server':'local only';
+  document.getElementById('projSelect').style.display=API?'':'none';
+  if(!API){S=migrate(load()||defState());return;}
+  SHARED_ACTUALS=await fetch('/api/actuals').then(r=>r.json()).catch(()=>[]);
+  const wanted=localStorage.getItem('scq_current');
+  if(list.length===0){
+    const legacy=load(); // migrate the pre-multi-project single state
+    await newProject(legacy?migrate(legacy):defState());
+  }else{
+    await switchProject(list.find(p=>p.id===wanted)?wanted:list[0].id);
+  }
+}
+const fmt=n=>'$'+Math.round(n).toLocaleString();
+const f1=n=>Math.round(n*10)/10;
+
+// ---------- init ----------
+async function init(){
+  const [c,l,sb,ac]=await Promise.all(['catalog','labor','subs','actuals'].map(n=>fetch('data/'+n+'.json?v='+Date.now()).then(r=>r.json())));
+  CAT=c;LAB=l;SUBS=sb;ACT=ac;
+  await initPersistence();
+  const nav=document.getElementById('nav');
+  NAVGROUPS.forEach(([g,ids])=>{
+    const ph=document.createElement('div');ph.className='phase';
+    const gl=document.createElement('div');gl.className='navgroup';gl.textContent=g;ph.appendChild(gl);
+    const row=document.createElement('div');row.className='tabs';
+    ids.forEach(id=>{const label=TABS.find(t=>t[0]===id)[1];const b=document.createElement('button');b.textContent=label;b.id='nb-'+id;b.onclick=()=>showTab(id);row.appendChild(b);});
+    ph.appendChild(row);nav.appendChild(ph);
+  });
+  showTab('project');
+  bindAll();renderAll();
+  // deep links: ?project=<id>&tab=<tab>&state=<renderstate>&pkg=<package>&layouts=1&scroll=<px>
+  const qp=new URLSearchParams(location.search);
+  if(API&&qp.get('project'))await switchProject(qp.get('project'));
+  if(qp.get('pkg')){cvPackage=qp.get('pkg');S.q.tier=qp.get('pkg');}
+  if(qp.get('state'))cvState=qp.get('state');
+  if(qp.get('tab'))showTab(qp.get('tab'));
+  if(qp.get('layouts'))proposeLayouts();
+  if(qp.get('scroll'))setTimeout(()=>window.scrollTo(0,+qp.get('scroll')),400);
+}
+function showTab(id){TABS.forEach(([t])=>{document.getElementById('tab-'+t).classList.toggle('on',t===id);document.getElementById('nb-'+t).classList.toggle('on',t===id);});if(id==='quote')renderQuote();if(id==='scope')renderScopes();if(id==='approve')renderApprovals();if(id==='board')renderBoard();if(id==='client'){renderThumbs();Promise.all([loadSchedule(),loadPortfolio()]).then(()=>{renderClient();autoTour();});}if(id==='subs')renderSubs();if(id==='actuals'){renderActuals();renderJournal();}if(id==='site'){bindAll();renderQuote();renderMeasurements();renderThumbs();renderPlanPreview();syncNotes();}if(id==='project')bindAll();if(id==='visit')bindVisit();if(id==='integrations')renderIntegrations();renderStepbar(id);}
+function syncNotes(){const n2=document.getElementById('p_notes2');if(n2)n2.value=S.project.notes||'';}
+
+function bindAll(){
+  const P=S.project;
+  renderRepChips();
+  ['client','address','type','surveyed','notes','budget','timeline'].forEach(k=>{const el=document.getElementById('p_'+k);if(!el)return;el.value=P[k]||'';el.oninput=()=>{P[k]=el.value;save();if(k==='notes')syncNotes();};});
+  const cr=document.getElementById('p_created');if(cr)cr.textContent=P.created+' (automatic)';
+  const rn=document.getElementById('p_rendernotes');if(rn){rn.value=P.renderNotes||'';rn.oninput=()=>{P.renderNotes=rn.value;save();};}
+  const n2=document.getElementById('p_notes2');if(n2){n2.value=P.notes||'';n2.oninput=()=>{P.notes=n2.value;document.getElementById('p_notes').value=n2.value;save();};}
+  const qa=document.getElementById('q_access');qa.value=S.q.access;qa.oninput=()=>{S.q.access=+qa.value;save();renderQuote();};
+  const aw=document.getElementById('q_accesswhy');if(aw){aw.value=S.q.accessWhy||'';aw.oninput=()=>{S.q.accessWhy=aw.value;save();};}
+  const qgf=document.getElementById('q_gradeft');if(qgf){qgf.value=S.q.gradeFt||'';qgf.oninput=()=>{S.q.gradeFt=+qgf.value||0;save();gradeHintUpd();renderQuote();};gradeHintUpd();}
+  const qh=document.getElementById('q_handdig');qh.checked=S.q.handdig;qh.onchange=()=>{S.q.handdig=qh.checked;save();renderQuote();};
+  document.getElementById('planFile').onchange=onPlanFile;
+  document.getElementById('p_photos').onchange=e=>addImages(e,'photos');
+  document.getElementById('p_renders').onchange=e=>addImages(e,'renders');
+  const st=document.getElementById('p_stage');st.value=S.project.stage;st.onchange=()=>{S.project.stage=st.value;save();};
+}
+function renderAll(){renderMeasurements();renderBoard();renderQuote();renderCatalog();renderPlanPreview();renderThumbs();renderJournal();}
+
+// ---------- photos / renders ----------
+function downscale(file){return new Promise(res=>{const img=new Image();img.onload=()=>{const max=1400,r=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=img.width*r;c.height=img.height*r;c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.8));};img.src=URL.createObjectURL(file);});}
+async function addImages(e,key){
+  const st=key==='renders'?document.getElementById('renderState').value:null;
+  const pk=key==='renders'?document.getElementById('renderPkg').value:null;
+  for(const f of e.target.files){const src=await downscale(f);S.project[key].push({id:'i'+(S.nextId++),src,label:f.name,...(st?{state:st,package:pk}:{})});}
+  e.target.value='';save();renderThumbs();
+  if(key==='renders'&&document.getElementById('tab-client').classList.contains('on'))renderClient(); // gallery refreshes live when renders land
+}
+function delImage(key,id){S.project[key]=S.project[key].filter(i=>i.id!==id);if(key==='renders'){S.tombstones.push(id);S.tombstones=S.tombstones.slice(-200);}save();renderThumbs();}
+function renderThumbs(){
+  [['photos','photoThumbs'],['renders','renderThumbs']].forEach(([key,box])=>{
+    const b=document.getElementById(box);if(!b)return;b.innerHTML='';
+    (S.project[key]||[]).forEach(i=>{const d=document.createElement('div');d.className='thumb';
+      const tag=key==='renders'?`<div class="hint" style="font-size:10px">${i.state||'day1'}${i.package?' · '+i.package:''}</div>`:'';
+      d.innerHTML=`<img src="${i.src}"><button onclick="delImage('${key}','${i.id}')">✕</button>${tag}`;b.appendChild(d);});
+  });
+}
+
+// ---------- measurements ----------
+function addMeasurement(label,val,src){
+  label=label||document.getElementById('m_label').value.trim();
+  val=val!=null?val:parseFloat(document.getElementById('m_val').value);
+  src=src||document.getElementById('m_src').value;
+  if(!label||!(val>0))return;
+  S.measurements.push({id:'m'+(S.nextId++),label,val,src});
+  if(arguments.length===0){document.getElementById('m_label').value='';document.getElementById('m_val').value='';}
+  save();renderMeasurements();
+}
+function delMeasurement(id){S.measurements=S.measurements.filter(m=>m.id!==id);save();renderMeasurements();}
+function renderMeasurements(){
+  const tb=document.querySelector('#measTable tbody');tb.innerHTML='';
+  if(!S.measurements.length){tb.innerHTML='<tr><td colspan="4" class="hint">No measurements yet — add Moasure segments, survey dims, or manual (field-verify) numbers.</td></tr>';surveyCross();return;}
+  S.measurements.forEach(m=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${m.label}</td><td class="num mono">${f1(m.val)}′</td><td><span class="tag ${m.src}">${m.src==='manual'?'MANUAL — FIELD-VERIFY':m.src.toUpperCase()}</span></td><td><button class="btn danger sm" onclick="delMeasurement('${m.id}')">✕</button></td>`;
+    tb.appendChild(tr);
+  });  surveyCross();
+}
+function importMoasure(){
+  const txt=document.getElementById('moasurePaste').value.trim();if(!txt)return;
+  let n=0;txt.split('\n').forEach(line=>{const p=line.split(',');if(p.length>=2){const v=parseFloat(p[p.length-1]);const l=p.slice(0,-1).join(',').trim();if(l&&v>0){addMeasurement(l,v,'moasure');n++;}}});
+  document.getElementById('moasureMsg').textContent=n+' segment(s) imported as Moasure ground truth.';
+  document.getElementById('moasurePaste').value='';
+}
+
+// ---------- plan underlay + calibration ----------
+function onPlanFile(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{S.plan.img=r.result;S.plan.ftPerPx=null;save();renderPlanPreview();document.getElementById('calMsg').textContent='Plan loaded — now calibrate scale.';document.getElementById('calBtn').disabled=false;};
+  r.readAsDataURL(f);
+}
+function renderPlanPreview(){
+  const w=document.getElementById('planCalWrap');w.innerHTML='';
+  if(!S.plan.img)return;
+  const img=document.createElement('img');img.src=S.plan.img;img.id='calImg';w.appendChild(img);
+  if(S.plan.ftPerPx)document.getElementById('calMsg').textContent='Calibrated: 1 image px = '+S.plan.ftPerPx.toFixed(4)+' ft. Underlay is live on the 2D board.';
+  document.getElementById('calBtn').disabled=false;
+  img.onclick=ev=>{
+    if(!cal.active)return;
+    const r=img.getBoundingClientRect();
+    const px={x:(ev.clientX-r.left)*(img.naturalWidth/r.width),y:(ev.clientY-r.top)*(img.naturalHeight/r.height),vx:ev.clientX-r.left,vy:ev.clientY-r.top};
+    cal.pts.push(px);
+    const dot=document.createElement('div');dot.className='cp';dot.style.left=px.vx+'px';dot.style.top=px.vy+'px';w.appendChild(dot);
+    if(cal.pts.length===2){
+      const d=Math.hypot(cal.pts[0].x-cal.pts[1].x,cal.pts[0].y-cal.pts[1].y);
+      const ft=parseFloat(prompt('Real distance between the two points, in feet:'));
+      if(ft>0){S.plan.ftPerPx=ft/d;save();addMeasurement('plan calibration reference',ft,'survey');}
+      cal={active:false,pts:[]};renderPlanPreview();renderBoard();
+    }
+  };
+}
+function startCalibration(){cal={active:true,pts:[]};document.getElementById('calMsg').textContent='Click two points on the plan with a known distance between them…';renderPlanPreview();}
+function togglePlan(){S.plan.show=!S.plan.show;document.getElementById('planToggle').textContent='Plan underlay: '+(S.plan.show?'on':'off');save();renderBoard();}
+
+// ---------- 2D board ----------
+function addEl(type){
+  const t=TYPES[type];
+  const el={id:'e'+(S.nextId++),type,name:t.name,w:t.w,d:t.d,h:t.h||null,x:10+(S.elements.length*3)%40,y:8+(S.elements.length*4)%30,
+    wSrc:'default',dSrc:'default',material:null,steps:type==='steps'?4:null,sleeve:false};
+  S.elements.push(el);selId=el.id;save();renderBoard();
+}
+function delEl(id){S.elements=S.elements.filter(e=>e.id!==id);delete S.scopes[id];if(selId===id)selId=null;save();renderBoard();renderQuote();}
+function elArea(e){return e.w*e.d;}
+function srcTag(s){return s==='moasure'?'<span class="tag moasure">MOASURE</span>':s==='survey'?'<span class="tag survey">SURVEY</span>':'<span class="tag manual">FIELD-VERIFY</span>';}
+function renderBoard(){
+  const svg=document.getElementById('boardsvg');
+  let h='';
+  // plan underlay
+  if(S.plan.img&&S.plan.show){
+    let wpx=BOARD_W*PXFT;
+    if(S.plan.ftPerPx){const im=new Image();/* width in ft = naturalWidth*ftPerPx */}
+    h+=`<image href="${S.plan.img}" x="0" y="0" ${S.plan.ftPerPx?`id="planimg"`:'width="'+BOARD_W*PXFT+'"'} opacity="0.35" preserveAspectRatio="xMinYMin meet" ${S.plan.ftPerPx?'':'height="'+BOARD_H*PXFT+'"'}/>`;
+  }
+  // grid
+  for(let i=0;i<=BOARD_W;i++){h+=`<line x1="${i*PXFT}" y1="0" x2="${i*PXFT}" y2="${BOARD_H*PXFT}" stroke="${i%5?'rgba(240,232,216,.03)':'rgba(240,232,216,.08)'}" stroke-width="1"/>`;}
+  for(let i=0;i<=BOARD_H;i++){h+=`<line x1="0" y1="${i*PXFT}" x2="${BOARD_W*PXFT}" y2="${i*PXFT}" stroke="${i%5?'rgba(240,232,216,.03)':'rgba(240,232,216,.08)'}" stroke-width="1"/>`;}
+  // moasure trace (property / house / features) — the auto-drawn ground truth
+  h+=traceSVG(PXFT);
+  // elements
+  S.elements.forEach(e=>{
+    const t=TYPES[e.type],sel=e.id===selId;
+    const boardLocked=!!(S.steps&&S.steps.client&&S.project.chosenOption);
+    if(boardLocked&&e.off)return; // studio step approved + option chosen → the board IS that option
+    const x=e.x*PXFT,y=e.y*PXFT,w=e.w*PXFT,d=e.d*PXFT;
+    const unverified=(e.wSrc==='default'||e.dSrc==='default'||e.wSrc==='manual'||e.dSrc==='manual');
+    h+=`<g class="el" data-id="${e.id}" style="cursor:move" opacity="${e.off?0.28:1}">
+      <rect x="${x}" y="${y}" width="${w}" height="${d}" rx="3" fill="${t.fill}" stroke="${sel?'#E0A868':t.stroke}" stroke-width="${sel?2.5:1.5}" ${unverified?'stroke-dasharray="6 3"':''}/>
+      <text x="${x+w/2}" y="${y+d/2-3}" text-anchor="middle" font-size="11" font-weight="600" fill="#F3ECDE" font-family="Inter">${e.name}</text>
+      <text x="${x+w/2}" y="${y+d/2+11}" text-anchor="middle" font-size="10" fill="${unverified?'#C96B5B':'#8FA27C'}" font-family="Inter">${f1(e.w)}′ × ${f1(e.d)}′${e.h?' × '+e.h+'′h':''}${unverified?' ⚠':''}</text>
+    </g>`;
+  });
+  svg.innerHTML=h;
+  (()=>{let n=document.getElementById('boardLockNote');
+    if(!n){n=document.createElement('div');n.className='hint';n.id='boardLockNote';svg.parentElement.insertBefore(n,svg);}
+    const locked=!!(S.steps&&S.steps.client&&S.project.chosenOption);
+    const m=locked?(S.project.optionMeta||{})[S.project.chosenOption]:null;
+    n.textContent=locked?`🔒 Showing only Option ${m?m.num+' — '+(m.name||''):''} — the design chosen and approved in the Design Studio. Un-approve the Design Studio step to see and edit everything again.`:'';})();
+  // plan sizing when calibrated
+  if(S.plan.img&&S.plan.show&&S.plan.ftPerPx){
+    const pi=svg.querySelector('#planimg');
+    if(pi){const im=new Image();im.onload=()=>{pi.setAttribute('width',im.naturalWidth*S.plan.ftPerPx*PXFT);pi.setAttribute('height',im.naturalHeight*S.plan.ftPerPx*PXFT);};im.src=S.plan.img;}
+  }
+  svg.querySelectorAll('.el').forEach(g=>{
+    g.addEventListener('pointerdown',ev=>{
+      const id=g.dataset.id;selId=id;const e=S.elements.find(x=>x.id===id);
+      const pt=svgPoint(svg,ev);drag={id,ox:pt.x/PXFT-e.x,oy:pt.y/PXFT-e.y};
+      renderBoard();ev.preventDefault();
+    });
+  });
+  svg.onpointermove=ev=>{
+    if(!drag)return;const e=S.elements.find(x=>x.id===drag.id);if(!e)return;
+    const pt=svgPoint(svg,ev);
+    e.x=Math.max(0,Math.min(BOARD_W-e.w,Math.round((pt.x/PXFT-drag.ox)*2)/2));
+    e.y=Math.max(0,Math.min(BOARD_H-e.d,Math.round((pt.y/PXFT-drag.oy)*2)/2));
+    renderBoard();
+  };
+  svg.onpointerup=()=>{if(drag){drag=null;save();}};
+  svg.onpointerdown=ev=>{if(!ev.target.closest('.el')&&selId){selId=null;renderBoard();}}; // click empty board → close inspector
+  renderInspector();
+}
+function svgPoint(svg,ev){const p=svg.createSVGPoint();p.x=ev.clientX;p.y=ev.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
+function renderInspector(){
+  const box=document.getElementById('inspector');
+  const e=S.elements.find(x=>x.id===selId);
+  if(!e){box.style.display='none';return;}
+  box.style.display='block';
+  const t=TYPES[e.type];
+  const measOpts=src=>['<option value="">— bind measurement —</option>',...S.measurements.map(m=>`<option value="${m.id}">${m.label} (${f1(m.val)}′ ${m.src})</option>`)].join('');
+  const mats=CAT.materials.filter(m=>t.matCat.includes(m.cat));
+  box.innerHTML=`<button class="insp-x" onclick="selId=null;renderBoard()">✕</button><h4>${e.name}</h4>
+  <input value="${e.name}" onchange="updEl('${e.id}','name',this.value)" style="width:100%;margin-bottom:6px">
+  <div class="dimrow"><span class="dl">W</span><input type="number" step="0.1" value="${e.w}" onchange="setDim('${e.id}','w',parseFloat(this.value),'manual')"><select onchange="bindDim('${e.id}','w',this.value)">${measOpts()}</select></div>
+  <div class="hint">${srcTag(e.wSrc==='default'?'manual':e.wSrc)}</div>
+  <div class="dimrow"><span class="dl">D</span><input type="number" step="0.1" value="${e.d}" onchange="setDim('${e.id}','d',parseFloat(this.value),'manual')"><select onchange="bindDim('${e.id}','d',this.value)">${measOpts()}</select></div>
+  <div class="hint">${srcTag(e.dSrc==='default'?'manual':e.dSrc)}</div>
+  ${e.type==='wall'?`<div class="dimrow"><span class="dl">H</span><input type="number" step="0.1" value="${e.h}" onchange="updEl('${e.id}','h',parseFloat(this.value));renderQuote()"><span class="hint">exposed face</span></div>`:''}
+  ${e.type==='steps'?`<div class="dimrow"><span class="dl">Steps</span><input type="number" value="${e.steps}" onchange="updEl('${e.id}','steps',parseInt(this.value));renderQuote()"><span></span></div>`:''}
+  ${mats.length?`<label>Material</label><select onchange="updEl('${e.id}','material',this.value||null);renderQuote()" style="width:100%"><option value="">Auto (tier + in-stock-first)</option>${mats.map(m=>`<option value="${m.id}" ${e.material===m.id?'selected':''}>${m.name} ${m.stock==='special'?'· SPECIAL ORDER':''}</option>`).join('')}</select>`:''}
+  ${['patio','walkway'].includes(e.type)?`<label style="margin-top:8px"><input type="checkbox" ${e.sleeve?'checked':''} onchange="updEl('${e.id}','sleeve',this.checked);renderQuote()" style="width:auto;margin-right:6px">Sleeve under hardscape (Noah spec)</label>`:''}
+  ${e.type==='custom'?`<label>Allowance $ (installed, until real quote)</label><input type="number" step="100" value="${e.allowance||''}" onchange="updEl('${e.id}','allowance',parseFloat(this.value)||0);renderQuote()" style="width:100%">
+  <label>Trade (for the sub RFQ)</label><select onchange="updEl('${e.id}','trade',this.value||null);renderQuote()" style="width:100%"><option value="">— none / in-house —</option>${SUBS.subs.map(s=>`<option value="${s.trade}" ${e.trade===s.trade?'selected':''}>${s.name} (${s.trade})</option>`).join('')}</select>`:''}
+  <div class="row" style="margin-top:10px"><button class="btn ghost sm" onclick="rotEl('${e.id}')">Rotate</button><button class="btn danger sm" onclick="delEl('${e.id}')">Delete</button></div>`;
+}
+function updEl(id,k,v){const e=S.elements.find(x=>x.id===id);e[k]=v;save();renderBoard();}
+function setDim(id,k,v,src){if(!(v>0))return;const e=S.elements.find(x=>x.id===id);e[k]=v;e[k+'Src']=src;save();renderBoard();renderQuote();}
+function bindDim(id,k,mid){if(!mid)return;const m=S.measurements.find(x=>x.id===mid);const e=S.elements.find(x=>x.id===id);e[k]=m.val;e[k+'Src']=m.src;save();renderBoard();renderQuote();}
+function rotEl(id){const e=S.elements.find(x=>x.id===id);[e.w,e.d]=[e.d,e.w];[e.wSrc,e.dSrc]=[e.dSrc,e.wSrc];save();renderBoard();}
+
+// ---------- moasure trace → auto-drawn board ----------
+const SAMPLE_TRACE=`# boundary
+2,2
+96,2
+96,58
+2,58
+# house
+24,4
+72,4
+72,26
+24,26
+# feature Oak tree
+84,40
+# feature Gate (36in)
+2,44`;
+function parseTrace(txt){
+  const t={boundary:[],house:[],features:[]};let cur=null;
+  txt.split('\n').map(l=>l.trim()).filter(Boolean).forEach(l=>{
+    if(l.startsWith('#')){const h=l.slice(1).trim();
+      if(/^boundary/i.test(h))cur=t.boundary;
+      else if(/^house/i.test(h))cur=t.house;
+      else{const f={name:h.replace(/^feature\s*/i,''),pts:[]};t.features.push(f);cur=f.pts;}
+    }else{const [x,y]=l.split(',').map(Number);if(isFinite(x)&&isFinite(y)&&cur)cur.push({x,y});}
+  });
+  return (t.boundary.length>=3)?t:null;
+}
+function importTrace(txt,src){
+  src=src||'moasure';
+  const raw=txt||document.getElementById('tracePaste').value;
+  const t=parseTrace(raw);
+  if(!t){document.getElementById('traceMsg').textContent='Need at least a # boundary with 3+ points.';return;}
+  S.trace=t;
+  // register the measured envelope as ground truth
+  const bb=bbox(t.boundary);
+  addMeasurement('trace: lot width',bb.w,src);addMeasurement('trace: lot depth',bb.h,src);
+  if(t.house.length>=3){const hb=bbox(t.house);addMeasurement('trace: house width',hb.w,src);addMeasurement('trace: rear yard depth',f1(bb.y+bb.h-(hb.y+hb.h)),src);}
+  document.getElementById('tracePaste').value='';
+  document.getElementById('traceMsg').textContent='Trace imported — board auto-drawn to scale. Envelope registered as Moasure ground truth.';
+  save();renderBoard();
+}
+function loadSampleTrace(){importTrace(SAMPLE_TRACE);}
+function clearTrace(){S.trace=null;save();renderBoard();document.getElementById('traceMsg').textContent='Trace cleared.';}
+function bbox(pts){const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);const x=Math.min(...xs),y=Math.min(...ys);return {x,y,w:Math.max(...xs)-x,h:Math.max(...ys)-y};}
+function traceSVG(scale){
+  if(!S.trace)return '';
+  const s=scale||PXFT,poly=pts=>pts.map(p=>`${p.x*s},${p.y*s}`).join(' ');
+  let h=`<polygon points="${poly(S.trace.boundary)}" fill="rgba(143,162,124,.05)" stroke="rgba(143,162,124,.55)" stroke-width="2" stroke-dasharray="10 5"/>`;
+  if(S.trace.house.length>=3)h+=`<polygon points="${poly(S.trace.house)}" fill="rgba(240,232,216,.08)" stroke="rgba(240,232,216,.35)" stroke-width="1.5"/><text x="${(bbox(S.trace.house).x+bbox(S.trace.house).w/2)*s}" y="${(bbox(S.trace.house).y+bbox(S.trace.house).h/2)*s}" text-anchor="middle" font-size="11" fill="rgba(240,232,216,.5)" font-family="Inter" letter-spacing="2">HOUSE</text>`;
+  S.trace.features.forEach(f=>{if(f.pts.length===1){const p=f.pts[0];h+=`<circle cx="${p.x*s}" cy="${p.y*s}" r="${1.5*s}" fill="rgba(143,162,124,.25)" stroke="rgba(143,162,124,.6)"/><text x="${p.x*s}" y="${(p.y+2.8)*s}" text-anchor="middle" font-size="9" fill="rgba(183,172,151,.8)" font-family="Inter">${f.name}</text>`;}
+    else if(f.pts.length>1)h+=`<polyline points="${poly(f.pts)}" fill="none" stroke="rgba(143,162,124,.6)" stroke-width="1.5"/>`;});
+  return h;
+}
+// layout generator — designs INSIDE the fence, dims derived from measured envelope only
+function yardEnvelope(){
+  if(!S.trace)return null;
+  const bb=bbox(S.trace.boundary),SB=5; // 5ft setback
+  let top=bb.y+SB;
+  if(S.trace.house.length>=3){const hb=bbox(S.trace.house);top=Math.max(top,hb.y+hb.h+3);} // 3ft off the house
+  const env={x:bb.x+SB,y:top,w:bb.w-2*SB,h:(bb.y+bb.h-SB)-top};
+  return env.w>12&&env.h>10?env:null;
+}
+function proposeLayouts(){
+  const env=yardEnvelope();
+  const box=document.getElementById('variantBox'),list=document.getElementById('variantList');
+  if(!env){box.style.display='block';list.innerHTML='<div class="hint">Import a Moasure trace first (Site tab) — the generator only designs inside measured geometry.</div>';return;}
+  const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+  const cx=env.x+env.w/2;
+  const mk=(type,name,w,d,x,y,extra)=>({type,name,w:f1(w),d:f1(d),x:f1(clamp(x,env.x,env.x+env.w-w)),y:f1(clamp(y,env.y,env.y+env.h-d)),...(extra||{})});
+  const pw=clamp(env.w*.38,14,26),pd=clamp(env.h*.42,10,18);
+  // variant 0: what the consult notes actually asked for, placed inside the fence
+  const notes=(S.project.notes||'').toLowerCase();
+  const wants=[];
+  if(/porch|screened|sunroom|lanai/.test(notes))wants.push(mk('porch','Screened porch',clamp(pw*.8,12,18),clamp(pd*.8,10,14),cx-pw*.4,env.y));
+  const hasPorch=wants.some(w=>w.type==='porch');
+  if(/patio|bluestone|paver|brick/.test(notes))wants.push(mk('patio','Patio',pw,pd,cx-pw/2,env.y+(hasPorch?clamp(pd*.8,10,14)+1:0),{sleeve:/light|irrigat/.test(notes)}));
+  if(/pergola|shade structure/.test(notes))wants.push(mk('pergola','Pergola',clamp(pw*.6,10,16),clamp(pd*.7,8,12),cx-pw/2,env.y));
+  if(/seating wall|sitting wall|retaining/.test(notes))wants.push(mk('wall','Seating wall',clamp(pw*.8,10,20),1.5,cx-pw*.4,env.y+pd+1));
+  if(/fire ?pit|fire feature|fireplace/.test(notes)){
+    const pat=wants.find(w=>w.type==='patio');
+    if(pat&&/middle|center|inground|in-ground/.test(notes))wants.push(mk('firepit','Fire pit',5,5,pat.x+pat.w/2-2.5,pat.y+pat.d/2-2.5)); // "in the middle" → centered IN the patio
+    else wants.push(mk('firepit','Fire pit',5,5,cx+pw/2+3,env.y+pd*.4));
+  }
+  if(/turf|lawn|grass/.test(notes))wants.push(mk('turf','Turf lawn',clamp(env.w*.35,14,26),clamp(env.h*.45,10,18),env.x+env.w*.55,env.y+2));
+  if(/plant|shrub|tree|privacy|bed|hydrangea|arborvitae|garden/.test(notes)){
+    const pat=wants.find(w=>w.type==='patio');
+    if(/privacy|screen(ing)? plant|along the (back )?fence/.test(notes)||!pat)wants.push(mk('bed','Planting bed',clamp(env.w*.5,14,28),4,env.x+env.w*.25,env.y+env.h-5)); // privacy → fence line
+    else wants.push(mk('bed','Planting bed',clamp(pat.w,12,24),4,pat.x,pat.y+pat.d+1)); // otherwise hugging the patio
+  }
+  if(/walkway|path|sidewalk/.test(notes))wants.push(mk('walkway','Walkway',clamp(env.w*.3,10,26),4,env.x,env.y+2));
+  if(/step/.test(notes))wants.push(mk('steps','Steps',6,3,cx-3,env.y+pd+3));
+  const unmapped=['fountain','pool','kitchen','deck'].filter(k=>notes.includes(k));
+  const variants=[
+    ...(wants.length?[{key:'asked',name:'What they asked for',desc:'Built from the consult notes, sized to the measured yard.'+(unmapped.length?' ⚠ In the notes but not yet a board element (price as custom/sub lines): '+unmapped.join(', ')+'.':''),els:wants}]:[]),
+    {key:'entertainer',name:'The Entertainer',desc:'Big patio off the house, pergola shade, seating wall, fire feature. Max hosting.',els:[
+      mk('patio','Main patio',pw,pd,cx-pw/2,env.y,{sleeve:true}),
+      mk('pergola','Pergola',clamp(pw*.6,10,16),clamp(pd*.7,8,12),cx-pw/2,env.y),
+      mk('wall','Seating wall',clamp(pw*.8,10,20),1.5,cx-pw*.4,env.y+pd+1),
+      mk('firepit','Fire pit',5,5,cx+pw/2+3,env.y+pd*.4)]},
+    {key:'resort',name:'The Resort Lawn',desc:'Patio + big turf panel + planted privacy edge. Green, low-fuss, kid-proof.',els:[
+      mk('patio','Patio',clamp(pw*.8,12,20),clamp(pd*.8,10,14),env.x+2,env.y),
+      mk('turf','Turf lawn',clamp(env.w*.42,16,30),clamp(env.h*.5,12,20),env.x+env.w*.5,env.y+2),
+      mk('bed','Privacy planting bed',clamp(env.w*.6,16,30),4,env.x+env.w*.2,env.y+env.h-5)]},
+    {key:'essentials',name:'The Essentials',desc:'Right-sized patio + walkway. The fast-close, under-$60k shape.',els:[
+      mk('patio','Patio',clamp(pw*.7,12,18),clamp(pd*.7,10,14),cx-pw*.35,env.y),
+      mk('walkway','Walkway',clamp(env.w*.3,10,26),4,env.x,env.y+2)]}
+  ];
+  box.style.display='block';
+  list.innerHTML='';
+  variants.forEach(v=>{
+    const d=document.createElement('div');d.className='variant';
+    const s=3;
+    let svg=`<svg viewBox="0 0 ${BOARD_W*s} ${BOARD_H*s}">${traceSVG(s)}`;
+    v.els.forEach(e=>{const t=TYPES[e.type];svg+=`<rect x="${e.x*s}" y="${e.y*s}" width="${e.w*s}" height="${e.d*s}" rx="1.5" fill="${t.fill}" stroke="${t.stroke}"/>`;});
+    svg+='</svg>';
+    d.innerHTML=`<h4>${v.name}</h4><div class="vd">${v.desc}</div>${svg}<div class="vd" style="margin-top:6px">${v.els.map(e=>`${e.name} ${e.w}′×${e.d}′`).join(' · ')}</div>`;
+    d.onclick=()=>applyVariant(v);
+    list.appendChild(d);
+  });
+}
+function applyVariant(v){
+  if(S.elements.length&&!confirm('Replace the current elements with "'+v.name+'"?'))return;
+  S.elements=[];S.scopes={};
+  v.els.forEach(e=>{S.elements.push({id:'e'+(S.nextId++),type:e.type,name:e.name,w:e.w,d:e.d,h:TYPES[e.type].h||null,x:e.x,y:e.y,wSrc:'moasure',dSrc:'moasure',material:null,steps:e.type==='steps'?3:null,sleeve:!!e.sleeve});});
+  document.getElementById('variantBox').style.display='none';
+  save();renderBoard();renderQuote();
+}
+
+// ---------- self-tuning calibration + confidence ----------
+function hasRealHistory(){return SHARED_ACTUALS.some(j=>j.source==='aspire');}
+function allActuals(){
+  // the moment real Aspire history exists, the sample jobs retire — the engine runs on truth only
+  const sample=hasRealHistory()?[]:(ACT?ACT.jobs:[]);
+  return [...sample,...SHARED_ACTUALS,...S.actualsLocal];
+}
+function calib(){
+  const jobs=allActuals();
+  if(!jobs.length)return {n:0,laborFactor:1,medAcc:null,hitRate:null};
+  // MEDIAN, not mean — real Aspire data (2026-08-18) showed mean dragged to the 1.4 cap by
+  // tiny-estimate outliers (0.75d est / 6.56d act = 8.75x) while the median ticket ran 1.07x.
+  const ratios=jobs.filter(j=>j.estDays>0).map(j=>j.actDays/j.estDays).sort((a,b)=>a-b);
+  const mid=ratios.length?(ratios.length%2?ratios[(ratios.length-1)/2]:(ratios[ratios.length/2-1]+ratios[ratios.length/2])/2):1;
+  const laborFactor=Math.max(.8,Math.min(1.4,mid));
+  const errs=jobs.filter(j=>j.final>0).map(j=>Math.abs(j.final-j.quotedMid)/j.final);
+  const sorted=[...errs].sort((a,b)=>a-b);
+  const medAcc=sorted.length?sorted[Math.floor(sorted.length/2)]:null;
+  const hitRate=errs.length?errs.filter(e=>e<=.10).length/errs.length:null;
+  return {n:jobs.length,laborFactor,medAcc,hitRate};
+}
+function confidence(){
+  const dims=S.elements.flatMap(e=>[e.wSrc,e.dSrc]);
+  const vf=dims.length?dims.filter(s=>s==='moasure'||s==='survey').length/dims.length:0;
+  const c=calib();
+  const score=.35*(S.project.surveyed==='yes'?1:0)+.45*vf+.20*Math.min(1,c.n/12);
+  return {score,vf,low:.85+.12*score,high:1.20-.15*score,
+    drivers:[{ok:S.project.surveyed==='yes',label:'Survey or site plan on file'},
+      {ok:vf>=.99&&dims.length>0,label:'Every dimension from Moasure or survey ('+Math.round(vf*100)+'% now)'},
+      {ok:c.n>=12,label:'Backed by '+c.n+' completed-job track record'}]};
+}
+
+// ---------- build journal ----------
+async function addJournal(){
+  const note=document.getElementById('j_note').value.trim();
+  const date=document.getElementById('j_date').value||new Date().toISOString().slice(0,10);
+  const files=document.getElementById('j_photos').files;
+  if(!note&&!files.length)return;
+  const photos=[];for(const f of files)photos.push(await downscale(f));
+  S.journal.push({id:'j'+(S.nextId++),date,note,photos});
+  S.journal.sort((a,b)=>a.date<b.date?-1:1);
+  document.getElementById('j_note').value='';document.getElementById('j_photos').value='';
+  save();renderJournal();
+}
+function delJournal(id){S.journal=S.journal.filter(j=>j.id!==id);save();renderJournal();}
+function renderJournal(){
+  const pp=document.getElementById('pfPublish');if(pp)pp.style.display=S.project.stage==='complete'?'block':'none';
+  const box=document.getElementById('journalList');if(!box)return;box.innerHTML='';
+  if(!S.journal.length){box.innerHTML='<div class="hint">No entries yet. Entries appear on the client\'s Design Studio timeline once the project is signed.</div>';return;}
+  const tl=document.createElement('div');tl.className='tl';
+  S.journal.forEach(j=>{const d=document.createElement('div');d.className='tl-item';
+    d.innerHTML=`<div class="d">${j.date}</div><div class="n">${j.note} <button class="btn danger sm" style="margin-left:8px" onclick="delJournal('${j.id}')">✕</button></div><div class="ph">${j.photos.map(p=>`<img src="${p}">`).join('')}</div>`;
+    tl.appendChild(d);});
+  box.appendChild(tl);
+}
+const MAINT={patio:['Spring: check polymeric sand joints; top up as needed','Year 2: optional reseal for color depth'],
+  walkway:['Spring: joint sand check with the patio'],
+  wall:['Fall: confirm drainage weeps clear; inspect caps'],
+  pergola:['Every 2–3 years: re-seal or re-stain; check hardware'],
+  firepit:['Yearly: licensed gas-connection inspection before first burn'],
+  turf:['Yearly: infill top-up + edge pin check','As needed: rinse + brush high-traffic lanes'],
+  bed:['First 6 weeks: water 3×/week (season one schedule)','Each spring: refresh mulch to 3"'],
+  steps:['Winter: no rock salt on natural stone — use sand']};
+
+// ---------- sub-quote autopilot ----------
+function subLines(){
+  const lines=[];
+  S.elements.forEach(e=>{
+    if(e.type==='pergola')lines.push({el:e,subId:'jonathan',what:`${e.name} — ${f1(e.w)}′×${f1(e.d)}′ (${f1(e.w*e.d)} sqft)`,scope:scopeText(e)});
+    if(e.type==='firepit')lines.push({el:e,subId:'plumber',what:`Gas line to ${e.name}`,scope:'Run and connect gas line to fire feature; pressure test; code compliance.'});
+    if(e.type==='porch')lines.push({el:e,subId:'jonathan',what:`${e.name} — ${f1(e.w)}′×${f1(e.d)}′ roofed + screened + sliding panels`,scope:scopeText(e)});
+    if(e.type==='custom'&&e.trade){const sub=SUBS.subs.find(s=>s.trade===e.trade);if(sub)lines.push({el:e,subId:sub.id,what:`${e.name} — ${f1(e.w)}′×${f1(e.d)}′ (custom scope)`,scope:scopeText(e)});}
+  });
+  return lines;
+}
+function rfqText(line,sub){
+  const P=S.project;
+  return `Hey ${sub.name.split(' ')[0]} — Sample Client here. Pricing a job at ${P.address||'[address]'} and need your number on:\n\n${line.what}\n\nScope: ${line.scope}\n\nScaled plan + site photos attached. Access: ${S.q.access}/10${S.q.handdig?', utilities marked through the yard':''}. Looking to lock pricing this week — what's your number and earliest start?\n\n— Client Owner / Sample Client`;
+}
+async function renderSubs(){
+  const box=document.getElementById('rfqList');box.innerHTML='';
+  const lines=subLines();
+  if(!lines.length)box.innerHTML='<div class="hint">No sub-dependent lines in the current design. Add a pergola or fire feature and RFQs generate here.</div>';
+  lines.forEach(line=>{
+    const sub=SUBS.subs.find(s=>s.id===line.subId);
+    const band=S.subBands[sub.id]||sub.band;
+    const r=S.rfqs[line.el.id]||{status:'draft'};
+    const area=line.el.w*line.el.d;
+    const target=band.unit==='$/sqft'?fmt(band.min*area)+'–'+fmt(band.max*area):fmt(band.min)+'–'+fmt(band.max);
+    const contact=SUBCONTACTS[sub.id]||'';
+    const mailto='mailto:'+encodeURIComponent(contact)+'?subject='+encodeURIComponent('Quote request — '+(S.project.client||'project')+': '+line.what)+'&body='+encodeURIComponent(rfqText(line,sub));
+    const statusTxt=r.confirmed?('CONFIRMED '+(r.confirmedDate||'')+' · '+fmt(r.price)):r.status==='replied'?'REPLIED — in quote':r.status.toUpperCase();
+    const d=document.createElement('div');d.className='rfq';
+    d.innerHTML=`<div class="row"><h4>${line.what}</h4><span class="spacer"></span><span class="st ${r.confirmed?'replied':r.status}">${statusTxt}</span></div>
+      <div class="band">→ ${sub.name} (${sub.trade}) · <b>should land ${target}</b> for this scope <span class="hint">(band ${band.unit==='$/sqft'?'$'+band.min+'–'+band.max+'/sqft':fmt(band.min)+'–'+fmt(band.max)} × ${band.unit==='$/sqft'?f1(area)+' sqft':'job'}, ${band.n} data points)</span></div>
+      <textarea readonly id="rfqtxt-${line.el.id}">${rfqText(line,sub)}</textarea>
+      <div class="row" style="margin-top:8px">
+        ${contact?`<a class="btn sm" style="text-decoration:none" href="${mailto}" onclick="markRfq('${line.el.id}','sent')">✉ Ping ${sub.name.split(' ')[0]}</a>`:`<span class="hint">add ${sub.name.split(' ')[0]}'s email below to ping directly ↓</span>`}
+        <button class="btn ghost sm" onclick="navigator.clipboard.writeText(document.getElementById('rfqtxt-${line.el.id}').value);this.textContent='Copied ✓'">Copy RFQ</button>
+        <input type="number" placeholder="Reply $ (total)" id="rfqreply-${line.el.id}" style="width:120px">
+        <button class="btn ghost sm" onclick="logReply('${line.el.id}','${sub.id}')">Log reply</button>
+        ${r.status==='replied'&&!r.confirmed?`<button class="btn sm" onclick="confirmSub('${line.el.id}')">✓ Confirm for job</button>`:''}
+      </div>`;
+    box.appendChild(d);
+  });
+  const tb=document.querySelector('#bandTable tbody');tb.innerHTML='';
+  SUBS.subs.forEach(s=>{const b=S.subBands[s.id]||s.band;const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.name}</td><td>${s.trade}</td><td class="mono">${b.unit==='$/sqft'?'$'+b.min.toFixed(2)+'–'+b.max.toFixed(2)+'/sqft':fmt(b.min)+'–'+fmt(b.max)}</td><td class="num">${b.n}</td><td><input style="width:220px;font-size:12px" placeholder="email or phone" value="${(SUBCONTACTS[s.id]||'').replace(/"/g,'&quot;')}" onchange="saveSubContact('${s.id}',this.value)"></td>`;
+    tb.appendChild(tr);});
+}
+let SUBCONTACTS={};
+async function loadSubContacts(){if(API)SUBCONTACTS=await fetch('/api/subs-contacts').then(r=>r.json()).catch(()=>({}));}
+function saveSubContact(id,val){SUBCONTACTS[id]=val.trim();if(API)fetch('/api/subs-contacts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({[id]:val.trim()})});renderSubs();}
+function confirmSub(elId){const r=S.rfqs[elId];if(!r)return;r.confirmed=true;r.confirmedDate=new Date().toISOString().slice(0,10);save();renderSubs();}
+function markRfq(elId,status){const r=S.rfqs[elId]||{};if(r.confirmed)return;S.rfqs[elId]={...r,status:r.status==='replied'?'replied':status};save();renderSubs();}
+function logReply(elId,subId){
+  const v=parseFloat(document.getElementById('rfqreply-'+elId).value);if(!(v>0))return;
+  S.rfqs[elId]={status:'replied',subId,price:v};
+  const el=S.elements.find(e=>e.id===elId),sub=SUBS.subs.find(s=>s.id===subId);
+  const b=S.subBands[subId]||{...sub.band};
+  if(sub.band.unit==='$/sqft'&&el){const ps=v/(el.w*el.d);b.min=Math.min(b.min,ps);b.max=Math.max(b.max,ps);}
+  else{b.min=Math.min(b.min,v);b.max=Math.max(b.max,v);}
+  b.n=(b.n||0)+1;b.unit=sub.band.unit;b.source='learned from replies';
+  S.subBands[subId]=b;
+  save();renderSubs();renderQuote();
+}
+
+// ---------- actuals / self-tuning UI ----------
+function addActual(){
+  const g=id=>document.getElementById(id);
+  const j={id:'L'+(S.nextId++),name:g('a_name').value.trim()||'Unnamed job',quotedMid:+g('a_quoted').value,final:+g('a_final').value,estDays:+g('a_est').value,actDays:+g('a_act').value,closed:new Date().toISOString().slice(0,10),local:true};
+  if(!(j.final>0&&j.estDays>0&&j.actDays>0))return;
+  if(API){SHARED_ACTUALS.push(j);fetch('/api/actuals',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(j)});}
+  else S.actualsLocal.push(j);
+  ['a_name','a_quoted','a_final','a_est','a_act'].forEach(i=>g(i).value='');
+  save();renderActuals();renderQuote();
+}
+function renderActuals(){
+  const c=calib();
+  document.getElementById('t_n').textContent=c.n+(hasRealHistory()?' (REAL — Aspire)':' (sample)');
+  document.getElementById('t_acc').textContent=c.medAcc!=null?'±'+Math.round(c.medAcc*100)+'%':'—';
+  document.getElementById('t_cal').textContent='×'+c.laborFactor.toFixed(2);
+  document.getElementById('t_hit').textContent=c.hitRate!=null?Math.round(c.hitRate*100)+'%':'—';
+  document.getElementById('tuneExplain').textContent='How tuning works: actual÷estimated crew-days across all '+c.n+' jobs → labor calibration ×'+c.laborFactor.toFixed(2)+' applied to every new quote. Accuracy stat = median |final − quoted| ÷ final. The client sees only the headline stat, never the raw jobs.';
+  const tb=document.querySelector('#actTable tbody');tb.innerHTML='';
+  allActuals().slice().reverse().forEach(j=>{
+    const hasFinal=j.final>0;
+    const d=hasFinal?(j.final-j.quotedMid)/j.final*100:null;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${j.name}${j.local?' <span class="tag stock">LOGGED HERE</span>':''}${j.source==='aspire'?' <span class="tag moasure">ASPIRE</span>':''}</td><td class="num mono">${fmt(j.quotedMid)}</td><td class="num mono">${hasFinal?fmt(j.final):'not invoiced yet'}</td><td class="num mono" style="color:${d==null?'var(--dim)':Math.abs(d)<=10?'var(--sage)':'var(--red)'}">${d==null?'—':(d>0?'+':'')+d.toFixed(1)+'%'}</td><td class="num mono">${j.estDays}</td><td class="num mono">${j.actDays}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// ---------- quote engine ----------
+function catPrice(m){const o=S.catOverrides[m.id];return o!=null?o:m.price;}
+function pickMaterial(e){
+  const t=TYPES[e.type];
+  if(e.material)return CAT.materials.find(m=>m.id===e.material);
+  const pool=CAT.materials.filter(m=>t.matCat.includes(m.cat));
+  if(!pool.length)return null;
+  const tier=S.q.tier;
+  const score=m=>(m.stock==='stock'?0:10)+(m.tier===tier?0:1);
+  return pool.slice().sort((a,b)=>score(a)-score(b)||catPrice(a)-catPrice(b))[0];
+}
+function accessFactor(){const b=LAB.access_difficulty.bands.find(b=>S.q.access>=b.min&&S.q.access<=b.max);return b?b.labor_multiplier:1;}
+function gradeClass(ft){return ft<=1?['flat',1.0]:ft<=3?['moderate',1.1]:['steep',1.3];}
+function gradeFactor(){return gradeClass(S.q.gradeFt||0)[1];}
+function gradeHintUpd(){const el=document.getElementById('gradeHint');if(!el)return;const [c,f]=gradeClass(S.q.gradeFt||0);el.textContent=(S.q.gradeFt||0)+' ft of fall → '+c+' → labor ×'+f.toFixed(2)+' (auto-derived; benchmark bands in Catalog)';}
+function computeQuote(){
+  const R=LAB.production_rates_per_crew_day,crew=LAB.crew.day_cost,W=LAB.waste_factor_material,MK=LAB.markups;
+  const items=[];let laborDays=0;
+  const push=(el,name,desc,qty,unit,unitCost,kind)=>{const cost=qty*unitCost;items.push({el,name,desc,qty,unit,unitCost,cost,kind});};
+  const mat=id=>CAT.materials.find(m=>m.id===id);
+  S.elements.forEach(e=>{
+    if(e.off)return; // client toggled this add-on off — stays on the board (ghosted), out of the money
+    const area=elArea(e),m=pickMaterial(e);
+    if(['patio','walkway'].includes(e.type)){
+      push(e,'Excavation & haul-off',`${f1(area)} sqft to ±9" below grade`,area,'sqft',0,'labor0');laborDays+=area/R.excavation_sqft;
+      push(e,mat('crusher-run').name,'6" compacted base in lifts',f1(area*0.028),'ton',catPrice(mat('crusher-run')),'material');
+      push(e,mat('conc-sand').name,'1" screeded setting bed',f1(area*0.005),'ton',catPrice(mat('conc-sand')),'material');
+      if(m){push(e,m.name+(m.stock==='special'?' ⚠ SPECIAL ORDER':''),`surface, incl. ${Math.round(W*100)}% waste`,f1(area*(1+W)),'sqft',catPrice(m),'material');laborDays+=area/(m.cat==='natstone'?R.natstone_install_sqft:R.paver_install_sqft);}
+      const per=2*(e.w+e.d);
+      push(e,mat('edge-restraint').name,'all open edges',f1(per),'lnft',catPrice(mat('edge-restraint')),'material');
+      push(e,mat('poly-sand').name,'swept & compacted',Math.ceil(area/60),'bag',catPrice(mat('poly-sand')),'material');
+      if(e.sleeve)push(e,mat('sleeve-2in').name,'future irrigation/lighting',f1(e.w),'lnft',catPrice(mat('sleeve-2in')),'material');
+    }else if(e.type==='wall'){
+      const face=e.w*(e.h||1.8);
+      if(m)push(e,m.name,'incl. batter, geogrid as req.',f1(face*(1+W)),'face-sqft',catPrice(m),'material');
+      push(e,mat('57-stone').name,'backfill + drain',f1(face*0.04),'ton',catPrice(mat('57-stone')),'material');
+      push(e,mat('bluestone-caps').name,'adhered caps',f1(e.w),'lnft',catPrice(mat('bluestone-caps')),'material');
+      laborDays+=face/R.wall_face_sqft;
+    }else if(e.type==='pergola'){
+      const r=S.rfqs[e.id];
+      if(r&&r.status==='replied')push(e,'Pergola (carpentry — quoted)',`${f1(e.w)}′×${f1(e.d)}′ — real sub quote, replaces allowance`,1,'ls',r.price,'sub');
+      else push(e,'Pergola (carpentry sub)',`${f1(e.w)}′×${f1(e.d)}′ — ALLOWANCE, real sub quote required`,f1(area),'sqft',LAB.sub_allowances.pergola_per_sqft,'sub');
+    }else if(e.type==='firepit'){
+      push(e,mat('firepit-kit').name,'gas-ready kit on compacted base',1,'each',catPrice(mat('firepit-kit')),'material');
+      const r=S.rfqs[e.id];
+      if(r&&r.status==='replied')push(e,'Gas line (plumber — quoted)','real sub quote, replaces allowance',1,'ls',r.price,'sub');
+      else push(e,'Gas line (plumber sub)','ALLOWANCE — licensed plumber quote required',1,'ls',LAB.sub_allowances.gas_line_allowance,'sub');
+      laborDays+=1.5;
+    }else if(e.type==='porch'){
+      const r=S.rfqs[e.id];
+      if(r&&r.status==='replied')push(e,'Screened porch (carpentry — quoted)',`${f1(e.w)}′×${f1(e.d)}′ — real sub quote, replaces allowance`,1,'ls',r.price,'sub');
+      else push(e,'Screened porch (carpentry sub)',`${f1(e.w)}′×${f1(e.d)}′ roofed + screened + sliding panels — ALLOWANCE, real sub quote required`,f1(area),'sqft',LAB.sub_allowances.screened_porch_per_sqft,'sub');
+    }else if(e.type==='turf'){
+      if(m)push(e,m.name,'seamed, nailed, infilled',f1(area*(1+W)),'sqft',catPrice(m),'material');
+      push(e,mat('crusher-run').name,'laser-graded fines base',f1(area*0.02),'ton',catPrice(mat('crusher-run')),'material');
+      laborDays+=area/R.turf_sqft;
+    }else if(e.type==='bed'){
+      push(e,'Plant material','per plan — availability from weekly wholesale reports',f1(area),'sqft',6.5,'material');
+      push(e,mat('mulch-hw').name,'3" settled depth',f1(area*0.0093),'yd',catPrice(mat('mulch-hw')),'material');
+      laborDays+=area/R.planting_bed_sqft;
+    }else if(e.type==='custom'){
+      const r=S.rfqs[e.id];
+      if(r&&r.status==='replied')push(e,e.name+' (quoted)','real sub quote, replaces allowance',1,'ls',r.price,'sub');
+      else push(e,e.name,`${f1(e.w)}′×${f1(e.d)}′ — ALLOWANCE${e.allowLo?` (${e.allowSrc==='history'?`${fmt(e.allowLo)}–${fmt(e.allowHi)} from ${e.allowN} completed Sample Client jobs`:`typical ${fmt(e.allowLo)}–${fmt(e.allowHi)} installed, market estimate`})`:e.allowance?'':' — SET AN ALLOWANCE $ on the board'}, real sub quote required before contract`,1,'ls',e.allowance||0,'sub');
+    }else if(e.type==='steps'){
+      if(m)push(e,m.name+' treads','stacked/pinned treads',e.steps||3,'step',85,'material');
+      laborDays+=(e.steps||3)/R.steps_per_day;
+    }
+  });
+  // difficulty + self-tuning calibration
+  const af=accessFactor(),gf=gradeFactor(),c=calib();
+  let adjDays=laborDays*af*gf*c.laborFactor;
+  if(S.q.handdig)adjDays+=LAB.utility_handdig.hours/LAB.crew.hours_per_day;
+  const laborCost=adjDays*crew;
+  const matCost=items.filter(i=>i.kind==='material').reduce((s,i)=>s+i.cost,0);
+  const subCost=items.filter(i=>i.kind==='sub').reduce((s,i)=>s+i.cost,0);
+  const price=matCost*MK.material+laborCost*MK.labor+subCost*MK.sub;
+  const cost=matCost+laborCost+subCost;
+  const cf=confidence();
+  return {items,laborDays:adjDays,laborCost,matCost,subCost,cost,price,low:price*cf.low,high:price*cf.high,af,gf,cal:c,cf,
+    special:items.some(i=>/SPECIAL ORDER/.test(i.name)),subs:items.filter(i=>i.kind==='sub'&&/ALLOWANCE/.test(i.desc))};
+}
+function renderQuote(){
+  if(!CAT)return;
+  const q=computeQuote();
+  const av=document.getElementById('accessVal');if(av)av.textContent=S.q.access;
+  const ah=document.getElementById('accessHint');if(ah)ah.textContent=S.q.access+'/10: '+accessDesc(S.q.access)+' → labor ×'+q.af.toFixed(2)+(S.q.handdig?' + '+LAB.utility_handdig.hours+'h hand-dig':'');
+  const [gc,gfv]=gradeClass(S.q.gradeFt||0);
+  const ds=document.getElementById('diffSummary');
+  if(ds)ds.innerHTML='Access <b>'+S.q.access+'/10</b> → labor ×'+q.af.toFixed(2)+(S.q.accessWhy?' <span class="hint">('+S.q.accessWhy+')</span>':'')+'<br>Grade <b>'+(S.q.gradeFt||0)+' ft fall</b> ('+gc+') → labor ×'+gfv.toFixed(2)+'<br>Utilities/hand-dig: <b>'+(S.q.handdig?'yes — +'+LAB.utility_handdig.hours+'h':'no')+'</b>';
+  const gq=document.getElementById('gradeQuoteLine');if(gq)gq.textContent='Change these on 4 · Site — they were measured there.';
+  document.getElementById('k_range').textContent=S.elements.length?fmt(q.low)+' – '+fmt(q.high):'—';
+  document.getElementById('k_price').textContent=S.elements.length?fmt(q.price):'—';
+  document.getElementById('k_margin').textContent=S.elements.length?Math.round((1-q.cost/q.price)*100)+'%':'—';
+  document.getElementById('k_days').textContent=S.elements.length?f1(q.laborDays):'—';
+  document.getElementById('validityNote').textContent='Confidence-priced: range ×'+q.cf.low.toFixed(2)+'–×'+q.cf.high.toFixed(2)+' from data quality (survey '+(S.project.surveyed==='yes'?'✓':'✗')+', '+Math.round(q.cf.vf*100)+'% dims verified, '+q.cal.n+'-job history). Quote validity: '+LAB.quote_validity_hours+' hours.';
+  document.getElementById('quoteSub').textContent=S.elements.length?'Self-tuned: labor ×'+q.cal.laborFactor.toFixed(2)+' from '+q.cal.n+' completed jobs (Actuals tab). Costs are internal; the client sees the ballpark range + tier prices only. Line items export to Aspire at go-live — Colton confirms before anything is sent.':'Add elements on the 2D board to build the estimate.';
+  // packages (Standard / Premium material palettes)
+  const strip=document.getElementById('tierstrip');strip.innerHTML='';
+  ['standard','premium'].forEach(t=>{
+    const keep=S.q.tier;S.q.tier=t;const tq=computeQuote();S.q.tier=keep;
+    const d=document.createElement('div');d.className='tier'+(S.q.tier===t?' on':'');
+    d.innerHTML=`<div class="tn">${t[0].toUpperCase()+t.slice(1)}</div><div class="tp">${S.elements.length?fmt(tq.price):'—'}</div>`;
+    d.onclick=()=>{S.q.tier=t;save();renderQuote();};
+    strip.appendChild(d);
+  });
+  const tb=document.querySelector('#quoteTable tbody');tb.innerHTML='';
+  let curEl=null;
+  q.items.forEach(i=>{
+    if(i.el!==curEl){curEl=i.el;const tr=document.createElement('tr');tr.innerHTML=`<td colspan="7" style="background:var(--card2);font-family:Fraunces,serif;font-size:14px;color:var(--bronze2)">${curEl.name} — ${f1(curEl.w)}′×${f1(curEl.d)}′ ${(curEl.wSrc==='moasure'||curEl.wSrc==='survey')&&(curEl.dSrc==='moasure'||curEl.dSrc==='survey')?'':'⚠ field-verify dims'}</td>`;tb.appendChild(tr);}
+    const mk=i.kind==='material'?LAB.markups.material:i.kind==='sub'?LAB.markups.sub:LAB.markups.labor;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i.name}</td><td class="hint">${i.desc}</td><td class="num mono">${i.qty}</td><td>${i.unit}</td><td class="num mono">${i.unitCost?fmt(i.unitCost):'—'}</td><td class="num mono">${i.cost?fmt(i.cost):'—'}</td><td class="num mono">${i.cost?fmt(i.cost*mk):'—'}</td>`;
+    tb.appendChild(tr);
+  });
+  if(S.elements.length){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td colspan="5" style="font-weight:700">Labor — ${f1(q.laborDays)} crew-days @ ${fmt(LAB.crew.day_cost)} (incl. difficulty ×${(q.af*q.gf).toFixed(2)})</td><td class="num mono" style="font-weight:700">${fmt(q.laborCost)}</td><td class="num mono" style="font-weight:700">${fmt(q.laborCost*LAB.markups.labor)}</td>`;
+    tb.appendChild(tr);
+    const tt=document.createElement('tr');
+    tt.innerHTML=`<td colspan="5" style="font-weight:700;font-family:Fraunces,serif;font-size:15px">TOTAL</td><td class="num mono" style="font-weight:700">${fmt(q.cost)}</td><td class="num mono" style="font-weight:700;color:var(--bronze2);font-size:15px">${fmt(q.price)}</td>`;
+    tb.appendChild(tt);
+  }
+}
+
+// ---------- scope writer ----------
+function scopeText(e){
+  const m=pickMaterial(e),mn=m?m.name:'selected material';
+  const T={
+    patio:`Excavate ${e.name.toLowerCase()} area (${f1(e.w)}′ × ${f1(e.d)}′) to ±9" below finished grade; haul all spoils. Install woven geotextile over compacted subgrade. Install 6" compacted crusher-run base in 2" lifts, plate-compacted, screeded to pitch 1/8"–1/4" per foot away from the home. 1" concrete sand setting bed. Install ${mn} per manufacturer best practice. Edge restraint spiked on all open edges. Sweep and compact polymeric sand into all joints; blow clean.${e.sleeve?'\nInstall 2" PVC sleeve beneath hardscape for future irrigation/lighting runs.':''}`,
+    walkway:`Excavate walkway (${f1(e.w)}′ × ${f1(e.d)}′) to ±7" below finished grade. 4–6" compacted crusher-run base, 1" sand bed, install ${mn}, edge restraint and polymeric sand as at patio.${e.sleeve?'\nInstall 2" PVC sleeve beneath walkway.':''}`,
+    wall:`Excavate wall alignment (${f1(e.w)}′ run); install 6" compacted crusher-run leveling pad. Install ${mn} to ${e.h||1.8}′ exposed face with proper batter; backfill with #57 clean stone and drain sock daylighted. Adhere ${'bluestone caps'} with masonry adhesive.`,
+    pergola:`Furnish and install ${f1(e.w)}′ × ${f1(e.d)}′ pergola per approved drawing. Carpentry by subcontractor — final pricing on sub confirmation. Footings poured below frost line; all hardware hot-dip galvanized.`,
+    firepit:`Install gas-ready masonry fire pit kit on compacted base, centered per plan. Gas line routed and connected by licensed plumber (separate sub line item).`,
+    turf:`Excavate 3–4" and haul spoils; laser-grade compacted fines base. Install premium artificial turf — seamed, nailed, infilled; edges pinned. Positive drainage maintained.`,
+    bed:`Amend and fine-grade planting bed (${f1(elArea(e))} sqft). Install plant material per approved plan — availability confirmed against current weekly wholesale reports before ordering. 3" double-shredded hardwood mulch; water-in and treat.`,
+    steps:`Install ${e.steps||3} stone treads, stacked and pinned on compacted base, consistent 6–7" rise, positive pitch off each tread.`,
+    porch:`Furnish and install ${f1(e.w)}′ × ${f1(e.d)}′ screened porch off the rear of the home per approved drawing — roofed structure, full screen enclosure, sliding door panels per consult. Carpentry by subcontractor; priced as an allowance until the sub quote lands. Footings below frost line; electrical rough-in by licensed electrician (separate line).`,
+    custom:`${e.name} (${f1(e.w)}′ × ${f1(e.d)}′): per approved plan and consult notes. Priced as an allowance pending detailed ${e.trade?e.trade+' subcontractor':'final'} quote — scope, materials, and finish to be confirmed before contract.`
+  };
+  return T[e.type]||'';
+}
+function regenScopes(force){S.elements.forEach(e=>{if(force||!S.scopes[e.id])S.scopes[e.id]=scopeText(e);});save();renderScopes();}
+function renderScopes(){
+  const box=document.getElementById('scopeList');box.innerHTML='';
+  if(!S.elements.length){box.innerHTML='<div class="hint">Add elements on the 2D board first.</div>';return;}
+  regenScopesIfMissing();
+  S.elements.filter(e=>!e.off).forEach(e=>{
+    const d=document.createElement('div');d.className='scope-block';
+    d.innerHTML=`<h4>${e.name}</h4><div contenteditable="true" data-id="${e.id}">${(S.scopes[e.id]||'').replace(/\n/g,'<br>')}</div>`;
+    d.querySelector('[contenteditable]').addEventListener('input',ev=>{S.scopes[e.id]=ev.target.innerText;save();});
+    box.appendChild(d);
+  });
+  const foot=document.createElement('div');foot.className='hint';
+  foot.textContent='Standing footer: All work installed to Sample Client best practice. Utilities marked via NC811 prior to excavation; hand-digging within tolerance zones billed as additional labor.';
+  box.appendChild(foot);
+}
+function regenScopesIfMissing(){S.elements.forEach(e=>{if(!S.scopes[e.id])S.scopes[e.id]=scopeText(e);});}
+
+// ---------- approvals ----------
+function computeFlags(){
+  const q=computeQuote(),flags=[];
+  if(q.price>50000)flags.push({id:'sitewalk',t:'Site walk — Noah',d:'Job over $50k ('+fmt(q.price)+') — Noah walks the site with Client Owner before anything is promised (their standing rule).'});
+  flags.push({id:'labor',t:'Labor review — Noah',d:'Approve '+f1(q.laborDays)+' crew-days incl. difficulty ×'+(q.af*q.gf).toFixed(2)+'. Means-and-methods (sleeves, staging, machine access) confirmed. <button class="btn ghost sm" onclick="showTab(&quot;quote&quot;)">Review the line items on 8 · Quote →</button>'});
+  if(q.subs.length)flags.push({id:'subs',t:'Sub quotes required',d:'Allowances in this estimate must be replaced by real quotes before contract: '+q.subs.map(s=>s.name).join('; ')+'.'});
+  if(q.special)flags.push({id:'special',t:'Special-order lead time',d:'A special-order material is in the design (e.g. Borealis). Client informed of lead time?'});
+  if(S.q.handdig)flags.push({id:'811',t:'NC811 locate',d:'Utilities flagged through work area — locate ticket scheduled and hand-dig plan confirmed.'});
+  const unv=S.elements.filter(e=>!(['moasure','survey'].includes(e.wSrc)&&['moasure','survey'].includes(e.dSrc)));
+  if(unv.length)flags.push({id:'dims',t:'Field-verify dimensions',d:unv.map(e=>e.name).join(', ')+' — dims not yet traced to Moasure/survey. Verify before contract.'});
+  return flags;
+}
+function renderApprovals(){
+  const box=document.getElementById('flagList');box.innerHTML='';
+  if(!S.elements.length){box.innerHTML='<div class="hint">Add elements on the 2D board first.</div>';document.getElementById('gateBox').style.display='none';renderStepList([],false);return;}
+  document.getElementById('gateBox').style.display='block';
+  const flags=computeFlags();
+  let all=true;
+  flags.forEach(f=>{
+    const ok=!!S.approvals[f.id];all=all&&ok;
+    const d=document.createElement('div');d.className='flag';
+    d.innerHTML=`<input type="checkbox" ${ok?'checked':''}><div><div class="t">${f.t}</div><div class="d">${f.d}</div></div>`;
+    d.querySelector('input').onchange=ev=>{S.approvals[f.id]=ev.target.checked;save();renderApprovals();};
+    box.appendChild(d);
+  });
+  const g=document.getElementById('gateBox');
+  g.className='gate '+(all?'open':'locked');
+  g.textContent=all?'Gate OPEN — quote may go to the client (ballpark range, 72-hour validity).':'Gate LOCKED — outstanding approvals above. Nothing customer-facing moves.';
+  renderStepList(flags,all);
+}
+function renderStepList(flags,flagsOk){
+  const sb=document.getElementById('stepList');if(!sb)return;
+  sb.innerHTML=STEP_TABS.map(([t,l])=>{const st=S.steps[t];
+    return `<div class="flag" style="cursor:pointer" onclick="showTab('${t}')"><span style="font-size:16px">${st?'✅':'⬜'}</span><div><div class="t">${l}</div><div class="d">${st?('signed off by '+(st.by||'team')+' · '+st.date):'open — tap to go to that tab and approve it there'}</div></div></div>`;}).join('');
+  const openSteps=STEP_TABS.filter(([t])=>!S.steps[t]).length;
+  const openFlags=flags.filter(f=>!S.approvals[f.id]).length;
+  const ready=!openSteps&&flagsOk;
+  const pb=document.getElementById('proposalBox');
+  pb.className='gate '+(ready?'open':'locked');
+  pb.innerHTML=ready
+    ?'🚀 ALL approvals in — the proposal is ready. <button class="btn sm" style="margin-left:10px" onclick="printDoc(\'client\')">Generate proposal PDF</button> <span class="hint">Client Owner/the Founder sends it — nothing auto-sends.</span>'
+    :('Proposal held — '+openSteps+' step sign-off(s) and '+openFlags+' gate flag(s) outstanding.');
+}
+
+// ---------- catalog ----------
+function renderCatalog(){
+  const tb=document.querySelector('#catTable tbody');tb.innerHTML='';
+  CAT.materials.forEach(m=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${m.name}</td><td>${m.unit}</td><td class="num"><input type="number" step="0.05" value="${catPrice(m)}" style="width:84px;text-align:right" onchange="S.catOverrides['${m.id}']=parseFloat(this.value);save();renderQuote()"></td><td><span class="tag ${m.stock}">${m.stock==='stock'?'IN STOCK':'SPECIAL ORDER'}</span></td><td>${m.tier}</td><td class="hint">${m.note||''}</td>`;
+    tb.appendChild(tr);
+  });
+  const lb=document.querySelector('#labTable tbody');lb.innerHTML='';
+  const rows=[['Crew',LAB.crew.size+'-man, '+fmt(LAB.crew.day_cost)+'/day'],
+    ['Paver install','<b>'+LAB.production_rates_per_crew_day.paver_install_sqft+' sqft/day</b> (Client Owner\'s number — the one real benchmark so far)'],
+    ['Natural stone install',LAB.production_rates_per_crew_day.natstone_install_sqft+' sqft/day'],
+    ['Wall',LAB.production_rates_per_crew_day.wall_face_sqft+' face-sqft/day'],
+    ['Excavation',LAB.production_rates_per_crew_day.excavation_sqft+' sqft/day'],
+    ['Herringbone factor','×'+LAB.pattern_factors.herringbone],
+    ['Access 1–3 / 4–6 / 7–8 / 9–10','×1.0 / ×1.15 / ×1.35 / ×1.6'],
+    ['Grade flat/moderate/steep','×1.0 / ×1.1 / ×1.3'],
+    ['Utility hand-dig','+'+LAB.utility_handdig.hours+' hours'],
+    ['Material waste',Math.round(LAB.waste_factor_material*100)+'% blanket (their number)'],
+    ['Markups','mat ×'+LAB.markups.material+' · labor ×'+LAB.markups.labor+' · sub ×'+LAB.markups.sub]];
+  rows.forEach(([k,v])=>{const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--dim)">${k}</td><td>${v}</td>`;lb.appendChild(tr);});
+  const pb=document.querySelector('#plantTable tbody');pb.innerHTML='';
+  CAT.plants.forEach(p=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${p.name}</td><td class="num mono">${fmt(p.price)}</td><td class="hint">${p.availability}</td>`;pb.appendChild(tr);});
+}
+
+// ---------- design studio client view ----------
+function clientBoardSVG(){
+  let h=`<svg viewBox="0 0 800 500" style="width:100%;height:auto;background:#12100d;border-radius:12px;border:1px solid rgba(240,232,216,.1)">`;
+  for(let i=0;i<=BOARD_W;i+=5){h+=`<line x1="${i*PXFT}" y1="0" x2="${i*PXFT}" y2="${BOARD_H*PXFT}" stroke="rgba(240,232,216,.05)" stroke-width="1"/>`;}
+  for(let i=0;i<=BOARD_H;i+=5){h+=`<line x1="0" y1="${i*PXFT}" x2="${BOARD_W*PXFT}" y2="${i*PXFT}" stroke="rgba(240,232,216,.05)" stroke-width="1"/>`;}
+  S.elements.filter(e=>!e.off).forEach(e=>{
+    const t=TYPES[e.type],x=e.x*PXFT,y=e.y*PXFT,w=e.w*PXFT,d=e.d*PXFT;
+    h+=`<rect x="${x}" y="${y}" width="${w}" height="${d}" rx="3" fill="${t.fill}" stroke="${t.stroke}" stroke-width="1.5"/>
+    <text x="${x+w/2}" y="${y+d/2-3}" text-anchor="middle" font-size="11" font-weight="600" fill="#F3ECDE" font-family="Inter">${e.name}</text>
+    <text x="${x+w/2}" y="${y+d/2+11}" text-anchor="middle" font-size="10" fill="#B7AC97" font-family="Inter">${f1(e.w)}′ × ${f1(e.d)}′</text>`;
+  });
+  return h+'</svg>';
+}
+let cvState='day1',cvPackage='standard';
+const CV_STATES=[['day1','Day 1'],['night','Night']]; // Year 3 retired 2026-08-19 (the Founder: no visible difference for the client)
+const ADDON_WHY={
+  wall:'doubles as guest seating for a crowd — no furniture to buy',
+  firepit:'keeps the yard in use past sunset, spring through fall',
+  pergola:'shade and shelter — it turns the patio into an outdoor room',
+  porch:'bug-free evenings; the room you end up using nine months a year',
+  bed:'the finished look — hardscape reads half-done without planting',
+  turf:'green every month of the year, zero mowing',
+  walkway:'a clean route — no worn track through the lawn',
+  steps:'a safe grade change, built to code',
+  patio:'the foundation everything else lives on',
+  custom:'special-built for you — priced on a real contractor quote'
+};
+function parseBudget(){
+  const t=(S.project.budget||'').toLowerCase();if(!t.trim())return null;
+  const nums=[...t.matchAll(/\$?\s*(\d[\d,.]*)\s*(k)?/g)].map(m=>{let v=parseFloat(m[1].replace(/,/g,''));if(m[2]==='k'||(v<1000&&/k/.test(t)))v*=1000;return v;}).filter(v=>v>=1000);
+  if(!nums.length)return null;
+  return {lo:Math.min(...nums),hi:Math.max(...nums)};
+}
+const OPTION_TAGLINE={'Your Vision':'exactly what you asked for','Vision +':'your vision plus the nice-to-haves','The Dream':'if the budget stretched','The Sample Client':'what we\'d build if it were our yard'};
+function optionDesc(key){
+  const meta=S.project.optionMeta||{},m=meta[key];if(!m)return '';
+  const onNames=mm=>S.elements.filter(e=>!mm.off.includes(e.id)).map(e=>e.name);
+  const mine=onNames(m);
+  // the base of this batch = Option 1 fired within 10 minutes of this one
+  const base=Object.values(meta).find(x=>x.num===1&&Math.abs(x.ts-m.ts)<6e5);
+  const tag=OPTION_TAGLINE[m.name]||'';
+  let what;
+  if(!base||base===m){what='Includes '+(mine.join(', ')||'the base design');}
+  else{
+    const baseNames=onNames(base);
+    const added=mine.filter(n=>!baseNames.includes(n)),removed=baseNames.filter(n=>!mine.includes(n));
+    what=(added.length?'Your Vision + '+added.join(' + '):'Same build as Your Vision')+(removed.length?' — without '+removed.join(', '):'');
+  }
+  const finish=m.tier==='premium'?'premium natural-stone finish':'standard finish';
+  return `<div class="opt-desc">${tag?`<i>${tag}.</i> `:''}${what} · ${finish}.</div>`;
+}
+function optionPrice(meta){
+  const keepOff=S.elements.map(e=>[e.id,e.off]),keepTier=S.q.tier;
+  S.elements.forEach(e=>e.off=meta.off.includes(e.id));S.q.tier=meta.tier||'standard';
+  const p=computeQuote().price;
+  keepOff.forEach(([id,off])=>{const e=S.elements.find(x=>x.id===id);if(e)e.off=off;});S.q.tier=keepTier;
+  return p;
+}
+function chooseOption(setId){
+  const meta=(S.project.optionMeta||{})[setId];if(!meta)return;
+  S.elements.forEach(e=>e.off=meta.off.includes(e.id));
+  S.q.tier=meta.tier||'standard';
+  S.project.chosenOption=setId;
+  save();renderClient();
+}
+function addonDelta(el){
+  const was=el.off; el.off=true; const without=computeQuote().price; el.off=false; const withEl=computeQuote().price; el.off=was;
+  return Math.round(withEl-without);
+}
+function toggleAddon(id){const el=S.elements.find(e=>e.id===id);if(!el)return;el.off=!el.off;save();renderClient();}
+function pkgMaterials(pkg){
+  const keep=S.q.tier;S.q.tier=pkg;
+  const names=[...new Set(S.elements.map(e=>pickMaterial(e)).filter(Boolean).map(m=>m.name))];
+  S.q.tier=keep;return names;
+}
+function renderClient(){
+  const box=document.getElementById('clientView');
+  const P=S.project;
+  if(!S.elements.length&&!(P.renders||[]).length){box.innerHTML=`<div class="hint" style="padding:30px;font-size:15px">Nothing to show yet — the design hasn't been built for this project.<br><br>${(P.photos||[]).length?'Photos are in':'No photos yet'} · ${S.trace?'measurements are in':'<b style=\"color:var(--red)\">no measurements yet</b> (Moasure trace or tape width × depth)'} — go back to <b>2 · Visit</b> and tap <b>✦ Auto-design</b>.<br><br><button class="btn sm" onclick="showTab('visit')">← Back to Visit Mode</button></div>`;return;}
+  regenScopesIfMissing();
+  const q=computeQuote(),c=q.cal,cf=q.cf;
+  const tierPrices={};['standard','premium'].forEach(t=>{const k=S.q.tier;S.q.tier=t;tierPrices[t]=computeQuote().price;S.q.tier=k;});
+  const tierDesc={standard:'Everything you asked for — quality materials, built right',premium:'The upgrade: natural stone, showpiece finishes, lighting-ready'};
+  // renders grouped into OPTIONS: each render set = one pickable design option
+  const stateLabel=s=>({day1:'Day 1',year3:'Year 3',night:'Night'})[s]||s;
+  const ts=l=>new Date((String(l).match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/)||[''])[0]).getTime()||0;
+  const gen=(P.renders||[]).filter(r=>r.generated&&r.state!=='year3'); // year3 retired — legacy ones stay in data, never shown
+  const groups={};
+  gen.forEach(r=>{const k=r.setId||('legacy-'+Math.round(ts(r.label)/9e5));(groups[k]=groups[k]||[]).push(r);});
+  const stateOrder={day1:0,year3:1,night:2};
+  const meta=P.optionMeta||{};
+  const gkeys=Object.keys(groups).sort((a,b)=>{
+    const ma=meta[a],mb=meta[b];
+    if(ma&&mb)return mb.ts-ma.ts===0?ma.num-mb.num:(Math.abs(mb.ts-ma.ts)<6e5?ma.num-mb.num:mb.ts-ma.ts); // same batch → Option 1 first; else newest batch first
+    if(ma)return -1;if(mb)return 1;
+    return Math.max(...groups[b].map(r=>ts(r.label)))-Math.max(...groups[a].map(r=>ts(r.label)));
+  });
+  const tourFor=k=>(P.tours||[]).find(t=>t.setId===k);
+  const optionsHtml=gkeys.map(k=>{
+    const imgs=groups[k].sort((a,b)=>(stateOrder[a.state]??9)-(stateOrder[b.state]??9)).map(r=>`<div><img src="${r.src}"><div class="cap">${stateLabel(r.state)}</div></div>`).join('');
+    const m=meta[k];
+    const chosen=P.chosenOption===k;
+    if(m){
+      const price=optionPrice(m);
+      const tour=tourFor(k);
+      const tourBlock=tour?`<video src="${tour.src}" controls autoplay muted loop playsinline style="width:100%;border-radius:12px;margin:8px 0"></video>`
+        :(m.num===1?`<div class="hint" id="tourSlot-${k}"></div>`:`<button class="btn ghost sm" style="margin:6px 0" onclick="generateTour(false,'${k}')">🎬 See this option in motion</button><div class="hint" id="tourSlot-${k}"></div>`);
+      return `<div class="cv-option ${chosen?'on':''}"><div class="opt-head"><b>Option ${m.num} — ${m.name||''}</b><span class="opt-price">${fmt(price)}</span>${chosen?'<span class="opt-pick">✓ your pick</span>':`<button class="btn sm" onclick="chooseOption('${k}')">Go with this one</button>`}</div>${optionDesc(k)}${tourBlock}<div class="cv-gallery">${imgs}</div></div>`;
+    }
+    return `<div class="cv-option"><div class="opt-head"><b>Earlier concept</b><span class="hint">from a previous session</span></div><div class="cv-gallery">${imgs}</div></div>`;
+  }).join('');
+  const uploads=(P.renders||[]).filter(r=>!r.generated).map(r=>`<div><img src="${r.src}"><div class="cap">${stateLabel(r.state)}</div></div>`).join('');
+  const gallery=(optionsHtml||'')+(uploads?`<div class="cv-option"><div class="opt-head"><b>Concept boards</b></div><div class="cv-gallery">${uploads}</div></div>`:'')||'<div class="hint">Design renders land here once generated from your site photos.</div>';
+  const photos=(P.photos||[]).map(r=>`<div><img src="${r.src}"><div class="cap">Today</div></div>`).join('');
+  // confidence bar: position range inside the theoretical widest band (×0.85–×1.20)
+  const span=1.20-0.85,leftPct=((cf.low-0.85)/span*100).toFixed(1),rightPct=((1.20-cf.high)/span*100).toFixed(1);
+  const tighten=cf.drivers.map(d=>`<li class="${d.ok?'done':''}">${d.label}</li>`).join('');
+  const accBadge=(c.n>=10&&c.medAcc!=null)?`<div class="accbadge">📏 <span>Our last <b>${c.n}</b> ${hasRealHistory()?'completed jobs':'ballparks'} landed within <b>±${Math.round(c.medAcc*100)}%</b> of final price${hasRealHistory()?'':' <span style="opacity:.7">(sample history — staged)</span>'}</span></div>`:'';
+  // build journal (post-signature)
+  const journal=(P.stage!=='pitch'&&S.journal.length)?`<div class="cv-sec"><h2>The build</h2><div class="lead">Your project, as it happens — same page you saw the design on.</div><div class="tl">${S.journal.map(j=>`<div class="tl-item"><div class="d">${j.date}</div><div class="n">${j.note}</div><div class="ph">${j.photos.map(p=>`<img src="${p}">`).join('')}</div></div>`).join('')}</div></div>`:'';
+  const maint=(P.stage==='complete')?`<div class="cv-sec"><h2>Caring for it</h2><div class="lead">Your maintenance calendar — we'll nudge you at the right times.</div>${[...new Set(S.elements.map(e=>e.type))].flatMap(t=>(MAINT[t]||[]).map(m=>`<div class="cv-scope"><p>${m}</p></div>`)).join('')}</div>`:'';
+  box.innerHTML=`
+  <div class="cv-hero">
+    <div class="kicker">Sample Client · Same-Day Design Studio</div>
+    <h1>${P.client||'Your'} outdoor living space</h1>
+    <div class="addr">${P.address||''}</div>
+    ${accBadge}
+  </div>
+  ${photos?`<div class="cv-sec"><h2>Where we started</h2><div class="lead">Photos from our visit.</div><div class="cv-gallery">${photos}</div></div>`:''}
+  <div class="cv-sec"><h2>The vision — watch your yard grow</h2><div class="lead">Designed on your actual property — not a stock photo. Each option shows the finished build by day and lit at night. Pick one — the price follows.</div>${(()=>{const lt=(P.tours||[]).find(t=>!t.setId);return (lt&&!Object.keys(meta).length)?`<video src="${lt.src}" controls autoplay muted loop playsinline style="width:100%;border-radius:14px;margin:6px 0 12px"></video>`:'<div class="hint" id="tourSlot"></div>';})()}${gallery}</div>
+  ${journal}
+  ${S.elements.length&&P.stage!=='complete'?(()=>{
+    const base=S.elements.reduce((a,b)=>(!a||elArea(b)>elArea(a))&&['patio','walkway','turf'].includes(b.type)?b:a,null)||S.elements[0];
+    const basePrice=(()=>{const keep=S.elements.map(e=>[e.id,e.off]);S.elements.forEach(e=>{if(e.id!==base.id)e.off=true;});const p=computeQuote().price;keep.forEach(([id,off])=>{const el=S.elements.find(x=>x.id===id);if(el)el.off=off;});return p;})();
+    const tierChip=e=>e.tierTag==='sc'?'<span class="tag survey" style="margin-left:8px">Sample Client pick</span>':e.tierTag==='dream'?'<span class="tag manual" style="margin-left:8px">from The Dream</span>':'';
+    const row=e=>{
+      const d=addonDelta(e);
+      const priceLbl=(e.type==='custom'&&e.allowance>0)?`+${fmt(d)}<br><span class="hint">${e.allowSrc==='history'?'from our completed jobs':'typical'} — firmed by a real quote</span>`:(e.type==='custom')?'<span class="hint">priced on a real quote</span>':'+'+fmt(d);
+      return `<label class="addon ${e.off?'':'on'}"><span><input type="checkbox" ${e.off?'':'checked'} onchange="toggleAddon('${e.id}')"> <b>${e.name}</b>${tierChip(e)}<br><span class="hint" style="margin-left:24px">${ADDON_WHY[e.type]||''}</span></span><span>${priceLbl}</span></label>`;};
+    const inBuild=S.elements.filter(e=>e.id!==base.id&&!e.off);
+    const upsells=S.elements.filter(e=>e.id!==base.id&&e.off);
+    const total=computeQuote().price,bud=parseBudget();
+    let fit='';
+    if(bud){
+      if(total<=bud.hi)fit=`<div class="hint" style="text-align:center;margin-top:10px;color:#8fbf8f">✓ ${fmt(total)} as selected — inside the ${S.project.budget.trim()} you mentioned</div>`;
+      else fit=`<div class="hint" style="text-align:center;margin-top:10px;color:var(--bronze2)">${fmt(total)} as selected — ${fmt(total-bud.hi)} above the ${S.project.budget.trim()} you mentioned. Uncheck something, or ask us about building it in phases.</div>`;
+    }
+    return `<div class="cv-sec"><h2>Build it together</h2><div class="lead">Your call, line by line — the price follows live. Anything you skip stays drawn in the plan as <b>Phase 2</b>, ready whenever you are.</div>
+    <div class="addons"><div class="addon locked"><span>✔ <b>${base.name}</b> — ${ADDON_WHY[base.type]||'the foundation of the design'}</span><span>${fmt(basePrice)}</span></div>
+    ${inBuild.map(row).join('')}
+    ${upsells.length?`<div class="hint" style="margin:10px 0 4px;letter-spacing:.1em;font-size:11px">MAKE IT YOURS — WHAT MOST YARDS ADD NEXT</div>${upsells.map(row).join('')}`:''}
+    </div>${fit}</div>`;})():''}
+  ${S.elements.length?(()=>{
+    const sched=window.__sched;
+    const specials=S.elements.filter(e=>!e.off).map(e=>pickMaterial(e)).filter(m=>m&&m.stock==='special').map(m=>m.name);
+    const wks=Math.max(1,Math.ceil(q.laborDays/5));
+    return `<div class="cv-sec"><h2>When could this happen?</h2><div class="cv-timeline">
+    <div class="tlcard"><div class="k">CREW AVAILABILITY</div><div class="v">${sched&&sched.next_light_week?'Week of '+sched.next_light_week:'—'}</div><div class="s">${sched&&sched.next_light_week?'lightest upcoming week on the install calendar (live from Aspire)':'install calendar not pulled yet'}</div></div>
+    <div class="tlcard"><div class="k">TIME ON SITE</div><div class="v">~${f1(q.laborDays)} crew-days ≈ ${wks} week${wks>1?'s':''}</div><div class="s">calibrated ×${q.cal.laborFactor.toFixed(2)} by ${q.cal.n} completed Sample Client jobs</div></div>
+    <div class="tlcard"><div class="k">MATERIALS</div><div class="v">${specials.length?'⚠ special order':'✓ in stock locally'}</div><div class="s">${specials.length?specials.join(', ')+' — adds lead time; your start date accounts for it':'every selected material is stocked — no lead-time surprises'}</div></div>
+    </div></div>`;})():''}
+  ${S.elements.length&&P.stage!=='complete'?`<div class="cv-sec"><h2>Two ways to build it</h2>
+    <div class="lead">Same design — your call on the finish level. Tap one; the pictures and price follow.</div>
+    <div class="cv-tiers" style="grid-template-columns:repeat(2,1fr)">${['standard','premium'].map(t=>`<div class="cv-tier ${cvPackage===t?'on':''}" style="cursor:pointer" onclick="cvPackage='${t}';S.q.tier='${t}';save();renderClient()"><div class="tn">${t[0].toUpperCase()+t.slice(1)}</div><div class="tp">${fmt(tierPrices[t])}</div><div class="td">${tierDesc[t]}</div><div class="td" style="margin-top:6px">${pkgMaterials(t).slice(0,4).join(' · ')||''}</div></div>`).join('')}</div>
+    <div class="cv-range"><span class="r">${fmt(q.low)} – ${fmt(q.high)}</span>ballpark for the ${S.q.tier} build · good for 72 hours · final proposal follows in writing</div>
+    <div class="confwrap"><div class="confbar"><div class="fill" id="cvConfFill" style="left:${leftPct}%;right:${rightPct}%"></div></div>
+    <div class="conflab"><span>wider</span><span>this quote's certainty</span><span>tighter</span></div>
+    <div style="text-align:center"><ul class="tighten">${tighten}</ul>
+    <div class="hint" style="margin-top:6px">Each ● tightens the range you see — live. Want a sharper number? Give us your survey.</div></div></div></div>`:''}
+  ${S.elements.length&&P.stage!=='complete'?`<div class="cv-sec"><h2>What we'll build</h2>${S.elements.filter(e=>!e.off).map(e=>`<div class="cv-scope"><h4>${e.name}</h4><p>${(S.scopes[e.id]||'').replace(/</g,'&lt;')}</p></div>`).join('')}</div>`:''}
+  ${(()=>{const m=portfolioMatches();if(!m.length)return '';
+    return `<div class="cv-sec"><h2>Projects like yours</h2><div class="lead">Built by the same crew that would build this one.</div><div class="cv-gallery">${m.map(p=>`<div><img src="${p.photo}"><div class="cap">${p.title}${p.sqft?' · '+p.sqft+' sqft':''}${p.review?`<br>${'★'.repeat(+p.stars||0)} “${p.review}”`:''}</div></div>`).join('')}</div></div>`;})()}
+  ${maint}
+  <div class="cv-foot">Sample Client Design &amp; Build · Yourtown — every number above is a ballpark until our operations lead confirms the final scope. Utilities located before any dig.</div>`;
+  box.querySelectorAll('.cv-gallery img').forEach(im=>{im.onclick=()=>openLightbox(im.src);});
+  // animate the confidence bar from widest to current on first paint
+  const fill=document.getElementById('cvConfFill');
+  if(fill){fill.style.left='0%';fill.style.right='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.left=leftPct+'%';fill.style.right=rightPct+'%';}));}
+}
+function presentClient(){
+  renderClient();
+  document.body.classList.add('presenting');
+  let x=document.getElementById('presentExit');
+  if(!x){x=document.createElement('button');x.id='presentExit';x.textContent='✕ exit';x.onclick=exitPresent;document.body.appendChild(x);}
+  const el=document.getElementById('clientView');
+  if(el.requestFullscreen)el.requestFullscreen().catch(()=>{}); // bonus where allowed; the takeover works regardless
+  document.addEventListener('keydown',presentEsc);
+}
+function presentEsc(e){if(e.key==='Escape')exitPresent();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&selId){selId=null;renderBoard();}});
+function exitPresent(){
+  document.body.classList.remove('presenting');
+  const x=document.getElementById('presentExit');if(x)x.remove();
+  document.removeEventListener('keydown',presentEsc);
+  if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+}
+
+// ---------- integrations: file adapters (transport flips to API when credentials land) ----------
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type||'text/plain'}));a.download=name;a.click();}
+const csvEsc=v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+function exportAspireCSV(){
+  const q=computeQuote();
+  const rows=[['Service/Item','Description','Quantity','Unit','Unit Price','Extended Price','Cost Type']];
+  q.items.forEach(i=>{const mk=i.kind==='material'?LAB.markups.material:i.kind==='sub'?LAB.markups.sub:LAB.markups.labor;
+    rows.push([i.el.name+' — '+i.name,i.desc,i.qty,i.unit,(i.unitCost*mk).toFixed(2),(i.cost*mk).toFixed(2),i.kind]);});
+  rows.push(['Labor','Crew labor incl. difficulty ×'+(q.af*q.gf).toFixed(2)+' × calibration ×'+q.cal.laborFactor.toFixed(2),f1(q.laborDays),'crew-day',(LAB.crew.day_cost*LAB.markups.labor).toFixed(2),(q.laborCost*LAB.markups.labor).toFixed(2),'labor']);
+  download((S.project.client||'quote').replace(/[^a-z0-9]+/gi,'-')+'-aspire-lineitems.csv',rows.map(r=>r.map(csvEsc).join(',')).join('\n'),'text/csv');
+  document.getElementById('aspireMsg').textContent='Exported. This exact payload becomes the live API write-back when the Aspire key arrives.';
+}
+function exportHubspotJSON(){
+  const q=computeQuote(),P=S.project;
+  const stageMap={pitch:'Proposal/Estimating',signed:'Contract signed',build:'In production',complete:'Closed won'};
+  download((P.client||'deal').replace(/[^a-z0-9]+/gi,'-')+'-hubspot-sync.json',JSON.stringify({
+    dealName:(P.client||'')+' — outdoor living',contact:P.client,address:P.address,
+    stage:stageMap[P.stage]||'Proposal/Estimating',jobType:P.type,
+    quoteLow:Math.round(q.low),quoteHigh:Math.round(q.high),tier:S.q.tier,
+    quoteValidityHours:LAB.quote_validity_hours,accuracyStat:q.cal.medAcc!=null?'last '+q.cal.n+' within ±'+Math.round(q.cal.medAcc*100)+'%':null,
+    source:'sample-client-design-studio-platform'},null,2),'application/json');
+}
+function parseCSV(text){
+  return text.split(/\r?\n/).filter(Boolean).map(line=>{
+    const out=[];let cur='',inq=false;
+    for(const ch of line){if(ch==='"')inq=!inq;else if(ch===','&&!inq){out.push(cur);cur='';}else cur+=ch;}
+    out.push(cur);return out.map(s=>s.trim());
+  });
+}
+function importActualsCSV(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    const rows=parseCSV(r.result);const head=rows[0].map(h=>h.toLowerCase());
+    const col=names=>head.findIndex(h=>names.some(n=>h.includes(n)));
+    const ci={name:col(['job','name','opportunity']),quoted:col(['quoted','estimate','est price','bid']),final:col(['final','actual price','invoiced','revenue']),estD:col(['est days','estimated hours','est hours','estimated days']),actD:col(['act days','actual hours','act hours','actual days'])};
+    let n=0;
+    rows.slice(1).forEach(row=>{
+      const j={id:'I'+Math.random().toString(36).slice(2,8),name:row[ci.name]||'Imported job',quotedMid:+String(row[ci.quoted]||'').replace(/[^0-9.]/g,''),final:+String(row[ci.final]||'').replace(/[^0-9.]/g,''),estDays:+row[ci.estD]||0,actDays:+row[ci.actD]||0,imported:true};
+      if(j.final>0&&j.estDays>0&&j.actDays>0){if(API){SHARED_ACTUALS.push(j);fetch('/api/actuals',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(j)});}else S.actualsLocal.push(j);n++;}
+    });
+    document.getElementById('aspireMsg').textContent=n+' completed job(s) imported — engine re-tuned. (Columns auto-matched: job/quoted/final/est days/act days.)';
+    save();renderQuote();
+  };
+  r.readAsText(f);input.value='';
+}
+function importSiteOneCSV(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    const rows=parseCSV(r.result);let n=0;
+    rows.forEach(row=>{
+      if(row.length<2)return;
+      const key=row[0].toLowerCase(),price=+String(row[row.length-1]).replace(/[^0-9.]/g,'');
+      if(!(price>0))return;
+      const m=CAT.materials.find(m=>m.id===row[0]||m.name.toLowerCase().includes(key)||key.includes(m.name.toLowerCase()));
+      if(m){S.catOverrides[m.id]=price;n++;}
+    });
+    document.getElementById('siteoneMsg').textContent=n+' price(s) matched and updated from the SiteOne export.';
+    save();renderCatalog();renderQuote();
+  };
+  r.readAsText(f);input.value='';
+}
+async function deepPullAspire(){
+  const el=document.getElementById('aspireMsg');el.textContent='deep pull running — tickets, services, opportunities, properties, item allocations, crew time… (~1 min)';
+  const r=await fetch('/api/aspire/deep-pull',{method:'POST'}).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  if(r.ok){SHARED_ACTUALS=await fetch('/api/actuals').then(r=>r.json());
+    el.textContent=`STUDY-GRADE: ${r.jobs} completed jobs joined — divisions: ${Object.entries(r.divisions).map(([d,n])=>d+'×'+n).join(', ')} · ${r.with_crew} with named crew · ${r.with_material_actuals} with actual material spend · ${r.with_sold_items} with sold line items. Engine actuals rebuilt on the REAL division field.`;
+    renderActuals();renderQuote();}
+  else el.textContent='Deep pull failed: '+r.error;
+}
+async function pullAspire(){
+  const el=document.getElementById('aspireMsg');el.textContent='pulling work tickets + time entries from Aspire…';
+  const r=await fetch('/api/aspire/pull',{method:'POST'}).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  if(r.ok){SHARED_ACTUALS=await fetch('/api/actuals').then(r=>r.json());
+    el.textContent=`LIVE: ${r.tickets_seen} tickets + ${r.time_entries_seen} time entries read → ${r.usable} install-scale est-vs-actual jobs feeding the engine (${r.small_maintenance_excluded} small maintenance stops excluded, ${r.install_scale_missing_time_data} installs lacked time data).`+(r.usable?' Sample history retired.':'');
+    renderActuals();renderQuote();}
+  else el.textContent='Pull failed: '+r.error;
+}
+async function pullFromHubspot(){
+  const msg=document.getElementById('hsPullMsg');
+  const q=(document.getElementById('p_client').value||'').trim();
+  if(!q){msg.textContent='Type the client name first — it searches HubSpot deals by name.';return;}
+  msg.textContent='searching HubSpot…';
+  const r=await fetch('/api/hubspot/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q})}).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  if(!r.ok){msg.textContent='HubSpot: '+(r.error||'search failed');return;}
+  if(!r.results.length){msg.textContent=`No HubSpot deal matches “${q}” — nothing pulled.`;return;}
+  const d=r.results[0];
+  if(d.amount&&!S.project.budget){S.project.budget='~$'+Number(d.amount).toLocaleString()+' (HubSpot deal amount)';document.getElementById('p_budget').value=S.project.budget;}
+  const stamp=`[HubSpot ${new Date().toISOString().slice(0,10)}] deal “${d.dealname}” — stage ${d.dealstage||'?'}${d.amount?', $'+Number(d.amount).toLocaleString():''}${d.closedate?', close '+d.closedate.slice(0,10):''}${d.description?'\n'+d.description:''}`;
+  if(!(S.project.notes||'').includes('deal “'+d.dealname+'”')){S.project.notes=(S.project.notes?S.project.notes+'\n\n':'')+stamp;document.getElementById('p_notes').value=S.project.notes;syncNotes();}
+  save();
+  msg.textContent=`✓ Pulled “${d.dealname}”${r.results.length>1?` (best of ${r.results.length} matches)`:''} — deal amount → budget, deal facts → notes. Nothing is written BACK to HubSpot until the engagement is signed.`;
+}
+async function pullAspireSchedule(){
+  const el=document.getElementById('aspireMsg');if(el)el.textContent='pulling the install calendar…';
+  const r=await fetch('/api/aspire/schedule-pull',{method:'POST'}).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  if(el)el.textContent=r.ok?`LIVE: ${r.tickets_seen} scheduled tickets — lightest upcoming week: ${r.next_light_week} (${r.next_light_week_hours}h booked). Feeds the client-view crew-availability card.`:'Pull failed: '+(r.error||'');
+  loadSchedule();
+}
+async function pullAspireCatalog(){
+  const el=document.getElementById('aspireMsg');el.textContent='pulling catalog items…';
+  const r=await fetch('/api/aspire/catalog-pull',{method:'POST'}).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  el.textContent=r.ok?`LIVE: ${r.count} catalog items pulled (${r.active} active) → data/shared/aspire-catalog.json — their real prices, ready to map into the platform catalog.`:'Pull failed: '+r.error;
+}
+async function pullHubspot(){
+  const el=document.getElementById('hubspotMsg');el.textContent='pulling deals/stages…';
+  const r=await fetch('/api/hubspot/pull',{method:'POST'}).then(r=>r.json()).catch(e=>({ok:false,error:String(e)}));
+  el.textContent=r.ok?`LIVE: ${r.deals_fetched} deals pulled across stages: ${Object.entries(r.stages).map(([s,n])=>s+'×'+n).join(', ')}.`:'Pull failed: '+r.error;
+}
+async function loadSchedule(){if(API)window.__sched=await fetch('/api/aspire/schedule').then(r=>r.ok?r.json():null).catch(()=>null);}
+async function renderIntegrations(){
+  if(!API){document.getElementById('rqStatus').textContent='Queue: needs the platform server (running in local mode).';return;}
+  const q=await fetch('/api/render-queue').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('rqStatus').textContent='Queue: '+q.filter(r=>r.status==='pending').length+' pending · '+q.length+' total requests.';
+  const st=await fetch('/api/integrations/status').then(r=>r.json()).catch(()=>null);
+  if(!st)return;
+  const labels={api:'API',portal:'portal',['portal-otp']:'SMS-code login',['password-gate']:'password gate',['email-report']:'email report',['public-site']:'public site — no creds needed'};
+  const sh=st.shepherds;
+  if(sh){const el=document.getElementById('shepStatus');
+    el.textContent=sh.running?'pull running… (1 req/sec, be patient)':sh.pulled?('last pull '+sh.pulled+' — '+sh.parsed+' plants read, '+sh.in_stock+' in stock / '+sh.out_of_stock+' out'):'never pulled yet';}
+  for(const name of ['hubspot','aspire','siteone','ewing','latham','kirkdavis','shepherds']){
+    const el=document.getElementById('int-'+name);if(!el||!st[name])continue;
+    const s=st[name];
+    el.textContent=s.credentials?('credentials on file · '+labels[s.kind]):('awaiting credentials in .env ('+s.missing.join(', ')+')');
+    el.style.color=s.credentials?'var(--sage)':'';el.style.borderColor=s.credentials?'rgba(143,162,124,.4)':'';
+  }
+}
+async function pullShepherds(){
+  const r=await fetch('/api/integrations/pull/shepherds',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(r=>r.json());
+  document.getElementById('shepStatus').textContent=r.detail;
+  setTimeout(renderIntegrations,3000);
+}
+async function testIntegration(name){
+  const el=document.getElementById('int-'+name);el.textContent='testing…';
+  const r=await fetch('/api/integrations/test/'+name).then(r=>r.json()).catch(e=>({ok:false,detail:String(e)}));
+  el.textContent=(r.ok?'✓ ':'✗ ')+r.detail;
+  el.style.color=r.ok?'var(--sage)':'var(--red)';el.style.borderColor=r.ok?'rgba(143,162,124,.4)':'rgba(201,107,91,.5)';
+}
+
+// ---------- print / PDF export ----------
+function printDoc(mode){
+  const q=computeQuote(),P=S.project;
+  const css=`<style>body{font-family:Georgia,serif;color:#2a251d;margin:40px;line-height:1.5}h1{font-size:26px;margin:0}h2{font-size:16px;margin:26px 0 8px;border-bottom:1.5px solid #c9c2b2;padding-bottom:4px}
+  .k{font-size:11px;letter-spacing:.14em;color:#8a5a2a}.muted{color:#6b6355;font-size:12px}table{width:100%;border-collapse:collapse;font-size:12.5px;font-family:Helvetica,Arial,sans-serif}
+  th{text-align:left;font-size:10.5px;letter-spacing:.05em;color:#6b6355;border-bottom:1px solid #c9c2b2;padding:5px 6px}td{padding:5px 6px;border-bottom:1px solid #e6e0d2}.num{text-align:right}
+  .range{font-size:24px;margin:6px 0}.tierrow{display:flex;gap:20px}.tier{flex:1;border:1px solid #c9c2b2;border-radius:8px;padding:12px;text-align:center}.tp{font-size:19px}
+  .badge{border:1px solid #8fa27c;border-radius:8px;padding:8px 12px;display:inline-block;font-size:12.5px;color:#4a5c3c;margin-top:10px}
+  .scope{margin:10px 0;font-size:13px}.scope b{display:block}@media print{.noprint{display:none}}</style>`;
+  let body='';
+  const tierPrices={};['standard','premium'].forEach(t=>{const k=S.q.tier;S.q.tier=t;tierPrices[t]=computeQuote().price;S.q.tier=k;});
+  if(mode==='client'){
+    const c=q.cal;
+    body=`<div class="k">Sample Client · SAME-DAY DESIGN STUDIO</div><h1>${P.client||''} — outdoor living proposal</h1><div class="muted">${P.address||''} · prepared ${new Date().toLocaleDateString()} · ballpark valid ${LAB.quote_validity_hours} hours</div>
+    ${c.n>=10&&c.medAcc!=null?`<div class="badge">Our last ${c.n} ballparks landed within ±${Math.round(c.medAcc*100)}% of final price${ACT&&ACT._meta.sample?' (sample history — staged)':''}</div>`:''}
+    <h2>Your investment</h2><div class="range">${fmt(q.low)} – ${fmt(q.high)}</div><div class="muted">ballpark for the ${S.q.tier} build${S.project.surveyed==='yes'?'':' — range tightens once we have your survey or site plan'}</div>
+    <div class="tierrow" style="margin-top:12px">${['standard','premium'].map(t=>`<div class="tier"><div>${t[0].toUpperCase()+t.slice(1)}</div><div class="tp">${fmt(tierPrices[t])}</div></div>`).join('')}</div>
+    <h2>What we'll build</h2>${S.elements.map(e=>`<div class="scope"><b>${e.name} — ${f1(e.w)}′ × ${f1(e.d)}′</b>${(S.scopes[e.id]||scopeText(e))}</div>`).join('')}
+    <div class="muted" style="margin-top:24px">Sample Client Design &amp; Build · Yourtown. Every number above is a ballpark until our operations lead confirms final scope. Utilities located via NC811 before any dig.</div>`;
+  }else{
+    body=`<div class="k">Sample Client · INTERNAL ESTIMATE — NOT FOR CLIENT</div><h1>${P.client||''} — estimate detail</h1><div class="muted">${P.address||''} · ${new Date().toLocaleDateString()} · access ${S.q.access}/10 · grade ${S.q.gradeFt||0}ft (${gradeClass(S.q.gradeFt||0)[0]})${S.q.handdig?' · hand-dig':''} · calibration ×${q.cal.laborFactor.toFixed(2)} (${q.cal.n} jobs)</div>
+    <h2>Line items</h2><table><tr><th>Item</th><th>Description</th><th class="num">Qty</th><th>Unit</th><th class="num">Cost</th><th class="num">Price</th></tr>
+    ${q.items.map(i=>{const mk=i.kind==='material'?LAB.markups.material:i.kind==='sub'?LAB.markups.sub:LAB.markups.labor;return `<tr><td>${i.el.name} — ${i.name}</td><td class="muted">${i.desc}</td><td class="num">${i.qty}</td><td>${i.unit}</td><td class="num">${i.cost?fmt(i.cost):'—'}</td><td class="num">${i.cost?fmt(i.cost*mk):'—'}</td></tr>`;}).join('')}
+    <tr><td colspan="4"><b>Labor — ${f1(q.laborDays)} crew-days</b></td><td class="num"><b>${fmt(q.laborCost)}</b></td><td class="num"><b>${fmt(q.laborCost*LAB.markups.labor)}</b></td></tr>
+    <tr><td colspan="4"><b>TOTAL</b></td><td class="num"><b>${fmt(q.cost)}</b></td><td class="num"><b>${fmt(q.price)}</b></td></tr></table>
+    <div class="muted" style="margin-top:10px">Margin ${Math.round((1-q.cost/q.price)*100)}% · ballpark range ${fmt(q.low)}–${fmt(q.high)} · ${q.subs.length?q.subs.length+' allowance(s) still need real sub quotes':'no open allowances'}</div>`;
+  }
+  // print through a hidden iframe — works with pop-ups blocked and inside embedded browsers
+  const old=document.getElementById('printFrame');if(old)old.remove();
+  const f=document.createElement('iframe');
+  f.id='printFrame';f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  document.body.appendChild(f);
+  f.srcdoc=`<!doctype html><html><head><title>${P.client||'quote'}</title>${css}</head><body>${body}</body></html>`;
+  f.onload=()=>{try{f.contentWindow.focus();f.contentWindow.print();}catch(e){alert('Print blocked by the browser — press ⌘P instead.');}};
+}
+
+// ---------- higgsfield render queue ----------
+function composeRenderPrompt(state,pkg){
+  const P=S.project;
+  const keep=S.q.tier;if(pkg)S.q.tier=pkg;
+  const stateDesc={day1:'freshly installed, planting day, clean and new',year1:'one year of growth — plants established, filling in naturally',year3:'three years mature — full plant growth, settled patina on hardscape',autumn:'autumn — fall color on trees and shrubs, warm low light',night:'night scene — low-voltage landscape lighting lit, warm pools of light, dusk-blue sky'};
+  const els=S.elements.filter(e=>!e.off).map(e=>{const m=pickMaterial(e);return e.name+' ('+f1(e.w)+'×'+f1(e.d)+'ft'+(m?', '+m.name:'')+')';}).join('; ');
+  S.q.tier=keep;
+  const pkgDesc=pkg==='premium'?' Premium finish level: natural stone, refined details, low-voltage landscape lighting fixtures along beds and paths.':'';
+  const reqs=(P.renderNotes||'').trim()?` Client change requests to honor exactly: ${P.renderNotes.trim()}.`:'';
+  const inspo=(P.inspiration||[]).some(i=>i.src)?' Match the material and style character of the inspiration reference image (the second input image) where compatible with the plan.':'';
+  const plants=S.elements.some(e=>!e.off&&e.type==='bed')?' Planting beds are FULLY PLANTED — layered regionally-appropriate shrubs, perennials and ornamental grasses, not bare mulch.':'';
+  const porch=S.elements.some(e=>!e.off&&e.type==='porch')?' The screened porch is a roofed structure attached to the back of the house with full screen panels and sliding glass doors opening to the yard.':'';
+  const courtEl=S.elements.find(e=>!e.off&&/court|rink/i.test(e.name));
+  const court=courtEl?` Sports-court rule: "${courtEl.name}" is ONE flat rectangular painted pad (${f1(courtEl.w)}×${f1(courtEl.d)}ft) aligned square to the property, with straight regulation striping${/basket/i.test(courtEl.name)?', a single basketball hoop at one end, and NO net of any kind':''}. Never place plants, beds, or any structure on the court surface — the court is a single uninterrupted rectangle. There is EXACTLY ONE court surface and EXACTLY ONE hoop in the entire image — no second court, no partial court, no extra painted lines anywhere else.`:'';
+  const cam=arguments[2]||'eye-level from the yard toward the house';
+  return `Photoreal backyard design render, ${stateDesc[state]||state}.${pkgDesc}${reqs}${inspo} Same property as the reference site photos (${P.address||'client site'}) — same house, same grade, same trees. KEEP every existing structure visible in the reference photo — fences, walls, sheds, neighboring buildings — exactly where they are; never remove or replace them unless they are explicitly listed for removal. Installed: ${els||'per plan'}.${plants}${porch}${court} Camera: ${cam}, golden natural grading. No people in the image. Absolutely no text or logos in the image. Every element placed per the scaled 2D plan — do not invent structures or change property geometry.`;
+}
+function applyChangeRequests(){
+  const txt=(S.project.renderNotes||'').trim();
+  const msg=document.getElementById('applyMsg');
+  if(!txt){msg.textContent='Nothing in the change-requests field.';return;}
+  const t=txt.toLowerCase();
+  const anchor=S.elements.find(e=>e.type==='patio')||S.elements[0]||{x:20,y:20,w:16,d:12};
+  const near=(dx,dy)=>({x:Math.max(0,Math.min(BOARD_W-4,anchor.x+dx)),y:Math.max(0,Math.min(BOARD_H-4,anchor.y+dy))});
+  const added=[];
+  const addOne=(type,name,w,d,pos,extra)=>{S.elements.push({id:'e'+(S.nextId++),type,name,w,d,h:TYPES[type].h||null,...pos,wSrc:'manual',dSrc:'manual',material:null,steps:type==='steps'?3:null,sleeve:false,...(extra||{})});added.push(name);};
+  if(/retain(er|ing)? wall|seating wall|sitting wall/.test(t))addOne('wall',/retain/.test(t)?'Retaining wall':'Seating wall',Math.min(anchor.w||14,16),1.5,near(0,(anchor.d||12)+1.5));
+  if(/pergola/.test(t)&&!S.elements.some(e=>e.type==='pergola'))addOne('pergola','Pergola',12,10,near(2,0));
+  if(/porch|screened|sunroom|lanai/.test(t)&&!S.elements.some(e=>e.type==='porch'))addOne('porch','Screened porch',14,12,near(0,-(TYPES.porch.d+1)));
+  if(/fire ?pit|fire feature/.test(t)&&!S.elements.some(e=>e.type==='firepit'))addOne('firepit','Fire pit',5,5,near((anchor.w||14)+3,2));
+  if(/plant|shrub|hydrangea|tree|privacy|bed|garden/.test(t))addOne('bed','Planting bed (client add)',Math.min(20,BOARD_W-anchor.x-2),4,near(-2,(anchor.d||12)+4));
+  if(/walkway|path/.test(t)&&!S.elements.some(e=>e.type==='walkway'))addOne('walkway','Walkway',14,4,near(-16,2));
+  if(/turf|lawn/.test(t)&&!S.elements.some(e=>e.type==='turf'))addOne('turf','Turf lawn',16,12,near((anchor.w||14)+6,6));
+  if(/steps|stairs/.test(t))addOne('steps','Steps',6,3,near(4,(anchor.d||12)+3));
+  if(!added.length){
+    addOne('custom',txt.length>34?txt.slice(0,32)+'…':txt,8,8,near((anchor.w||14)+4,0),{allowance:0});
+    msg.textContent='Added as a Custom element — set its allowance $ on the board (nothing about "'+txt.slice(0,40)+'" matched a standard element type).';
+  }else{
+    msg.textContent='Added to the design: '+added.join(', ')+' — quote and scope updated; dims are FIELD-VERIFY until measured. Re-render to show it.';
+  }
+  regenScopes(false);save();renderBoard();renderQuote();
+}
+const OPTION_NAMES=['Your Vision','Vision +','The Dream','The Sample Client'];
+// chained states get EDIT prompts only — re-describing the element list made the model duplicate
+// features (a second grill appeared in a night render, 2026-08-19). The input image IS the spec.
+const CHAIN_ANGLE_PROMPT='The input image is a finished backyard design. Render the EXACT same design and yard from a different camera: an elevated three-quarter view from the back corner of the property looking toward the house. Every element stays identical — same count, same positions, same materials. Do not add, remove, duplicate, or move anything. No people. Absolutely no text or logos.';
+const CHAIN_NIGHT_PROMPT='The input image is a finished backyard design photographed in daylight. Recreate the EXACT same scene at night: dusk-blue sky, low-voltage landscape lighting lit, fire feature lit if one is present, warm light in the house windows. Every element stays identical — same count, same positions, same materials. Do not add, remove, duplicate, or move anything. No people. Absolutely no text or logos.';
+async function coverageCheck(text){
+  if(!(text||'').trim())return [];
+  const r=await fetch('/api/design/coverage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,elements:S.elements.map(e=>e.name+' ('+e.type+')')})}).then(r=>r.json()).catch(()=>({missing:[]}));
+  return r.missing||[];
+}
+async function generateOptionSets(statusEl){
+  if(!API)return;
+  const say=t=>{if(statusEl)statusEl.textContent=t;};
+  const anchor=S.elements.find(e=>e.type==='patio')||S.elements[0]||{x:20,y:14,w:16,d:12};
+  let slot=0;
+  const place=el=>({...el,id:'e'+(S.nextId++),x:Math.max(0,Math.min(BOARD_W-el.w,anchor.x+(anchor.w||14)+4+((slot%2)*6))),y:Math.max(0,Math.min(BOARD_H-el.d,anchor.y+(slot++)*6)),wSrc:'manual',dSrc:'manual',material:null,sleeve:false,h:TYPES[el.type].h||null,steps:el.type==='steps'?3:null});
+  // 1. parse the tier texts into elements (skip types already on the board for that or a lower tier)
+  const W=S.project.wants||{nice:'',dream:'',sc:''};
+  const tiers={base:S.elements.map(e=>e.id)};
+  const addTier=(key,els)=>{
+    const ids=[];
+    els.forEach(el=>{if(!S.elements.some(e=>e.type===el.type)){const ne=place(el);ne.off=true;ne.tierTag=key;S.elements.push(ne);ids.push(ne.id);}});
+    return ids;
+  };
+  say('Reading the four want-levels + checking nothing gets lost…');
+  // 2. the coverage net: anything typed in ANY tier that maps to NO element becomes a custom allowance item — it can never silently vanish
+  const [covBase,covNice,covDream,covSc]=await Promise.all([coverageCheck(S.project.notes),coverageCheck(W.nice),coverageCheck(W.dream),coverageCheck(W.sc)]);
+  const customs=[];
+  const guessTrade=n=>{n=n.toLowerCase();
+    if(/kitchen|grill|island|oven|counter/.test(n))return 'masonry';
+    if(/court|slab|driveway|concrete/.test(n))return 'concrete';
+    if(/deck|gazebo|arbor|playset|treehouse|shed/.test(n))return 'carpentry';
+    if(/pond|fountain|water ?feature|pool/.test(n))return 'plumbing';
+    if(/light|electric|tv|speaker|heater/.test(n))return 'electrical';
+    return null;};
+  const addCustoms=async(list,off,tag)=>{for(const c of list){
+    if(S.elements.some(e=>e.name.toLowerCase()===String(c.name||'').toLowerCase())||customs.some(x=>x.toLowerCase()===String(c.name||'').toLowerCase()))continue;
+    // convert to a typed element only on an UNAMBIGUOUS name match (the type's own name in the item) —
+    // 'Brick Walkway' must become a walkway, never a patio via the generic 'brick' keyword
+    const nm=String(c.name||'').toLowerCase();
+    const direct=[['porch','porch'],['pergola','pergola'],['walkway','walkway'],['walkway','path'],['wall','wall'],['firepit','fire pit'],['firepit','firepit'],['turf','turf'],['bed','planting bed'],['steps','steps'],['patio','patio']].find(([ty,word])=>nm.includes(word));
+    const typed=direct?{type:direct[0],...{w:TYPES[direct[0]].w,d:TYPES[direct[0]].d}}:null;
+    if(typed){ // e.g. "Brick Walkway" → a real walkway element, priced from the catalog, built in-house
+      const te=place({type:typed.type,name:c.name,w:Math.min(+c.width_ft||typed.w,40),d:Math.min(+c.depth_ft||typed.d,40)});
+      te.off=off;te.tierTag=tag;S.elements.push(te);customs.push(c.name);continue;
+    }
+    const ne=place({type:'custom',name:c.name,w:Math.min(+c.width_ft||10,30),d:Math.min(+c.depth_ft||8,30)});
+    ne.off=off;ne.tierTag=tag;ne.trade=guessTrade(String(c.name||''));
+    // provenance ladder: Sample Client's own completed-job prices beat any market estimate
+    const hist=await fetch('/api/allowance/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:c.name})}).then(r=>r.json()).then(r=>r.match).catch(()=>null);
+    const lo=hist?hist.lo:Math.round(+c.typical_low_usd||0),hi=hist?hist.hi:Math.round(+c.typical_high_usd||0);
+    if(lo>0&&hi>=lo){ne.allowLo=lo;ne.allowHi=hi;ne.allowance=Math.round((lo+hi)/2);ne.allowSrc=hist?'history':'market';ne.allowN=hist?hist.n:0;}
+    else ne.allowance=0;
+    S.elements.push(ne);customs.push(c.name);
+  }};
+  await addCustoms(covBase,false,'base');
+  tiers.base=S.elements.filter(e=>!e.off).map(e=>e.id);
+  addTier('nice',keywordElements(W.nice));
+  await addCustoms(covNice,true,'nice');
+  addTier('dream',keywordElements(W.dream));
+  await addCustoms(covDream,true,'dream');
+  const scEls=W.sc.trim()?keywordElements(W.sc):scRecommend();
+  addTier('sc',scEls);
+  if(W.sc.trim())await addCustoms(covSc,true,'sc');
+  const niceAll=tiers.base.concat(S.elements.filter(e=>e.tierTag==='nice').map(e=>e.id));
+  const dreamAll=niceAll.concat(S.elements.filter(e=>e.tierTag==='dream').map(e=>e.id));
+  const scAll=tiers.base.concat(S.elements.filter(e=>e.tierTag==='sc').map(e=>e.id));
+  save();
+  // 3. build the option list — a tier with nothing new collapses out
+  const opts=[{name:OPTION_NAMES[0],on:tiers.base,tier:'standard'}];
+  if(niceAll.length>tiers.base.length)opts.push({name:OPTION_NAMES[1],on:niceAll,tier:'standard'});
+  if(dreamAll.length>niceAll.length)opts.push({name:OPTION_NAMES[2],on:dreamAll,tier:'premium'});
+  if(scAll.length>tiers.base.length)opts.push({name:OPTION_NAMES[3],on:scAll,tier:'premium'});
+  // 4. compose every option's jobs with its config applied, then ONE POST — the server renders them in order
+  S.project.optionMeta=S.project.optionMeta||{};
+  const keepOff=S.elements.map(e=>[e.id,e.off]),keepTier=S.q.tier;
+  const jobs=[];
+  opts.forEach((o,i)=>{
+    const setId='o'+Date.now().toString(36)+i;
+    S.elements.forEach(e=>e.off=!o.on.includes(e.id));S.q.tier=o.tier;
+    S.project.optionMeta[setId]={num:i+1,name:o.name,off:S.elements.filter(e=>e.off).map(e=>e.id),tier:o.tier,ts:Date.now()};
+    // consistency contract: option 1 angle A is the run's anchor; every later option EDITS it
+    // (add-only delta), angle B re-shoots the SAME design, year3/night age/light it.
+    let aBase='initial',aPrompt=composeRenderPrompt('day1',o.tier,'eye-level from the yard toward the house');
+    if(i>0){
+      const deltaEls=S.elements.filter(e=>o.on.includes(e.id)&&!opts[0].on.includes(e.id));
+      const delta=deltaEls.map(e=>e.name).join(', ');
+      // a court/pool/large slab can't be EDITED into a finished scene coherently — those options
+      // compose fresh from the site photo instead (less cross-option continuity, sane geometry)
+      const bigGeom=deltaEls.some(e=>/court|pool|rink/i.test(e.name)||e.w*e.d>=350);
+      if(!bigGeom){
+        aBase='first';
+        aPrompt+=` The input image shows this same yard with the base design option already installed. Keep the yard, house, trees, camera angle and everything already installed EXACTLY as in the input image, and ADD ONLY: ${delta||'nothing new'}.`+(o.tier!==opts[0].tier?' Upgrade the hardscape surfaces to premium natural-stone finishes without changing the layout.':'');
+      }
+    }
+    jobs.push(
+      {setId,state:'day1',package:o.tier,angle:'angle A — eye level',base:aBase,prompt:aPrompt},
+      {setId,state:'day1',package:o.tier,angle:'angle B — back corner',base:'chain',prompt:CHAIN_ANGLE_PROMPT},
+      {setId,state:'night',package:o.tier,angle:'night',base:'chain',prompt:CHAIN_NIGHT_PROMPT});
+  });
+  keepOff.forEach(([id,off])=>{const e=S.elements.find(x=>x.id===id);if(e)e.off=off;});S.q.tier=keepTier;
+  save();
+  const r=await fetch('/api/render/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectId:PROJECT_ID,jobs})}).then(r=>r.json());
+  if(r.error){say('Options failed to start: '+r.error);return;}
+  say(`${opts.length} option${opts.length>1?'s':''} rendering (${jobs.length} images)${customs.length?' · ⚠ no catalog match, added as allowance items to price by hand: '+customs.join(', '):''} — keep talking, ~${opts.length*3} min.`);
+  return opts.length;
+}
+function autoTour(){
+  // cost control (the Founder 2026-08-19): the tour auto-fires ONLY for Option 1 of the newest batch;
+  // every other option gets a click-to-render button on its card instead.
+  if(!API)return;
+  const meta=S.project.optionMeta||{};
+  const metas=Object.entries(meta).sort((a,b)=>b[1].ts-a[1].ts);
+  const newestTs=metas.length?metas[0][1].ts:0;
+  const opt1=metas.filter(([k,m])=>Math.abs(m.ts-newestTs)<6e5).find(([k,m])=>m.num===1);
+  let target=null; // an option's setId, or '__legacy__' for pre-options projects
+  if(opt1&&(S.project.renders||[]).some(r=>r.setId===opt1[0]&&r.state==='day1'))target=opt1[0];
+  else if(!metas.length&&(S.project.renders||[]).some(r=>r.generated&&r.state==='day1'))target='__legacy__';
+  if(!target)return;
+  if(target==='__legacy__'&&(S.project.tours||[]).length)return;
+  if(target!=='__legacy__'&&(S.project.tours||[]).some(t=>t.setId===target))return;
+  const key=PROJECT_ID+':'+target;
+  if(window.__tourKick===key)return;
+  window.__tourKick=key;
+  generateTour(true,target==='__legacy__'?null:target);
+}
+async function generateTour(auto,setId){
+  if(!API){if(!auto)alert('Needs the platform server.');return;}
+  const msg=document.getElementById('regenMsg');
+  const slot=()=>document.getElementById(setId?('tourSlot-'+setId):'tourSlot');
+  if(slot())slot().textContent='🎬 A cinematic fly-through of this option is rendering — it lands right here in a couple of minutes.';
+  if(msg&&!auto)msg.textContent='Cinematic tour rendering (Veo) — ~1–3 minutes…';
+  const r=await fetch('/api/render/tour',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectId:PROJECT_ID,setId:setId||null})}).then(r=>r.json());
+  if(r.error){if(slot())slot().textContent=r.error.includes('already')?'a tour is already rendering — try again in a minute':'';if(msg&&!auto)msg.textContent='Tour failed to start: '+r.error;return;}
+  const pid=PROJECT_ID;
+  const poll=setInterval(async()=>{
+    const s=await fetch('/api/render/tour/status').then(r=>r.json());
+    if(s.running)return;
+    clearInterval(poll);
+    if(s.error){if(slot())slot().textContent='';return;}
+    if(PROJECT_ID===pid){await switchProject(pid);if(document.getElementById('tab-client').classList.contains('on'))renderClient();}
+  },5000);
+}
+async function generateRenderSet(){
+  if(!API){alert('Needs the platform server.');return;}
+  const pkg=document.getElementById('renderPkg').value;
+  // every set is an OPTION: snapshot the design config so the client can pick between sets later
+  S.project.optionMeta=S.project.optionMeta||{};
+  const setId='o'+Date.now().toString(36);
+  const num=Object.keys(S.project.optionMeta).length+1;
+  S.project.optionMeta[setId]={num,off:S.elements.filter(e=>e.off).map(e=>e.id),tier:pkg,ts:Date.now()};
+  save();
+  const jobs=[
+    {setId,state:'day1',package:pkg,angle:'angle A — eye level',base:'initial',prompt:composeRenderPrompt('day1',pkg,'eye-level from the yard toward the house')},
+    {setId,state:'day1',package:pkg,angle:'angle B — back corner',base:'chain',prompt:CHAIN_ANGLE_PROMPT},
+    {setId,state:'night',package:pkg,angle:'night',base:'chain',prompt:CHAIN_NIGHT_PROMPT}
+  ];
+  const msg=document.getElementById('regenMsg');
+  const r=await fetch('/api/render/set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectId:PROJECT_ID,jobs})}).then(r=>r.json());
+  if(r.error){msg.textContent='Set failed to start: '+r.error;return;}
+  msg.textContent='Render set running — 3 images (Day 1 ×2 angles, Night)…';
+  const poll=setInterval(async()=>{
+    const s=await fetch('/api/render/set/status').then(r=>r.json());
+    msg.textContent=s.running?`Render set: ${s.done}/${s.total} done…`:(s.error?'Set stopped: '+s.error:'Render set complete — all three states live.');
+    if(!s.running){clearInterval(poll);await switchProject(PROJECT_ID);showTab('client');}
+  },4000);
+}
+async function regenRender(){
+  const state=document.getElementById('renderState').value;
+  if(!API){alert('Self-serve regeneration needs the platform server.');return;}
+  const pkg=document.getElementById('renderPkg').value;
+  const btn=document.getElementById('regenBtn'),msg=document.getElementById('regenMsg');
+  btn.disabled=true;btn.textContent='⟳ generating… (talk plants while it draws)';
+  const prompt=composeRenderPrompt(state,pkg)+' Update the existing design visualization to match EXACTLY the element list above — remove any built element that is not listed, add what is listed, and change nothing else. Keep the house, trees, fence, neighboring properties, and camera angle identical.';
+  try{
+    const r=await fetch('/api/render/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectId:PROJECT_ID,state,prompt,package:pkg})});
+    const d=await r.json();
+    if(r.ok){msg.textContent='New render in — from the '+d.basis+'. Previous versions kept below for A/B.';await switchProject(PROJECT_ID);showTab('client');}
+    else if(r.status===503){msg.textContent=d.error+' — queued to the pipeline instead.';await queueRender();}
+    else{msg.textContent='Generation failed: '+(d.error||r.status);}
+  }catch(e){msg.textContent='Generation failed: '+e;}
+  btn.disabled=false;btn.textContent='⟳ Update render (~90s, self-serve)';
+}
+async function queueRender(){
+  const state=document.getElementById('renderState').value,pkg=document.getElementById('renderPkg').value;
+  if(!API){alert('The render queue needs the platform server. Running in local mode — generation request not queued.');return;}
+  const prompt=composeRenderPrompt(state,pkg);
+  await fetch('/api/render-queue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectId:PROJECT_ID,client:S.project.client,state,package:pkg,prompt,photoCount:(S.project.photos||[]).length})});
+  alert('Queued for the "'+state+'" state. yourco\'s Higgsfield pipeline generates from your site photos + this prompt; finished renders land back in this project.\n\nPrompt queued:\n\n'+prompt.slice(0,300)+'…');
+  renderIntegrations();
+}
+
+// ---------- per-tab step sign-offs -> the Approvals tab aggregates them ----------
+const STEP_TABS=[['project','Intake complete'],['visit','Site visit done'],['site','Site truth verified'],['board','Design board final'],['client','Presented to the client'],['scope','Scope reviewed'],['subs','Sub pricing set'],['quote','Quote reviewed']];
+function renderStepbar(id){
+  const def=STEP_TABS.find(([t])=>t===id);
+  const tabEl=document.getElementById('tab-'+id);if(!tabEl)return;
+  let bar=document.getElementById('step-'+id);
+  if(!def){if(bar)bar.remove();return;}
+  if(!bar){bar=document.createElement('div');bar.id='step-'+id;bar.className='stepbar';tabEl.insertBefore(bar,tabEl.firstChild);}
+  const st=S.steps[id];
+  bar.innerHTML=`<label><input type="checkbox" ${st?'checked':''}> Approve this step — <b>${def[1]}</b></label><span class="hint">${st?('✓ '+(st.by||'')+' · '+st.date):'unchecked steps hold the proposal on the Approvals tab'}</span>`;
+  bar.querySelector('input').onchange=ev=>{
+    if(ev.target.checked)S.steps[id]={by:S.project.reps||'team',date:new Date().toISOString().slice(0,10)};
+    else delete S.steps[id];
+    save();renderStepbar(id);};
+}
+
+// ---------- portfolio: real completed projects as proof in the Design Studio ----------
+async function loadPortfolio(){if(API)window.__portfolio=await fetch('/api/portfolio').then(r=>r.ok?r.json():[]).catch(()=>[]);}
+async function publishPortfolio(){
+  const msg=document.getElementById('pfMsg');
+  if(S.project.stage!=='complete'){msg.textContent='Only completed projects publish.';return;}
+  const photo=(S.project.renders||[]).find(r=>r.state==='day1')||(S.project.photos||[])[0];
+  if(!photo){msg.textContent='Needs at least one render or photo.';return;}
+  const entry={
+    title:(S.project.client||'Project').split(' ')[0]+' — '+S.elements.filter(e=>!e.off).map(e=>e.name).slice(0,3).join(', '),
+    types:[...new Set(S.elements.filter(e=>!e.off).map(e=>e.type))],
+    sqft:Math.round(S.elements.filter(e=>!e.off).reduce((s,e)=>s+elArea(e),0)),
+    photo:photo.src,
+    review:(document.getElementById('pf_review').value||'').trim(),
+    stars:document.getElementById('pf_stars').value||null};
+  const r=await fetch('/api/portfolio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)}).then(r=>r.json());
+  msg.textContent=r.ok?'✓ Published — it now appears under "Projects like yours" wherever the design matches.':'Publish failed: '+(r.error||'');
+  loadPortfolio();
+}
+function portfolioMatches(){
+  const pf=window.__portfolio||[];if(!pf.length)return [];
+  const myTypes=new Set(S.elements.filter(e=>!e.off).map(e=>e.type));
+  const mySqft=S.elements.filter(e=>!e.off).reduce((s,e)=>s+elArea(e),0)||1;
+  return pf.map(p=>{
+    const shared=(p.types||[]).filter(t=>myTypes.has(t)).length;
+    const sizeFit=1-Math.min(1,Math.abs((p.sqft||0)-mySqft)/mySqft);
+    return {...p,score:shared*2+sizeFit};
+  }).filter(p=>p.score>=2).sort((a,b)=>b.score-a.score).slice(0,3);
+}
+
+// ---------- tier text -> elements (same keyword map as auto-design) ----------
+function keywordElements(text){
+  const t=(text||'').toLowerCase();if(!t.trim())return [];
+  const out=[];const add=(type,name,w,d)=>out.push({type,name,w,d});
+  if(/porch|screened|sunroom|lanai/.test(t))add('porch','Screened porch',14,12);
+  if(/pergola|shade structure/.test(t))add('pergola','Pergola',12,10);
+  if(/patio|bluestone|paver|brick/.test(t))add('patio','Patio',16,12);
+  if(/seating wall|sitting wall|retaining/.test(t))add('wall',/retain/.test(t)?'Retaining wall':'Seating wall',14,1.5);
+  if(/fire ?pit|fire feature|fireplace/.test(t))add('firepit','Fire pit',5,5);
+  if(/turf|lawn|grass/.test(t))add('turf','Turf lawn',18,14);
+  if(/plant|shrub|tree|privacy|bed|hydrangea|arborvitae|garden/.test(t))add('bed','Planting bed',16,4);
+  if(/walkway|path|sidewalk/.test(t))add('walkway','Walkway',14,4);
+  if(/step/.test(t))add('steps','Steps',6,3);
+  return out;
+}
+function scRecommend(){
+  // Sample Client's signature adds when the rep leaves the field blank — pairing rules from our own build history
+  const has=t=>S.elements.some(e=>e.type===t);
+  const recs=[];
+  if(has('patio')&&!has('wall'))recs.push({type:'wall',name:'Seating wall',w:12,d:1.5});
+  if(!has('pergola')&&!has('porch'))recs.push({type:'pergola',name:'Pergola',w:12,d:10});
+  if(!has('bed'))recs.push({type:'bed',name:'Planting bed',w:16,d:4});
+  if(!has('walkway'))recs.push({type:'walkway',name:'Walkway',w:12,d:4});
+  return recs.slice(0,3);
+}
+
+// ---------- survey reader: AI proposes, the rep confirms, Moasure verifies ----------
+async function surveyExtract(){
+  const msg=document.getElementById('surveyMsg');
+  if(!S.plan.img){msg.textContent='Upload the survey/plan image first.';return;}
+  msg.textContent='reading the survey for printed dimensions… (~10s)';
+  const r=await fetch('/api/survey/extract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectId:PROJECT_ID})}).then(r=>r.json()).catch(e=>({error:String(e)}));
+  if(r.error){msg.textContent='Read failed: '+r.error;return;}
+  if(!r.dimensions.length){msg.textContent='No printed dimensions found on this document — enter them manually, or calibrate the underlay and measure on the board.';return;}
+  window.__svProps=r.dimensions;
+  msg.textContent=r.dimensions.length+' printed dimension(s) found. Check the ones to import — nothing enters the registry without your confirm.';
+  document.getElementById('surveyProps').innerHTML=r.dimensions.map((d,i)=>`<label class="addon" style="margin:4px 0"><span><input type="checkbox" id="sv_${i}" ${d.confidence==='high'?'checked':''}> ${d.label}</span><span>${d.feet} ft · ${d.confidence}</span></label>`).join('')
+    +`<button class="btn sm" style="margin-top:8px" onclick="importSurveyDims()">Add checked as SURVEY measurements</button>`;
+}
+function importSurveyDims(){
+  let n=0;
+  (window.__svProps||[]).forEach((d,i)=>{const cb=document.getElementById('sv_'+i);if(cb&&cb.checked){addMeasurement('survey: '+d.label,d.feet,'survey');n++;}});
+  if(!n)return;
+  S.project.surveyed='yes';const sel=document.getElementById('p_surveyed');if(sel)sel.value='yes';
+  save();renderMeasurements();renderQuote();
+  document.getElementById('surveyProps').innerHTML='';
+  document.getElementById('surveyMsg').textContent='✓ '+n+' survey measurement(s) in the registry — the quote range tightens. Moasure cross-check runs under the measurements table.';
+}
+function surveyCross(){
+  const el=document.getElementById('crossCheck');if(!el)return;
+  const sv=S.measurements.filter(m=>m.src==='survey'&&!/calibration/.test(m.label)),mo=S.measurements.filter(m=>m.src==='moasure');
+  if(!sv.length||!mo.length){el.innerHTML=sv.length?'<div class="hint" style="margin-top:8px">Survey dims in — walk the Moasure to verify them against reality.</div>':'';return;}
+  const rows=[];
+  sv.forEach(s=>{
+    let best=null,bd=1e9;
+    mo.forEach(m=>{const d=Math.abs(m.val-s.val)/Math.max(s.val,0.1);if(d<bd){bd=d;best=m;}});
+    if(best&&bd<=0.15){
+      const pct=(bd*100).toFixed(1);
+      const [mark,color,verdict]=bd<=0.03?['✓','#8fbf8f','agrees']:bd<=0.08?['⚠','var(--bronze2)','close — confirm on site']:['✗','var(--red)','conflict — trust the Moasure'];
+      rows.push(`<div class="hint" style="color:${color}">${mark} ${s.label} ${s.val} ft ↔ ${best.label} ${best.val} ft — Δ${pct}% (${verdict})</div>`);
+    }
+  });
+  el.innerHTML='<div style="margin-top:10px"><b style="font-size:11px;letter-spacing:.12em;color:var(--dim)">SURVEY ↔ MOASURE CROSS-CHECK</b>'+(rows.join('')||'<div class="hint">no survey dim within 15% of any Moasure dim — nothing comparable yet</div>')+'</div>';
+}
+
+// ---------- Sample Client reps: fixed option list, multi-select ----------
+const SC_REPS=['Client Owner','Noah','Corey'];
+function repList(){return (S.project.reps||'').split(/\s*\+\s*|,\s*/).filter(Boolean);}
+function toggleRep(n){const cur=repList();const i=cur.indexOf(n);if(i>=0)cur.splice(i,1);else cur.push(n);S.project.reps=cur.join(' + ');save();renderRepChips();if(document.getElementById('tab-visit').classList.contains('on'))visitChipsUpd();}
+function renderRepChips(){const cur=repList();['v_repchips','p_repchips'].forEach(id=>{const b=document.getElementById(id);if(!b)return;
+  b.innerHTML=SC_REPS.map(n=>`<button type="button" class="repchip ${cur.includes(n)?'on':''}" onclick="toggleRep('${n}')">${cur.includes(n)?'✓ ':''}${n}</button>`).join('');});}
+
+// ---------- access rating in words ----------
+function accessDesc(v){
+  if(v<=2)return 'wide open — machines drive right to the work area';
+  if(v<=4)return 'standard — normal gate, equipment fits with care';
+  if(v<=6)return 'tight — limited machine access, some wheelbarrow work';
+  if(v<=8)return 'hard — most material hand-carried, long path';
+  return 'extreme — everything by hand; plan extra crew-days';
+}
+
+// ---------- Visit Mode ----------
+function bindVisit(){
+  const B=(id,get,set)=>{const el=document.getElementById(id);if(!el)return;el.value=get()||'';el.oninput=()=>{set(el.value);save();visitChipsUpd();};};
+  B('v_client',()=>S.project.client,v=>{S.project.client=v;const m=document.getElementById('p_client');if(m)m.value=v;});
+  B('v_address',()=>S.project.address,v=>{S.project.address=v;const m=document.getElementById('p_address');if(m)m.value=v;});
+  B('v_budget',()=>S.project.budget,v=>{S.project.budget=v;});
+  B('v_notes',()=>S.project.notes,v=>{S.project.notes=v;syncNotes();const m=document.getElementById('p_notes');if(m)m.value=v;});
+  B('v_nice',()=>S.project.wants.nice,v=>{S.project.wants.nice=v;});
+  B('v_dream',()=>S.project.wants.dream,v=>{S.project.wants.dream=v;});
+  B('v_sc',()=>S.project.wants.sc,v=>{S.project.wants.sc=v;});
+  B('v_accesswhy',()=>S.q.accessWhy,v=>{S.q.accessWhy=v;});
+  renderRepChips();
+  const gf=document.getElementById('v_gradeft');if(gf){gf.value=S.q.gradeFt||'';gf.oninput=()=>{S.q.gradeFt=+gf.value||0;save();gradeHintUpd();visitChipsUpd();};}
+  const ac=document.getElementById('v_access');if(ac){ac.value=S.q.access;document.getElementById('v_accessval').textContent=S.q.access;document.getElementById('v_accessdesc').textContent=accessDesc(S.q.access);ac.oninput=()=>{S.q.access=+ac.value;document.getElementById('v_accessval').textContent=ac.value;document.getElementById('v_accessdesc').textContent=accessDesc(S.q.access);save();visitChipsUpd();};}
+  const hd=document.getElementById('v_handdig');if(hd){hd.checked=S.q.handdig;hd.onchange=()=>{S.q.handdig=hd.checked;save();};}
+  const vp=document.getElementById('v_photos');if(vp)vp.onchange=async e=>{await addImages(e,'photos');renderVisitThumbs();visitChipsUpd();};
+  renderVisitThumbs();
+  const vi=document.getElementById('v_inspo');if(vi)vi.onchange=async e=>{
+    for(const f of e.target.files){const s=await downscale(f);S.project.inspiration.push({id:'n'+(S.nextId++),src:s,label:f.name});}
+    e.target.value='';save();renderInspo();};
+  renderInspo();visitChipsUpd();
+}
+function renderVisitThumbs(){const b=document.getElementById('v_thumbs');if(!b)return;
+  b.innerHTML=(S.project.photos||[]).map(p=>`<div class="thumb"><img src="${p.src}"><button onclick="delImage('photos','${p.id}');renderVisitThumbs();visitChipsUpd()">✕</button></div>`).join('')||'<span class="hint">no photos yet — they land here as you add them</span>';}
+function addInspoUrl(){const u=document.getElementById('v_inspourl');if(!u.value.trim())return;S.project.inspiration.push({id:'n'+(S.nextId++),url:u.value.trim(),label:u.value.trim()});u.value='';save();renderInspo();}
+function delInspo(id){S.project.inspiration=S.project.inspiration.filter(i=>i.id!==id);save();renderInspo();}
+function renderInspo(){const b=document.getElementById('inspoThumbs');if(!b)return;b.innerHTML='';
+  (S.project.inspiration||[]).forEach(i=>{const d=document.createElement('div');
+    if(i.src){d.className='thumb';d.innerHTML=`<img src="${i.src}"><button onclick="delInspo('${i.id}')">✕</button>`;}
+    else{d.innerHTML=`<span class="tag survey" style="margin:4px">🔗 ${(i.label||'').slice(0,34)} <a href="#" onclick="delInspo('${i.id}');return false" style="color:var(--red)">✕</a></span>`;}
+    b.appendChild(d);});}
+function visitChipsUpd(){
+  const el=document.getElementById('visitChips');if(!el)return;
+  const chips=[['rep',!!(S.project.reps||'').trim()],['photos',(S.project.photos||[]).length>0],['measurements',S.measurements.length>0||!!S.trace],['grade',S.q.gradeFt>0],['access why',!!(S.q.accessWhy||'').trim()],['notes',!!(S.project.notes||'').trim()],['budget',!!(S.project.budget||'').trim()]];
+  el.innerHTML=chips.map(([n,ok])=>`<span class="tag ${ok?'moasure':'manual'}" style="margin-left:6px">${ok?'✓':'○'} ${n}</span>`).join('');
+  const g=document.getElementById('visitGuard');
+  if(g){const unv=S.elements.filter(e=>!e.off&&!(['moasure','survey'].includes(e.wSrc)&&['moasure','survey'].includes(e.dSrc))).length;
+    g.textContent=(unv?'⚠ '+unv+' element dims are FIELD-VERIFY — measure before contract. ':'✓ all dims traced to measurements. ')+(S.project.surveyed==='yes'?'Survey on file — tight range.':'No survey yet — range stays wider until one lands.');}
+}
+async function visitAutoDesign(){
+  const msg=document.getElementById('visitMsg');
+  msg.classList.remove('blocker');
+  const tr=document.getElementById('v_trace');
+  if(!S.trace&&tr.value.trim())importTrace(tr.value);
+  if(!S.trace){
+    const w=+document.getElementById('v_yw').value,d=+document.getElementById('v_yd').value;
+    if(w>3&&d>3){importTrace(`# boundary\n0,0\n${w},0\n${w},${d}\n0,${d}`,'manual');}
+  }
+  if(!S.trace){msg.classList.add('blocker');msg.textContent='⚠ STOPPED — no measurements yet. Paste the Moasure trace OR tape the yard and enter width × depth in step ②. The design only builds inside measured geometry — that\'s the whole point.';msg.scrollIntoView({block:'center',behavior:'smooth'});return;}
+  if(!S.elements.length){
+    proposeLayouts();
+    const v=document.querySelector('.variant');
+    if(v){const c=window.confirm;window.confirm=()=>true;v.click();window.confirm=c;}
+    document.getElementById('variantBox').style.display='none';
+  }
+  msg.textContent='Design applied: '+S.elements.map(e=>e.name).join(', ')+'.';
+  logSiteVisit();
+  if(!(S.project.photos||[]).length){
+    msg.textContent+=' ⚠ No site photos yet — the render set needs at least one photo of the yard.';
+  }else if(S.project.autoSetFired||S.project.renders.some(r=>r.generated)){
+    msg.textContent+=' Renders already exist — “⟳ Fire render set again” below replaces them with fresh options from the four want-levels above.';
+  }else{
+    const st=await fetch('/api/render/set/status').then(r=>r.json()).catch(()=>null);
+    if(st&&st.running){msg.textContent+=` A render set is already running (${st.done}/${st.total}) — it lands here when done.`;pollSetInto('visitMsg');}
+    else{
+      S.project.autoSetFired=true;save();
+      const n=await generateOptionSets(msg);
+      if(n)pollSetInto('visitMsg');
+    }
+  }
+  visitChipsUpd();
+}
+function logSiteVisit(){
+  const today=new Date().toISOString().slice(0,10);
+  if(S.journal.some(j=>j.date===today&&/^Site visit/.test(j.note||'')))return;
+  S.journal.unshift({id:'j'+(S.nextId++),date:today,note:'Site visit — '+(S.project.reps||'rep not recorded'),photos:[]});
+  save();
+}
+function clearOptions(){
+  // a re-fire REPLACES the old options — the studio never accumulates stale sets (the Founder 2026-08-19)
+  (S.project.renders||[]).forEach(r=>{if(r.generated)S.tombstones.push(r.id);});
+  S.project.renders=(S.project.renders||[]).filter(r=>!r.generated);
+  (S.project.tours||[]).forEach(t=>{if(t.setId)S.tombstones.push(t.id);});
+  S.project.tours=(S.project.tours||[]).filter(t=>!t.setId);
+  S.tombstones=S.tombstones.slice(-400);
+  S.project.optionMeta={};S.project.chosenOption=null;
+  // auto-added tier elements + coverage customs re-derive from the current texts
+  S.elements=S.elements.filter(e=>!(e.tierTag&&e.off)&&!(e.tierTag&&e.type==='custom'));
+  save();
+}
+async function visitFireSet(){
+  const msg=document.getElementById('visitMsg');
+  if(!(S.project.photos||[]).length){msg.textContent='⚠ Add at least one site photo first.';return;}
+  if(!S.elements.length){msg.textContent='⚠ No design yet — tap Auto-design first.';return;}
+  const st=await fetch('/api/render/set/status').then(r=>r.json()).catch(()=>null);
+  if(st&&st.running){msg.textContent=`A render set is already running (${st.done}/${st.total}) — hold on, it lands here when done.`;pollSetInto('visitMsg');return;}
+  clearOptions();
+  S.project.autoSetFired=true;save();
+  const n=await generateOptionSets(msg);
+  if(n)pollSetInto('visitMsg');
+}
+function pollSetInto(elId){
+  const pid=PROJECT_ID;
+  const t=setInterval(async()=>{
+    const s=await fetch('/api/render/set/status').then(r=>r.json()).catch(()=>null);
+    const el=document.getElementById(elId);if(!s){clearInterval(t);return;}
+    if(s.running){if(el)el.textContent=`Rendering ${s.done}/${s.total}… keep talking — flip to Design Studio when it lands.`;return;}
+    clearInterval(t);
+    if(s.error){if(el)el.textContent='⚠ Render set stopped: '+s.error;return;}
+    // the renders live on the SERVER — pull them into this tab or the studio shows stale state
+    if(PROJECT_ID===pid){
+      await switchProject(pid);
+      if(document.getElementById('tab-client').classList.contains('on'))renderClient();
+    }
+    const el2=document.getElementById(elId);
+    if(el2)el2.textContent='✓ Render set complete — tap “Show the client” below.';
+  },4000);
+}
+
+// ---------- lightbox: zoom + pan any client photo ----------
+(function(){
+  const lb=document.createElement('div');lb.id='lightbox';
+  lb.innerHTML='<img id="lbimg"><div class="lb-ui"><button onclick="lbZoom(1.35)">+</button><button onclick="lbZoom(1/1.35)">−</button><button onclick="lbReset()">⟲</button><button onclick="lbClose()">✕</button></div><div class="lb-hint">scroll or +/− to zoom · drag to move around · double-click to reset · esc to close</div>';
+  document.body.appendChild(lb);
+})();
+let lbS=1,lbX=0,lbY=0,lbDrag=null;
+function lbApply(){const i=document.getElementById('lbimg');i.style.transform=`translate(${lbX}px,${lbY}px) scale(${lbS})`;}
+function openLightbox(src){const lb=document.getElementById('lightbox'),i=document.getElementById('lbimg');i.src=src;
+  i.onload=()=>{const vw=innerWidth,vh=innerHeight;lbS=Math.min(vw/i.naturalWidth,vh/i.naturalHeight)*0.92;lbX=(vw-i.naturalWidth*lbS)/2;lbY=(vh-i.naturalHeight*lbS)/2;lbApply();};
+  lb.classList.add('on');}
+function lbClose(){document.getElementById('lightbox').classList.remove('on');}
+function lbReset(){const i=document.getElementById('lbimg');i.onload();}
+function lbZoom(f,cx,cy){const vw=innerWidth/2,vh=innerHeight/2;cx=cx??vw;cy=cy??vh;lbX=cx-(cx-lbX)*f;lbY=cy-(cy-lbY)*f;lbS*=f;lbApply();}
+addEventListener('keydown',e=>{if(e.key==='Escape')lbClose();});
+document.getElementById('lightbox').addEventListener('wheel',e=>{e.preventDefault();lbZoom(e.deltaY<0?1.15:1/1.15,e.clientX,e.clientY);},{passive:false});
+document.getElementById('lightbox').addEventListener('pointerdown',e=>{if(e.target.id!=='lbimg')return;lbDrag={x:e.clientX-lbX,y:e.clientY-lbY};e.target.setPointerCapture(e.pointerId);e.target.style.cursor='grabbing';});
+document.getElementById('lightbox').addEventListener('pointermove',e=>{if(lbDrag){lbX=e.clientX-lbDrag.x;lbY=e.clientY-lbDrag.y;lbApply();}});
+document.getElementById('lightbox').addEventListener('pointerup',e=>{lbDrag=null;if(e.target.id==='lbimg')e.target.style.cursor='grab';});
+document.getElementById('lightbox').addEventListener('dblclick',()=>lbReset());
+
+// ---------- sample ----------
+async function loadSample(){
+  S=defState();
+  S.project={client:'Sample — Tim Mays',address:'13919 Old Space Vermilion Dr',type:'both',surveyed:'no',notes:'Walked in during the 8/6 meeting. Wants outdoor living area off the back porch: bluestone patio, seating wall, pergola with lights, privacy screening along east line. Access good — open field. No survey yet.',
+    photos:[{id:'sp1',src:'assets/before.jpg',label:'sample site photo (Donovan Pl demo asset)'}],
+    renders:[{id:'sr0',src:'assets/design1.png',label:'design render generated 2026-08-10 from the site photo via the Higgsfield pipeline (note: removes the two center-yard trees — flag as tree-removal scope if presented)',state:'day1'},{id:'sr1',src:'assets/after1.jpg',label:'sample render (Donovan Pl demo asset)',state:'day1'},{id:'sr2',src:'assets/after3.jpg',label:'sample render (Donovan Pl demo asset)',state:'day1'},{id:'sr3',src:'assets/night1.png',label:'night state — generated via the Higgsfield pipeline from the day render (2026-08-07)',state:'night'}],stage:'pitch'};
+  S=migrate(S);cvState='day1';
+  [['back patio width',21.5,'moasure'],['back patio depth',14,'moasure'],['seating wall run',18,'moasure'],['walkway to drive',26,'manual'],['pergola bay',14,'survey'],['pergola depth',12,'survey']].forEach(([l,v,s])=>S.measurements.push({id:'m'+(S.nextId++),label:l,val:v,src:s}));
+  const mk=(type,name,w,ws,d,ds,x,y,extra)=>({id:'e'+(S.nextId++),type,name,w,d,h:TYPES[type].h||null,x,y,wSrc:ws,dSrc:ds,material:null,steps:type==='steps'?3:null,sleeve:false,...(extra||{})});
+  S.elements.push(mk('patio','Bluestone patio',21.5,'moasure',14,'moasure',30,20,{material:'pa-bluestone',sleeve:true}));
+  S.elements.push(mk('wall','Seating wall',18,'moasure',1.5,'moasure',30,36));
+  S.elements.push(mk('pergola','Pergola',14,'survey',12,'survey',33,8));
+  S.elements.push(mk('walkway','Walkway to drive',26,'manual',4,'manual',6,26));
+  S.elements.push(mk('bed','Privacy screening bed',24,'manual',5,'manual',58,14));
+  S.q={access:3,grade:'flat',handdig:true,tier:'premium'};
+  if(API){
+    // reuse the existing sample instead of multiplying copies (QA finding 2026-08-18)
+    const list=await fetch('/api/projects').then(r=>r.json()).catch(()=>[]);
+    const existing=list.find(p=>p.name==='Sample — Tim Mays');
+    if(existing){PROJECT_ID=existing.id;localStorage.setItem('scq_current',existing.id);
+      await fetch('/api/projects/'+existing.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)});
+      bindAll();renderAll();await refreshProjectList();}
+    else{const st=S;await newProject(st);}
+  }else{save();bindAll();renderAll();}
+  showTab('board');
+}
+
+init();
+</script>
+</body>
+</html>

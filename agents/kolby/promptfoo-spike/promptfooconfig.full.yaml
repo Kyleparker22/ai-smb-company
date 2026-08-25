@@ -1,0 +1,47 @@
+# yourco pre-send gate — FULL shape (deterministic + LLM-judge). DOCUMENTED, not run this session.
+# Requires a real inference key: `export ANTHROPIC_API_KEY=sk-ant-api...` (the repo only holds an
+# ADMIN key, sk-ant-admin, which cannot do inference — so the judge half was not executed 2026-07-22).
+# Run: PROMPTFOO_DISABLE_TELEMETRY=1 npx promptfoo eval -c promptfooconfig.full.yaml
+description: "yourco pre-send gate (full: deterministic + judge) — promptfoo spike"
+
+providers:
+  - id: echo   # copy is static; echo passes it to the assertions
+
+prompts:
+  - "{{copy}}"
+
+defaultTest:
+  assert:
+    # --- deterministic layer (runs with no key; see promptfooconfig.deterministic.yaml) ---
+    - type: javascript
+      value: "(b => ({pass:!b, reason: b?'leaked merge var':'ok'}))(/\\{\\{/.test(output))"
+    - type: javascript
+      value: "(b => ({pass:!b, reason: b?'internal agent name':'ok'}))(/\\b(Reese|Reilly|Michelle|Kolby|Bella|Atlas|Kimi|Polo|Bird|Sadie|David)\\b/.test(output))"
+    - type: javascript
+      value: "(b => ({pass:!b, reason: b?'price in outbound':'ok'}))(output.includes('$'))"
+    # --- judgment layer: the six dimensions as llm-rubric (NEEDS a key; provider = claude) ---
+    # Each rubric is scored by the model; the rubric text IS the asset, versioned here in git.
+    - type: llm-rubric
+      provider: anthropic:messages:claude-sonnet-5
+      value: >
+        HONESTY / CREDIBILITY GATE (dimension 2, cardinal). yourco is pre-revenue. FAIL the output if it
+        contains ANY fabricated proof: invented metrics, fake testimonials, client counts, or manufactured
+        familiarity ("loved your recent post" with no evidence of a post). "I built this for you" is only
+        allowed when a demo link is present. Pass only if every claim is defensible for a pre-revenue firm.
+    - type: llm-rubric
+      provider: anthropic:messages:claude-sonnet-5
+      value: >
+        BRAND VOICE (dimension 4). Per yourco's writing rules: plain words, no hype, reads aloud naturally,
+        outcomes not features, lowercase "yourco". FAIL if it reads like generic AI marketing, uses banned
+        hype words, or leads with features over the owner's outcome (missed calls, booked jobs).
+    - type: llm-rubric
+      provider: anthropic:messages:claude-sonnet-5
+      value: >
+        ACTIONABILITY (dimension 5). Exactly one clear, small, specific CTA per touch; the subject line is
+        honest and concrete (not clickbait). FAIL on competing CTAs or a deceptive/vague subject.
+
+# In real use, `tests:` is generated from the staged batch (instantly.py --leads → rendered previews),
+# one test per sampled lead × touch. Here we reuse the three fixtures from the deterministic config.
+tests:
+  - description: "Touch 1 — clean rendered preview"
+    vars: {copy: "file://fixtures/touch1.txt"}

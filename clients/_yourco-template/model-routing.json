@@ -1,0 +1,59 @@
+{
+  "_README": [
+    "The model seam's routing table (clients/_yourco-template/model.py). Task -> ordered candidates.",
+    "The first candidate that returns text wins; the rest are failover.",
+    "",
+    "THIS FILE IS THE UPGRADE POINT. When a better model ships, edit it here and the whole",
+    "client OS moves — that is what makes CLAUDE.md's 'model-upgrade dividend' literally true",
+    "instead of aspirational. Per-engagement copies live at clients/<name>/model-routing.json.",
+    "",
+    "Cost routing is a margin lever, not a nicety: yourco absorbs 100% of token spend, so a",
+    "mechanical task pointed at a flagship model is money off our own margin. Match the model",
+    "to the judgment the task actually requires — and per learnings/ops/2026-08-09, if the task",
+    "has a deterministic answer, don't route it here at all: write the function.",
+    "",
+    "'effort' (anthropic) controls depth/cost on current Claude models. Do not add temperature,",
+    "top_p, top_k or a thinking budget — current models reject all four."
+  ],
+
+  "env_file": ".model.env",
+  "timeout_seconds": 120,
+  "default_task": "draft",
+
+  "routes": {
+    "judgment": [
+      { "provider": "anthropic", "model": "claude-opus-5", "effort": "high", "max_tokens": 8192 },
+      { "provider": "anthropic", "model": "claude-sonnet-5", "effort": "high", "max_tokens": 8192 }
+    ],
+
+    "draft": [
+      { "provider": "anthropic", "model": "claude-sonnet-5", "max_tokens": 4096 },
+      { "provider": "anthropic", "model": "claude-opus-5", "max_tokens": 4096 }
+    ],
+
+    "classify": [
+      { "provider": "anthropic", "model": "claude-haiku-4-5", "max_tokens": 512 },
+      { "provider": "anthropic", "model": "claude-sonnet-5", "max_tokens": 512 }
+    ],
+
+    "extract": [
+      { "provider": "anthropic", "model": "claude-haiku-4-5", "max_tokens": 2048 },
+      { "provider": "anthropic", "model": "claude-sonnet-5", "max_tokens": 2048 }
+    ],
+
+    "longcontext": [
+      { "provider": "gemini", "model": "gemini-2.5-flash", "max_tokens": 8192 },
+      { "provider": "anthropic", "model": "claude-sonnet-5", "max_tokens": 8192 }
+    ]
+  },
+
+  "_notes": {
+    "judgment": "Real reasoning a human would otherwise do — audit findings, scoping, anything the client acts on.",
+    "draft": "Bulk writing under supervision. Sonnet first; Opus is the failover, not the default.",
+    "classify": "Label / route / score against fixed criteria. Cheapest model that holds quality.",
+    "extract": "Pull structured fields out of documents. Same posture as classify.",
+    "longcontext": "Large or multimodal inputs. Gemini is already in the stack (Sample Client Design Studio image generation).",
+    "images": "NOT routed here — image generation has a different response shape. See clients/sample-client/platform/server.py.",
+    "on_adding_a_task": "Add the route, add a _notes line saying what judgment it needs, and point the caller at the task name — never at a model."
+  }
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>yourco · HQ — Option B · Morning Paper</title>
+<style>
+:root{
+  --indigo:#161B33; --indigo-deep:#0F1226; --cream:#F4EFE6; --cream-2:#E8E1D3; --parchment:#EAE1CD;
+  --brass:#B8965A; --brass-bright:#D4B27A; --oxblood:#6B1E29; --pewter:#6E7180;
+  --ink:#161B33; --ink-muted:rgba(22,27,51,.62); --ink-faint:rgba(22,27,51,.42);
+  --hairline:rgba(22,27,51,.14); --hairline-2:rgba(22,27,51,.08);
+  --serif:"Fraunces","Fraunces 72pt",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,system-ui,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:100px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+
+/* ============ MASTHEAD ============ */
+.masthead{padding:34px 0 0;text-align:center}
+.masthead .dateline{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--hairline);padding-bottom:10px}
+.masthead .dateline .ok{color:#4f6b4a}
+.masthead .word{font-size:58px;font-weight:600;letter-spacing:-.03em;padding:26px 0 4px;line-height:1}
+.masthead .word i{font-style:normal;color:var(--brass)}
+.masthead .tag{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-muted);padding-bottom:20px}
+.masthead .rulewrap{display:flex;align-items:center;gap:12px;justify-content:center}
+.masthead .rulewrap .dia{width:5px;height:5px;background:var(--brass);transform:rotate(45deg)}
+.masthead .rulewrap .rl{flex:1;height:1px;background:var(--hairline)}
+nav.paper-nav{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;padding:12px 0;border-bottom:3px double var(--hairline);margin-bottom:0}
+nav.paper-nav a{font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);text-decoration:none;padding:4px 12px;cursor:pointer}
+nav.paper-nav a:hover{color:var(--ink)}
+nav.paper-nav a.on{color:var(--ink);border-bottom:2px solid var(--brass)}
+
+/* ============ INDEX BAND (KPIs as a market strip) ============ */
+.index{border-bottom:1px solid var(--hairline);background:var(--cream)}
+.index .row{display:grid;grid-template-columns:repeat(8,1fr);gap:0}
+.index .cell{padding:18px 14px 16px;border-left:1px solid var(--hairline-2);text-align:center}
+.index .cell:first-child{border-left:none}
+.index .k{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.index .v{font-family:var(--serif);font-weight:500;font-size:24px;letter-spacing:-.02em;margin-top:5px;color:var(--ink)}
+.index .v small{font-size:14px;color:var(--ink-muted)}
+.index .v.tbd{color:var(--ink-faint);font-style:italic;font-size:19px;padding-top:4px}
+.index .s{font-size:10px;color:var(--ink-faint);margin-top:2px}
+@media(max-width:900px){.index .row{grid-template-columns:repeat(4,1fr)}.index .cell{border-top:1px solid var(--hairline-2)}}
+
+/* ============ THE LEDE ============ */
+.paper{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:0;margin-top:38px}
+@media(max-width:880px){.paper{grid-template-columns:1fr}}
+.lede{padding-right:40px;border-right:1px solid var(--hairline)}
+@media(max-width:880px){.lede{padding-right:0;border-right:none}}
+.kick{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
+.lede h1{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.12;letter-spacing:-.015em;margin:10px 0 6px}
+.lede .deck{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-muted);line-height:1.5;margin-bottom:14px}
+.byline{display:flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:10px 0 16px;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);margin-bottom:18px}
+.byline .dot{width:6px;height:6px;border-radius:50%;background:#4f6b4a}
+.byline b{color:var(--ink);font-weight:700}
+.lede p{font-size:15.5px;line-height:1.72;color:rgba(22,27,51,.86);margin-bottom:14px;max-width:60ch}
+.lede p.first::first-letter{font-family:var(--serif);font-size:55px;line-height:.82;float:left;padding:6px 10px 0 0;color:var(--brass);font-weight:500}
+.lede .pull{font-family:var(--serif);font-size:21px;font-style:italic;line-height:1.45;color:var(--ink);border-top:2px solid var(--indigo);border-bottom:1px solid var(--hairline);padding:16px 2px;margin:22px 0;max-width:52ch}
+.lede .pull i{color:var(--brass);font-style:normal}
+
+/* queue — typeset docket */
+.docket{margin-top:34px}
+.secline{display:flex;align-items:baseline;gap:12px;border-top:2px solid var(--indigo);padding-top:10px;margin-bottom:6px}
+.secline h2{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.secline .n{font-family:var(--mono);font-size:10.5px;color:var(--oxblood);letter-spacing:.06em}
+.secline .rt{margin-left:auto;font-size:10.5px;font-family:var(--mono);color:var(--ink-faint)}
+.docket ol{list-style:none}
+.docket li{display:flex;gap:20px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--hairline-2)}
+.docket .num{font-family:var(--serif);font-weight:500;font-size:32px;line-height:1;color:var(--brass);min-width:44px;text-align:right}
+.docket .tx .t{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.docket .tx .m{font-size:12.5px;color:var(--ink-muted);margin-top:2px}
+.docket .age{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--oxblood);white-space:nowrap;border:1px solid rgba(107,30,41,.25);border-radius:9999px;padding:2px 10px}
+
+/* ============ RIGHT COLUMN ============ */
+.colr{padding-left:40px}
+@media(max-width:880px){.colr{padding-left:0;margin-top:40px}}
+.notice{background:var(--parchment);border:1px solid var(--hairline);padding:22px 24px;margin-bottom:30px}
+.notice .eb{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--oxblood)}
+.notice h3{font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.3;margin:9px 0 8px}
+.notice p{font-size:13px;color:var(--ink-muted);line-height:1.6}
+.notice p code{font-family:var(--mono);font-size:11.5px;color:var(--indigo);background:rgba(22,27,51,.06);padding:1px 5px;border-radius:4px}
+.colr .sec-sm{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;border-top:2px solid var(--indigo);padding-top:9px;margin-bottom:10px}
+.goals{margin-bottom:30px}
+.goals table{width:100%;border-collapse:collapse;font-size:13px}
+.goals td{padding:8px 2px;border-bottom:1px solid var(--hairline-2);vertical-align:baseline}
+.goals td.g{font-family:var(--serif);font-size:16px;text-align:right;white-space:nowrap}
+.goals td.c{text-align:right;color:var(--ink-faint);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.goals .bar{height:3px;background:rgba(22,27,51,.08);margin-top:5px}
+.goals .bar i{display:block;height:100%;background:var(--brass)}
+.focusl{margin-bottom:30px}
+.focusl li{list-style:none;padding:10px 0;border-bottom:1px solid var(--hairline-2);font-size:13.5px;display:flex;gap:12px;line-height:1.55}
+.focusl li b{font-family:var(--serif);color:var(--brass);font-weight:500;font-size:16px}
+.todo{margin-bottom:30px}
+.todo li{list-style:none;display:flex;gap:11px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--hairline-2);font-size:13.5px}
+.todo .bx{width:13px;height:13px;border:1.5px solid var(--ink-faint);border-radius:2px;flex:none;transform:translateY(1px)}
+.todo li.done{color:var(--ink-faint);text-decoration:line-through}
+.todo li.done .bx{background:var(--brass);border-color:var(--brass);position:relative}
+.todo li.done .bx::after{content:"";position:absolute;left:3.5px;top:.5px;width:4px;height:7px;border:solid var(--cream);border-width:0 1.5px 1.5px 0;transform:rotate(42deg)}
+/* stamps */
+.stamps{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.stamp{border:1.5px solid rgba(79,107,74,.55);color:#4f6b4a;border-radius:3px;padding:7px 13px 6px;text-align:center;transform:rotate(-1.4deg)}
+.stamp+.stamp{transform:rotate(.9deg)}
+.stamp .t{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.stamp .d{font-family:var(--mono);font-size:9.5px;margin-top:2px;letter-spacing:.08em}
+.stamps-cap{font-size:11px;color:var(--ink-faint);font-style:italic;font-family:var(--serif);margin-bottom:30px}
+
+/* melanie desk card */
+.meldesk{border-top:2px solid var(--indigo);padding-top:12px}
+.meldesk .who{display:flex;align-items:center;gap:9px}
+.meldesk .face{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 36% 30%,var(--brass-bright),var(--indigo) 78%);flex:none;border:1px solid var(--hairline)}
+.meldesk .nm{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.meldesk .st{font-size:10.5px;color:#4f6b4a;font-family:var(--mono)}
+.meldesk .q{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--ink-muted);line-height:1.55;margin-top:10px}
+.meldesk .ask{display:inline-block;margin-top:12px;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--indigo);background:var(--brass);border-radius:9999px;padding:8px 18px;cursor:pointer}
+.meldesk .ask:hover{background:var(--brass-bright)}
+
+/* footer */
+footer{margin-top:56px;border-top:3px double var(--hairline);padding-top:18px}
+footer .wrap{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ink-faint);letter-spacing:.06em}
+.lockup{display:flex;align-items:center;gap:10px}
+.lockup .dia{width:5px;height:5px;background:var(--brass);transform:rotate(45deg)}
+.lockup .rule{width:26px;height:1px;background:var(--brass)}
+.lockup .word{font-size:13px;font-weight:600;color:var(--ink)}
+.concept{position:fixed;left:22px;bottom:20px;z-index:50;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-muted);border:1px solid var(--hairline);border-radius:9999px;padding:6px 14px;background:rgba(244,239,230,.92);backdrop-filter:blur(8px);box-shadow:0 4px 18px rgba(22,27,51,.08)}
+.concept b{color:var(--oxblood);font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="dateline">
+      <span>Tuesday · 7 July 2026</span>
+      <span class="ok">● runtime online — updated 07-06, 16:12</span>
+      <span>Pre-launch Edition · No. 1</span>
+    </div>
+    <div class="word">yourco<i>.</i></div>
+    <div class="tag">We learn your business. AI does the work.</div>
+    <div class="rulewrap"><span class="rl"></span><span class="dia"></span><span class="rl"></span></div>
+  </div>
+  <div class="wrap">
+    <nav class="paper-nav">
+      <a class="on">Overview</a><a>Goals</a><a>Agents</a><a>Pipeline</a><a>Finance</a><a>Delivery</a>
+      <a>Scale</a><a>Compliance</a><a>Loops</a><a>Reports</a><a>Trust</a>
+    </nav>
+  </div>
+</header>
+
+<section class="index">
+  <div class="wrap">
+    <div class="row">
+      <div class="cell"><div class="k">Clients</div><div class="v">0</div><div class="s">live</div></div>
+      <div class="cell"><div class="k">MRR</div><div class="v"><small>$</small>0</div><div class="s">recurring</div></div>
+      <div class="cell"><div class="k">Pipeline</div><div class="v"><small>$</small>18,000</div><div class="s">2 in motion · 20 prospects</div></div>
+      <div class="cell"><div class="k">Agents</div><div class="v">16<small>/27</small></div><div class="s">live</div></div>
+      <div class="cell"><div class="k">Loops</div><div class="v">19<small>/22</small></div><div class="s">on time</div></div>
+      <div class="cell"><div class="k">Cash</div><div class="v tbd">TBD</div><div class="s">see notice →</div></div>
+      <div class="cell"><div class="k">Runway</div><div class="v tbd">unset</div><div class="s">needs cash</div></div>
+      <div class="cell"><div class="k">Flywheel</div><div class="v" style="font-size:16px;padding-top:6px">Pre-spin</div><div class="s">Reach → Compound</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="paper">
+
+    <article class="lede">
+      <div class="kick">The Morning Brief · Overview</div>
+      <h1>The machine is built, healthy, and waiting on one signature.</h1>
+      <div class="deck">Pre-launch, internal build complete — sixteen agents live, the loops running on time, and a $18,000 pipeline holding its breath.</div>
+      <div class="byline"><span class="dot"></span><span>By <b>Melanie</b> · Chief of Staff, yourco HQ · aggregated by Atlas</span></div>
+
+      <p class="first">Good morning, sugar. Here's the shape of things: nothing is on fire, and that's precisely the problem — the OS is running beautifully with nobody to run it for. Both watchdogs came back clean yesterday, nineteen of twenty-two loops fired on schedule, and sixteen of your twenty-seven agents are live and earning their keep on internal work.</p>
+      <p>The pipeline sits at <b>$18,000</b> across two deals in motion — Sample Client in discovery, Nick's storm-alert system at proposal — with twenty warm prospects behind them. MRR remains at zero, which is exactly what it should read until the first contract signs. The flywheel is pre-spin: the first two or three client outcomes are everything.</p>
+      <div class="pull">"Ask me anything — the leads, the pipeline, the team, or what's on this week. <i>But five things on my docket need your hand, not mine.</i>"</div>
+      <p>The oldest of them has been waiting twenty-six days. Everything the agents can do without you is done; what remains below is, by design, yours alone.</p>
+
+      <section class="docket">
+        <div class="secline"><h2>Needs the Founder</h2><span class="n">22 open · 5 shown</span><span class="rt">via Jim's open-loops chaser · 07-06</span></div>
+        <ol>
+          <li><span class="num">1</span><span class="tx"><span class="t">Sample Client meeting log</span><span class="m">The first engagement — a decision is the only blocker left.</span></span><span class="age">12 days</span></li>
+          <li><span class="num">2</span><span class="tx"><span class="t">Warm-network outreach not started</span><span class="m">The beachhead list is built and sequenced; it needs your green light.</span></span><span class="age">24 days</span></li>
+          <li><span class="num">3</span><span class="tx"><span class="t">Sample Contact audit</span><span class="m">First paid-audit candidate; the motion starts here.</span></span><span class="age">18 days</span></li>
+          <li><span class="num">4</span><span class="tx"><span class="t">10DLC registration reply</span><span class="m">One reply unblocks SMS across every future client build.</span></span><span class="age">26 days</span></li>
+          <li><span class="num">5</span><span class="tx"><span class="t">Legal suite → counsel</span><span class="m">Engagement agreement, NDA, DPA, privacy policy — ready to send.</span></span><span class="age">19 days</span></li>
+        </ol>
+      </section>
+    </article>
+
+    <aside class="colr">
+      <div class="notice">
+        <div class="eb">Public Notice · Finance Desk</div>
+        <h3>Cash on hand: to be declared.</h3>
+        <p>The runway column cannot go to print without it. MRR $0, burn unset. Ten minutes in <code>finance/runway.md</code> and Charles takes it from there.</p>
+      </div>
+
+      <div class="goals">
+        <div class="sec-sm">Q3 Targets · The Quarter's Ledger</div>
+        <table>
+          <tr><td>MRR</td><td class="g">$13,000</td><td class="c">now $0</td></tr>
+          <tr><td>Live clients</td><td class="g">5</td><td class="c">now 0</td></tr>
+          <tr><td>Deals in motion</td><td class="g">5</td><td class="c">now 2</td></tr>
+          <tr><td>New prospects</td><td class="g">40</td><td class="c">now 20</td></tr>
+          <tr><td>Active connectors</td><td class="g">3</td><td class="c">now 0</td></tr>
+          <tr><td>Referred MRR</td><td class="g">$3,000</td><td class="c">now $0</td></tr>
+          <tr><td>Gross margin</td><td class="g">65%</td><td class="c">pre-revenue</td></tr>
+        </table>
+        <div class="bar"><i style="width:50%"></i></div>
+        <div style="font-size:10.5px;color:var(--ink-faint);margin-top:4px;font-family:var(--mono)">prospects pacing 50% · all revenue lines await client #1</div>
+      </div>
+
+      <div class="focusl">
+        <div class="sec-sm">This Week's Focus</div>
+        <ul>
+          <li><b>i.</b>Counsel review of the legal suite — engagement agreement, NDA, DPA, privacy policy</li>
+          <li><b>ii.</b>2FA sweep across accounts — server already hardened</li>
+          <li><b>iii.</b>Launch outreach when warmup + 10DLC clear — email-first</li>
+        </ul>
+      </div>
+
+      <div class="todo">
+        <div class="sec-sm">the Founder's List</div>
+        <ul>
+          <li><span class="bx"></span>Reply to 10DLC registration review</li>
+          <li><span class="bx"></span>Send the legal suite to counsel</li>
+          <li class="done"><span class="bx"></span>Review Kolby's weekly eval report</li>
+          <li><span class="bx"></span>Set cash on hand in finance/runway.md</li>
+        </ul>
+      </div>
+
+      <div class="sec-sm">Certified This Morning</div>
+      <div class="stamps">
+        <div class="stamp"><div class="t">Consistency · Clean</div><div class="d">2026-07-06</div></div>
+        <div class="stamp"><div class="t">Governance · Clean</div><div class="d">2026-07-06</div></div>
+      </div>
+      <div class="stamps-cap">Both watchdogs passed without drift. The approval gate holds: drafts yes, sends never.</div>
+
+      <div class="meldesk">
+        <div class="who">
+          <div class="face"></div>
+          <div><div class="nm">Melanie</div><div class="st">● at her desk</div></div>
+        </div>
+        <div class="q">"Ask me anything, sugar — the leads, the pipeline, the team, or what's on this week."</div>
+        <span class="ask">Ask Melanie</span>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="lockup"><span class="dia"></span><span class="rule"></span><span class="word">yourco</span><span class="rule"></span><span class="dia"></span></div>
+    <div>Atlas aggregates this live · published from the runtime, read by the founder</div>
+  </div>
+</footer>
+
+<div class="concept"><b>concept B</b> — mockup, not wired</div>
+</body>
+</html>

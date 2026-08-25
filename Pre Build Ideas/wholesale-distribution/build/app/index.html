@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quote Desk OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-desk"></section>
+  <section class="view" id="v-rfq"></section>
+  <section class="view" id="v-pos"></section>
+  <section class="view" id="v-ledger"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic data. A low-confidence line never enters a
+quote, a substitution is never silent, and a discrepant PO never becomes an order.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'desk',label:'The desk'},{id:'rfq',label:'Parse an RFQ'},{id:'pos',label:'Purchase orders'},
+      {id:'ledger',label:'Margin ledger'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'desk'; ({desk,rfq,pos,ledger,roi,trust})[w](); }
+
+async function desk(){
+  const d = await API.get('/api/desk'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.revenue} · ${d.config.inside_sales} inside sales · margin floor ${(d.config.margin_floor*100).toFixed(0)}%`;
+  document.getElementById('v-desk').innerHTML =
+    panel('Today', 'two clocks: quote turnaround and order entry',
+      `<div class="grid">
+        ${stat('RFQs today', fmt.num(b.today.rfqs))}
+        ${stat('Auto-drafted', fmt.num(b.today.auto_drafted))}
+        ${stat('Human queue', fmt.num(b.today.human_queue), 'lines we would have had to guess at', b.today.human_queue?'warn':'')}
+        ${stat('Needs margin approval', fmt.num(b.today.needs_margin_approval), 'under the floor', b.today.needs_margin_approval?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">
+        ${stat('Median turnaround', val(b.turnaround,'median_hours', v=>v+'h'), b.turnaround._missing?'':`${b.turnaround.n} quotes`)}
+        ${stat('Open quote value', val(b.open_value,'amount',fmt.money), b.open_value._missing?'':`${b.open_value.n} live`)}
+        ${stat('PO exceptions', fmt.num(b.exceptions), 'held, not shipped', b.exceptions?'warn':'')}
+        ${renderAutomation(b.automation)}
+       </div>`) +
+    panel('In flight', `${d.live.length} quotes not yet sent`, table(
+      [{label:'Customer'},{label:'Lines',num:true},{label:'Queued',num:true},{label:'Subs',num:true},
+       {label:'Total',num:true},{label:'State'}], d.live,
+      q=>`<td>${esc(q.customer||'')}</td><td class="num">${(q.lines||[]).length}</td>
+        <td class="num">${(q.queued_lines||[]).length}</td>
+        <td class="num">${(q.substitutions||[]).length}</td>
+        <td class="num">${fmt.money(q.total)}</td>
+        <td>${pill(q.state, q.state==='queued_for_human'?'warn':q.state==='awaiting_approval'?'brand':'')}</td>`), true);
+}
+
+async function rfq(){
+  const d = await API.get('/api/rfqs');
+  const demo = d.live.find(r=>r.demo_tag) || d.live[0];
+  document.getElementById('v-rfq').innerHTML =
+    `<div class="banner warn">A line below the confidence threshold <b>never enters a quote</b>. It
+      goes to a human with the ambiguity named. A wrongly matched part ships, comes back, and costs
+      freight both ways.</div>` +
+    panel('An RFQ as it actually arrives', demo ? esc(demo.source) : '',
+      demo ? table([{label:'Qty',num:true},{label:'UOM'},{label:'What they wrote'},{label:'Their part no.'}],
+        demo.lines, l=>`<td class="num">${l.qty==null?blank('no quantity given'):l.qty}</td>
+          <td>${esc(l.uom||'—')}</td><td>${esc(l.description)}</td>
+          <td class="mono">${esc(l.customer_part||'')}</td>`) : '<div class="muted">nothing waiting</div>', true) +
+    (demo?`<div style="margin:4px 0 14px"><button class="act primary" onclick="quote('${demo.id}')">Quote it</button></div>`:'') +
+    `<div id="qout"></div>`;
+}
+
+async function quote(id){
+  const r = await API.post(`/api/rfqs/${id}/quote`);
+  const q = r.quote;
+  document.getElementById('qout').innerHTML =
+    panel(`Draft — ${esc(q.customer)}`, `${r.priced} priced · ${r.queued} queued · ${r.substitutions} substitution(s)`,
+      `<div class="grid">${stat('Total', fmt.money(q.total))}
+        ${stat('State', q.state)}
+        ${stat('Below floor', q.below_floor?'yes':'no','', q.below_floor?'warn':'')}</div>`) +
+    panel('Priced', 'every line shows why it matched and what it is priced from', table(
+      [{label:'SKU'},{label:'Description'},{label:'Qty',num:true},{label:'Unit',num:true},
+       {label:'Margin',num:true},{label:'Priced from'},{label:'Matched because'}],
+      q.lines, l=>`<td class="mono">${esc(l.sku)}</td><td>${esc(l.description)}</td>
+        <td class="num">${l.qty}</td><td class="num">${fmt.money2(l.unit)}</td>
+        <td class="num ${l.below_floor?'strong':''}">${fmt.pct(l.margin)}${l.below_floor?' '+pill('below floor','bad'):''}</td>
+        <td class="why">${esc(l.basis)}</td><td class="why">${esc(l.match_why)}</td>`), true) +
+    panel('Queued for a human', 'not guessed at', table(
+      [{label:'What they wrote'},{label:'Confidence',num:true},{label:'Why we would not guess'}],
+      q.queued_lines, x=>`<td>${esc(x.raw.description||'')}</td>
+        <td class="num">${x.confidence}</td><td class="why">${esc(x.why)}</td>`), true) +
+    (q.substitutions.length ? panel('Substitutions proposed', 'never silent', table(
+      [{label:'Instead of'},{label:'Proposed'},{label:'Spec differences'},{label:'Why'}], q.substitutions,
+      s=>`<td class="mono">${esc(s.for_sku)}</td><td class="mono">${esc(s.proposed||'—')}</td>
+        <td>${(s.differences||[]).map(d=>`<div class="why">${esc(d.field)}: ${esc(String(d.was))} → <b>${esc(String(d.now))}</b></div>`).join('')||'<span class="why">none</span>'}</td>
+        <td class="why">${esc(s.why)}</td>`), true) : '');
+}
+
+async function pos(){
+  const d = await API.get('/api/pos');
+  document.getElementById('v-pos').innerHTML =
+    `<div class="banner warn">Any discrepancy holds the <b>whole order</b>, not just the line. A
+      partially-correct order shipped is worse than one that waited ten minutes for a human.</div>` +
+    panel('Purchase orders', `${d.exceptions.length} exceptions`, table(
+      [{label:'PO'},{label:'Verdict'},{label:'What is different'},{label:''}], d.rows,
+      p=>`<td class="mono">${esc(p.number||p.id)}${p.demo_tag?' '+pill(p.demo_tag,'brand'):''}</td>
+        <td>${p.verdict?pill(p.verdict, p.verdict==='exception'?'bad':'good'):pill('unprocessed','warn')}</td>
+        <td>${(p.discrepancies||[]).map(x=>`<div>${pill(x.type,'bad')} <span class="why">${esc(x.detail)}</span></div>`).join('')||`<span class="why">${esc(p.why||'')}</span>`}</td>
+        <td class="right">${p.processed_at?'':`<button class="act" onclick="ingest('${p.id}')">Ingest</button>`}</td>`), true);
+}
+async function ingest(id){ await API.post(`/api/pos/${id}/ingest`); pos(); }
+
+async function ledger(){
+  const d = await API.get('/api/ledger');
+  const tbl = (title, obj, note) => panel(title, note, table(
+    [{label:'Bucket'},{label:'Win rate'},{label:'Decided',num:true}], Object.entries(obj),
+    ([k,v])=>`<td>${esc(k)}</td><td>${val(v,'win_rate',fmt.pct)}</td><td class="num">${v.n}</td>`), true);
+  document.getElementById('v-ledger').innerHTML =
+    `<div class="banner">Did faster quoting or deeper discounting win more? Answered from
+      ${d.decided_quotes} recorded outcomes — a bucket with too few is blank, never computed.</div>` +
+    tbl('By discount depth', d.by_discount_depth) +
+    tbl('By turnaround', d.by_turnaround) +
+    tbl('By product family', d.by_family) +
+    panel('Why we lose', 'structured reasons', table([{label:'Reason'},{label:'Count',num:true}],
+      Object.entries(d.loss_reasons), ([k,v])=>`<td>${esc(k.replace(/_/g,' '))}</td><td class="num">${v}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['rfqs_wk','RFQs / wk','counted from your inbox'],
+    ['hours_saved_per_quote','Hours saved per quote','your number'],
+    ['loaded_rate','Loaded desk rate','your number'],['pos_wk','POs / wk','counted'],
+    ['minutes_per_po','Minutes per PO','your number'],
+    ['order_errors_month','Order errors / month','your number'],
+    ['cost_per_error','Cost per error','rework + freight both ways + the credit']];
+  const rec=d.recorded||{}, giv=d.operator_supplied||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? giv[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide')+renderEval(ev)+renderAutonomy(au.matrix)+renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'desk'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('desk');
+</script>
+</body>
+</html>

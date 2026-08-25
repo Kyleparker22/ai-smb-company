@@ -1,0 +1,25 @@
+# 2026-06-15 — Tool evaluations (batch): Notion + 8 repos + a research-agent idea
+
+> the Founder asked whether to adopt a batch of tools. Verdicts below, each grounded in the standing stances: **borrow patterns, not dependencies** (`2026-06-14_framework-adoption-stance.md`), **compliance-first / no scraping or detection-evasion** (`agents/rafi/social-platform-scraping-assessment.md`), **one source of truth** (git + markdown), and the **locked video stack** (animated, no AI avatars/voices — `2026-06-09_Reed-higgsfield-animation-stack.md`). Fetched each repo to assess on facts.
+
+## Verdicts
+| Tool | What it actually is | Verdict |
+|---|---|---|
+| **Notion** | No-code workspace/PM | **No, for core.** The OS is git + markdown (version-controlled, agent-readable, owned) + the CRM/dashboard/client-console. Notion would split the source of truth. Fine as the Founder's *personal* surface; not the system of record. |
+| **impeccable** (pbakaus) | Claude Code **skill** that improves AI-generated frontend design (audit/polish/critique, 44 anti-pattern detectors). Apache-2.0, 38.8k★ | **✅ Adopt — for Webb.** We ship a lot of HTML (site, dashboards, CRM, client-console, demo-kit, audit report). A design-quality skill on our own substrate raises the bar on every surface. Low-risk, aligned. |
+| **hyperframes** (HeyGen) | HTML/CSS/animation → **deterministic MP4**, agent-authored. NOT avatars. Apache-2.0, 28k★ | **✅ Pilot — for Reed.** Complements Higgsfield: deterministic, code-authored **data-viz/explainer** video (ROI breakdowns, "what my employees did this week" stat clips) — and it *fits* the animated-no-AI-voice decision. Don't replace Higgsfield; add for programmatic video. |
+| **claude-ads** (AgriciDaniel) | Claude Code skill: paid-ads **audits** (250+ checks across Google/Meta/etc.), reports. MIT, 6.1k★ | **Bookmark — revisit at ads-on.** Paid-ads is deferred (`2026-06-12_paid-ads-stance.md`). Strong pattern; could even become a client-facing "ad audit" capability later. Not now. |
+| **NotFair** (nowork-studio) | Claude Code plugin: paid-ads + SEO + **GEO** optimization; OAuths into ad accounts via notfair.co | **No.** Functions already owned: **Mario** = GEO/AEO (native, owned), **Webb** = SEO, ads = deferred. Plus a third-party OAuth dependency (notfair.co) on client/ad data — against the ownership principle. |
+| **goose** (AAIF/Linux Fdn) | General-purpose AI **agent runtime** (Rust; desktop/CLI/API; 70+ MCP). Apache-2.0, 49.6k★ | **No, as core (borrow patterns).** Serious project, but adopting it = replatforming our substrate onto someone else's runtime. Ours (Claude Code + git + systemd) is deliberate + owned. Fine as a *personal* dev tool for the Founder. |
+| **Scrapegraph-ai** | LLM-powered web **scraping** (Playwright + LLM). MIT, 27k★ | **No.** Already assessed (framework stance) + it's a scraper → compliance posture (we use official APIs / licensed data, not ToS-violating LLM scrapers). |
+| **open-generative-ai** (anil-matcha) | Image/video gen studio, "200+ models, **no content filters**", self-host | **No.** Covered by the locked stack (Higgsfield + Canva); the "no filters / unrestricted" positioning is off-brand for a restrained, trust-first brand. |
+| **camofox-browser** (jo-inc) | **Anti-detection** headless browser (Camoufox fork; fingerprint + GeoIP/location **spoofing**) to "bypass bot detection and anti-scraping" | **❌ Firm no.** Purpose-built to *evade detection while scraping* — the exact opposite of our compliance posture. ToS violation + detection evasion = legal risk and torches the "we sell reliability + compliance" brand. Logged in Rafi's assessment. |
+| **Hermes Agent + NotebookLM** as the research agent | A new agent stack for competitor/market research | **No new agent.** The function is already **Brett's** (strategic advisor + `competitive-watch.md` + the Meta Ad Library method) and partly **Mario's** (category scan). Capabilities fold into the nearest agent. NotebookLM is fine as the Founder's *personal* tool to digest competitor material → feed Brett; not the OS's research agent. |
+
+## The pattern
+Two genuine **yeses** — both **Claude Code skills that improve our own output** on our own substrate (impeccable for design quality, hyperframes for programmatic video). Everything else is either **already owned** (GEO=Mario, SEO=Webb, research=Brett, video=Higgsfield), **deferred** (ads), a **framework we borrow from but don't build on** (goose), or a **compliance/brand no** (camofox = detection-evasion, scrapegraph = scraping, open-gen-ai = unfiltered). Consistent with everything to date: own the moat, rent only commodities that strengthen our own surfaces.
+
+## Actions
+- **Adopt impeccable** (Webb installs the skill in Claude Code) + **pilot hyperframes** (Reed, for data-viz/explainer video) — both pending the Founder's go.
+- **camofox** → added to `agents/rafi/social-platform-scraping-assessment.md` as a named "do not adopt" (detection evasion).
+- **claude-ads** → bookmarked for the ads-on trigger.

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-sites"></section>
+  <section class="view" id="v-defs"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. A device with no inspection record
+reads UNKNOWN, never compliant. Software never downgrades or closes an impairment, never certifies
+an inspection, and never corresponds with the fire marshal.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'sites',label:'Sites & devices'},
+      {id:'defs',label:'Deficiencies'},{id:'roi',label:'What it\'s worth'},{id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,sites,defs,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.techs} techs · ${d.config.revenue}`;
+  document.getElementById('v-board').innerHTML =
+    panel('The calendar, counted', '',
+      `<div class="grid">
+        ${stat('Devices overdue', fmt.num(b.overdue), 'each is revenue AND exposure', b.overdue?'alert':'')}
+        ${stat('Devices UNKNOWN', fmt.num(b.unknown), 'no record — never shown compliant', b.unknown?'warn':'')}
+        ${stat('Impairments live', fmt.num(b.impairments), 'owner called, fire watch language', b.impairments?'bad':'')}
+        ${stat('Open deficiencies', fmt.money(b.open_deficiency_value), `${b.open_deficiencies} finding(s) in the ladder`)}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('This week, counted', `${b.recovered.devices_inspected} · ${b.recovered.deficiencies_repaired} · ${b.recovered.impairments_escalated}`,
+               'devices inspected · deficiencies repaired · impairments escalated')}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">An impairment calls the owner NOW with fire-watch language — software
+      never downgrades one, never closes one. The fire marshal talks to the owner, never to
+      software.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='impairment'?'bad':m.label==='marshal'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.said?`<div class="strong">${esc(s.said)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+async function sites(){
+  const d = await API.get('/api/sites');
+  document.getElementById('v-sites').innerHTML =
+    `<div class="banner warn">Try it: mark the record-less device compliant — refused. A device
+      state changes only with an inspector's recorded result.</div>
+     <div style="margin:10px 0">
+      <button class="act" onclick="mark('dv_demo_unknown',false)">Mark compliant: no record</button>
+      <button class="act primary" onclick="mark('dv_demo_unknown',true)">Record inspector result</button>
+     </div><div id="sout"></div>` +
+    panel('Sites', 'worst first', table(
+      [{label:'Site'},{label:'Devices',num:true},{label:'Overdue',num:true},{label:'Unknown',num:true},{label:'Open findings',num:true}],
+      d.rows, s=>`<td>${esc(s.site)}</td><td class="num">${s.devices}</td>
+        <td class="num ${s.overdue?'strong':''}">${s.overdue}</td>
+        <td class="num ${s.unknown?'strong':''}">${s.unknown}</td>
+        <td class="num">${s.open_deficiencies}</td>`), true);
+}
+async function mark(id, withRecord){
+  const r = await API.post(`/api/devices/${id}/mark`, withRecord?{human:'inspector',result:'pass'}:{});
+  document.getElementById('sout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`)
+    : panel('Recorded', '', `<div class="strong">inspected by ${esc(r.by)} — the record is the state</div>`);
+}
+
+async function defs(){
+  const d = await API.get('/api/deficiencies');
+  document.getElementById('v-defs').innerHTML =
+    panel('Deficiencies', 'bounded ladder — the finding and its code reference cited, no fear copy', table(
+      [{label:'Site'},{label:'Finding'},{label:'Code'},{label:'Quote',num:true},{label:'Touches'},{label:'State'}],
+      d.rows, f=>`<td>${esc(f.site_name||'')}</td><td>${esc(f.finding)}</td>
+        <td class="mono">${esc(f.code_ref||'')}</td><td class="num">${fmt.money(f.quote)}</td>
+        <td>${(f.touches||[]).length} of 3</td>
+        <td>${f.repaired_at?pill('repaired','good'):f.declined_at?pill('declined'):pill('open','warn')}</td>`), true);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['overdue_devices','Devices overdue/unknown','counted'],['avg_inspection','Avg inspection','your number'],
+    ['open_deficiency_value','Open deficiency value','counted'],['close_rate','Repair close rate','your number (0–1)'],
+    ['office_hours_wk','Office hrs/wk','your number'],['office_rate','Office rate','your number'],
+    ['impairment_value','The impairment log','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

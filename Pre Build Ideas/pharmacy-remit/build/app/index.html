@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remit OS</title><link rel="stylesheet" href="/_kit/kit.css">
+</head>
+<body>
+<header class="top"><h1 id="co">…</h1><span class="sub" id="cosub"></span><span class="spacer"></span>
+<button class="act" onclick="runAgents()">Run the sweeps</button></header>
+<nav class="tabs"></nav>
+<main>
+  <section class="view on" id="v-board"></section>
+  <section class="view" id="v-inbox"></section>
+  <section class="view" id="v-autopsy"></section>
+  <section class="view" id="v-ledger"></section>
+  <section class="view" id="v-roi"></section>
+  <section class="view" id="v-trust"></section>
+</main>
+<footer class="foot">Demonstration build on synthetic records. Every remittance line reconciles
+against the RECORDED contract terms — no recorded contract reads UNAUDITABLE, never a guessed
+benchmark; an ambiguous clause goes to a human with both readings; recovered dollars are counted
+from remittance corrections only; the wrong-pills message is a pharmacist-now event, never a
+queue. Nothing is sent.</footer>
+<script src="/_kit/kit.js"></script>
+<script>
+tabs([{id:'board',label:'Board'},{id:'inbox',label:'Inbox'},{id:'autopsy',label:'The autopsy'},
+      {id:'ledger',label:'Recoverable & margin'},{id:'roi',label:'What it\'s worth'},
+      {id:'trust',label:'Trust & audit'}], load);
+async function load(w){ w=w||'board'; ({board,inbox,autopsy,ledger,roi,trust})[w](); }
+
+async function board(){
+  const d = await API.get('/api/board'), b = d.board;
+  document.getElementById('co').textContent = d.config.company;
+  document.getElementById('cosub').textContent = `${d.config.scripts_per_day} scripts/day · ${d.config.pbm_contracts} PBM contracts`;
+  document.getElementById('v-board').innerHTML =
+    (b.unauditable.length?`<div class="banner warn"><b>${esc(b.unauditable.join(', '))}</b> is
+      UNAUDITABLE — its remittances are in hand but its contract terms were never recorded. We
+      don't audit against a guess; record the executed terms and every line reconciles to the cent.</div>`:'') +
+    panel('The money, counted', '',
+      `<div class="grid">
+        ${stat('Open recoverable', fmt.money2(b.open_recoverable), `${b.open_count} confirmed variance(s) inside their windows`, b.open_count?'alert':'')}
+        ${stat('Recovered', fmt.money2(b.recovered.recovered), `${b.recovered.corrections} counted correction(s) — never estimated`)}
+        ${stat('Dispensed at a loss', fmt.money2(b.loss.dollars), `${b.loss.count} script(s) counted · ${b.loss.unmeasured_lines} unmeasured (no recorded cost)`, b.loss.count?'warn':'')}
+        ${stat('Ambiguous clauses', fmt.num(b.ambiguous_waiting), 'both readings waiting on a human', b.ambiguous_waiting?'warn':'')}
+       </div>
+       <div class="grid" style="margin-top:14px">${renderAutomation(b.automation)}
+        ${stat('Waiting on you', fmt.num(d.pending_approvals), 'the R1 floor')}
+        ${stat('Unhandled messages', fmt.num(b.messages_open), 'the wrong-pills message reads first', b.messages_open?'bad':'')}
+        ${stat('This week, counted', fmt.money2(b.week.corrected_dollars),
+               `${b.week.corrections_recorded} correction(s) · ${b.week.appeals_sent} appeal(s) sent · ${b.week.window_alerts} window alert(s) · ${b.week.autopsies_run} autops${b.week.autopsies_run==1?'y':'ies'}`)}</div>`);
+}
+
+async function inbox(){
+  const d = await API.get('/api/messages');
+  document.getElementById('v-inbox').innerHTML =
+    `<div class="banner warn">"I think I got the wrong pills" is a patient-safety event, not a
+      ticket: the pharmacist-now script is the <b>whole reply, immediately</b> — it never waits in
+      a queue. Everything else drafts for a human against the recorded fill and claim records.</div>` +
+    panel('Messages', '', table([{label:'When'},{label:'From'},{label:'Message'},{label:'Label'},{label:''}],
+      d.rows, m=>`<td>${fmt.stamp(m.at)}${m.demo_tag?' '+pill(m.demo_tag,'brand'):''}</td>
+        <td>${esc(m.from||'')}</td><td>${esc(m.text)}</td>
+        <td>${m.label?pill(m.label, m.label==='wrong_med'?'bad':m.label==='pbm_question'?'warn':''):'—'}</td>
+        <td class="right"><button class="act primary" onclick="handle('${m.id}')">Handle</button></td>`), true) +
+    `<div id="mout"></div>`;
+}
+async function handle(id){
+  const r = await API.post(`/api/messages/${id}/handle`);
+  document.getElementById('mout').innerHTML = (r.steps||[]).map(s=>`
+    <div class="panel"><h2>${esc(s.action)}</h2><div class="body">
+      ${s.draft?`<div class="strong" style="white-space:pre-wrap">${esc(s.draft)}</div>`:''}
+      ${s.refused?`<div class="banner warn">${esc(s.refused)}</div>`:''}
+      <div class="why">${esc(s.why||'')}</div></div></div>`).join('');
+}
+
+const CLS = c => pill(c, c==='underpaid'?'bad':c==='dir_drift'?'warn':c==='ambiguous'?'brand':c==='overpaid'?'warn':'good');
+
+async function autopsy(){
+  const d = await API.get('/api/remits');
+  document.getElementById('v-autopsy').innerHTML =
+    `<div class="banner warn">Try it: autopsy the CareMax remittance — the underpaid line cites
+      the clause and the delta to the cent; the OptiScript one carries two ambiguous lines (both
+      readings, a human picks); the Pinnacle one is <b>UNAUDITABLE</b> — no recorded contract, no
+      audit, gap named.</div>` +
+    panel('Remittances', '', table(
+      [{label:'Remit'},{label:'PBM'},{label:'Date'},{label:'Lines',num:true},{label:'Contract'},{label:''}],
+      d.rows, r=>`<td class="mono">${esc(r.id)}${r.demo_tag?' '+pill(r.demo_tag,'brand'):''}</td>
+        <td>${esc(r.pbm)}</td><td>${fmt.date(r.remit_date)}</td><td class="num">${r.lines}</td>
+        <td>${r.recorded?pill('recorded','good'):pill('UNRECORDED','bad')}</td>
+        <td class="right"><button class="act primary" onclick="runAutopsy('${r.id}')">Autopsy</button></td>`), true) +
+    `<div id="aout"></div>`;
+}
+async function runAutopsy(id){
+  const r = await API.get(`/api/remits/${id}/autopsy`);
+  const el = document.getElementById('aout');
+  if(r.refused){ el.innerHTML = panel('Refused — UNAUDITABLE', '',
+    `<div class="banner warn">${esc(r.refused)}</div>`); return; }
+  const s = r.summary, vari = r.lines.filter(l=>l.class!=='correct');
+  el.innerHTML =
+    panel(`Autopsy — ${r.pbm}`, esc(r.contract_source),
+      `<div class="grid">
+        ${stat('Lines', fmt.num(s.lines), `${s.correct} paid exactly per the recorded arithmetic`)}
+        ${stat('Underpaid', fmt.num(s.underpaid), fmt.money2(s.underpaid_value)+' short, to the cent', s.underpaid?'alert':'')}
+        ${stat('DIR drift', fmt.num(s.dir_drift), fmt.money2(s.dir_drift_value)+' over-withheld', s.dir_drift?'warn':'')}
+        ${stat('Ambiguous', fmt.num(s.ambiguous), 'both readings to a human', s.ambiguous?'warn':'')}
+       </div>`) +
+    panel('Variances, line by line', 'every line shows its work — the clause, the arithmetic, the delta',
+      table([{label:'Script'},{label:'Drug'},{label:'Class'},{label:'Expected',num:true},{label:'Paid',num:true},{label:'Delta',num:true},{label:'Clause / readings'}],
+        vari, l=> l.class==='ambiguous'
+          ? `<td class="mono">${esc(l.script_ref)}</td><td>${esc(l.drug)}</td><td>${CLS(l.class)}</td>
+             <td class="num">—</td><td class="num">${fmt.money2(l.paid)}</td><td class="num">—</td>
+             <td class="why">${l.readings.map(rd=>`<div><b>${fmt.money2(rd.expected)}</b> under ${esc(rd.clause)}</div>`).join('')}
+             <div>${esc(l.note)}</div></td>`
+          : `<td class="mono">${esc(l.script_ref)}</td><td>${esc(l.drug)}</td><td>${CLS(l.class)}</td>
+             <td class="num">${fmt.money2(l.expected)}</td><td class="num">${fmt.money2(l.paid)}</td>
+             <td class="num strong">${fmt.money2(l.delta)}</td><td class="why">${esc(l.clause||'')}</td>`), true);
+}
+
+async function ledger(){
+  const [lg, mb] = await Promise.all([API.get('/api/ledger'), API.get('/api/margin')]);
+  document.getElementById('v-ledger').innerHTML =
+    `<div class="banner warn">Every confirmed variance ages against the <b>recorded appeal
+      window</b> — a DATE ALERT, not legal advice. Appeals draft at R1 citing the clause and the
+      delta; recovered = counted remittance corrections only (try the estimate — it refuses).</div>
+     <div style="margin:10px 0"><button class="act" onclick="estimate()">Ask for an estimate of recovered $</button></div>
+     <div id="lout"></div>` +
+    panel(`The recoverable ledger — ${fmt.money2(lg.open_recoverable)} open`, esc(lg.note),
+      table([{label:'Script'},{label:'PBM'},{label:'Class'},{label:'Delta',num:true},{label:'Window'},{label:'State'},{label:''}],
+        lg.rows, f=>`<td class="mono">${esc(f.script_ref)}${f.demo_tag?' '+pill(f.demo_tag,'brand'):''}</td>
+          <td>${esc(f.pbm)}</td><td>${CLS(f.class)}</td>
+          <td class="num strong">${f.delta!=null?fmt.money2(f.delta):'—'}</td>
+          <td>${f.days_left==null?'—':(f.expired?pill('CLOSED '+(-f.days_left)+'d ago','bad'):f.days_left+'d left')}</td>
+          <td>${esc(f.state)}</td>
+          <td class="right">${f.class==='ambiguous'&&f.state==='needs_human'
+            ?`<button class="act" onclick="resolveA('${f.id}')">Resolve (human)</button>
+              <button class="act" onclick="resolveNoHuman('${f.id}')">Auto-resolve?</button>`
+            :f.state==='open'||f.state==='appeal_drafted'
+            ?`<button class="act primary" onclick="appeal('${f.id}')">Draft appeal</button>
+              <button class="act" onclick="correction('${f.id}')">Record correction</button>`:''}</td>`), true) +
+    panel(`The margin truth board — ${mb.loss_count} script(s) dispensed at a loss (${fmt.money2(mb.loss_dollars)})`,
+      esc(mb.note),
+      `<div class="why" style="margin-bottom:8px">${mb.unmeasured.lines} line(s) ${blank(mb.unmeasured._missing)}
+        — drugs: ${mb.unmeasured.drugs.map(esc).join(', ')||'none'}</div>` +
+      table([{label:'Script'},{label:'Drug'},{label:'PBM'},{label:'Paid',num:true},{label:'DIR',num:true},{label:'Acq cost',num:true},{label:'Margin',num:true}],
+        mb.loss_rows, r=>`<td class="mono">${esc(r.script_ref)}</td><td>${esc(r.drug)}</td>
+          <td>${esc(r.pbm)}</td><td class="num">${fmt.money2(r.paid)}</td>
+          <td class="num">${fmt.money2(r.dir_taken)}</td><td class="num">${fmt.money2(r.acq_cost)}</td>
+          <td class="num strong">${fmt.money2(r.margin)}</td>`), true);
+}
+async function appeal(id){
+  const r = await API.post(`/api/findings/${id}/appeal`);
+  document.getElementById('lout').innerHTML = r.refused
+    ? panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`
+        + (r.readings?`<div class="why">${r.readings.map(rd=>`<div><b>${fmt.money2(rd.expected)}</b> under ${esc(rd.clause)}</div>`).join('')}</div>`:''))
+    : panel('Appeal drafted — R1, a human sends', '',
+        `<div class="strong" style="white-space:pre-wrap">${esc(r.draft)}</div>
+         <div class="why">${r.days_left!=null?r.days_left+' days left in the recorded window':''}</div>`);
+  ledger();
+}
+async function resolveA(id){
+  const r = await API.post(`/api/findings/${id}/resolve`, {reading:0, human:'owner'});
+  document.getElementById('lout').innerHTML = r.resolved
+    ? panel('Resolved by a human', '', `<div class="strong">${esc(r.finding.why)}</div>`)
+    : panel('Refused', '', `<div class="banner warn">${esc(r.refused||r.error)}</div>`);
+  ledger();
+}
+async function resolveNoHuman(id){
+  const r = await API.post(`/api/findings/${id}/resolve`, {reading:0});
+  document.getElementById('lout').innerHTML =
+    panel('Refused', '', `<div class="banner warn">${esc(r.refused||r.error)}</div>`
+      + (r.readings?`<div class="why">${r.readings.map(rd=>`<div><b>${fmt.money2(rd.expected)}</b> under ${esc(rd.clause)}</div>`).join('')}</div>`:''));
+}
+async function correction(id){
+  const amt = prompt('Corrected amount from the PBM\'s corrected remittance ($):');
+  if(amt==null||amt==='') return;
+  const r = await API.post(`/api/findings/${id}/correction`, {amount:amt, human:'owner'});
+  document.getElementById('lout').innerHTML = r.corrected
+    ? panel('Correction recorded — now it counts', '', `<div class="strong">${fmt.money2(r.amount)} recorded by a human — recovered is counted from exactly these events.</div>`)
+    : panel('Refused', '', `<div class="banner warn">${esc(r.refused||r.error)}</div>`);
+  ledger();
+}
+async function estimate(){
+  const r = await API.get('/api/recovered/estimate');
+  document.getElementById('lout').innerHTML =
+    panel('Refused', '', `<div class="banner warn">${esc(r.refused)}</div>`);
+}
+
+let roiIn={};
+async function roi(){
+  const d = await API.get('/api/roi?'+new URLSearchParams(roiIn));
+  const f=[['recovered_counted','Recovered (counted)','counted'],
+    ['open_recoverable','Open recoverable','counted'],
+    ['appeal_win_rate','Your appeal win rate','your number (0–1)'],
+    ['audit_hours_wk','Audit hrs/wk you spend today','your number'],
+    ['owner_rate','Your hourly rate','your number'],
+    ['loss_list_value','The at-a-loss list','yours or blank']];
+  const rec=d.recorded||{};
+  document.getElementById('v-roi').innerHTML =
+    panel('Your numbers','recorded values come from this system',
+      `<div class="grid">${f.map(([k,l,n])=>`<div class="stat"><div class="k">${esc(l)}</div>
+        <input id="in_${k}" value="${rec[k] ?? roiIn[k] ?? ''}" placeholder="not set"
+         style="font:inherit;font-size:18px;font-weight:600;width:100%;border:0;border-bottom:1px solid var(--line);padding:4px 0;background:none">
+        <div class="f">${k in rec?'<span class="pill good">recorded</span> ':''}${esc(n)}</div></div>`).join('')}</div>
+      <div style="margin-top:12px"><button class="act primary" onclick="applyRoi()">Recompute</button></div>`) +
+    renderRoi(d);
+  window.__f=f.map(x=>x[0]);
+}
+function applyRoi(){roiIn={};(window.__f||[]).forEach(k=>{const v=document.getElementById('in_'+k).value.trim(); if(v!=='')roiIn[k]=v;});roi();}
+
+async function trust(){
+  const [ap,ev,au,evt]=await Promise.all([API.get('/api/approvals'),API.get('/api/eval'),
+    API.get('/api/autonomy'),API.get('/api/events')]);
+  document.getElementById('v-trust').innerHTML =
+    renderApprovals(ap.pending,'decide') + renderEval(ev.triage) +
+    renderAutonomy(au.matrix) + renderEvents(evt.events,60);
+}
+async function decide(id,ok){ await API.post(`/api/approvals/${id}/decide`,{approve:ok,human:'owner'}); trust(); }
+async function runAgents(){ await API.post('/api/agents/run'); load(document.querySelector('nav.tabs button.on').dataset.v); }
+load('board');
+</script>
+</body>
+</html>

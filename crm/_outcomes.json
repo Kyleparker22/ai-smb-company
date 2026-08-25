@@ -1,0 +1,9 @@
+{
+  "_derived": "Generated from clients/<slug>/outcomes.jsonl by crm/expansion.py. Never hand-edit — edit the client ledger.",
+  "generated": "2026-08-11",
+  "rows": [],
+  "byMetric": [],
+  "roiByClient": {},
+  "realisedTotal": null,
+  "clientsWithLedger": 0
+}

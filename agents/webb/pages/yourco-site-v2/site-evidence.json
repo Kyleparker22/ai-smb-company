@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-08-13T22:23:57",
+  "generatedOn": "2026-08-13",
+  "claims": [
+    {
+      "id": "gate-no-send",
+      "subject": "Whether our agents can send email",
+      "ttlDays": 45,
+      "source": "runtime/headless-settings.reference.json",
+      "means": "Drafting and sending are different permissions. Sending is denied at the configuration layer, so it is not a policy an agent can be talked out of.",
+      "state": "proven",
+      "value": "cannot send",
+      "detail": "deny rule mcp__gmail__send_email",
+      "text": "Our agents cannot send email.",
+      "verifiedOn": "2026-08-13"
+    },
+    {
+      "id": "gate-no-bash",
+      "subject": "Whether our agents can reach a shell",
+      "ttlDays": 45,
+      "source": "runtime/headless-settings.reference.json",
+      "means": "The load-bearing one. An agent that can reach a shell can step around every other control here, so it is denied outright.",
+      "state": "proven",
+      "value": "cannot run shell",
+      "detail": "deny rule Bash",
+      "text": "Our agents cannot run shell.",
+      "verifiedOn": "2026-08-13"
+    },
+    {
+      "id": "controls-drilled",
+      "subject": "Deny rules that have survived a live attack",
+      "ttlDays": 45,
+      "source": "loops/_trust/drills.jsonl",
+      "means": "A rule nobody has attacked is a claim, not a control. This counts only the ones something has actually tried to break. The rest are listed as untested, on purpose.",
+      "state": "unproven",
+      "value": null,
+      "detail": null,
+      "text": "\u2014 deny rules have survived a live attack.",
+      "missing": "none of the 4 deny rules has been attacked yet \u2014 the canary-injection drill is defined but has never been armed, so there is no survival to report"
+    },
+    {
+      "id": "honesty-suite",
+      "subject": "Automated checks on what this system may state",
+      "ttlDays": 21,
+      "source": "runtime/test_evidence.py",
+      "means": "The same discipline this page runs on. If any of them fail, the number here is withheld rather than rounded.",
+      "state": "proven",
+      "value": "221",
+      "detail": "assertions that stop the OS stating what its inputs do not support",
+      "text": "221 automated checks stop this system from stating what it cannot prove.",
+      "verifiedOn": "2026-08-13"
+    },
+    {
+      "id": "consistency",
+      "subject": "Facts re-checked across every surface",
+      "ttlDays": 21,
+      "source": "runtime/consistency-check.py",
+      "means": "A number changed in one place and left stale everywhere else is the most common way a company starts lying by accident. A machine checks, not a person.",
+      "state": "proven",
+      "value": "43",
+      "detail": "cross-surface invariants checked 2026-08-13; 1 drifting",
+      "text": "43 facts are re-checked across every surface each week.",
+      "verifiedOn": "2026-08-13"
+    },
+    {
+      "id": "loops",
+      "subject": "Scheduled jobs running with no human present",
+      "ttlDays": 30,
+      "source": "runtime/agent-registry.json",
+      "means": "Not a demo. This is the system we sell, running the business that sells it.",
+      "state": "proven",
+      "value": "30",
+      "detail": "scheduled jobs that run with no human present",
+      "text": "30 scheduled jobs run this company with no human present.",
+      "verifiedOn": "2026-08-13"
+    },
+    {
+      "id": "governance",
+      "subject": "Last diff of what runs against what is sanctioned",
+      "ttlDays": 30,
+      "source": "loops/_governance/",
+      "means": "A weekly diff of what is actually running against what is approved to run. Unapproved automation is how an AI system quietly becomes something nobody chose.",
+      "state": "proven",
+      "value": "2026-08-13",
+      "detail": "last diff of what is running against what is sanctioned",
+      "text": "Last checked 2026-08-13: everything running is on the sanctioned list.",
+      "verifiedOn": "2026-08-13"
+    },
+    {
+      "id": "drill",
+      "subject": "Last fault injected on purpose",
+      "ttlDays": 60,
+      "source": "loops/_trust/drills.jsonl",
+      "means": "We break it on purpose, on a schedule, and record whether we noticed. A control with no drill behind it is not evidence of anything.",
+      "state": "proven",
+      "value": "2026-08-07",
+      "detail": "silent-schema-drift injected and caught",
+      "text": "Last fault injected 2026-08-07 \u2014 caught.",
+      "verifiedOn": "2026-08-13"
+    }
+  ],
+  "controls": {
+    "available": true,
+    "rows": [
+      {
+        "rule": "Bash",
+        "means": "The agents cannot run shell commands. This is the load-bearing one: an agent that can shell can bypass every other control on this page.",
+        "state": "untested",
+        "proof": "canary-injection defined but never armed",
+        "source": "runtime/headless-settings.reference.json"
+      },
+      {
+        "rule": "mcp__gmail__batch_delete_emails",
+        "means": "The agents cannot bulk-delete email.",
+        "state": "untested",
+        "proof": "canary-injection defined but never armed",
+        "source": "runtime/headless-settings.reference.json"
+      },
+      {
+        "rule": "mcp__gmail__delete_email",
+        "means": "The agents cannot delete email.",
+        "state": "untested",
+        "proof": "canary-injection defined but never armed",
+        "source": "runtime/headless-settings.reference.json"
+      },
+      {
+        "rule": "mcp__gmail__send_email",
+        "means": "The agents cannot send email. They draft; a human sends.",
+        "state": "untested",
+        "proof": "canary-injection defined but never armed",
+        "source": "runtime/headless-settings.reference.json"
+      }
+    ],
+    "source": "runtime/headless-settings.reference.json",
+    "isReferenceCopy": true,
+    "activeFileNote": "The ACTIVE gate is the runtime host's own ~/.claude/settings.json. This page read the repo's reference copy \u2014 they are kept in sync by hand, so a drift between them is possible and is not detected here.",
+    "externalOk": false,
+    "tested": 0,
+    "total": 4
+  },
+  "refused": [],
+  "summary": {
+    "total": 8,
+    "proven": 7,
+    "unproven": 1
+  },
+  "contract": "Every claim on the site is bound to a check that runs. Past its ttlDays the value is withheld and what is missing is named in its place. Nothing here falls back to a cached number.",
+  "boundTo": "Reliability and process only. Volume claims \u2014 clients, revenue, hours saved \u2014 are refused at generation time, not by review."
+}

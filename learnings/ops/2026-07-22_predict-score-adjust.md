@@ -1,0 +1,11 @@
+2026-07-22 — Predict → score → adjust: loops end with scoreable predictions, not just reports
+
+Source: the Founder + strategy session 2026-07-22. The prompt was external (Vertus's "forward-looking, live-data" marketing) but the evidence is internal: the Sample Client deal stall and the Sadie collection silent-zero were both caught *retrospectively* — by the 07-04 full-OS audit and the 07-20 consistency check — when the signal (days-without-reply; expected-volume deviation) was sitting in the data before the event. Our loops digest what already happened; almost none of them commit to what happens next.
+
+Pattern: a loop that (a) ends its artifact with 1–3 falsifiable predictions — each with a named observable and a confidence % — and (b) scores the previous run's predictions at the top of the next run, converts reporting into foresight at near-zero cost. The score history is the compounding part: a calibration track record is eval evidence, the same currency the Autonomy Matrix promotes on, and later a client-facing trust artifact ("your OS called this ahead of time — here's the record"). Boundary: predictions are made only where the next run can score them against a real observable; foresight we can't show receipts for is the Vertus failure mode, not ours.
+
+Implication: piloting on the weekly Pipeline Report (David) — new "Prediction scorecard" + "Predictions" artifact sections, wired into the SOP and runtime prompt 2026-07-22. Empty is valid pre-revenue ("no live signals" beats invented forecasts). After ~4–6 runs Kolby judges the pilot at eval-review: predictions stayed honest, scoring stayed cheap (<2 min of the run), and ideally at least one ahead-of-the-event catch. If it holds, roll-out to other loops goes to a decision (candidates: finance close/runway, customer-health, open-loops chaser).
+
+Audience: David (pilot owner) · Kolby (judges the pilot at eval-review) · Atlas/ops · all loop owners at roll-out time.
+
+Triggers: skill:add-runtime-loop, authoring a loop prompt, agent:kolby, agent:david, loop:eval-review, scoreable prediction
