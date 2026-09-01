@@ -1,0 +1,15 @@
+[submodule "tools/taste-skill"]
+	path = tools/taste-skill
+	url = https://github.com/leonxlnx/taste-skill
+[submodule "tools/impeccable"]
+	path = tools/impeccable
+	url = https://github.com/pbakaus/impeccable
+[submodule "tools/playwright-cli"]
+	path = tools/playwright-cli
+	url = https://github.com/microsoft/playwright-cli
+[submodule "tools/awesome-design"]
+	path = tools/awesome-design
+	url = https://github.com/bergside/awesome-design-skills
+[submodule "tools/img2threejs"]
+	path = tools/img2threejs
+	url = https://github.com/img2threejs/img2threejs
